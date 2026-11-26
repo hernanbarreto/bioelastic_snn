@@ -1,0 +1,31 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+suma,oraculo R=1,0,exacta n=1,0.9060,0.0100,azar
+suma,oraculo R=1,0,columna n=1,1.0000,0.1000,azar
+suma,oraculo R=1,0,exacta n=3,0.3120,0.0001,azar
+suma,oraculo R=1,0,columna n=3,0.6907,0.1000,azar
+suma,oraculo R=2,0,exacta n=1,0.9260,0.0100,azar
+suma,oraculo R=2,0,columna n=1,1.0000,0.1000,azar
+suma,oraculo R=2,0,exacta n=3,0.8680,0.0001,azar
+suma,oraculo R=2,0,columna n=3,0.9673,0.1000,azar
+suma,vista,0,exactitud imagen (test),0.9686,,"depth2, 10000 etiquetas"
+suma,1a tubería (Thinker entrenado con oráculo),0,exacta n=1,0.8840,0.8688,cota indep. p^2n*oráculo
+suma,1a tubería (Thinker entrenado con oráculo),0,columna n=1,0.9360,,
+suma,1a tubería (Thinker entrenado con oráculo),0,todas las imágenes bien n=1,0.9360,0.9382,p^2n
+suma,1a tubería (Thinker entrenado con oráculo),0,exacta | todas bien n=1,0.9444,0.9260,oráculo
+suma,1a tubería (Thinker entrenado con oráculo),0,exacta | alguna mal n=1,0.0000,0.0000,
+suma,1a tubería (Thinker entrenado con oráculo),0,exacta n=3,0.7380,0.7168,cota indep. p^2n*oráculo
+suma,1a tubería (Thinker entrenado con oráculo),0,columna n=3,0.9060,,
+suma,1a tubería (Thinker entrenado con oráculo),0,todas las imágenes bien n=3,0.8540,0.8258,p^2n
+suma,1a tubería (Thinker entrenado con oráculo),0,exacta | todas bien n=3,0.8618,0.8680,oráculo
+suma,1a tubería (Thinker entrenado con oráculo),0,exacta | alguna mal n=3,0.0137,0.0000,
+suma,1a ruidosa (Thinker entrenado sobre lo percibido),0,exacta n=1,0.8540,0.8688,cota indep. p^2n*oráculo
+suma,1a ruidosa (Thinker entrenado sobre lo percibido),0,columna n=1,0.9400,,
+suma,1a ruidosa (Thinker entrenado sobre lo percibido),0,todas las imágenes bien n=1,0.9400,0.9382,p^2n
+suma,1a ruidosa (Thinker entrenado sobre lo percibido),0,exacta | todas bien n=1,0.9085,0.9260,oráculo
+suma,1a ruidosa (Thinker entrenado sobre lo percibido),0,exacta | alguna mal n=1,0.0000,0.0000,
+suma,1a ruidosa (Thinker entrenado sobre lo percibido),0,exacta n=3,0.6760,0.7168,cota indep. p^2n*oráculo
+suma,1a ruidosa (Thinker entrenado sobre lo percibido),0,columna n=3,0.8867,,
+suma,1a ruidosa (Thinker entrenado sobre lo percibido),0,todas las imágenes bien n=3,0.8380,0.8258,p^2n
+suma,1a ruidosa (Thinker entrenado sobre lo percibido),0,exacta | todas bien n=3,0.8067,0.8680,oráculo
+suma,1a ruidosa (Thinker entrenado sobre lo percibido),0,exacta | alguna mal n=3,0.0000,0.0000,
+suma,total,0,segundos,268.2000,,
