@@ -133,6 +133,20 @@ def cka(A, B) -> float:
     return float((K * L).sum() / den) if den > 0 else float("nan")
 
 
+def code_maxcorr(S, m, diag, a) -> float:
+    """Media, sobre los rasgos vivos usados, de la máxima correlación de su actividad (por
+    posición del código) con la de otro rasgo: redundancia de lo que el nivel transmite.
+    Se usa la coactivación sin centrar normalizada (coseno entre canales de actividad)."""
+    alive = np.flatnonzero(a.alive & (diag[:a.F] > 0))
+    if len(alive) < 2:
+        return float("nan")
+    Sa = S[np.ix_(alive, alive)]
+    d = np.sqrt(np.diag(Sa))
+    Cn = Sa / np.outer(d, d)
+    np.fill_diagonal(Cn, -1.0)
+    return float(Cn.max(axis=1).mean())
+
+
 def dict_stats(a, usage: np.ndarray) -> dict:
     W = a.W[a.alive]
     if len(W) > 1:
@@ -158,7 +172,9 @@ def evaluate(net: Cortex, probes: Probes, E, X, y, collect: int = 0, extra=None)
     pe_parts = np.zeros((len(net.areas), 2))
     correct = np.zeros((len(y), nL), dtype=bool)
     rows = [[] for _ in range(nL)]
-    usage = [np.zeros(a.F) for a in net.areas]
+    usage = [np.zeros(a.out_shape[2]) for a in net.areas]
+    co = [np.zeros((a.out_shape[2],) * 2) for a in net.areas] if collect else []   # coactivación
+    npos = [0 for _ in net.areas]
     ext = []
     t0 = time.time()
     for i, (x0, t) in enumerate(zip(X, y)):
@@ -182,6 +198,9 @@ def evaluate(net: Cortex, probes: Probes, E, X, y, collect: int = 0, extra=None)
         if collect:
             for j, c in enumerate(net._codes):
                 usage[j] += (c.reshape(-1, c.shape[-1]) > 0).sum(axis=0)
+                if i < collect:
+                    Cs = sparse.csr_matrix(c.reshape(-1, c.shape[-1]))
+                    co[j] += (Cs.T @ Cs).toarray(); npos[j] += Cs.shape[0]
         if extra is not None:
             ext.append(extra(net, x, i))
     secs = time.time() - t0
@@ -203,7 +222,9 @@ def evaluate(net: Cortex, probes: Probes, E, X, y, collect: int = 0, extra=None)
                 ov[f"{i}-{j}"] = dict(jaccard_err=float((wi & wj).sum() / max(either, 1)),
                                       oracle=float(1.0 - (wi & wj).mean()))
         out["err_overlap"] = ov
-        out["dict"] = [dict_stats(a, u) for a, u in zip(net.areas, usage)]
+        out["dict"] = [dict_stats(a, u[:a.F]) for a, u in zip(net.areas, usage)]
+        for d, a, S, m in zip(out["dict"], net.areas, co, npos):   # redundancia de la actividad
+            d["code_maxcorr"] = code_maxcorr(S, m, np.asarray(S).diagonal(), a)
     if extra is not None:
         out["extra"] = ext
     return out
@@ -490,13 +511,19 @@ def summarize(tag: str, out: str | None = None):
                              for k in rs[0]["val"]["err_overlap"]}
             row["dict"] = [{k: _ms([r["val"]["dict"][i][k] for r in rs])
                             for k in rs[0]["val"]["dict"][i]} for i in range(depth - 1)]
-        for p in ("noise", "occlude"):
+        for p in ("noise", "occlude", "noise_fb_off", "occlude_fb_off", "clean_fb_off"):
             if all(p in r["perturb"] for r in rs):
                 row[f"{p}_acc"] = _ms([r["perturb"][p]["acc"]["net"] for r in rs])
                 row[f"{p}_probe"] = [_ms([r["perturb"][p]["probe"][i] for r in rs]) for i in range(nL)]
                 if rs[0]["perturb"][p].get("pe"):
                     row[f"{p}_pe"] = [_ms([r["perturb"][p]["pe"][i] for r in rs])
                                       for i in range(depth - 1)]
+        if all("completion" in r["perturb"] for r in rs):
+            row["completion"] = {k: _ms([r["perturb"]["completion"][k] for r in rs])
+                                 for k in rs[0]["perturb"]["completion"] if k != "n"}
+        if rs[0]["test"] and "pe_active_silent" in rs[0]["test"] and rs[0]["test"].get("pe"):
+            row["test_pe_active_silent"] = [[_ms([r["test"]["pe_active_silent"][i][j] for r in rs])
+                                             for j in range(2)] for i in range(depth - 1)]
         # evolución temporal (media entre semillas) de sondas y pe por nivel
         steps = [t["step"] for t in rs[0]["timeline"]]
         row["timeline_steps"] = steps
