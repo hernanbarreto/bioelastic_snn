@@ -225,3 +225,67 @@ def test_blueprint_numbers_are_consistent():
     assert plan(1e-6)["neurons"] == pytest.approx(16e3)
     assert HUMAN["neurons_cortex"] + HUMAN["neurons_cerebellum"] <= HUMAN["neurons_total"]
     assert BRAIN_SIM_REFERENCE["neurons"] / HUMAN["neurons_total"] == pytest.approx(0.02, abs=0.001)
+
+
+# ---------------------------------------------------------------- homeostasis de las salidas
+class _CortexHomeostaticoRonda1(Cortex):
+    """Copia de la subclase de experiments/exp_integration.py (ronda 1 de integración),
+    para comprobar que la opción `homeostasis` de Cortex hace exactamente lo mismo."""
+
+    def __init__(self, *args, homeostasis: float = 0.02, **kw):
+        super().__init__(*args, **kw)
+        self.h = float(homeostasis)
+        self.umbral = np.zeros(self.C, dtype=np.float32)
+
+    def forward(self, x, explore: bool = False) -> int:
+        super().forward(x)
+        self._V = self._V - self.umbral
+        self.pred = int(self.rng.choice(self.C, p=self._p())) if explore else int(np.argmax(self._V))
+        return self.pred
+
+    predict = forward
+
+    def _adaptar(self):
+        self.umbral -= np.float32(self.h / self.C)
+        self.umbral[self.pred] += np.float32(self.h)
+
+    def reinforce(self, reward: float):
+        self._adaptar()
+        super().reinforce(reward)
+
+    def teach(self, target: int):
+        self._adaptar()
+        super().teach(target)
+
+
+def test_output_homeostasis_option_equals_the_round1_subclass_and_is_saved(tmp_path):
+    kw = dict(areas=[dict(rf=3, pool=2, max_features=16, theta=0.8)], heads=[dict(source="input")],
+              projection=dict(source="all"), replay=0.5, joint=False, seed=3)
+    a = Cortex((8, 8, 1), 4, homeostasis=0.05, **kw)
+    b = _CortexHomeostaticoRonda1((8, 8, 1), 4, homeostasis=0.05, **kw)
+    rng = np.random.default_rng(9)
+    for i in range(400):
+        c = int(rng.integers(4)); x = _blob(rng, c)
+        pa, pb = a.forward(x, explore=True), b.forward(x, explore=True)
+        assert pa == pb
+        if i % 2:
+            a.reinforce(1.0 if pa == c else -1.0); b.reinforce(1.0 if pb == c else -1.0)
+        else:
+            a.teach(c); b.teach(c)
+    assert np.array_equal(a.umbral, b.umbral) and np.abs(a.umbral).sum() > 0
+    assert abs(float(a.umbral.sum())) < 1e-4                  # suma cero
+    assert np.array_equal(a.proj.W, b.proj.W)
+    a.save(tmp_path / "h.npz")
+    twin = Cortex.load(tmp_path / "h.npz")
+    assert twin.homeostasis == 0.05 and np.array_equal(twin.umbral, a.umbral)
+    X = [_blob(rng, int(c)) for c in rng.integers(4, size=50)]
+    assert [twin.predict(x) for x in X] == [a.predict(x) for x in X]
+
+
+def test_output_homeostasis_is_off_by_default():
+    net = Cortex((8, 8, 1), 4, heads=[dict(source="input")])
+    assert net.homeostasis == 0.0 and "homeostasis" not in net._config
+    rng = np.random.default_rng(0)
+    for _ in range(50):
+        c = int(rng.integers(4)); net.step(_blob(rng, c), c)
+    assert not net.umbral.any()
