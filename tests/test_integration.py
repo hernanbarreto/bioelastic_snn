@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
+import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "experiments"))
 
@@ -163,3 +164,67 @@ def test_homeostasis_de_salida_evita_que_un_simbolo_acapare_las_decisiones():
         return len(elegidos)
     assert usados(0.0) == 1
     assert usados(0.05) >= 5
+
+
+# ---------------------------------------------------------------- ronda 2 (exp_integration2.py)
+import exp_integration2 as e2  # noqa: E402
+
+
+class _VeMalEl3:
+    """Percepción que confunde el 3 con el 8, con el 3 como segunda opción; anota lo que se
+    le enseña."""
+    k = 2
+
+    def __init__(self):
+        self.ensenado = []
+
+    def ver(self, img, d, explore):
+        return (8, 0.4, [3]) if int(d) == 3 else (int(d), 0.99, [(int(d) + 1) % 10])
+
+    def ensenar(self, img, sym):
+        self.ensenado.append(int(sym))
+
+
+def test_percepcion_pasa_certeza_y_alternativas_y_aprende_lo_que_se_le_ensena():
+    datos = _sinteticos(20)
+    v = ei.Vista(0, "depth1")
+    v.entrenar(datos.X["pre"], datos.y["pre"])
+    for certeza in ("p", "pcos"):
+        per = e2.Percepcion(v, k=3, certeza=certeza)
+        img = datos.X["test"][0]
+        s, c, alts = per.ver(img, -1, False)
+        assert s == v.simbolo(img) and 0.0 <= c <= 1.0 and len(alts) == 2 and s not in alts
+    otro = (s + 1) % 10
+    for _ in range(10):
+        per.ensenar(img, otro)
+    assert v.simbolo(img) == otro and per.ensenadas == 10
+    tau = per.umbral(datos.X["test"][:40], 0.2)
+    cs = [per.ver(x, -1, False)[1] for x in datos.X["test"][:40]]
+    assert abs(np.mean(np.array(cs) < tau) - 0.2) <= 0.05
+
+
+def test_el_credito_simbolico_le_ensena_a_la_percepcion_el_digito_que_confundio():
+    """Thinker que ya sabe (a + b) mod 10 y una percepción que confunde el 3 con el 8: cada
+    error se explica por una sola ranura y la percepción recibe el 3 (nunca otra cosa)."""
+    datos = _sinteticos(4)
+    rng = np.random.default_rng(0)
+    th = Thinker(20, seed=0)
+    for _ in range(600):
+        e2.episodio_escalera("L1", th, e2.Oraculo(), datos, "train", rng, True, dict(cred=False), {})
+    per = _VeMalEl3(); st = {}
+    for _ in range(200):
+        e2.episodio_escalera("L1", th, per, datos, "train", rng, True, dict(cred=True), st)
+    assert st["creditos"] >= 10 and st["creditos_bien"] == st["creditos"]
+    assert set(per.ensenado) == {3}
+
+
+def test_digitos_tipograficos_tienen_el_formato_de_mnist():
+    tipo = e2.digitos_tipograficos(3, 0)
+    if tipo is None:
+        pytest.skip("no hay tipografías instaladas")
+    X, y = tipo
+    assert X.shape == (30, 28, 28) and X.dtype == np.uint8 and np.bincount(y).tolist() == [3] * 10
+    from scipy import ndimage
+    cy, cx = ndimage.center_of_mass(X.astype(np.float64).sum(0))
+    assert abs(cy - 14) < 2 and abs(cx - 14) < 2
+    assert (X[:, :2].max() == 0) and (X[:, :, :2].max() == 0)      # margen de MNIST

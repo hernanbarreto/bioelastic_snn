@@ -1,0 +1,47 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+conjunta,L0 cred2+H,0,curva columna ep=1000,0.4460,0.1000,azar
+conjunta,L0 cred2+H,0,curva pureza ep=1000,0.7520,0.1000,símbolos usados=10
+conjunta,L0 cred2+H,0,curva columna ep=2000,0.7720,0.1000,azar
+conjunta,L0 cred2+H,0,curva pureza ep=2000,0.7680,0.1000,símbolos usados=10
+conjunta,L0 cred2+H,0,curva columna ep=3000,0.8410,0.1000,azar
+conjunta,L0 cred2+H,0,curva pureza ep=3000,0.9000,0.1000,símbolos usados=10
+conjunta,L0 cred2+H,0,curva columna ep=4000,0.8890,0.1000,azar
+conjunta,L0 cred2+H,0,curva pureza ep=4000,0.9360,0.1000,símbolos usados=10
+conjunta,L0 cred2+H,0,pureza percepción (test),0.9255,0.1000,azar
+conjunta,L0 cred2+H,0,símbolos distintos usados,10,10,
+conjunta,L0 cred2+H,0,créditos a la percepción,299,,
+conjunta,L0 cred2+H,0,precisión del crédito (código final),0.9933,0.1000,símbolo enseñado == símbolo final del dígito real
+conjunta,L0 cred2+H,0,"precisión del crédito, 2.a mitad",1.0000,0.1000,
+conjunta,L0 cred2+H,0,acierto tarea (test),0.9380,0.9255,pureza^1 (cota si el Thinker fuera perfecto)
+conjunta,L0 cred2+H,0,segundos,34.0000,,
+conjunta,L1 cred2+H,0,curva columna ep=1000,0.1920,0.1000,azar
+conjunta,L1 cred2+H,0,curva pureza ep=1000,0.5340,0.1000,símbolos usados=10
+conjunta,L1 cred2+H,0,curva columna ep=2000,0.4420,0.1000,azar
+conjunta,L1 cred2+H,0,curva pureza ep=2000,0.6400,0.1000,símbolos usados=10
+conjunta,L1 cred2+H,0,curva columna ep=3000,0.5750,0.1000,azar
+conjunta,L1 cred2+H,0,curva pureza ep=3000,0.6940,0.1000,símbolos usados=10
+conjunta,L1 cred2+H,0,curva columna ep=4000,0.6820,0.1000,azar
+conjunta,L1 cred2+H,0,curva pureza ep=4000,0.7900,0.1000,símbolos usados=10
+conjunta,L1 cred2+H,0,pureza percepción (test),0.7930,0.1000,azar
+conjunta,L1 cred2+H,0,símbolos distintos usados,10,10,
+conjunta,L1 cred2+H,0,créditos a la percepción,277,,
+conjunta,L1 cred2+H,0,precisión del crédito (código final),0.7545,0.1000,símbolo enseñado == símbolo final del dígito real
+conjunta,L1 cred2+H,0,"precisión del crédito, 2.a mitad",0.8058,0.1000,
+conjunta,L1 cred2+H,0,acierto tarea (test),0.7040,0.7930,pureza^1 (cota si el Thinker fuera perfecto)
+conjunta,L1 cred2+H,0,segundos,37.7000,,
+conjunta,L2 cred2+H,0,curva columna ep=1000,0.0930,0.1000,azar
+conjunta,L2 cred2+H,0,curva pureza ep=1000,0.4160,0.1000,símbolos usados=10
+conjunta,L2 cred2+H,0,curva columna ep=2000,0.1670,0.1000,azar
+conjunta,L2 cred2+H,0,curva pureza ep=2000,0.5300,0.1000,símbolos usados=10
+conjunta,L2 cred2+H,0,curva columna ep=3000,0.2280,0.1000,azar
+conjunta,L2 cred2+H,0,curva pureza ep=3000,0.6360,0.1000,símbolos usados=10
+conjunta,L2 cred2+H,0,curva columna ep=4000,0.2850,0.1000,azar
+conjunta,L2 cred2+H,0,curva pureza ep=4000,0.7180,0.1000,símbolos usados=10
+conjunta,L2 cred2+H,0,pureza percepción (test),0.7335,0.1000,azar
+conjunta,L2 cred2+H,0,símbolos distintos usados,10,10,
+conjunta,L2 cred2+H,0,créditos a la percepción,222,,
+conjunta,L2 cred2+H,0,precisión del crédito (código final),0.5270,0.1000,símbolo enseñado == símbolo final del dígito real
+conjunta,L2 cred2+H,0,"precisión del crédito, 2.a mitad",0.6306,0.1000,
+conjunta,L2 cred2+H,0,acierto tarea (test),0.3720,0.5380,pureza^2 (cota si el Thinker fuera perfecto)
+conjunta,L2 cred2+H,0,segundos,73.3000,,
+escalera,total,0,segundos,145.2000,,

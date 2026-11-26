@@ -1,0 +1,68 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+ligadura,oraculo,2,acierto ligadas,1.0000,0.1000,azar
+ligadura,oraculo,2,acierto no ligadas,1.0000,0.1000,azar
+ligadura,vista débil,2,exactitud imagen (test),0.8806,,"depth1, 1000 etiquetas"
+ligadura,base,2,vista débil después (test),0.8806,0.8806,antes
+ligadura,base,2,abstenciones,0,,umbral 0.000
+ligadura,base,2,créditos a la percepción,0,,
+ligadura,base,2,acierto ligadas,0.6780,0.6829,p^3*oráculo (p después)
+ligadura,base,2,acierto ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,base,2,fracción COPIAR ligadas,0.7720,,
+ligadura,base,2,acierto no ligadas,0.8440,0.8806,p^1*oráculo (p después)
+ligadura,base,2,acierto no ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,base,2,fracción COPIAR no ligadas,0.1000,,
+ligadura,base,2,segundos,14.1000,,
+ligadura,conf,2,vista débil después (test),0.8806,0.8806,antes
+ligadura,conf,2,abstenciones,1187,,umbral 0.685
+ligadura,conf,2,créditos a la percepción,0,,
+ligadura,conf,2,acierto ligadas,0.7000,0.6829,p^3*oráculo (p después)
+ligadura,conf,2,acierto ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,conf,2,fracción COPIAR ligadas,0.8340,,
+ligadura,conf,2,acierto no ligadas,0.7720,0.8806,p^1*oráculo (p después)
+ligadura,conf,2,acierto no ligadas | imágenes bien,0.9103,1.0000,oráculo
+ligadura,conf,2,fracción COPIAR no ligadas,0.0860,,
+ligadura,conf,2,segundos,14.3000,,
+ligadura,confcos,2,vista débil después (test),0.8806,0.8806,antes
+ligadura,confcos,2,abstenciones,1431,,umbral 0.217
+ligadura,confcos,2,créditos a la percepción,0,,
+ligadura,confcos,2,acierto ligadas,0.7200,0.6829,p^3*oráculo (p después)
+ligadura,confcos,2,acierto ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,confcos,2,fracción COPIAR ligadas,0.8280,,
+ligadura,confcos,2,acierto no ligadas,0.8300,0.8806,p^1*oráculo (p después)
+ligadura,confcos,2,acierto no ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,confcos,2,fracción COPIAR no ligadas,0.1100,,
+ligadura,confcos,2,segundos,13.0000,,
+ligadura,cred,2,vista débil después (test),0.8168,0.8806,antes
+ligadura,cred,2,abstenciones,0,,umbral 0.000
+ligadura,cred,2,créditos a la percepción,294,,
+ligadura,cred,2,precisión del crédito,0.5170,,
+ligadura,cred,2,acierto ligadas,0.5540,0.5449,p^3*oráculo (p después)
+ligadura,cred,2,acierto ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,cred,2,fracción COPIAR ligadas,0.6620,,
+ligadura,cred,2,acierto no ligadas,0.7660,0.8168,p^1*oráculo (p después)
+ligadura,cred,2,acierto no ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,cred,2,fracción COPIAR no ligadas,0.1240,,
+ligadura,cred,2,segundos,31.6000,,
+ligadura,cred2,2,vista débil después (test),0.8674,0.8806,antes
+ligadura,cred2,2,abstenciones,0,,umbral 0.000
+ligadura,cred2,2,créditos a la percepción,635,,
+ligadura,cred2,2,precisión del crédito,0.8441,,
+ligadura,cred2,2,acierto ligadas,0.7000,0.6526,p^3*oráculo (p después)
+ligadura,cred2,2,acierto ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,cred2,2,fracción COPIAR ligadas,0.8240,,
+ligadura,cred2,2,acierto no ligadas,0.8080,0.8674,p^1*oráculo (p después)
+ligadura,cred2,2,acierto no ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,cred2,2,fracción COPIAR no ligadas,0.1200,,
+ligadura,cred2,2,segundos,21.0000,,
+ligadura,confcos+cred2,2,vista débil después (test),0.8892,0.8806,antes
+ligadura,confcos+cred2,2,abstenciones,926,,umbral 0.217
+ligadura,confcos+cred2,2,créditos a la percepción,619,,
+ligadura,confcos+cred2,2,precisión del crédito,0.8869,,
+ligadura,confcos+cred2,2,acierto ligadas,0.7040,0.7031,p^3*oráculo (p después)
+ligadura,confcos+cred2,2,acierto ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,confcos+cred2,2,fracción COPIAR ligadas,0.8120,,
+ligadura,confcos+cred2,2,acierto no ligadas,0.8840,0.8892,p^1*oráculo (p después)
+ligadura,confcos+cred2,2,acierto no ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,confcos+cred2,2,fracción COPIAR no ligadas,0.0780,,
+ligadura,confcos+cred2,2,segundos,20.7000,,
+ligadura,total,2,segundos,117.7000,,

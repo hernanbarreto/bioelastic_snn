@@ -24,6 +24,15 @@ log-probabilidades, V = sum_i beta_i log p_i, con pesos que aprenden online del 
 global: d beta_i = arbiter * (log p_i[objetivo] - E_p[log p_i]). Es un control de ganancia
 por vía: un votante que no aporta pierde voz en vez de arrastrar la decisión.
 
+Homeostasis de las salidas (`homeostasis` > 0, opcional; por defecto apagada): cada vez
+que la red aprende de una decisión (`teach` o `reinforce`), el umbral de la salida elegida
+sube `homeostasis` y el de las demás baja homeostasis/C (suma cero), como el `theta_plus`
+de las capas ocultas. Una salida que acapara decisiones se vuelve más difícil de disparar
+y una que nunca gana termina por ganar alguna. Contra el colapso de símbolos cuando la red
+aprende sólo con recompensa (en la integración con el Thinker, desde cero, la pureza de la
+percepción subió de 0.21 a 0.58 y de 0.62 a 0.85 en la identidad, 3 semillas). No cambia
+cómo se reparte el crédito. Con etiquetas no hace falta y no se usa.
+
 Paralelismo (`workers` > 1): las áreas de asociación que leen la entrada cruda no
 dependen de las áreas sensoriales, así que su pase y su aprendizaje corren en otro hilo
 mientras la jerarquía codifica o aprende. Los resultados no cambian: cada hilo toca sólo
@@ -46,7 +55,7 @@ class Cortex:
     def __init__(self, input_shape, n_outputs: int, *, areas=(), heads=({},), projection=None,
                  replay: float = 0.0, rehearse: float = 0.0, replay_focus: str = "uniform",
                  joint: bool = True, temperature: float = 0.25, arbiter: float = 0.0,
-                 seed: int = 0, workers: int = 1):
+                 seed: int = 0, workers: int = 1, homeostasis: float = 0.0):
         self._config = dict(input_shape=input_shape, n_outputs=int(n_outputs),
                             areas=[dict(a) for a in areas], heads=[],
                             projection=projection, replay=float(replay),
@@ -57,6 +66,9 @@ class Cortex:
         self.beta = None                                      # pesos del árbitro (uno por votante)
         self._L = None
         self._zs = []
+        self.homeostasis = float(homeostasis)
+        if self.homeostasis > 0.0:
+            self._config["homeostasis"] = self.homeostasis
         self.is_sheet = not np.isscalar(input_shape)
         self.input_shape = tuple(int(v) for v in input_shape) if self.is_sheet else int(input_shape)
         self.C = int(n_outputs)
@@ -91,6 +103,7 @@ class Cortex:
             self.proj = Readout(self.C, capacity=n_in, **{"consolidation": 0.0, "lr": 0.5, **spec})
             self.proj.n = n_in
         self._V = None; self.pred = 0; self._pv = None
+        self.umbral = np.zeros(self.C, dtype=np.float32)          # homeostasis de las salidas
         self.workers = int(workers)    # hilos (no es parte del modelo: no se guarda)
         self._pool = None
 
@@ -215,6 +228,8 @@ class Cortex:
             V = np.zeros(self.C, dtype=np.float32)
             for z, _ in votes:                                # mismo orden de suma
                 V = V + z
+        if self.homeostasis > 0.0:
+            V = V - self.umbral
         self._V = V
         if explore:
             self.pred = int(self.rng.choice(self.C, p=self._p()))
@@ -260,7 +275,14 @@ class Cortex:
             job.result()
         return par
 
+    def _adapt_thresholds(self):
+        """Homeostasis de las salidas: sube el umbral de la elegida, baja el de las demás."""
+        if self.homeostasis > 0.0:
+            self.umbral -= np.float32(self.homeostasis / self.C)
+            self.umbral[self.pred] += np.float32(self.homeostasis)
+
     def teach(self, target: int):
+        self._adapt_thresholds()
         p = self._p()                                         # no depende del aprendizaje de las áreas
         arb = self._arbitrated()
         if arb:                                               # el árbitro aprende del error global
@@ -377,6 +399,7 @@ class Cortex:
         self.rehearsals += 1
 
     def reinforce(self, reward: float):
+        self._adapt_thresholds()
         p = self._p()
         one = lambda i: self.heads[i].reinforce(reward, pred=self.pred, p=p)
         done = self._learn_areas_and(one)
@@ -458,6 +481,8 @@ class Cortex:
                        proj_baseline=np.float64(self.proj.baseline))
         if self.beta is not None:
             out["beta"] = self.beta
+        if self.homeostasis > 0.0:
+            out["umbral"] = self.umbral
         np.savez_compressed(path, **out)
 
     @classmethod
@@ -481,4 +506,6 @@ class Cortex:
             net.replays = int(z["meta"][0])
             if "beta" in z.files:
                 net.beta = z["beta"].copy()
+            if "umbral" in z.files:
+                net.umbral[:] = z["umbral"]
         return net

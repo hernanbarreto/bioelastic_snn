@@ -1,0 +1,30 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+acarreo,R=1 cero,0,exacta n=1,0.9260,0.0100,azar
+acarreo,R=1 cero,0,columna n=1,1.0000,0.1000,azar
+acarreo,R=1 cero,0,exacta n=3,0.8580,0.0001,azar
+acarreo,R=1 cero,0,columna n=3,0.9587,0.1000,azar
+acarreo,R=1 cero,0,exacta n=8,0.7340,0.0000,azar
+acarreo,R=1 cero,0,columna n=8,0.9660,0.1000,azar
+acarreo,R=1 cero,0,segundos,27.6000,,
+acarreo,R=1 escrito,0,exacta n=1,0.9940,0.0100,azar
+acarreo,R=1 escrito,0,columna n=1,1.0000,0.1000,azar
+acarreo,R=1 escrito,0,exacta n=3,0.9760,0.0001,azar
+acarreo,R=1 escrito,0,columna n=3,0.9933,0.1000,azar
+acarreo,R=1 escrito,0,exacta n=8,0.9520,0.0000,azar
+acarreo,R=1 escrito,0,columna n=8,0.9940,0.1000,azar
+acarreo,R=1 escrito,0,segundos,23.0000,,
+acarreo,R=2 cero,0,exacta n=1,0.9940,0.0100,azar
+acarreo,R=2 cero,0,columna n=1,1.0000,0.1000,azar
+acarreo,R=2 cero,0,exacta n=3,0.9680,0.0001,azar
+acarreo,R=2 cero,0,columna n=3,0.9900,0.1000,azar
+acarreo,R=2 cero,0,exacta n=8,0.9140,0.0000,azar
+acarreo,R=2 cero,0,columna n=8,0.9890,0.1000,azar
+acarreo,R=2 cero,0,segundos,22.8000,,
+acarreo,R=2 escrito,0,exacta n=1,0.9180,0.0100,azar
+acarreo,R=2 escrito,0,columna n=1,1.0000,0.1000,azar
+acarreo,R=2 escrito,0,exacta n=3,0.8140,0.0001,azar
+acarreo,R=2 escrito,0,columna n=3,0.9467,0.1000,azar
+acarreo,R=2 escrito,0,exacta n=8,0.5860,0.0000,azar
+acarreo,R=2 escrito,0,columna n=8,0.9400,0.1000,azar
+acarreo,R=2 escrito,0,segundos,15.3000,,
+acarreo,total,0,segundos,89.1000,,
