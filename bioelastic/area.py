@@ -30,6 +30,25 @@ ganadora del pooling, modulador = error local). El error nunca cruza de un área
 (no hay backprop entre áreas; es el esquema de clasificadores locales de Nøkland y
 Eidnes 2019 y Mostafa et al. 2018). Con `feedback="random"` el lector local es fijo y
 aleatorio y no aprende.
+
+Predicción descendente (opcional, `predictive=dict(...)`; apagada por defecto): el área
+aprende pesos generativos G (uno por rasgo, con la forma de su campo receptivo) que predicen
+su lámina de entrada a partir de su propio código, como en la codificación predictiva de Rao y
+Ballard (1999). Cada célula compleja activa proyecta c * G_f sobre el parche de la célula
+simple que ganó su pooling (los "switches" del pooling); las predicciones se suman. El residuo
+R = entrada - predicción lo calcula la lámina inferior, y G aprende con la regla delta sobre
+ese residuo (presináptico = célula compleja de arriba, postsináptico = residuo de la unidad de
+abajo): dG_f = lr * sum_q c_q R_q / max(sum_q c_q^2, 1). `pe` es la fracción de la energía
+de la entrada que la predicción no explica.
+
+Plasticidad dirigida por el error de predicción (opcional, dentro de `predictive`):
+  modulate  exponente b: la tasa del diccionario (STDP y error local) se multiplica por
+            g = clip((s / s_media)^b, gain_min, gain_max), donde s es la sorpresa (por defecto
+            `pe` del área) y s_media su media móvil (constante `tau`). Mucho error: más
+            aprendizaje; poco error: estabilidad.
+  neuro     exponente de la misma ganancia sobre la neurogénesis: el número de rasgos que
+            pueden nacer en el paso es recruit_per_step * g (con acarreo), y los candidatos se
+            ordenan por la energía del residuo en su parche en vez de por la del parche.
 """
 from __future__ import annotations
 
@@ -58,7 +77,8 @@ class FeatureArea:
                  lr_min: float = 0.002, lr_half: float = 20.0, min_energy: float = 0.2,
                  recruit_per_step: int = 2, probation: int = 2000, survival_hits: int = 5,
                  maintain_every: int = 500, neurogenesis: bool = True,
-                 local: dict | None = None, n_classes: int = 0, seed: int = 0):
+                 local: dict | None = None, n_classes: int = 0, seed: int = 0,
+                 predictive: dict | None = None):
         H, W, C = (int(v) for v in in_shape)
         self.in_shape = (H, W, C)
         self.rf = _pair(rf); self.stride = _pair(stride); self.pool = _pair(pool)
@@ -118,6 +138,23 @@ class FeatureArea:
                 raise ValueError(f"feedback desconocido: {spec['feedback']}")
         self.local_hits = 0; self.local_seen = 0
 
+        # predicción descendente: pesos generativos del área sobre su entrada
+        self.pc = None
+        self._x = None; self._pred = None; self._pinfo = None
+        self.pe = float("nan"); self.gain = 1.0; self.pe_parts = (float("nan"), float("nan"))
+        if predictive:
+            spec = dict(lr=0.1, init=0.0, modulate=0.0, neuro=0.0, tau=500.0, warmup=100,
+                        gain_min=0.25, gain_max=4.0)
+            unknown = set(predictive) - set(spec)
+            if unknown:
+                raise ValueError(f"opciones de `predictive` desconocidas: {sorted(unknown)}")
+            spec.update(predictive)
+            self.pc = spec
+            self.G = np.zeros((self.F, self.D), dtype=np.float32)
+            self.sur_avg = 0.0; self.sur_n = 0               # media móvil de la sorpresa
+            self.gain_avg = 1.0; self._rdebt = 0.0
+            self.pred_macs = 0
+
     # ------------------------------------------------------------------ pase
     def encode(self, X: np.ndarray) -> np.ndarray:
         """Lámina de entrada (H, W, C) -> código disperso (ph, pw, F).
@@ -166,7 +203,7 @@ class FeatureArea:
             else:
                 sheet = out
             ph, pw = self.ph, self.pw; a, b = self.pool
-            if self.local is None:
+            if self.local is None and self.pc is None:
                 o = sheet.reshape(self.oh, self.ow, n)[:ph * a, :pw * b].reshape(ph, a, pw * b * n)
                 code[:, :, :n] = o.max(axis=1).reshape(ph, pw, b, n).max(axis=2)   # células complejas
             else:                                                 # se recuerda qué célula simple ganó
@@ -175,6 +212,9 @@ class FeatureArea:
                 arg = o.argmax(axis=1)                            # (ph*pw, n)
                 code[:, :, :n] = np.take_along_axis(o, arg[:, None, :], axis=1).reshape(ph, pw, n)
         self._cache = (Pm, norms, vr, act, arg, code)
+        if self.pc is not None:
+            self._x = np.asarray(X, dtype=np.float32).reshape(H * W, C)
+            self._pred = None
         return code
 
     # ------------------------------------------------------------------ plasticidad
@@ -201,7 +241,7 @@ class FeatureArea:
             h = c[idx]
             self.clf.learn(idx, h / np.float32(np.sqrt(h @ h)), int(target))
 
-    def _learn_local(self, target: int, Pm, norms, act, arg, code, prior=None):
+    def _learn_local(self, target: int, Pm, norms, act, arg, code, prior=None, scale: float = 1.0):
         """Error local de 3 factores: lector propio + rasgos ganadores (ver docstring del módulo).
         `prior`: potenciales de los lectores de las áreas anteriores (error residual)."""
         n = self.n
@@ -231,22 +271,32 @@ class FeatureArea:
         # dW_f = sum_q g (x_q - s_q W_f) = sum_q g x_q - (sum_q g s_q) W_f,  x_q = parche normalizado
         u, gx = _segment_sum(f, Pm[pos], gi / np.maximum(norms[pos], 1e-6))
         gs = np.bincount(np.searchsorted(u, f), weights=gi * s, minlength=len(u)).astype(np.float32)
-        Wn = self.W[u] + np.float32(self.local["lr"]) * (gx - gs[:, None] * self.W[u])
+        lr = np.float32(self.local["lr"]) if scale == 1.0 else np.float32(self.local["lr"] * scale)
+        Wn = self.W[u] + lr * (gx - gs[:, None] * self.W[u])
         self.W[u] = Wn / np.maximum(np.linalg.norm(Wn, axis=1, keepdims=True), 1e-8)
 
-    def learn(self, target: int | None = None, prior: np.ndarray | None = None):
+    def learn(self, target: int | None = None, prior: np.ndarray | None = None,
+              surprise: float | None = None):
         """Actualiza el diccionario con la última lámina vista. Sin `target` (o sin error
         local configurado) el aprendizaje es puramente no supervisado. Con `prior` (sólo si
-        `local["residual"]`), el error local es el de la suma de los lectores hasta esta área."""
+        `local["residual"]`), el error local es el de la suma de los lectores hasta esta área.
+        Si el área es predictiva, también aprenden los pesos generativos y, si se configuró,
+        la sorpresa (`surprise`, por defecto el `pe` propio) modula la plasticidad."""
         if not self.plastic or self._cache is None:
             return
+        g = gn = 1.0
+        if self.pc is not None:
+            if self._pred is None:
+                self.prediction_error()
+            self._learn_generative()
+            g, gn = self._surprise_gain(self.pe if surprise is None else surprise)
         Pm, norms, vr, act, arg, code = self._cache
         self._cache = None
         if target is not None and self.local is not None and act is not None:
             act_full = np.zeros((len(norms), act.shape[1]), dtype=np.float32)
             act_full[vr] = act                                    # potencial por posición (inválidas: 0)
             self._learn_local(int(target), Pm, norms, act_full, arg, code,
-                              prior if self.local.get("residual") else None)
+                              prior if self.local.get("residual") else None, scale=g)
         self.t += 1
         n = self.n
         if act is not None:
@@ -263,15 +313,26 @@ class FeatureArea:
             np.add.at(M, inv, Pm[sel] / norms[sel, None])         # mismo orden de suma que antes
             cnt = np.bincount(inv, minlength=len(u))
             eta = np.maximum(self.lr_min, self.lr / (1.0 + self.wins[u] / self.lr_half)).astype(np.float32)
+            if g != 1.0:                                          # plasticidad dirigida por la sorpresa
+                eta = np.minimum(eta * np.float32(g), np.float32(1.0))
             Wn = (1.0 - eta)[:, None] * self.W[u] + eta[:, None] * (M / cnt[:, None])
             self.W[u] = Wn / np.maximum(np.linalg.norm(Wn, axis=1, keepdims=True), 1e-8)
             self.wins[u] += 1
         nov = vr[bc < self.theta]
         if len(nov):                                              # neurogénesis por novedad
-            nov = nov[np.argsort(-norms[nov])][:16]               # primero los parches con más energía
+            limit = self.recruit_per_step
+            if self.pc is not None and self.pc["neuro"] > 0.0 and self._pred is not None:
+                rps = float(self.recruit_per_step)                # cupo modulado por la sorpresa
+                self._rdebt = min(self._rdebt + rps * gn, rps * float(self.pc["gain_max"]))
+                limit = int(self._rdebt); self._rdebt -= limit
+                Rn = self._pred[2][self._gather[nov]].reshape(len(nov), self.D)
+                energy = np.einsum("pd,pd->p", Rn, Rn)
+                nov = nov[np.argsort(-energy)][:16]               # primero lo que la predicción no explica
+            else:
+                nov = nov[np.argsort(-norms[nov])][:16]           # primero los parches con más energía
             fresh = []
             for c in nov:
-                if len(fresh) >= self.recruit_per_step:
+                if len(fresh) >= limit:
                     break
                 p = Pm[c] / norms[c]
                 if fresh and float((self.W[fresh] @ p).max()) >= self.theta:
@@ -280,11 +341,101 @@ class FeatureArea:
                 if f < 0:
                     break
                 self.W[f] = p; self.alive[f] = True
+                if self.pc is not None:                           # predice el parche que lo creó
+                    self.G[f] = np.float32(self.pc["init"]) * Pm[c]
                 self.wins[f] = 0; self.born[f] = self.t
                 self.created += 1
                 fresh.append(f)
         if self.maintain_every and self.t % self.maintain_every == 0:
             self.maintain()
+
+    # ------------------------------------------------------------------ predicción descendente
+    def predict(self) -> np.ndarray | None:
+        """Predicción de la lámina de entrada (H, W, C) a partir del último código: cada
+        célula compleja activa proyecta c * G_f sobre el parche de la célula simple que ganó
+        su pooling. None si el área no es predictiva o no hay código."""
+        if self.pc is None or self._cache is None:
+            return None
+        H, W, C = self.in_shape
+        Q = np.zeros((H * W, C), dtype=np.float32)
+        arg, code = self._cache[4], self._cache[5]
+        n = self.n
+        self._pinfo = None; self.pred_macs = 0
+        if n == 0 or arg is None:
+            return Q.reshape(H, W, C)
+        c = code[:, :, :n].reshape(-1)
+        act = np.flatnonzero(c)
+        if len(act) == 0:
+            return Q.reshape(H, W, C)
+        q, f = np.divmod(act, n)
+        pos = self._pool_pos[q, arg[q, f]]                        # célula simple ganadora
+        cv = c[act]
+        vals = (cv[:, None] * self.G[f]).reshape(-1, C)           # (activas * rf_h * rf_w, C)
+        u, s = _segment_sum(self._gather[pos].ravel(), vals)
+        Q[u] = s
+        self._pinfo = (f, pos, cv)
+        self.pred_macs = len(act) * self.D
+        return Q.reshape(H, W, C)
+
+    def prediction_error(self, target: np.ndarray | None = None) -> float:
+        """Residuo de la entrada contra la predicción del área. `target`: la lámina que se
+        quiere predecir (por defecto, la última que codificó el área). Devuelve `pe`, la
+        fracción de la energía de la entrada que la predicción no explica."""
+        if self.pc is None or self._cache is None:
+            return float("nan")
+        C = self.in_shape[2]
+        Q = self.predict().reshape(-1, C)
+        T = self._x if target is None else np.asarray(target, dtype=np.float32).reshape(-1, C)
+        R = T - Q
+        e = float(np.einsum("ij,ij->", T, T))
+        R2 = R * R
+        self.pe = float(R2.sum()) / e if e > 1e-12 else 0.0
+        miss = float(R2[T > 0].sum()) / e if e > 1e-12 else 0.0
+        self.pe_parts = (miss, self.pe - miss)                    # en unidades activas / silenciosas
+        self._pred = (T, Q, R)
+        return self.pe
+
+    def _learn_generative(self):
+        """Regla delta normalizada sobre el residuo: cada rasgo activo mueve su predicción
+        hacia lo que faltó (o sobró) en el parche donde se activó,
+            dG_f = lr / n_f * sum_q c_q R_q / cov,
+        con cov(u) = sum de c^2 de las células que predicen la unidad u (las predicciones se
+        solapan) y n_f las veces que el rasgo f está activo (el diccionario se comparte entre
+        posiciones). Así un paso corrige la fracción `lr` del residuo sin importar cuántas
+        predicciones se sumen en cada unidad (estable para lr < 1)."""
+        lr = float(self.pc["lr"])
+        if lr <= 0.0 or self._pinfo is None or self._pred is None:
+            return
+        f, pos, cv = self._pinfo
+        R = self._pred[2]
+        H, W, C = self.in_shape
+        rows = self._gather[pos]                                  # (activas, rf_h * rf_w)
+        cov = np.bincount(rows.ravel(), weights=np.repeat(cv * cv, rows.shape[1]),
+                          minlength=H * W).astype(np.float32)
+        Rn = (R[rows] / np.maximum(cov[rows], np.float32(0.05))[:, :, None]).reshape(len(f), self.D)
+        u, s = _segment_sum(f, Rn, cv)
+        nf = np.bincount(np.searchsorted(u, f), minlength=len(u)).astype(np.float32)
+        self.G[u] += (np.float32(lr) / nf)[:, None] * s
+
+    def _surprise_gain(self, s) -> tuple[float, float]:
+        """Ganancias de plasticidad y de neurogénesis: (s / media)^b, acotadas. Durante el
+        calentamiento (sin media confiable) valen 1."""
+        pc = self.pc
+        if s is None or not np.isfinite(s):
+            return 1.0, 1.0
+        g = gn = 1.0
+        if self.sur_n >= pc["warmup"] and self.sur_avg > 0.0:
+            r = max(float(s), 0.0) / self.sur_avg
+            lo, hi = float(pc["gain_min"]), float(pc["gain_max"])
+            if pc["modulate"] > 0.0:
+                g = float(np.clip(r ** float(pc["modulate"]), lo, hi))
+            if pc["neuro"] > 0.0:
+                gn = float(np.clip(r ** float(pc["neuro"]), lo, hi))
+        self.sur_n += 1
+        self.sur_avg += (float(s) - self.sur_avg) / min(self.sur_n, float(pc["tau"]))
+        self.gain = g
+        self.gain_avg += 0.01 * (g - self.gain_avg)
+        return g, gn
 
     def _new_slot(self) -> int:
         if not self.neurogenesis:
@@ -308,6 +459,8 @@ class FeatureArea:
         for f in dead:
             self.alive[f] = False
             self.W[f] = 0.0
+            if self.pc is not None:
+                self.G[f] = 0.0
             self.free.append(int(f))
         self.pruned += len(dead)
         return len(dead)
@@ -316,6 +469,8 @@ class FeatureArea:
         """El canal de entrada f cambió de significado: se cortan sus sinapsis."""
         C = self.in_shape[2]
         self.W[:, f::C] = 0.0
+        if self.pc is not None:                                   # y su predicción de ese canal
+            self.G[:, f::C] = 0.0
 
     # ------------------------------------------------------------------ estado
     def stats(self) -> dict:
@@ -329,8 +484,13 @@ class FeatureArea:
         se guardan F x D sinapsis pero se evalúan P x F x D (una por posición)."""
         n = self.n
         P = self.oh * self.ow
-        return dict(stored_synapses=int(self.alive.sum()) * self.D, macs=P * n * self.D,
-                    memory_bytes=self.W.nbytes + self.alive.nbytes + self.wins.nbytes + self.born.nbytes)
+        out = dict(stored_synapses=int(self.alive.sum()) * self.D, macs=P * n * self.D,
+                   memory_bytes=self.W.nbytes + self.alive.nbytes + self.wins.nbytes + self.born.nbytes)
+        if self.pc is not None:                                   # pesos generativos y última predicción
+            out["stored_synapses"] *= 2
+            out["memory_bytes"] += self.G.nbytes
+            out["pred_macs"] = int(self.pred_macs)
+        return out
 
     def state(self) -> dict:
         out = dict(W=self.W, alive=self.alive, wins=self.wins, born=self.born,
@@ -338,6 +498,9 @@ class FeatureArea:
                    meta=np.array([self.n, self.t, self.created, self.pruned], dtype=np.int64))
         if self.local is not None:
             out["clf"] = self.clf.W
+        if self.pc is not None:
+            out["G"] = self.G
+            out["pcstat"] = np.array([self.sur_avg, self.sur_n, self.gain_avg, self._rdebt], dtype=np.float64)
         return out
 
     def restore(self, z, prefix: str = ""):
@@ -347,3 +510,7 @@ class FeatureArea:
         self.n, self.t, self.created, self.pruned = (int(v) for v in z[prefix + "meta"])
         if self.local is not None and prefix + "clf" in z:
             self.clf.W[:] = z[prefix + "clf"]
+        if self.pc is not None and prefix + "G" in z:
+            self.G[:] = z[prefix + "G"]
+            a, n, g, d = (float(v) for v in z[prefix + "pcstat"])
+            self.sur_avg, self.sur_n, self.gain_avg, self._rdebt = a, int(n), g, d

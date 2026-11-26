@@ -155,6 +155,7 @@ def evaluate(net: Cortex, probes: Probes, E, X, y, collect: int = 0, extra=None)
     nL = len(net.areas) + 1
     hits = {"net": 0}
     phits = np.zeros(nL); dens = np.zeros(nL); pe = np.zeros(len(net.areas))
+    pe_parts = np.zeros((len(net.areas), 2))
     correct = np.zeros((len(y), nL), dtype=bool)
     rows = [[] for _ in range(nL)]
     usage = [np.zeros(a.F) for a in net.areas]
@@ -172,6 +173,8 @@ def evaluate(net: Cortex, probes: Probes, E, X, y, collect: int = 0, extra=None)
         for j, L in enumerate(lv):
             dens[j] += np.count_nonzero(L) / L.size
         pe += np.nan_to_num(area_pe(net))
+        pe_parts += np.nan_to_num(np.array([getattr(a, "pe_parts", (np.nan, np.nan)) for a in net.areas],
+                                           dtype=float).reshape(-1, 2))
         if i < collect:
             for j, L in enumerate(lv):
                 idx, h = unit_sparse_vec(L)
@@ -185,7 +188,9 @@ def evaluate(net: Cortex, probes: Probes, E, X, y, collect: int = 0, extra=None)
     n = len(y)
     out = dict(acc={k: v / n for k, v in hits.items()},
                probe=(correct.mean(axis=0)).tolist(), density=(dens / n).tolist(),
-               pe=(pe / n).tolist() if any(a.__dict__.get("pc") for a in net.areas) else [],
+               pe=[float(v) if a.__dict__.get("pc") else float("nan") for v, a in zip(pe / n, net.areas)]
+               if any(a.__dict__.get("pc") for a in net.areas) else [],
+               pe_active_silent=(pe_parts / max(n, 1)).tolist(),
                ms_per_image=1000.0 * secs / max(n, 1))
     if collect:
         M = [sparse.vstack(r).tocsr() for r in rows]
@@ -288,7 +293,8 @@ def run_one(name: str, depth: int, seed: int, n_train: int, n_val: int, n_test: 
                        features=[s["features"] for s in st["areas"]],
                        secs=round(time.time() - t0, 1))
             if any(a.__dict__.get("pc") for a in net.areas):
-                row["pe"] = (w_pe / w_n).tolist()
+                row["pe"] = [float(v) if a.__dict__.get("pc") else float("nan")
+                             for v, a in zip(w_pe / w_n, net.areas)]
                 row["gain"] = [float(getattr(a, "gain_avg", np.nan)) for a in net.areas]
             timeline.append(row)
             print(f"[{tag} {name} d{depth} {cond} s{seed}] {json.dumps(row)}", flush=True)
@@ -445,9 +451,11 @@ def _ms(v):
     return [float(np.mean(v)), float(np.std(v, ddof=1)) if len(v) > 1 else 0.0, len(v)]
 
 
-def summarize(tag: str):
-    """Agrupa las corridas `tag_*` por (datos, profundidad, condición): media, desvío, n."""
-    runs = [json.loads(p.read_text()) for p in sorted(RUNS.glob(f"{tag}_*.json"))]
+def summarize(tag: str, out: str | None = None):
+    """Agrupa las corridas `tag_*` por (datos, profundidad, condición): media, desvío, n.
+    `tag` puede ser una lista separada por comas ("f0,f3"); `out` nombra el resumen."""
+    runs = [json.loads(p.read_text()) for t in tag.split(",") for p in sorted(RUNS.glob(f"{t}_*.json"))]
+    tag = out or tag.replace(",", "_")
     groups = {}
     for r in runs:
         groups.setdefault((r["name"], r["depth"], r["cond"]), []).append(r)
@@ -576,9 +584,10 @@ def main():
     ap.add_argument("--cond", default="ff")
     ap.add_argument("--tag", default="f0")
     ap.add_argument("--skip-existing", action="store_true", help="no repite corridas ya guardadas")
+    ap.add_argument("--out", default="", help="nombre del resumen (summarize)")
     args = ap.parse_args()
     if args.cmd == "summarize":
-        summarize(args.name)
+        summarize(args.name, args.out or None)
         return
     if args.cmd == "summarize_surprise":
         summarize_surprise(args.name)

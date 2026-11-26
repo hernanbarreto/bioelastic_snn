@@ -33,6 +33,29 @@ aprende sólo con recompensa (en la integración con el Thinker, desde cero, la 
 percepción subió de 0.21 a 0.58 y de 0.62 a 0.85 en la identidad, 3 semillas). No cambia
 cómo se reparte el crédito. Con etiquetas no hace falta y no se usa.
 
+Retroalimentación predictiva (opcional; por defecto la vía es sólo hacia adelante): si las
+áreas tienen `predictive` (ver `FeatureArea`), cada una predice su entrada (el código del
+área de abajo, o los píxeles) y aprende de su residuo. `feedback=dict(...)` agrega:
+  iters    bucle de inferencia tipo Rao-Ballard de `iters` iteraciones (0 = un solo pase;
+           la predicción sólo se usa para aprender y medir el error). En cada iteración, con
+           las predicciones de la iteración anterior, las áreas se recalculan de abajo hacia
+           arriba con
+             representación del nivel  r = max(abajo * (1 + gain * Q) + context * Q, 0)
+                                                                   (contexto, se lee)
+             lo que sube al área       u = max(r + up * (r - Q), 0)      (código + residuo)
+           donde Q es la predicción del área de arriba. up = 0: sube el código; up = 1:
+           código + residuo; up grande: casi sólo el residuo (el área es invariante a la
+           escala). context > 0 completa el código de abajo con lo que predice el de arriba;
+           gain > 0 sólo amplifica la actividad de abajo que la de arriba predice (ganancia
+           multiplicativa, no crea actividad donde no la hay).
+  source   qué sorpresa modula la plasticidad de cada área (si su `predictive` lo pide):
+           "input" su propio error (lo que no explica de su entrada), "code" el error con que
+           el área de arriba predice su código (la de más arriba no se modula), "shuffle"
+           control: un error propio pasado elegido al azar (misma distribución, sin relación
+           con la imagen actual).
+Los pesos generativos de cada área aprenden a predecir la entrada ascendente *antes* del
+contexto (no su propia predicción).
+
 Paralelismo (`workers` > 1): las áreas de asociación que leen la entrada cruda no
 dependen de las áreas sensoriales, así que su pase y su aprendizaje corren en otro hilo
 mientras la jerarquía codifica o aprende. Los resultados no cambian: cada hilo toca sólo
@@ -55,7 +78,8 @@ class Cortex:
     def __init__(self, input_shape, n_outputs: int, *, areas=(), heads=({},), projection=None,
                  replay: float = 0.0, rehearse: float = 0.0, replay_focus: str = "uniform",
                  joint: bool = True, temperature: float = 0.25, arbiter: float = 0.0,
-                 seed: int = 0, workers: int = 1, homeostasis: float = 0.0):
+                 seed: int = 0, workers: int = 1, homeostasis: float = 0.0,
+                 feedback: dict | None = None):
         self._config = dict(input_shape=input_shape, n_outputs=int(n_outputs),
                             areas=[dict(a) for a in areas], heads=[],
                             projection=projection, replay=float(replay),
@@ -70,6 +94,19 @@ class Cortex:
         self.homeostasis = float(homeostasis)
         if self.homeostasis > 0.0:
             self._config["homeostasis"] = self.homeostasis
+        self.fb = None
+        if feedback:
+            spec = dict(iters=0, up=0.0, context=0.0, gain=0.0, source="input")
+            unknown = set(feedback) - set(spec)
+            if unknown:
+                raise ValueError(f"opciones de `feedback` desconocidas: {sorted(unknown)}")
+            spec.update(feedback)
+            if spec["source"] not in ("input", "code", "shuffle"):
+                raise ValueError(f"source desconocido: {spec['source']}")
+            self.fb = spec
+            self._config["feedback"] = dict(spec)
+            self._fb_rng = np.random.default_rng(seed + 7919)
+            self._pe_hist: list = []
         self.is_sheet = not np.isscalar(input_shape)
         self.input_shape = tuple(int(v) for v in input_shape) if self.is_sheet else int(input_shape)
         self.C = int(n_outputs)
@@ -90,6 +127,9 @@ class Cortex:
             a = FeatureArea(shape, **spec, **extra)
             a.on_reuse = lambda f, i=i: self._on_reuse(i, f)
             self.areas.append(a); shape = a.out_shape
+        self._predictive = any(a.pc is not None for a in self.areas)
+        if self.fb is not None:
+            self._pe_hist = [[] for _ in self.areas]
         self._sizes = [int(np.prod(a.out_shape)) for a in self.areas]
         self.heads: list[BioElasticNet] = []
         self._src: list = []
@@ -199,8 +239,11 @@ class Cortex:
         codes = []
         if self.areas:
             X = np.asarray(x, dtype=np.float32).reshape(self.input_shape)
+            x0 = X
             for a in self.areas:
                 X = a.encode(X); codes.append(X)
+            if self._predictive:
+                codes = self._infer(x0, codes)
         self._codes = codes                                   # códigos del último pase (diagnóstico)
         for i, (head, src) in enumerate(zip(self.heads, self._src)):
             if job is None or i not in indep:
@@ -241,6 +284,54 @@ class Cortex:
 
     predict = forward
 
+    def _infer(self, x0, codes):
+        """Bucle de inferencia predictiva (ver docstring del módulo) y error de predicción
+        final de cada área predictiva contra su entrada ascendente sin contexto."""
+        fb = self.fb or {}
+        iters = int(fb.get("iters", 0))
+        lam = float(fb.get("up", 0.0)); gam = float(fb.get("context", 0.0))
+        gmul = float(fb.get("gain", 0.0))
+        bottom = [x0] + codes[:-1]
+        for _ in range(iters):
+            Q = [a.predict() for a in self.areas]             # con los códigos de la iteración anterior
+            X = x0; new = []
+            for i, a in enumerate(self.areas):
+                bottom[i] = X
+                q = Q[i]
+                rep = up = X
+                if q is not None:
+                    if gam or gmul:
+                        rep = X * (1.0 + np.float32(gmul) * q) if gmul else X
+                        rep = np.maximum(rep + np.float32(gam) * q, 0.0) if gam else np.maximum(rep, 0.0)
+                        if i > 0:
+                            new[i - 1] = rep                  # el nivel de abajo, con contexto
+                    up = np.maximum(rep + np.float32(lam) * (rep - q), 0.0) if lam else rep
+                X = a.encode(up); new.append(X)
+            codes = new
+        for i, a in enumerate(self.areas):
+            if a.pc is not None:
+                a.prediction_error(bottom[i])
+        return codes
+
+    def _surprises(self):
+        """Sorpresa con que se modula la plasticidad de cada área (None: la propia)."""
+        if self.fb is None or not self._predictive or self.fb["source"] == "input":
+            return None
+        pe = [a.pe if a.pc is not None else None for a in self.areas]
+        if self.fb["source"] == "code":
+            return [pe[i + 1] if i + 1 < len(pe) and pe[i + 1] is not None else float("nan")
+                    for i in range(len(pe))]
+        out = []                                              # "shuffle": un error propio pasado
+        for i, e in enumerate(pe):
+            h = self._pe_hist[i]
+            if e is None:
+                out.append(None); continue
+            out.append(h[int(self._fb_rng.integers(len(h)))] if h else e)
+            h.append(e)
+            if len(h) > 1000:
+                h.pop(int(self._fb_rng.integers(len(h))))
+        return out
+
     # ------------------------------------------------------------------ aprendizaje
     def _p(self):
         T = 1.0 if self._arbitrated() else self.temperature     # con árbitro V ya es log-prob
@@ -255,8 +346,12 @@ class Cortex:
         usan (con el error residual de las anteriores, si así se configuró)."""
         prior = None
         zs = self._zs if len(self._zs) == len(self.areas) else [None] * len(self.areas)
-        for a, z in zip(self.areas, zs):
-            a.learn(target, prior)
+        sur = self._surprises()
+        for i, (a, z) in enumerate(zip(self.areas, zs)):
+            if sur is None:
+                a.learn(target, prior)
+            else:
+                a.learn(target, prior, surprise=sur[i])
             if z is not None:
                 prior = z if prior is None else prior + z
 
@@ -453,9 +548,12 @@ class Cortex:
         usan el índice invertido. El repaso agrega, por paso de entrenamiento, `replay`
         codificaciones más de la jerarquía."""
         parts = {}
+        passes = 1 + (int(self.fb["iters"]) if self.fb is not None else 0)
         for i, a in enumerate(self.areas):
             c = a.cost()
-            parts[f"area{i}"] = dict(macs=c["macs"], memory_bytes=c["memory_bytes"])
+            parts[f"area{i}"] = dict(macs=c["macs"] * passes, memory_bytes=c["memory_bytes"])
+            if "pred_macs" in c:                              # predicciones descendentes por inferencia
+                parts[f"pred{i}"] = dict(macs=c["pred_macs"] * passes, memory_bytes=0)
         for i, h in enumerate(self.heads):
             L = h.layer
             kf = int(L.fill[:L.n].max()) if L.n else 0
