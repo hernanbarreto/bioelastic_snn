@@ -99,11 +99,20 @@ class FeatureArea:
                 rows = np.arange(P); a_rows = full; act = full[vr]
             else:
                 act = a_rows = full[vr] / np.maximum(norms[vr], 1e-6)[:, None]
-            out = a_rows
-            if n > self.k:                                        # inhibición lateral: k rasgos por posición
-                kth = np.partition(a_rows, n - self.k, axis=1)[:, n - self.k]
-                out = np.where(a_rows >= kth[:, None], a_rows, 0.0)
-            out = np.maximum(out - self.floor, 0.0) * np.float32(1.0 / (1.0 - self.floor))
+            gain = np.float32(1.0 / (1.0 - self.floor))
+            if self.floor >= 0.0:                                 # mismas operaciones, sin temporales
+                out = a_rows - np.float32(self.floor)
+                np.maximum(out, 0.0, out=out)
+                out *= gain
+                if n > self.k:                                    # inhibición lateral: k rasgos por posición
+                    kth = np.partition(a_rows, n - self.k, axis=1)[:, n - self.k]
+                    out[~(a_rows >= kth[:, None])] = 0.0          # (perdedoras: max(0 - floor, 0) = 0)
+            else:
+                out = a_rows
+                if n > self.k:
+                    kth = np.partition(a_rows, n - self.k, axis=1)[:, n - self.k]
+                    out = np.where(a_rows >= kth[:, None], a_rows, 0.0)
+                out = np.maximum(out - self.floor, 0.0) * gain
             if len(rows) < P:
                 sheet = np.zeros((P, n), dtype=np.float32)
                 sheet[rows] = out

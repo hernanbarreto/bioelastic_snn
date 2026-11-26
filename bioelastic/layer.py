@@ -85,7 +85,7 @@ class ElasticLayer:
         self._slot = np.full(self.D, -1, dtype=np.int32)            # scratch para búsquedas
         # cachés estructurales (ver `reindex`)
         self._kf = -1                   # fan-in máximo de las vivas (-1 = recalcular)
-        self._ix = None                 # índice invertido (ptr, neurona, ranura) de una foto
+        self._ix = None                 # índice invertido (ptr, neurona, posición en w) de una foto
         self._dirty = np.zeros(self.cap, dtype=bool)   # filas cambiadas desde la foto
         self._dirty_ids: list[int] = []
         self._neg = False               # ¿algún peso pudo quedar negativo?
@@ -175,7 +175,9 @@ class ElasticLayer:
             self._dirty_ids.append(int(j))
 
     def _build_index(self):
-        """Foto del índice invertido: para cada aferente, sus sinapsis (neurona, ranura)."""
+        """Foto del índice invertido: para cada aferente, sus sinapsis como (neurona,
+        posición en `w.ravel()`), ordenadas por neurona. Cuesta O(sinapsis log sinapsis);
+        se rehace cuando cambiaron más de n/16 filas (las cambiadas se evalúan exactas)."""
         n, K = self.n, self.K
         fill = self.fill[:n]
         used = np.arange(K)[None, :] < fill[:, None]

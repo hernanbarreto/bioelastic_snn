@@ -1,0 +1,25 @@
+component,case,calls,us_per_call,calls_per_s,macs_per_call
+ElasticLayer.forward,densa n=2000 fan_in=256 (imagen),300,2322.9510,430.4869,
+ElasticLayer.forward,"dispersa n=20000 fan_in=16 (texto, 8 activas)",500,446.3437,2240.4260,
+ElasticLayer.forward,columna 1000x32 (exp_scaling),256,53.0386,18854.1772,
+BioElasticNet.step,"bionet 256->10, 2000 pasos desde cero",2000,295.0708,3389.0172,
+BioElasticNet.step,"texto 8x256 (exp_text), 6000 bytes desde cero",6000,483.2740,2069.2193,
+BioElasticNet.run_sequence,"FSDD stream, 400 palabras desde cero",400,8101.5597,123.4330,
+AudioEncoder,"FSDD, 400 grabaciones",400,171.1782,5841.8654,
+Cortex.step depth1,"MNIST, 1500 pasos desde cero",1500,486.0479,2057.4104,
+Cortex.predict depth1,"MNIST, red entrenada con 1500",300,404.2442,2473.7523,84480
+Cortex.step depth1,"MNIST, 300 pasos sobre red entrenada",300,721.6173,1385.7760,84480.0000
+Cortex.step depth2,"MNIST, 1500 pasos desde cero",1500,2743.2384,364.5327,
+Cortex.predict depth2,"MNIST, red entrenada con 1500",300,1126.0826,888.0343,4139520
+Cortex.step depth2,"MNIST, 300 pasos sobre red entrenada",300,2261.1809,442.2468,6167040.0000
+Cortex.step depth3,"MNIST, 1500 pasos desde cero",1500,8112.8557,123.2612,
+Cortex.predict depth3,"MNIST, red entrenada con 1500",300,3123.8493,320.1179,63185920
+Cortex.step depth3,"MNIST, 300 pasos sobre red entrenada",300,14880.4982,67.2021,94736640.0000
+FeatureArea.encode V1,"rasgos=256 entrada (28, 28, 1)",200,1295.6781,771.7966,
+FeatureArea.encode V2,"rasgos=256 entrada (12, 12, 256)",200,3125.4748,319.9514,
+MLP 784-256-10 (backprop),"predict, 1 imagen por llamada",300,34.1523,29280.5848,203264
+MLP 784-256-10 (backprop),predict en lote de 300 (por imagen),300,4.2570,234905.9241,203264
+MLP 784-256-10 (backprop),paso SGD de 1 ejemplo,1500,539.1353,1854.8218,609792
+Cortex simbólico,"R1 ligadura, 800 episodios (10 forward c/u)",800,3436.5078,290.9931,
+Thinker episodio,"T2 cadenas (memoria), 800 episodios",800,289.7856,3450.8270,
+Thinker episodio,"T4 composición (habla interna), 800 episodios",800,529.4595,1888.7184,

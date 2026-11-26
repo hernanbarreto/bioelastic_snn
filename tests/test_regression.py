@@ -298,6 +298,26 @@ def scenario_cortex_wide() -> dict:
     return r.done()
 
 
+def scenario_area_floor() -> dict:
+    """Áreas sueltas con floor negativo (código no nulo fuera de las posiciones válidas),
+    floor 0 y k mayor que el diccionario."""
+    from bioelastic import FeatureArea
+    rng = np.random.default_rng(18)
+    r = _Rec()
+    for i, (floor, k) in enumerate(((-0.2, 2), (0.0, 1), (0.4, 50))):
+        a = FeatureArea((9, 9, 2), rf=3, pool=2, max_features=8, theta=0.8, floor=floor, k=k,
+                        probation=10, survival_hits=3, maintain_every=5)
+        for t in range(120):
+            x = (rng.random((9, 9, 2)) * (rng.random((9, 9, 2)) < 0.3)).astype(np.float32)
+            if t % 13 == 0:
+                x[:] = 0.0
+            r.add(f"a{i}_code", a.encode(x).ravel())
+            a.learn()
+        for key, v in a.state().items():
+            r.put(f"a{i}_{key}", v)
+    return r.done()
+
+
 # ---------------------------------------------------------------- escenarios: pensamiento
 def scenario_thinker() -> dict:
     r = _Rec()
