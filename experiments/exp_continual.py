@@ -67,6 +67,7 @@ class CortexAgent:
     def stats(self) -> dict:
         st = self.net.stats()
         nb = sum(h.layer.nbytes() + h.layer.n * N_CLASSES * 4 for h in self.net.heads)
+        nb += sum(h.layer.n * h.layer.D for h in self.net.heads if h.episodes is not None)   # huellas uint8
         nb += sum(int(a.alive.sum()) * a.D * 4 for a in self.net.areas)
         if self.net.proj is not None:
             nb += self.net.proj.n * N_CLASSES * 4
@@ -267,6 +268,84 @@ class MLPReplay(_Baseline):
         return dict(neurons=self.W1.shape[1], features=0, synapses=self.W1.size + self.W2.size, bytes=nb)
 
 
+class ERMLP(_Baseline):
+    """Repaso de experiencia con memoria de reservorio (ER, Chaudhry et al. 2019) y su variante
+    con entropía cruzada asimétrica (ER-ACE, Caccia et al. 2022), sobre un MLP 784-256-20.
+
+    Protocolo estándar de esas referencias: los ejemplos del flujo se juntan en lotes de
+    `batch`; con cada lote completo se hace `iters` pasos de SGD con el lote entrante y un
+    lote del mismo tamaño sacado de la memoria, y después el lote entra a la memoria por
+    muestreo de reservorio. Con `ace`, la pérdida del lote entrante sólo compite entre las
+    clases presentes en el lote; la del repaso, entre todas las vistas.
+
+    La memoria guarda las imágenes en uint8 (784 bytes): con `bytes` se fija su tamaño para
+    igualar en bytes (memoria + pesos) a otro modelo."""
+
+    def __init__(self, seed=0, hidden=256, lr=0.1, size=2000, batch=10, iters=1, ace=False,
+                 bytes=None):
+        super().__init__(seed)
+        r = self.rng
+        self.W1 = r.normal(0, np.sqrt(2 / 784), (784, hidden)).astype(np.float32)
+        self.b1 = np.zeros(hidden, dtype=np.float32)
+        self.W2 = r.normal(0, np.sqrt(1 / hidden), (hidden, N_CLASSES)).astype(np.float32)
+        self.b2 = np.zeros(N_CLASSES, dtype=np.float32)
+        if bytes is not None:
+            w = (self.W1.size + self.W2.size + hidden + N_CLASSES) * 4
+            size = max(1, int((int(bytes) - w) // (784 + 2)))
+        self.size = int(size)
+        self.X = np.zeros((self.size, 784), dtype=np.uint8)
+        self.y = np.zeros(self.size, dtype=np.int16)
+        self.n = 0; self.seen_n = 0
+        self.lr = float(lr); self.batch = int(batch); self.iters = int(iters); self.ace = bool(ace)
+        self._inX, self._inY = [], []
+
+    def scores(self, s):
+        h = np.maximum(s.ravel() @ self.W1 + self.b1, 0.0)
+        return self._masked(h @ self.W2 + self.b2)
+
+    def _grad_step(self, X, Y, masks):
+        H = np.maximum(X @ self.W1 + self.b1, 0.0)
+        Z = H @ self.W2 + self.b2
+        Z = np.where(masks, Z, -1e9)
+        Z -= Z.max(axis=1, keepdims=True)
+        P = np.exp(Z); P /= P.sum(axis=1, keepdims=True)
+        P[np.arange(len(Y)), Y] -= 1.0
+        G = P * masks / len(Y)
+        gW2 = H.T @ G; gH = (G @ self.W2.T) * (H > 0)
+        self.W2 -= self.lr * gW2; self.b2 -= self.lr * G.sum(0)
+        self.W1 -= self.lr * (X.T @ gH); self.b1 -= self.lr * gH.sum(0)
+
+    def learn(self, x, y):
+        self._inX.append(np.round(np.clip(x, 0, 1) * 255).astype(np.uint8)); self._inY.append(int(y))
+        if len(self._inY) < self.batch:
+            return
+        Xi = np.stack(self._inX).astype(np.float32) / 255.0; Yi = np.array(self._inY)
+        self._inX, self._inY = [], []
+        for _ in range(self.iters):
+            if self.ace:
+                m_in = np.zeros((len(Yi), N_CLASSES), dtype=bool); m_in[:, np.unique(Yi)] = True
+            else:
+                m_in = np.broadcast_to(self.seen, (len(Yi), N_CLASSES))
+            X, Y, M = [Xi], [Yi], [m_in]
+            if self.n:
+                k = self.rng.integers(0, self.n, size=self.batch)
+                X.append(self.X[k].astype(np.float32) / 255.0); Y.append(self.y[k].astype(np.int64))
+                M.append(np.broadcast_to(self.seen, (len(k), N_CLASSES)))
+            self._grad_step(np.vstack(X), np.concatenate(Y), np.vstack(M))
+        for xi, yi in zip(np.round(Xi * 255).astype(np.uint8), Yi):   # reservorio (Vitter)
+            self.seen_n += 1
+            if self.n < self.size:
+                self.X[self.n] = xi; self.y[self.n] = yi; self.n += 1
+            else:
+                j = int(self.rng.integers(0, self.seen_n))
+                if j < self.size:
+                    self.X[j] = xi; self.y[j] = yi
+
+    def stats(self):
+        nb = self.X.nbytes + self.y.nbytes + (self.W1.size + self.W2.size + self.b1.size + self.b2.size) * 4
+        return dict(neurons=self.W1.shape[1], features=0, synapses=self.W1.size + self.W2.size, bytes=int(nb))
+
+
 D2 = dict(areas=[V1], heads=[dict(source="input")], projection=dict(source="all"),
           replay=0.5, joint=False)
 
@@ -286,17 +365,27 @@ def _with(cfg, *, head=None, layer=None, readout=None, area=None, **top):
     return cfg
 
 
+# Ronda 2 (clases parecidas): huella episódica en la memoria, repaso dirigido a la confusión
+# (dos repasos por paso, uno a la clase que compite), error asimétrico en la proyección y
+# separación de patrones al reclutar. Equivale a d2+episodic+cfocus+replay=2+pgate=200+sep=0.01.
+C2 = dict(areas=[V1], heads=[dict(source="input", episodic=True, separation=0.01)],
+          projection=dict(source="all", active_window=200), replay=2.0,
+          replay_focus="confusion", joint=False)
+
 NEVER = 10 ** 12
 D1 = dict(heads=[{}])
-BASES = {"d1": D1, "d2": D2}
-BASELINES = {"knn_buffer": KNNBuffer, "slda": StreamingLDA, "mlp_replay": MLPReplay}
+BASES = {"d1": D1, "d2": D2, "c2": C2}
+BASELINES = {"knn_buffer": KNNBuffer, "slda": StreamingLDA, "mlp_replay": MLPReplay,
+             "er": ERMLP, "erace": lambda seed=0, **kw: ERMLP(seed, ace=True, **kw)}
 
 
 def build(spec: str):
     """Fábrica(seed) a partir de un nombre «base+mod+mod=valor».
 
     base: d1 (un área sobre los píxeles) | d2 (V1 + memoria + proyección + repaso) |
-          knn_buffer | slda | mlp_replay
+          c2 (d2 con los mecanismos de la ronda 2 contra la interferencia, ver C2) |
+          knn_buffer | slda | mlp_replay | er | erace (ER y ER-ACE con reservorio; mods
+          bytes=N para igualar bytes, lr=X, iters=N)
     mods: budget=N     presupuesto de neuronas de asociación (desalojo)
           no_neuro     neurogénesis apagada después de la primera fase
           no_prune     sin poda de período crítico (capa y áreas)
@@ -307,6 +396,7 @@ def build(spec: str):
           gate=N       error asimétrico: clases sin objetivo en N aprendizajes, inactivas
           protect      además, no tocar neuronas de clases inactivas
           merge        desalojo por fusión del par más redundante (en vez de utilidad)
+          balanced     desalojo por utilidad dentro de la clase con más neuronas
           floor=X      piso de plasticidad de la lectura de la memoria
           relax=N      metaplasticidad de la lectura que se relaja con constante N
           v1=N         tamaño máximo del diccionario de V1
@@ -317,6 +407,12 @@ def build(spec: str):
           pmean        la proyección aprende medias de clase (regla hebbiana sin término negativo)
           rehearse=X   ensayos por paso en la propia memoria (Cortex._rehearse_one)
           focus        el repaso se concentra en las clases ausentes del flujo
+          cfocus       repaso dirigido a la confusión (Cortex._confusion)
+          rconf        el ensayo en la memoria también va a la confusión
+          cp=X         probabilidad mínima de la clase que compite para dirigir el repaso
+          episodic     la memoria guarda la volea completa que creó cada neurona (huella)
+          fan=N        fan-in de la memoria
+          sep=X        separación de patrones al reclutar (margen X; BioElasticNet._separate)
           replay=X     repasos por paso
           vote=X       voto por orden de llegada con constante X (ver BioElasticNet._votes)
           k=N          ganadoras por volea en la memoria
@@ -328,7 +424,18 @@ def build(spec: str):
     if base in BASELINES:
         size = int(kv.get("buffer") or 2000)
         cls = BASELINES[base]
-        return (lambda s: cls(s, size=size)) if base != "slda" else (lambda s: cls(s))
+        if base == "slda":
+            return lambda s: cls(s)
+        if base in ("er", "erace"):
+            kw = dict(size=size)
+            if "bytes" in kv:
+                kw["bytes"] = float(kv["bytes"])
+            if "lr" in kv:
+                kw["lr"] = float(kv["lr"])
+            if "iters" in kv:
+                kw["iters"] = int(kv["iters"])
+            return lambda s: cls(s, **kw)
+        return lambda s: cls(s, size=size)
     cfg = BASES[base]
     layer, readout, area, top, head = {}, {}, {}, {}, {}
     agent = CortexAgent
@@ -351,6 +458,8 @@ def build(spec: str):
             head["protect"] = True
         elif m == "merge":
             layer["evict"] = "merge"
+        elif m == "balanced":
+            layer["evict"] = "balanced"
         elif m == "relax":
             readout["relax"] = float(v)
         elif m == "floor":
@@ -371,6 +480,18 @@ def build(spec: str):
             top["rehearse"] = float(v)
         elif m == "focus":
             top["replay_focus"] = "absent"
+        elif m == "cfocus":
+            top["replay_focus"] = "confusion"
+        elif m == "rconf":
+            top["rehearse_focus"] = "confusion"
+        elif m == "cp":
+            top["confusion_p"] = float(v)
+        elif m == "episodic":
+            head["episodic"] = True
+        elif m == "fan":
+            layer["fan_in"] = int(v)
+        elif m == "sep":
+            head["separation"] = float(v)
         elif m == "replay":
             top["replay"] = float(v)
         elif m == "vote":
@@ -575,6 +696,15 @@ def metrics(r: dict) -> dict:
     for name in ("A_reward", "all_reward_noise"):
         kk = names.index(name)
         m[f"preq_{name}"] = float(hits[bounds[kk][0]:bounds[kk][1]].mean())
+    # clases parecidas: remera (10) y pulóver (12) cuando se enseñan abrigo y camisa (fase D)
+    kc, kd = names.index("C"), names.index("D")
+    sim = lambda cp: float(np.mean([cp["acc"][f"clean/c{c}"] for c in (10, 12)]))
+    m["sim_after_C"] = sim(cps[kc]); m["sim_after_D"] = sim(cps[kd])
+    m["sim_drop_D"] = m["sim_after_C"] - m["sim_after_D"]
+    m["C_after_D"] = cps[kd]["acc"]["clean/C"]; m["D_after_D"] = cps[kd]["acc"]["clean/D"]
+    m["sim_final"] = sim(final)
+    kb = names.index("D_back")
+    m["sim_after_D_back"] = sim(cps[kb])
     # crecimiento
     m["neurons_end"] = final["neurons"]; m["features_end"] = final["features"]
     m["bytes_end"] = final["bytes"]
@@ -583,12 +713,12 @@ def metrics(r: dict) -> dict:
     return m
 
 
-def summarize(pattern: str = "*.json"):
+def summarize(pattern: str = "*.json", name: str = "continual"):
     rows = [metrics(json.loads(p.read_text())) for p in sorted(OUT.glob(pattern))]
     if not rows:
         return
     keys = list(rows[0].keys())
-    log = CsvLog("continual_summary", keys)
+    log = CsvLog(f"{name}_summary", keys)
     for r in rows:
         log.row(*[r.get(k, "") for k in keys])
     log.close()
@@ -597,7 +727,7 @@ def summarize(pattern: str = "*.json"):
     for r in rows:
         groups.setdefault((r["model"], r["scale"]), []).append(r)
     num = [k for k in keys if k not in ("model", "seed", "scale") and isinstance(rows[0][k], (int, float))]
-    agg = CsvLog("continual_agg", ["model", "scale", "seeds"] + [f"{k}" for k in num])
+    agg = CsvLog(f"{name}_agg", ["model", "scale", "seeds"] + [f"{k}" for k in num])
     for (model, scale), rs in sorted(groups.items()):
         vals = []
         for k in num:
@@ -625,9 +755,10 @@ def main():
     ap.add_argument("--n-eval", type=int, default=30)
     ap.add_argument("--summary", action="store_true")
     ap.add_argument("--pattern", default="*.json")
+    ap.add_argument("--name", default="continual", help="prefijo de los CSV del resumen")
     a = ap.parse_args()
     if a.summary:
-        summarize(a.pattern)
+        summarize(a.pattern, a.name)
         return
     OUT.mkdir(parents=True, exist_ok=True)
     data = load_data()
