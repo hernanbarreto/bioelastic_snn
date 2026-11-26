@@ -56,6 +56,9 @@ class Cortex:
                  replay: float = 0.0, rehearse: float = 0.0, replay_focus: str = "uniform",
                  rehearse_focus: str = "uniform", confusion_p: float = 0.05,
                  joint: bool = True, temperature: float = 0.25, arbiter: float = 0.0,
+                 recall: str = "off", recall_k: int = 8, recall_margin: float = 0.2,
+                 recall_gain: float = 1.0, recall_tau: float = 0.05, recall_source: str = "episodes",
+                 stored_labels: bool = False, slow_error: str = "joint",
                  seed: int = 0, workers: int = 1, homeostasis: float = 0.0):
         self._config = dict(input_shape=input_shape, n_outputs=int(n_outputs),
                             areas=[dict(a) for a in areas], heads=[],
@@ -63,7 +66,12 @@ class Cortex:
                             rehearse=float(rehearse), replay_focus=str(replay_focus),
                             rehearse_focus=str(rehearse_focus), confusion_p=float(confusion_p),
                             joint=bool(joint), temperature=float(temperature),
-                            arbiter=float(arbiter), seed=int(seed))
+                            arbiter=float(arbiter),
+                            recall=str(recall), recall_k=int(recall_k), recall_margin=float(recall_margin),
+                            recall_gain=float(recall_gain), recall_tau=float(recall_tau),
+                            recall_source=str(recall_source), stored_labels=bool(stored_labels),
+                            slow_error=str(slow_error),
+                            seed=int(seed))
         self.arbiter = float(arbiter)
         self.beta = None                                      # pesos del árbitro (uno por votante)
         self._L = None
@@ -86,6 +94,23 @@ class Cortex:
         self.confusion_p = float(confusion_p)
         self.directed = 0                                     # repasos y ensayos dirigidos a la confusión
         self.joint = bool(joint)
+        # Dos sistemas explícitos (ver `forward` y `_recall_vote`).
+        if recall not in ("off", "gate", "always"):
+            raise ValueError(f"recall desconocido: {recall}")
+        if recall_source not in ("episodes", "readout"):
+            raise ValueError(f"recall_source desconocido: {recall_source}")
+        self.recall = recall; self.recall_k = int(recall_k); self.recall_margin = float(recall_margin)
+        self.recall_gain = float(recall_gain); self.recall_tau = float(recall_tau)
+        self.recall_source = recall_source
+        self.stored_labels = bool(stored_labels)
+        if slow_error not in ("joint", "own"):
+            raise ValueError(f"slow_error desconocido: {slow_error}")
+        # "joint": la proyección aprende con el error de la decisión conjunta (lo que la
+        # memoria ya acierta no le enseña nada al lento); "own": con su propio error, como
+        # el neocórtex de CLS, que no queda «explicado» por el hipocampo.
+        self.slow_error = slow_error
+        self.recalls = 0                                      # inferencias que consultaron el almacén
+        self._slow = None; self._fast = None; self._recalled = False
         self.rng = np.random.default_rng(seed)
         self.areas: list[FeatureArea] = []
         shape = self.input_shape
@@ -213,10 +238,12 @@ class Cortex:
         if job is not None:
             job.result()
         votes = [(head._last.V, head.readout.temperature) for head in self.heads]
+        Vp = None
         if self.proj is not None:
             idx, h = self._proj_input(codes)
             self._pv = (idx, h)
-            votes.append((self.proj.potentials(idx, h), self.proj.temperature))
+            Vp = self.proj.potentials(idx, h)
+            votes.append((Vp, self.proj.temperature))
         self._zs = []
         for a in self.areas:                                  # lectores locales (si hay error local)
             z = a.potentials()
@@ -235,6 +262,9 @@ class Cortex:
             V = np.zeros(self.C, dtype=np.float32)
             for z, _ in votes:                                # mismo orden de suma
                 V = V + z
+        self._slow = None; self._fast = None; self._recalled = False
+        if self.recall != "off" and self.arbiter <= 0.0:      # (con árbitro, V son log-probabilidades)
+            V = self._two_systems(V, Vp)
         if self.homeostasis > 0.0:
             V = V - self.umbral
         self._V = V
@@ -245,6 +275,91 @@ class Cortex:
         return self.pred
 
     predict = forward
+
+    # ------------------------------------------------------------------ dos sistemas
+    def _store(self):
+        """Almacén rápido: el área de asociación de la que se repasa, si guarda huellas."""
+        mem, _ = self._replay_source()
+        return mem if mem is not None and mem.episodes is not None else None
+
+    def _slow_part(self, store, Vp):
+        """Sistema lento: la proyección directa y las áreas de asociación que no son el almacén."""
+        S = np.zeros(self.C, dtype=np.float32)
+        for head in self.heads:
+            if head is not store:
+                S = S + head._last.V
+        if Vp is not None:
+            S = S + Vp
+        for z in self._zs:                                    # lectores locales de las áreas
+            if z is not None:
+                S = S + z
+        return S
+
+    def _two_systems(self, V, Vp):
+        """Complementary Learning Systems (McClelland et al. 1995; Kumaran, Hassabis y
+        McClelland 2016): el sistema lento (proyección + áreas) responde solo cuando está
+        seguro; si no, se recuperan los `recall_k` episodios más parecidos del almacén
+        rápido y se combinan (razonamiento basado en memoria).
+
+          recall="gate"    se consulta el almacén sólo si el margen p1 - p2 del sistema
+                           lento (softmax a la temperatura de la red) es < `recall_margin`
+          recall="always"  siempre lento + almacén (sin compuerta)
+          recall_source="episodes"  voto de los episodios recuperados con su etiqueta
+                           guardada, pesos softmax(coseno / `recall_tau`)
+          recall_source="readout"   voto de la lectura aprendida del almacén (sólo compuerta)
+        """
+        store = self._store()
+        if store is None or store._last is None:
+            return V
+        S = self._slow_part(store, Vp)
+        self._slow = S
+        use = True
+        if self.recall == "gate":
+            e = np.exp((S - S.max()) / self.temperature)
+            q = np.sort(e / e.sum())
+            use = (q[-1] - (q[-2] if len(q) > 1 else 0.0)) < self.recall_margin
+        if not use:
+            return S
+        self._fast = self._recall_vote(store)
+        self._recalled = True
+        self.recalls += 1
+        return S + np.float32(self.recall_gain) * self._fast
+
+    def _recall_vote(self, store) -> np.ndarray:
+        if self.recall_source == "readout":
+            return store._last.V.astype(np.float32)
+        v = store._last.v
+        ids, sim = store.recall(v.idx, v.val, self.recall_k)
+        out = np.zeros(self.C, dtype=np.float32)
+        if len(ids) == 0:
+            return out
+        y = store.ep["y"][ids].astype(np.int64)
+        if (y < 0).any():                                     # sin etiqueta: la de su lectura
+            y = np.where(y >= 0, y, store.readout.preferred(ids))
+        w = np.exp((sim - sim.max()) / max(self.recall_tau, 1e-6))
+        ok = y >= 0
+        if ok.any():
+            np.add.at(out, y[ok], (w[ok] / w[ok].sum()).astype(np.float32))
+        return out
+
+    def parts(self) -> dict:
+        """Aporte de cada sistema en la última inferencia: «slow» (proyección + áreas que no
+        son el almacén) y «fast» (el almacén: su lectura aprendida o, con `recall`, el voto
+        de los episodios recuperados, calculado aunque la compuerta no lo haya pedido).
+        «recalled»: si la respuesta consultó el almacén."""
+        store = self._store() or (self.heads[0] if self.heads else None)
+        Vp = self.proj.potentials(*self._pv) if self.proj is not None and self._pv is not None else None
+        slow = self._slow if self._slow is not None else self._slow_part(store, Vp)
+        if self.recall == "off" or store is None or store.episodes is None:
+            fast = store._last.V if store is not None else np.zeros(self.C, dtype=np.float32)
+        else:
+            fast = self._fast if self._fast is not None else self._recall_vote(store)
+        return dict(slow=slow, fast=fast, recalled=self._recalled)
+
+    def _labels(self, mem) -> np.ndarray:
+        """Clase de cada recuerdo del almacén para el repaso: la etiqueta guardada en el
+        episodio (`stored_labels`) o la preferida de la lectura aprendida (puede derivar)."""
+        return mem.labels(stored=self.stored_labels)
 
     # ------------------------------------------------------------------ aprendizaje
     def _p(self):
@@ -310,7 +425,12 @@ class Cortex:
             if i not in done:
                 one(i)
         if self.proj is not None:
-            self.proj.learn(*self._pv, target, p=None if arb else p)
+            pp = None if arb else p
+            if self.slow_error == "own" and not arb:
+                S = self._slow if self._slow is not None else self._slow_part(
+                    self._store(), self.proj.potentials(*self._pv))
+                e = np.exp((S - S.max()) / self.temperature); pp = e / e.sum()
+            self.proj.learn(*self._pv, target, p=pp)
             if self.replay > 0.0:
                 self._replay_debt += self.replay
                 aimed = conf is not None and self.replay_focus == "confusion"
@@ -357,14 +477,15 @@ class Cortex:
         v = mem._last.v
         if len(v.winners) and int(v.winners.max()) >= L.n:
             return None
-        pw = mem.readout.preferred(v.winners)
+        lab = self._labels(mem)
+        pw = lab[v.winners]
         hit = np.flatnonzero(pw == c2)
         if len(hit):
             j = int(v.winners[hit[0]])
         else:
             if v.norm == 0.0:
                 return None
-            rows = np.flatnonzero(mem.readout.preferred(np.arange(L.n)) == c2)
+            rows = np.flatnonzero(lab == c2)
             if len(rows) == 0:
                 return None
             cos = L._cos_at(rows, v.idx, v.val, v.norm, L._fan_max())
@@ -401,7 +522,7 @@ class Cortex:
         if mem is None:
             return
         L = mem.layer
-        pref = mem.readout.preferred(np.arange(L.n))
+        pref = self._labels(mem)
         classes = np.unique(pref[pref >= 0])
         if self.replay_focus == "absent" and self.proj.active_window > 0 and len(classes):
             absent = classes[~self.proj.active()[classes]]
@@ -450,7 +571,7 @@ class Cortex:
                         if not self._offsets(src) and h.context == 1 and h.tau <= 0 and h.layer.n), None)
             if mem is None:
                 return
-            pref = mem.readout.preferred(np.arange(mem.layer.n))
+            pref = self._labels(mem)
             classes = np.unique(pref[pref >= 0])
             if len(classes) == 0:
                 return
@@ -510,7 +631,7 @@ class Cortex:
             synapses=sum(a["synapses"] for a in areas) + sum(h["synapses"] for h in heads)
                      + sum(h["neurons"] for h in heads) * self.C
                      + (self.proj.n * self.C if self.proj is not None else 0),
-            replays=self.replays,
+            replays=self.replays, recalls=self.recalls,
         )
 
     def cost(self) -> dict:

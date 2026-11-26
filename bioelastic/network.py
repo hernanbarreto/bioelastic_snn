@@ -41,6 +41,8 @@ class _State:
 
 
 class BioElasticNet:
+    _EP_FIELDS = (("y", np.int16), ("t", np.int64), ("ctx", np.int32), ("norm", np.float32))
+
     def __init__(self, n_inputs: int, n_outputs: int, *, context: int = 1, delay: float = 0.15,
                  tau: float = 0.0, grow_on_error: bool = True, rho_sup: float = 0.98,
                  anti: float = 0.3, grow_per_error: int = 4, maintain_every: int = 500,
@@ -52,7 +54,8 @@ class BioElasticNet:
                             rho_sup=float(rho_sup), anti=float(anti),
                             grow_per_error=int(grow_per_error), maintain_every=int(maintain_every),
                             protect=bool(protect), vote_tau=float(vote_tau), episodic=bool(episodic),
-                            separation=float(separation), layer=dict(layer or {}), readout=dict(readout or {}), seed=int(seed))
+                            separation=float(separation),
+                            layer=dict(layer or {}), readout=dict(readout or {}), seed=int(seed))
         self.N = int(n_inputs)
         self.tau = float(tau)
         self.context = 1 if self.tau > 0 else int(context)
@@ -76,8 +79,19 @@ class BioElasticNet:
         self._pending_v: Volley | None = None
         # Huella episódica: cada neurona guarda la volea completa que la creó (uint8, sin el
         # recorte del fan-in). Es lo que se reactiva en el repaso (ver Cortex._replay_one).
+        # Con la huella, el área es el almacén rápido de un sistema de aprendizaje
+        # complementario (McClelland, McNaughton y O'Reilly 1995; Kumaran, Hassabis y
+        # McClelland 2016): cada episodio es (código, etiqueta, contexto) escrito en un solo
+        # ensayo, con capacidad finita (`max_neurons`) y olvido (desalojo y poda). Los
+        # campos `ep` acompañan a cada neurona (se mueven con el swap-remove):
+        #   y      etiqueta con la que se escribió (-1 si llegó sin etiqueta); no deriva
+        #          como la lectura aprendida
+        #   t      paso en que se escribió;  ctx  etiqueta de contexto (`context_tag`)
+        #   norm   norma del episodio (para recuperar por coseno, ver `recall`)
         self.episodic = bool(episodic)
         self.episodes = np.zeros((0, self.layer.D), dtype=np.uint8) if self.episodic else None
+        self.ep = {name: np.zeros(0, dtype=dt) for name, dt in self._EP_FIELDS} if self.episodic else None
+        self.context_tag = 0
         self.watch = -1                     # índice de una neurona que alguien sigue (swap-remove)
         self._acc: dict | None = None
         self._buf: deque = deque(maxlen=self.context)
@@ -90,18 +104,31 @@ class BioElasticNet:
         self.readout.add_input(self._pending_cls)
         if self.episodes is not None:
             if j >= len(self.episodes):
-                ep = np.zeros((max(256, 2 * len(self.episodes)), self.layer.D), dtype=np.uint8)
+                m = max(256, 2 * len(self.episodes))
+                ep = np.zeros((m, self.layer.D), dtype=np.uint8)
                 ep[:len(self.episodes)] = self.episodes
                 self.episodes = ep
+            if j >= len(self.ep["y"]):
+                m = len(self.episodes)
+                for name, arr in self.ep.items():
+                    new = np.zeros(m, dtype=arr.dtype); new[:len(arr)] = arr
+                    self.ep[name] = new
             self.episodes[j] = 0
             v = self._pending_v
             if v is not None and len(v.idx):
                 self.episodes[j, v.idx] = np.round(np.clip(v.val, 0.0, 1.0) * 255.0).astype(np.uint8)
+            e = self.episodes[j].astype(np.float32)
+            ep = self.ep
+            ep["y"][j] = -1 if self._pending_cls is None else int(self._pending_cls)
+            ep["t"][j] = self.layer.t; ep["ctx"][j] = int(self.context_tag)
+            ep["norm"][j] = np.float32(np.sqrt(e @ e) / 255.0)
 
     def _on_remove(self, j: int, last: int):
         self.readout.remove_input(j, last)
         if self.episodes is not None and j != last:
             self.episodes[j] = self.episodes[last]
+            for arr in self.ep.values():
+                arr[j] = arr[last]
         if self.watch == j:
             self.watch = -1
         elif self.watch == last:
@@ -123,6 +150,32 @@ class BioElasticNet:
         if self.episodes is not None:
             return self.episodes[j].astype(np.float32) / np.float32(255.0)
         return self.layer.dense(j)
+
+    def labels(self, stored: bool = True) -> np.ndarray:
+        """Clase de cada neurona: la etiqueta con la que se escribió su episodio (si hay
+        huella y `stored`) o, si no, la clase preferida de su lectura aprendida."""
+        n = self.layer.n
+        pref = self.readout.preferred(np.arange(n))
+        if stored and self.ep is not None:
+            y = self.ep["y"][:n].astype(np.int64)
+            return np.where(y >= 0, y, pref)
+        return pref
+
+    def recall(self, idx: np.ndarray, val: np.ndarray, k: int = 8):
+        """Recuperación desde el almacén rápido: los `k` episodios más parecidos (coseno
+        entre la volea y la huella completa) y su parecido. Sin huella: (vacío, vacío)."""
+        n = self.layer.n
+        if self.episodes is None or n == 0 or len(idx) == 0:
+            return np.empty(0, np.int64), np.empty(0, np.float32)
+        nv = float(np.sqrt(val @ val))
+        if nv == 0.0:
+            return np.empty(0, np.int64), np.empty(0, np.float32)
+        dots = self.episodes[:n, idx].astype(np.float32) @ val.astype(np.float32)
+        sim = dots / (np.float32(255.0 * nv) * np.maximum(self.ep["norm"][:n], np.float32(1e-6)))
+        k = min(int(k), n)
+        top = np.argpartition(-sim, k - 1)[:k] if k < n else np.arange(n)
+        top = top[np.argsort(-sim[top], kind="stable")]
+        return top, sim[top]
 
     # ------------------------------------------------------------------ entrada
     @staticmethod
@@ -377,6 +430,7 @@ class BioElasticNet:
                    R_W=R.W[:, :n], R_count=R.count[:n], R_baseline=np.float64(R.baseline))
         if self.episodes is not None:
             out["episodes"] = self.episodes[:n]
+            out.update({f"ep_{name}": arr[:n] for name, arr in self.ep.items()})
         if self.separation > 0.0:
             out["L_vig"] = L.vig[:n] if L.vig is not None else np.zeros(n, dtype=np.float32)
         return out
@@ -403,6 +457,16 @@ class BioElasticNet:
         if net.episodes is not None and "episodes" in z:
             net.episodes = np.zeros((cap, L.D), dtype=np.uint8)
             net.episodes[:n] = z["episodes"]
+            for name, dt in cls._EP_FIELDS:
+                arr = np.zeros(cap, dtype=dt)
+                if f"ep_{name}" in z:
+                    arr[:n] = z[f"ep_{name}"]
+                elif name == "y":                             # guardado sin campos: etiqueta = lectura
+                    arr[:n] = R.preferred(np.arange(n))
+                elif name == "norm":
+                    e = net.episodes[:n].astype(np.float32)
+                    arr[:n] = np.sqrt(np.einsum("ij,ij->i", e, e)) / 255.0
+                net.ep[name] = arr
         return net
 
     def save(self, path):

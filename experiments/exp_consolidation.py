@@ -278,7 +278,47 @@ def phase_f0(a, data):
     finish("f0", rows, {}, cfg)
 
 
-PHASES = {"f0": phase_f0}
+STORED = "+top.stored_labels=true"
+GATE = "+top.recall=gate"
+
+
+def phase_f1(a, data):
+    """Dos sistemas explícitos. El almacén rápido es el área de memoria con huella (ya era
+    de un solo ensayo, finita y con olvido); se le agregan la etiqueta, el paso y el
+    contexto de cada episodio, la recuperación por coseno de varios episodios y la
+    compuerta por inseguridad del sistema lento."""
+    rows: list = []
+    specs = [C2, C2 + STORED, C2 + STORED + GATE, C2 + STORED + GATE + "+top.recall_margin=0.5",
+             C2 + STORED + "+top.recall=always", C2 + STORED + GATE + "+top.recall_source=readout",
+             C2 + GATE]
+    interference(("CD",), specs, a.seeds, data, tag="f1", log_rows=rows, timing=True)
+    continual((CONT + STORED + GATE,), a.seeds, data, scale=0.1, n_eval=30, log_rows=rows, tag="f1")
+    cfg = dict(seeds=a.seeds, scenario=SCENARIOS["CD"], n_eval_per_class=100,
+               continual=dict(scale=0.1, base=CONT, compare_with="consolidacion_f0.json"),
+               unsure_definition="margen p1-p2 del sistema lento (softmax a T=0,25) < 0,2 en la última evaluación",
+               reductions="sólo CD en interferencia (chainF queda para f6); flujo continuo a escala 0,1")
+    finish("f1", rows, {}, cfg)
+
+
+OWN = "+top.slow_error=own"
+
+
+def phase_f1b(a, data):
+    """Complemento de f1: el sistema lento aprende con su propio error (sin que la
+    memoria le «explique» el ejemplo), solo y con la compuerta."""
+    rows: list = []
+    specs = [C2 + STORED + OWN, C2 + STORED + OWN + GATE + "+top.recall_source=readout",
+             C2 + STORED + OWN + GATE]
+    interference(("CD",), specs, a.seeds, data, tag="f1b", log_rows=rows, timing=True)
+    continual((CONT + STORED + OWN,), a.seeds, data, scale=0.1, n_eval=30, log_rows=rows, tag="f1b")
+    cfg = dict(seeds=a.seeds, scenario=SCENARIOS["CD"], n_eval_per_class=100,
+               continual=dict(scale=0.1, base=CONT, compare_with="consolidacion_f0.json"),
+               note="slow_error=own: la proyección aprende con p del sistema lento solo",
+               reductions="sólo CD en interferencia; flujo continuo a escala 0,1")
+    finish("f1b", rows, {}, cfg)
+
+
+PHASES = {"f0": phase_f0, "f1": phase_f1, "f1b": phase_f1b}
 
 
 def main():
