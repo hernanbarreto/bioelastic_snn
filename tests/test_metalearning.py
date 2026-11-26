@@ -112,3 +112,63 @@ def test_frozen_control_needs_zero_decay():
         _bind_episode(net, rng, True)
     assert np.array_equal(net.Wc, W)
 
+
+# ---------------------------------------------------------------- F2: lo rápido en el estado
+def _harlow(net, rng, objs, T=6, learn=True, reverse_at=None):
+    good = int(rng.integers(2)); ok = []
+    net.reset()
+    for t in range(T):
+        if reverse_at is not None and t == reverse_at:
+            good = 1 - good
+        q = [objs[i] for i in rng.permutation(2)]
+        out = net.answer(q[0], probe=q[1], explore=learn)
+        ok.append(out == objs[good])
+        net.feedback(target=objs[good])
+    return ok
+
+
+def _train_harlow(prev_io, P=300, seed=0):
+    rng = np.random.default_rng(seed)
+    net = Thinker(2 * (P + 200) + 2, memory=True, speak=True, judge=True, max_steps=10,
+                  gate=True, prev_io=prev_io, seed=seed)
+    objs = rng.permutation(2 * (P + 200))
+    for i in range(P):
+        _harlow(net, rng, [int(objs[2 * i]), int(objs[2 * i + 1])])
+    net.reset(); net.plastic = False
+    return net, rng, objs[2 * P:]
+
+
+def test_previous_answer_and_reward_solve_new_problems_with_frozen_weights():
+    """Harlow sin memoria episódica del resultado: el control y la compuerta ven si cada
+    objeto es la última respuesta y si fue premiada. Con los pesos congelados, el ensayo 2
+    de problemas nuevos sale bien (quedarse si ganó, cambiar si perdió), y una reversión
+    a mitad del problema se corrige en un ensayo, sin cambiar pesos."""
+    net, rng, objs = _train_harlow(True)
+    W = net.Wc.copy()
+    accs = np.array([_harlow(net, rng, [int(objs[2 * i]), int(objs[2 * i + 1])], learn=False) for i in range(60)])
+    assert accs[:, 1:].mean() > 0.95 and 0.25 < accs[:, 0].mean() < 0.75
+    rev = np.array([_harlow(net, rng, [int(objs[2 * i]), int(objs[2 * i + 1])], T=8, learn=False, reverse_at=3)
+                    for i in range(60, 120)])
+    assert rev[:, 3].mean() < 0.1 and rev[:, 4:].mean() > 0.95
+    assert np.array_equal(W, net.Wc)
+
+
+def test_without_previous_answer_and_reward_there_is_no_learning_set():
+    net, rng, objs = _train_harlow(False)
+    accs = np.array([_harlow(net, rng, [int(objs[2 * i]), int(objs[2 * i + 1])], learn=False) for i in range(60)])
+    assert accs[:, 1].mean() < 0.75
+
+
+def test_previous_answer_and_reward_are_state_even_when_frozen():
+    net = Thinker(10, memory=True, gate=True, prev_io=True, seed=0)
+    net.plastic = False
+    net.reset(); out = net.answer(3, probe=4)
+    net.feedback(target=out)
+    assert net._prev == (out, True)
+    net.answer(3, probe=4)
+    assert net._q[0].prev == (out, True)                 # el episodio guardado lo lleva
+    net.feedback(target=7)
+    assert net._prev[1] is False
+    net.reset()
+    assert net._prev is None
+

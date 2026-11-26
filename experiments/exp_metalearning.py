@@ -33,7 +33,7 @@ Tareas
             sorteados en cada pregunta).
 
   python experiments/exp_metalearning.py <grupo> [<grupo> ...]   (OMP_NUM_THREADS=1)
-  grupos: f0 f1
+  grupos: f0 f1 f2 f2b
   (resultados en results/metaaprendizaje_<grupo>.csv y .json)
 """
 from __future__ import annotations
@@ -553,7 +553,152 @@ def group_f1():
     dump("f1", summary)
 
 
-GROUPS = {"f0": group_f0, "f1": group_f1}
+# ---------------------------------------------------------------- F2
+def report_by_trial(log, name, system, arr, label="congelado"):
+    """`arr`: semillas x problemas x ensayos. Una fila por ensayo (media ± desvío entre
+    semillas de la exactitud media de cada semilla)."""
+    per = np.array([a.mean(0) for a in arr])               # semillas x ensayos
+    m, sd = ms(per)
+    for t in range(len(m)):
+        log.row(name, system, label, f"ensayo {t + 1}", float(m[t]), float(sd[t]), len(per))
+    return dict(by_trial_mean=m, by_trial_sd=sd, per_seed=per)
+
+
+def group_f2():
+    log = CsvLog("metaaprendizaje_f2", HEADER)
+    summary = {}
+    P, W = 400, 50
+    # F2.1 Harlow con dos objetos que llegan por la compuerta como ítems separados
+    rev = ("reversión en el ensayo 4 (T=8)", dict(T=8, reverse_at=3))
+    three = ("3 objetos (entrenado con 2)", dict(k=3))
+    conds = [
+        ("B0 compuerta: sin resultado percibido ni estado previo", dict(gate=True), False),
+        ("estado: respuesta y recompensa previas (prev_io), sin resultado percibido", dict(gate=True, prev_io=True), False),
+        ("ablación: prev_io con las dos señales por separado", dict(gate=True, prev_io="separado"), False),
+        ("episódica: B1 resultado percibido", dict(gate=True), True),
+        ("estado + episódica", dict(gate=True, prev_io=True), True),
+    ]
+    for label, over, perceive in conds:
+        res = run_harlow(make_base(**over), P, k=2, perceive=perceive, split=True, tests=(rev, three))
+        sm = report_harlow(log, "F2.1 harlow, objetos por la compuerta", label, res, W)
+        sm["frozen_by_trial"] = report_by_trial(log, "F2.1 harlow, objetos por la compuerta", label, res["frozen"])
+        for tname, arr in res["tests"].items():
+            sm["test " + tname] = report_by_trial(log, "F2.1 congelado, " + tname, label, arr)
+        summary["F2.1 " + label] = sm
+    # F2.2 tres objetos: cuánto estado alcanza
+    log.row("F2.2 harlow 3 objetos", "referencia: óptimo con sólo recompensa y memoria de 1 ensayo", "teórico",
+            "ensayos 1-3", 1 / 3, 2 / 3, 0)
+    log.row("F2.2 harlow 3 objetos", "referencia: óptimo con sólo recompensa y memoria de 1 ensayo", "teórico",
+            "ensayo 3", 5 / 6, 0.0, 0)
+    log.row("F2.2 harlow 3 objetos", "referencia: óptimo con sólo recompensa y memoria completa", "teórico",
+            "ensayo 3", 1.0, 0.0, 0)
+    for label, over, perceive in conds[1:2] + conds[3:4]:
+        res = run_harlow(make_base(**over), P, k=3, perceive=perceive, split=True)
+        sm = report_harlow(log, "F2.2 harlow 3 objetos", label, res, W)
+        sm["frozen_by_trial"] = report_by_trial(log, "F2.2 harlow 3 objetos", label, res["frozen"])
+        summary["F2.2 " + label] = sm
+    # F2.4 estructura con estado solo: la línea sin resultado percibido
+    B, WB = 200, 25
+    for label, over, perceive in (("estado (prev_io), sin resultado percibido", dict(prev_io=True), False),
+                                  ("episódica: B1 resultado percibido", {}, True)):
+        res = run_line(make_base(n_cues=4, **over), B, struct="linea", perceive=perceive)
+        summary["F2.4 linea " + label] = report_line(log, "F2.4 línea", label, res, WB)
+    log.close()
+    dump("f2", summary)
+
+
+# ---------------------------------------------------------------- F2b: la regla rápida no viene dada
+def run_curve(make, schedule, P, checkpoints, evals, seeds=SEEDS, T=6, k=2, perceive=False,
+              split=True, n_eval=50):
+    """Curva de conjunto de aprendizaje con instantáneas congeladas. `schedule(i)` -> (modo,
+    consigna) del problema i. En cada `checkpoints` se copia la red, se congela y se evalúa
+    sin exploración con `n_eval` problemas nuevos de cada familia de `evals` [(nombre,
+    modo, consigna)], con un generador aparte (no toca el flujo de entrenamiento).
+    Devuelve {familia: semillas x instantáneas} (exactitud en el ensayo 2) y la curva en
+    línea (ensayo 2 por problema)."""
+    import copy
+    out = {name: [] for name, _, _ in evals}
+    out_rest = {name: [] for name, _, _ in evals}
+    online = []
+    for seed in seeds:
+        rng = np.random.default_rng(4000 + seed)
+        n_obj = (P + len(checkpoints) * len(evals) * n_eval) * k
+        net = make(seed, n_obj + 2)
+        sup = Supply(n_obj, rng)
+        erng = np.random.default_rng(9000 + seed)
+        curves = {name: [] for name, _, _ in evals}
+        rest = {name: [] for name, _, _ in evals}
+        on = np.zeros(P)
+        for i in range(P + 1):
+            if i in checkpoints:
+                fz = copy.deepcopy(net)
+                fz.reset(); fz.plastic = False
+                for name, mode, cue in evals:
+                    accs = np.array([harlow_problem(fz, erng, sup.take(k), T, mode, perceive, cue=cue,
+                                                    explore=False, split=split)[0] for _ in range(n_eval)])
+                    curves[name].append(accs[:, 1].mean()); rest[name].append(accs[:, 1:].mean())
+            if i == P:
+                break
+            mode, cue = schedule(i)
+            hit, _, _ = harlow_problem(net, rng, sup.take(k), T, mode, perceive, cue=cue, split=split)
+            on[i] = hit[1]
+        for name in curves:
+            out[name].append(curves[name]); out_rest[name].append(rest[name])
+        online.append(on)
+    return ({name: np.array(v) for name, v in out.items()}, {name: np.array(v) for name, v in out_rest.items()},
+            np.array(online))
+
+
+def group_f2b():
+    """La regla de aprendizaje rápido no viene dada: sin el resultado percibido, la regla
+    (quedarse si ganó / cambiar si perdió) sale de TD lento sobre el estado (`prev_io`), y
+    se mide cuánto tarda en aparecer. Después, familias con criterios opuestos: W (premia
+    siempre el mismo objeto: quedarse si ganó) y A (el premio alterna de objeto en cada
+    ensayo: cambiar si ganó). ¿Aprender la primera regla acelera la segunda?"""
+    log = CsvLog("metaaprendizaje_f2b", HEADER)
+    summary = {}
+    cps = [0, 10, 25, 50, 100, 200, 300, 400, 600, 800]
+    W, A = ("W (premia un objeto)", "objeto"), ("A (el premio alterna)", "alterna")
+
+    def rows(test, system, curves, rest, cps_):
+        sm = {}
+        for name, arr in curves.items():
+            m, sd = ms(arr); mr, sr = ms(rest[name])
+            for j, c in enumerate(cps_):
+                log.row(test, system, f"instantánea tras {c} problemas", f"{name}: ensayo 2",
+                        float(m[j]), float(sd[j]), len(arr))
+            sm[name] = dict(checkpoints=cps_, trial2_mean=m, trial2_sd=sd, trial2_per_seed=arr,
+                            trials2to6_mean=mr, trials2to6_sd=sr)
+        return sm
+    # F2.5 una sola familia (W): curva de adquisición de la regla, sin resultado percibido
+    for label, over, perceive in (("estado (prev_io), sin resultado percibido", dict(gate=True, prev_io=True), False),
+                                  ("episódica: B1 resultado percibido (la regla viene dada: copiar)", dict(gate=True), True)):
+        cur, rest, on = run_curve(make_base(**over), lambda i: ("objeto", 0), 800, cps, [(W[0], W[1], 0)],
+                                  perceive=perceive)
+        summary["F2.5 " + label] = rows("F2.5 adquisición de la regla (familia W)", label, cur, rest, cps)
+        summary["F2.5 " + label]["online_trial2_by50"] = np.array([bins(o, 50) for o in on])
+    # F2.6 dos familias en secuencia: 400 de una y 400 de la otra
+    cps2 = [0, 25, 50, 100, 200, 400, 425, 450, 500, 600, 800]
+    conds = [
+        ("estado (prev_io), consigna por familia, W -> A", dict(gate=True, prev_io=True, n_cues=2), False, (W, A), True),
+        ("estado (prev_io), consigna por familia, A -> W", dict(gate=True, prev_io=True, n_cues=2), False, (A, W), True),
+        ("estado (prev_io), consigna por familia y control compartido (mixed=True), W -> A",
+         dict(gate=True, prev_io=True, n_cues=2, mixed=True), False, (W, A), True),
+        ("estado (prev_io), sin consigna (la familia hay que inferirla), W -> A", dict(gate=True, prev_io=True), False, (W, A), False),
+        ("episódica: B1 resultado percibido, consigna por familia, W -> A", dict(gate=True, n_cues=2), True, (W, A), True),
+    ]
+    for label, over, perceive, (f1, f2), cued in conds:
+        c1, c2 = (0, 1) if cued else (0, 0)
+        sched = (lambda i, f1=f1, f2=f2, c1=c1, c2=c2: (f1[1], c1) if i < 400 else (f2[1], c2))
+        cur, rest, on = run_curve(make_base(**over), sched, 800, cps2, [(f1[0], f1[1], c1), (f2[0], f2[1], c2)],
+                                  perceive=perceive)
+        summary["F2.6 " + label] = rows("F2.6 dos familias en secuencia", label, cur, rest, cps2)
+        summary["F2.6 " + label]["online_trial2_by50"] = np.array([bins(o, 50) for o in on])
+    log.close()
+    dump("f2b", summary)
+
+
+GROUPS = {"f0": group_f0, "f1": group_f1, "f2": group_f2, "f2b": group_f2b}
 
 
 def main():
