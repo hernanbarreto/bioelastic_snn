@@ -1,0 +1,40 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+ligadura,oraculo,2,acierto ligadas,1.0000,0.1000,azar
+ligadura,oraculo,2,fracción COPIAR ligadas,1.0000,,
+ligadura,oraculo,2,acierto no ligadas,1.0000,0.1000,azar
+ligadura,oraculo,2,fracción COPIAR no ligadas,0.0000,,
+ligadura,vista fuerte,2,exactitud imagen (test),0.9714,,depth2
+ligadura,vista fuerte tubería,2,acierto ligadas,0.8900,0.9166,p^3*oráculo
+ligadura,vista fuerte tubería,2,acierto ligadas | 9 imágenes bien,1.0000,1.0000,oráculo
+ligadura,vista fuerte tubería,2,acierto ligadas | alguna mal,0.5736,,
+ligadura,vista fuerte tubería,2,fracción COPIAR ligadas,0.9360,1.0000,oráculo
+ligadura,vista fuerte tubería,2,acierto no ligadas,0.9520,0.9714,p^1*oráculo
+ligadura,vista fuerte tubería,2,acierto no ligadas | 9 imágenes bien,1.0000,1.0000,oráculo
+ligadura,vista fuerte tubería,2,acierto no ligadas | alguna mal,0.8095,,
+ligadura,vista fuerte tubería,2,fracción COPIAR no ligadas,0.0360,0.0000,oráculo
+ligadura,vista fuerte ruidosa,2,acierto ligadas,0.9220,0.9166,p^3*oráculo
+ligadura,vista fuerte ruidosa,2,acierto ligadas | 9 imágenes bien,1.0000,1.0000,oráculo
+ligadura,vista fuerte ruidosa,2,acierto ligadas | alguna mal,0.6250,,
+ligadura,vista fuerte ruidosa,2,fracción COPIAR ligadas,0.9660,1.0000,oráculo
+ligadura,vista fuerte ruidosa,2,acierto no ligadas,0.9660,0.9714,p^1*oráculo
+ligadura,vista fuerte ruidosa,2,acierto no ligadas | 9 imágenes bien,1.0000,1.0000,oráculo
+ligadura,vista fuerte ruidosa,2,acierto no ligadas | alguna mal,0.8618,,
+ligadura,vista fuerte ruidosa,2,fracción COPIAR no ligadas,0.0280,0.0000,oráculo
+ligadura,vista débil,2,exactitud imagen (test),0.8806,,depth1
+ligadura,vista débil tubería,2,acierto ligadas,0.6820,0.6829,p^3*oráculo
+ligadura,vista débil tubería,2,acierto ligadas | 9 imágenes bien,1.0000,1.0000,oráculo
+ligadura,vista débil tubería,2,acierto ligadas | alguna mal,0.5123,,
+ligadura,vista débil tubería,2,fracción COPIAR ligadas,0.8180,1.0000,oráculo
+ligadura,vista débil tubería,2,acierto no ligadas,0.8540,0.8806,p^1*oráculo
+ligadura,vista débil tubería,2,acierto no ligadas | 9 imágenes bien,1.0000,1.0000,oráculo
+ligadura,vista débil tubería,2,acierto no ligadas | alguna mal,0.7896,,
+ligadura,vista débil tubería,2,fracción COPIAR no ligadas,0.1000,0.0000,oráculo
+ligadura,vista débil ruidosa,2,acierto ligadas,0.7040,0.6829,p^3*oráculo
+ligadura,vista débil ruidosa,2,acierto ligadas | 9 imágenes bien,1.0000,1.0000,oráculo
+ligadura,vista débil ruidosa,2,acierto ligadas | alguna mal,0.5710,,
+ligadura,vista débil ruidosa,2,fracción COPIAR ligadas,0.8280,1.0000,oráculo
+ligadura,vista débil ruidosa,2,acierto no ligadas,0.8620,0.8806,p^1*oráculo
+ligadura,vista débil ruidosa,2,acierto no ligadas | 9 imágenes bien,1.0000,1.0000,oráculo
+ligadura,vista débil ruidosa,2,acierto no ligadas | alguna mal,0.7959,,
+ligadura,vista débil ruidosa,2,fracción COPIAR no ligadas,0.0820,0.0000,oráculo
+ligadura,total,2,segundos,199.1000,,

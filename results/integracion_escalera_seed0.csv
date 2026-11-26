@@ -1,0 +1,53 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+conjunta,R0,0,curva columna ep=1000,0.4250,0.1000,azar
+conjunta,R0,0,curva pureza ep=1000,0.6440,0.1000,símbolos usados=7
+conjunta,R0,0,curva columna ep=2000,0.6520,0.1000,azar
+conjunta,R0,0,curva pureza ep=2000,0.7220,0.1000,símbolos usados=8
+conjunta,R0,0,curva columna ep=3000,0.7160,0.1000,azar
+conjunta,R0,0,curva pureza ep=3000,0.7460,0.1000,símbolos usados=8
+conjunta,R0,0,curva columna ep=4000,0.7500,0.1000,azar
+conjunta,R0,0,curva pureza ep=4000,0.8240,0.1000,símbolos usados=9
+conjunta,R0,0,pureza percepción (test),0.8360,0.1000,azar
+conjunta,R0,0,exactitud identidad (test),0.8360,0.1000,azar
+conjunta,R0,0,símbolos distintos usados,9,10,
+conjunta,R0,0,segundos,40.5000,,
+conjunta,L0,0,curva columna ep=1000,0.3470,0.1000,azar
+conjunta,L0,0,curva pureza ep=1000,0.5200,0.1000,símbolos usados=7
+conjunta,L0,0,curva columna ep=2000,0.5600,0.1000,azar
+conjunta,L0,0,curva pureza ep=2000,0.6740,0.1000,símbolos usados=7
+conjunta,L0,0,curva columna ep=3000,0.6460,0.1000,azar
+conjunta,L0,0,curva pureza ep=3000,0.6680,0.1000,símbolos usados=7
+conjunta,L0,0,curva columna ep=4000,0.6670,0.1000,azar
+conjunta,L0,0,curva pureza ep=4000,0.6700,0.1000,símbolos usados=7
+conjunta,L0,0,pureza percepción (test),0.6710,0.1000,azar
+conjunta,L0,0,exactitud identidad (test),0.1120,0.1000,azar
+conjunta,L0,0,símbolos distintos usados,7,10,
+conjunta,L0,0,acierto tarea (test),0.6800,0.6710,pureza^1 (cota si el Thinker fuera perfecto)
+conjunta,L0,0,segundos,45.3000,,
+conjunta,L1,0,curva columna ep=1000,0.1750,0.1000,azar
+conjunta,L1,0,curva pureza ep=1000,0.3840,0.1000,símbolos usados=7
+conjunta,L1,0,curva columna ep=2000,0.3600,0.1000,azar
+conjunta,L1,0,curva pureza ep=2000,0.4780,0.1000,símbolos usados=6
+conjunta,L1,0,curva columna ep=3000,0.4450,0.1000,azar
+conjunta,L1,0,curva pureza ep=3000,0.5100,0.1000,símbolos usados=6
+conjunta,L1,0,curva columna ep=4000,0.4810,0.1000,azar
+conjunta,L1,0,curva pureza ep=4000,0.5040,0.1000,símbolos usados=6
+conjunta,L1,0,pureza percepción (test),0.4985,0.1000,azar
+conjunta,L1,0,exactitud identidad (test),0.1020,0.1000,azar
+conjunta,L1,0,símbolos distintos usados,7,10,
+conjunta,L1,0,acierto tarea (test),0.4480,0.4985,pureza^1 (cota si el Thinker fuera perfecto)
+conjunta,L1,0,segundos,48.8000,,
+conjunta,L2,0,curva columna ep=1000,0.1240,0.1000,azar
+conjunta,L2,0,curva pureza ep=1000,0.3040,0.1000,símbolos usados=7
+conjunta,L2,0,curva columna ep=2000,0.1130,0.1000,azar
+conjunta,L2,0,curva pureza ep=2000,0.2680,0.1000,símbolos usados=6
+conjunta,L2,0,curva columna ep=3000,0.1500,0.1000,azar
+conjunta,L2,0,curva pureza ep=3000,0.3060,0.1000,símbolos usados=4
+conjunta,L2,0,curva columna ep=4000,0.1230,0.1000,azar
+conjunta,L2,0,curva pureza ep=4000,0.3240,0.1000,símbolos usados=5
+conjunta,L2,0,pureza percepción (test),0.3190,0.1000,azar
+conjunta,L2,0,exactitud identidad (test),0.1315,0.1000,azar
+conjunta,L2,0,símbolos distintos usados,6,10,
+conjunta,L2,0,acierto tarea (test),0.1300,0.1018,pureza^2 (cota si el Thinker fuera perfecto)
+conjunta,L2,0,segundos,102.7000,,
+escalera,total,0,segundos,237.7000,,

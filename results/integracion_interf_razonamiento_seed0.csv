@@ -1,0 +1,11 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+interferencia,4b,0,vista fuerte (test),0.9735,,depth2
+interferencia,4b,0,vista débil (test),0.8875,,depth1
+interferencia,4b,0,Thinker antes: exacta n=3 con oráculo,1.0000,,
+interferencia,4b control: sigue con oráculo,0,Thinker después: exacta n=3 con oráculo,0.9700,1.0000,antes
+interferencia,4b control: sigue con oráculo,0,Thinker después: columna n=3 con oráculo,0.9953,1.0000,antes
+interferencia,4b vista fuerte,0,Thinker después: exacta n=3 con oráculo,0.8760,1.0000,antes
+interferencia,4b vista fuerte,0,Thinker después: columna n=3 con oráculo,0.9600,1.0000,antes
+interferencia,4b vista débil,0,Thinker después: exacta n=3 con oráculo,0.5160,1.0000,antes
+interferencia,4b vista débil,0,Thinker después: columna n=3 con oráculo,0.8407,1.0000,antes
+interf_razonamiento,total,0,segundos,86.6000,,

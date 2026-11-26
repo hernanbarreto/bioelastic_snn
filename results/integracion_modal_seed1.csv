@@ -1,0 +1,24 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+modal,memoria asociativa theta=0.7,1,imagen -> voz P@1,0.5700,0.1000,azar
+modal,memoria asociativa theta=0.7,1,voz -> imagen P@1,0.7233,0.1000,azar
+modal,memoria asociativa theta=0.7,1,neuronas,98,,3000 pares
+modal,memoria asociativa theta=0.7,1,segundos,4.6000,,
+modal,memoria asociativa theta=0.85,1,imagen -> voz P@1,0.7900,0.1000,azar
+modal,memoria asociativa theta=0.85,1,voz -> imagen P@1,0.8333,0.1000,azar
+modal,memoria asociativa theta=0.85,1,neuronas,1622,,3000 pares
+modal,memoria asociativa theta=0.85,1,segundos,20.8000,,
+modal,control: pares sin relación,1,imagen -> voz P@1,0.0790,0.1000,azar
+modal,control: pares sin relación,1,voz -> imagen P@1,0.1467,0.1000,azar
+modal,control: pares sin relación,1,neuronas,144,,3000 pares
+modal,control: pares sin relación,1,segundos,5.2000,,
+modal,control: memoria perfecta,1,imagen -> voz P@1,0.8660,,cota del protocolo
+modal,control: memoria perfecta,1,voz -> imagen P@1,0.8967,,cota del protocolo
+modal,símbolos mutuos (sin etiquetas),1,imagen -> voz P@1,0.2310,0.1000,azar
+modal,símbolos mutuos (sin etiquetas),1,voz -> imagen P@1,0.2267,0.1000,azar
+modal,símbolos mutuos (sin etiquetas),1,pureza imagen,0.3960,0.1000,símbolos usados=10
+modal,símbolos mutuos (sin etiquetas),1,pureza voz,0.3067,0.1000,símbolos usados=10
+modal,referencia con etiquetas,1,imagen -> voz P@1,0.9390,0.1000,azar
+modal,referencia con etiquetas,1,voz -> imagen P@1,0.9433,0.1000,azar
+modal,referencia con etiquetas,1,pureza imagen,0.9650,0.1000,símbolos usados=10
+modal,referencia con etiquetas,1,pureza voz,0.9800,0.1000,símbolos usados=10
+modal,total,1,segundos,84.0000,,
