@@ -1,3 +1,3 @@
 prueba,sistema,caso,acc_media,acc_min,semillas,nodos_busqueda,neuronas_say,segundos
-C3 cadenas largas (max_steps=20),thinker,12-16 saltos,1.0000,1.0000,5,0.7677,1.8000,5.9111
-C5 órdenes largos (max_steps=20),thinker,"orden de 16, distancia >= 8",1.0000,1.0000,5,0.2734,41.8000,6.8844
+C3 cadenas largas (max_steps=20),thinker,12-16 saltos,1.0000,1.0000,5,0.7539,1.8000,11.9049
+C5 órdenes largos (max_steps=20),thinker,"orden de 16, distancia >= 8",1.0000,1.0000,5,0.2693,42.4000,17.3406

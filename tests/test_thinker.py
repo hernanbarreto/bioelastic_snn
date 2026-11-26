@@ -248,3 +248,18 @@ def test_one_thinker_learns_tasks_in_sequence_without_forgetting():
     assert np.mean([know(False) for _ in range(200)]) > 0.97
     assert np.mean([chain(False, 6) for _ in range(200)]) > 0.97
     assert np.mean([ti(False, 8, 4) for _ in range(200)]) > 0.97
+
+
+def test_repeated_consistent_contradiction_revises_knowledge():
+    """Una contradicción suelta no pisa lo establecido; la misma corrección repetida sí."""
+    net = Thinker(16, seed=9)
+    for _ in range(6):
+        for x in range(4):
+            net.reset(); net.answer(x); net.feedback(target=x + 8)
+    x = (np.array([1]), np.ones(1, dtype=np.float32))
+    for target in (2, 5, 3):                               # objetivos que cambian: ruido episódico
+        net.reset(); net.answer(1); net.feedback(target=target)
+    assert net.say.peek(x) == 9
+    for _ in range(12):                                    # el mismo objetivo, repetido
+        net.reset(); net.answer(1); net.feedback(target=4)
+    assert net.say.peek(x) == 4

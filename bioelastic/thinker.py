@@ -118,7 +118,7 @@ class Thinker:
                  registers: int = 0, max_steps: int = 4, budget: int = 64,
                  gamma: float = 0.95, lam: float = 0.9, lr: float = 0.5,
                  temperature: float = 1.0, epsilon: float = 0.1, reg_lr: float = 0.5,
-                 say_sure: float = 0.7, branch: float = 0.0, protect: bool = True, hindsight: bool = True,
+                 say_sure: float = 0.7, branch: float = 0.0, reliability: float = 3.0, protect: bool = True, patience: int = 3, hindsight: bool = True,
                  decay: float = 1e-2, mixed: bool | str = "solo", clock: bool = False,
                  lookahead: bool = False, search: str = "guiada", credit: str = "eslabon",
                  seed: int = 0, say: dict | None = None):
@@ -132,10 +132,16 @@ class Thinker:
         self.reg_lr = float(reg_lr)
         self.say_sure = float(say_sure)
         self.branch = float(branch)            # >0: la búsqueda abre hipótesis sobre conocimiento inconsistente
+        # >0: la búsqueda paga -reliability*log(fiabilidad) por responder con una acción en un
+        # estado donde esa respuesta acertó poco (estado ambiguo): prefiere juntar información
+        self.reliability = float(reliability)
+        self.rel: dict = {}                    # (estado, respuesta) -> [aciertos, intentos]
         # Proteger el conocimiento choca con registros cuyo significado se aprende a la par
         # (el lector se congela antes que el escritor: T3 cae de 5/5 a 2/5 semillas). Con
         # registros no se protege.
         self.protect = bool(protect) and self.R == 0
+        self.patience = int(patience)
+        self._contra: dict = {}                # contradicciones consistentes pendientes por situación
         self.hindsight = bool(hindsight)
         self.decay = float(decay)              # contracción L1 del control: gana la explicación más simple
         self.search = str(search)              # "guiada" (mejor primero, acotada) o "amplitud" (exhaustiva)
@@ -338,14 +344,25 @@ class Thinker:
             return out, False
         return out, bool(net.readout.probs(V)[out] >= self.say_sure)
 
-    def _protected(self, c, net):
+    def _protected(self, c, net, target):
         """¿Es conocimiento consistente establecido para *esta misma* situación (no por
-        parecido con otra)? Eso no se pisa con una sola contradicción; lo generalizado
-        desde un vecino sí se corrige."""
+        parecido con otra)? Eso no se pisa con una contradicción suelta ni con objetivos que
+        cambian cada vez (lo episódico), pero sí cuando el mismo objetivo alternativo se
+        repite `patience` veces seguidas: eso es evidencia de que el conocimiento era otro.
+        Lo generalizado desde un vecino siempre se corrige."""
         if not self.protect or not self._know(c, net)[1]:
             return False
         v = net.layer.forward(*c)
-        return bool(v.cos[0] >= net.rho_sup)
+        if v.cos[0] < net.rho_sup:
+            return False
+        key = (id(net), c[0].tobytes())
+        alt, n = self._contra.get(key, (None, 0))
+        n = n + 1 if alt == target else 1
+        if n >= self.patience:
+            self._contra.pop(key, None)
+            return False
+        self._contra[key] = (target, n)
+        return True
 
     # ------------------------------------------------------------------ percibir y responder
     def observe(self, tokens=None):
@@ -391,6 +408,7 @@ class Thinker:
             out = int(self.judge.forward((s_idx, s_val)))
             self._js = (s_idx, s_val)
         self._write_registers(c_idx, c_val, s_idx, s_val, explore)
+        self._key = (s_idx.tobytes(), a)
         self._out = out
         return out
 
@@ -404,6 +422,9 @@ class Thinker:
             if reward is None:
                 reward = 1.0 if self._out == target else -1.0
             wrong = self._out != target
+            if self.reliability:
+                r = self.rel.setdefault(self._key, [0, 0])
+                r[0] += int(not wrong); r[1] += 1
             strategy_error = False
             if wrong and self.hindsight:
                 paths = self._search(target)
@@ -434,11 +455,11 @@ class Thinker:
                             last = SAY
                 # conocimiento consistente: una sola contradicción no lo pisa
                 if last == SAY:
-                    if not (wrong and self._protected(self._cf, self.say)):
+                    if not (wrong and self._protected(self._cf, self.say, target)):
                         self.say.teach(target)
                     if self.R:                              # si el conocimiento está protegido, la sospecha
                         self._hindsight(target)             # recae justamente en lo que leyó de los registros
-                elif last == JUDGE and not (wrong and self._protected(self._js, self.judge)):
+                elif last == JUDGE and not (wrong and self._protected(self._js, self.judge, target)):
                     self.judge.teach(target)
         self._r += float(reward or 0.0)
 
@@ -511,6 +532,9 @@ class Thinker:
                 else:
                     out, sure = self._outcome(a, focus, recall, c, s)
                     if sure and out == target:
+                        if self.reliability:
+                            ok, n_try = self.rel.get((s[0].tobytes(), a), (0, 0))
+                            cst -= self.reliability * float(np.log((ok + 1.0) / (n_try + 2.0)))
                         heapq.heappush(heap, (cst, next(tie), None, None, a, clock, step))
         return None
 

@@ -26,14 +26,15 @@ Rupturas (cada una sobre la red entrenada en la condición normal, salvo que se 
   distractores Z->B   hechos que llevan *hacia* símbolos de la cadena desde fuera.
   etiquetas ruidosas  10 % de los objetivos de entrenamiento al azar (se entrena así).
   vocabulario grande  N = 256.
-  multitarea          un solo Thinker con todas las consignas: mezcladas, y en bloques
-                      secuenciales (olvido).
+  multitarea          un solo Thinker con todas las consignas: mezcladas, en bloques
+                      secuenciales (olvido) y en bloques en orden inverso (f al final).
 
   largo               cadenas de 12-16 saltos y órdenes de 16 (max_steps=20).
-  ablaciones          cada pieza nueva reemplazada por la de la versión anterior.
+  ablaciones(_multi)  cada pieza nueva reemplazada por la de la versión anterior (o quitada).
 
   python experiments/exp_thinking_hard.py [episodios] [semillas] [grupo ...]
-  grupos: solas ruido grande largo multi ablaciones (resultados en results/thinking_hard_<grupo>.csv)
+  grupos: solas ruido grande largo multi ablaciones ablaciones_multi
+  (resultados en results/thinking_hard_<grupo>.csv)
 """
 from __future__ import annotations
 
@@ -280,16 +281,19 @@ def plan_mixed(tasks, n, cur):
     return [(0, 0)] * cur + [draw] * (n - cur)
 
 
-def plan_blocks(tasks, n_block, cur):
-    """C0 primero; después cada tarea en su bloque, sin volver a las anteriores."""
-    out = [(0, 0)] * cur
-    for t in tasks:
-        if t:
-            out += [(t, t)] * n_block
-    return out
+def plan_blocks(tasks, n_block, cur, reverse=False):
+    """C0 primero; después cada tarea en su bloque, sin volver a las anteriores. Con
+    `reverse`, orden adverso: de la última a la primera y C0 (el conocimiento f que usan
+    C1, C2 y C4) al final."""
+    out = []
+    for t in tasks[1:]:
+        out += [(t, t)] * n_block
+    if reverse:
+        return [x for t in tasks[1:][::-1] for x in [(t, t)] * n_block] + [(0, 0)] * cur
+    return [(0, 0)] * cur + out
 
 
-GROUPS = ("solas", "ruido", "grande", "largo", "multi", "ablaciones")
+GROUPS = ("solas", "ruido", "grande", "largo", "multi", "ablaciones", "ablaciones_multi")
 
 
 def main():
@@ -339,6 +343,8 @@ def main():
                plan_mixed(tasks, 7 * n // 2, n // 4), ev_all)
             go("multitarea en bloques (olvido)", "thinker", W, lambda s: make_thinker(W, 7, seed=s),
                plan_blocks(tasks, n // 2, n // 4), ev_all)
+            go("multitarea en bloques, orden inverso (f al final)", "thinker", W, lambda s: make_thinker(W, 7, seed=s),
+               plan_blocks(tasks, n // 2, n // 4, reverse=True), ev_all)
         if group == "ablaciones":
             # cada fila quita una pieza y vuelve a la versión anterior de esa pieza
             go("C3 sola", "con reloj y anticipación (v0)", W,
@@ -348,11 +354,16 @@ def main():
             go("C6 sola", "memoria por pares (v0)", W, lambda s: make_thinker(W, 1, seed=s, pair_memory=True),
                plan_single(6, n), evals_for(W, 6, 0))
             for label, kw in (("búsqueda exhaustiva (v0)", dict(search="amplitud")),
-                              ("crédito a lo percibido (v0)", dict(credit="percepcion")),
-                              ("sin protección", dict(protect=False)),
+                              ("crédito a lo percibido (v0)", dict(credit="percepcion"))):
+                go("multitarea mezclada", label, W, lambda s, kw=kw: make_thinker(W, 7, seed=s, **kw),
+                   plan_mixed(tasks, 7 * n // 2, n // 4), ev_all)
+        if group == "ablaciones_multi":
+            for label, kw in (("sin protección", dict(protect=False)),
                               ("pesos de control compartidos", dict(mixed=True))):
                 go("multitarea mezclada", label, W, lambda s, kw=kw: make_thinker(W, 7, seed=s, **kw),
                    plan_mixed(tasks, 7 * n // 2, n // 4), ev_all)
+            go("multitarea en bloques (olvido)", "sin fiabilidad en la búsqueda", W,
+               lambda s: make_thinker(W, 7, seed=s, reliability=0.0), plan_blocks(tasks, n // 2, n // 4), ev_all)
         log.close()
 
 

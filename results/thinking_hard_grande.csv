@@ -1,10 +1,10 @@
 prueba,sistema,caso,acc_media,acc_min,semillas,nodos_busqueda,neuronas_say,segundos
-C1 vocabulario 256,thinker,"v nunca compuesto, 1-2 saltos",0.9980,0.9950,5,0.4931,264.0000,15.9788
-C1 vocabulario 256,thinker,"v nunca compuesto, 3-4 saltos",0.9950,0.9850,5,0.4931,264.0000,15.9790
-C3 vocabulario 256,thinker,5-8 saltos,1.0000,1.0000,5,0.7660,0.8000,12.6445
-C3 vocabulario 256,thinker,"5-8 saltos, 16 distractores + 8 ruidos",1.0000,1.0000,5,0.7660,0.8000,12.6446
-C3 vocabulario 256,thinker,"3 saltos, orden reverso",1.0000,1.0000,5,0.7660,0.8000,12.6446
-C3 vocabulario 256,thinker,"3 saltos, hecho corregido",1.0000,1.0000,5,0.7660,0.8000,12.6446
-C3 vocabulario 256,thinker,"3 saltos, distractores que apuntan a la cadena",1.0000,1.0000,5,0.7660,0.8000,12.6446
-C5 vocabulario 256,thinker,"orden de 8, distancia >= 4",1.0000,1.0000,5,0.3408,91.0000,12.7988
-C6 vocabulario 256,thinker,5 eventos,1.0000,1.0000,5,0.0859,0.2000,4.3922
+C1 vocabulario 256,thinker,"v nunca compuesto, 1-2 saltos",0.9990,0.9950,5,0.4941,264.0000,21.6309
+C1 vocabulario 256,thinker,"v nunca compuesto, 3-4 saltos",0.9970,0.9850,5,0.4941,264.0000,21.6311
+C3 vocabulario 256,thinker,5-8 saltos,1.0000,1.0000,5,0.7569,0.4000,12.7086
+C3 vocabulario 256,thinker,"5-8 saltos, 16 distractores + 8 ruidos",1.0000,1.0000,5,0.7569,0.4000,12.7129
+C3 vocabulario 256,thinker,"3 saltos, orden reverso",1.0000,1.0000,5,0.7569,0.4000,12.7129
+C3 vocabulario 256,thinker,"3 saltos, hecho corregido",1.0000,1.0000,5,0.7569,0.4000,12.7130
+C3 vocabulario 256,thinker,"3 saltos, distractores que apuntan a la cadena",1.0000,1.0000,5,0.7569,0.4000,12.7130
+C5 vocabulario 256,thinker,"orden de 8, distancia >= 4",1.0000,1.0000,5,0.3437,90.2000,16.1005
+C6 vocabulario 256,thinker,5 eventos,1.0000,1.0000,5,0.0868,0.2000,4.9827
