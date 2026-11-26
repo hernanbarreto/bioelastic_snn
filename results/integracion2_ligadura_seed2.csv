@@ -1,0 +1,68 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+ligadura,oraculo,2,acierto ligadas,1.0000,0.1000,azar
+ligadura,oraculo,2,acierto no ligadas,1.0000,0.1000,azar
+ligadura,vista débil,2,exactitud imagen (test),0.8806,,"depth1, 1000 etiquetas"
+ligadura,base,2,vista débil después (test),0.8806,0.8806,antes
+ligadura,base,2,abstenciones,0,,umbral 0.000
+ligadura,base,2,créditos a la percepción,0,,
+ligadura,base,2,acierto ligadas,0.6780,0.6829,p^3*oráculo (p después)
+ligadura,base,2,acierto ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,base,2,fracción COPIAR ligadas,0.7720,,
+ligadura,base,2,acierto no ligadas,0.8440,0.8806,p^1*oráculo (p después)
+ligadura,base,2,acierto no ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,base,2,fracción COPIAR no ligadas,0.1000,,
+ligadura,base,2,segundos,17.4000,,
+ligadura,conf,2,vista débil después (test),0.8806,0.8806,antes
+ligadura,conf,2,abstenciones,1187,,umbral 0.685
+ligadura,conf,2,créditos a la percepción,0,,
+ligadura,conf,2,acierto ligadas,0.7000,0.6829,p^3*oráculo (p después)
+ligadura,conf,2,acierto ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,conf,2,fracción COPIAR ligadas,0.8340,,
+ligadura,conf,2,acierto no ligadas,0.7720,0.8806,p^1*oráculo (p después)
+ligadura,conf,2,acierto no ligadas | imágenes bien,0.9103,1.0000,oráculo
+ligadura,conf,2,fracción COPIAR no ligadas,0.0860,,
+ligadura,conf,2,segundos,19.5000,,
+ligadura,confcos,2,vista débil después (test),0.8806,0.8806,antes
+ligadura,confcos,2,abstenciones,1431,,umbral 0.217
+ligadura,confcos,2,créditos a la percepción,0,,
+ligadura,confcos,2,acierto ligadas,0.7200,0.6829,p^3*oráculo (p después)
+ligadura,confcos,2,acierto ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,confcos,2,fracción COPIAR ligadas,0.8280,,
+ligadura,confcos,2,acierto no ligadas,0.8300,0.8806,p^1*oráculo (p después)
+ligadura,confcos,2,acierto no ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,confcos,2,fracción COPIAR no ligadas,0.1100,,
+ligadura,confcos,2,segundos,19.6000,,
+ligadura,cred,2,vista débil después (test),0.5222,0.8806,antes
+ligadura,cred,2,abstenciones,0,,umbral 0.000
+ligadura,cred,2,créditos a la percepción,963,,
+ligadura,cred,2,precisión del crédito,0.3084,,
+ligadura,cred,2,acierto ligadas,0.2400,0.1424,p^3*oráculo (p después)
+ligadura,cred,2,acierto ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,cred,2,fracción COPIAR ligadas,0.4560,,
+ligadura,cred,2,acierto no ligadas,0.4040,0.5222,p^1*oráculo (p después)
+ligadura,cred,2,acierto no ligadas | imágenes bien,0.0000,1.0000,oráculo
+ligadura,cred,2,fracción COPIAR no ligadas,0.2580,,
+ligadura,cred,2,segundos,49.0000,,
+ligadura,cred2,2,vista débil después (test),0.8244,0.8806,antes
+ligadura,cred2,2,abstenciones,0,,umbral 0.000
+ligadura,cred2,2,créditos a la percepción,627,,
+ligadura,cred2,2,precisión del crédito,0.7624,,
+ligadura,cred2,2,acierto ligadas,0.5600,0.5603,p^3*oráculo (p después)
+ligadura,cred2,2,acierto ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,cred2,2,fracción COPIAR ligadas,0.0000,,
+ligadura,cred2,2,acierto no ligadas,0.7660,0.8244,p^1*oráculo (p después)
+ligadura,cred2,2,acierto no ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,cred2,2,fracción COPIAR no ligadas,0.0000,,
+ligadura,cred2,2,segundos,28.2000,,
+ligadura,confcos+cred2,2,vista débil después (test),0.8440,0.8806,antes
+ligadura,confcos+cred2,2,abstenciones,1057,,umbral 0.217
+ligadura,confcos+cred2,2,créditos a la percepción,624,,
+ligadura,confcos+cred2,2,precisión del crédito,0.8077,,
+ligadura,confcos+cred2,2,acierto ligadas,0.6260,0.6012,p^3*oráculo (p después)
+ligadura,confcos+cred2,2,acierto ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,confcos+cred2,2,fracción COPIAR ligadas,0.7600,,
+ligadura,confcos+cred2,2,acierto no ligadas,0.8000,0.8440,p^1*oráculo (p después)
+ligadura,confcos+cred2,2,acierto no ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,confcos+cred2,2,fracción COPIAR no ligadas,0.1260,,
+ligadura,confcos+cred2,2,segundos,21.5000,,
+ligadura,total,2,segundos,158.6000,,

@@ -1,0 +1,27 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+interf,4b,1,Thinker antes: exacta n=3 con oráculo,0.9800,,
+interf,4b control: sigue con oráculo,1,Thinker después: exacta n=3 con oráculo,0.9880,0.9800,antes
+interf,4b control: sigue con oráculo,1,Thinker después: columna n=3 con oráculo,0.9960,0.9967,antes
+interf,4b control: sigue con oráculo,1,abstenciones,0,,
+interf,4b control: sigue con oráculo,1,créditos a la percepción,0,,
+interf,4b base,1,Thinker después: exacta n=3 con oráculo,0.6100,0.9800,antes
+interf,4b base,1,Thinker después: columna n=3 con oráculo,0.8833,0.9967,antes
+interf,4b base,1,abstenciones,0,,
+interf,4b base,1,créditos a la percepción,0,,
+interf,4b conf,1,Thinker después: exacta n=3 con oráculo,0.9200,0.9800,antes
+interf,4b conf,1,Thinker después: columna n=3 con oráculo,0.9827,0.9967,antes
+interf,4b conf,1,abstenciones,4360,,
+interf,4b conf,1,créditos a la percepción,0,,
+interf,4b confcos,1,Thinker después: exacta n=3 con oráculo,0.9460,0.9800,antes
+interf,4b confcos,1,Thinker después: columna n=3 con oráculo,0.9873,0.9967,antes
+interf,4b confcos,1,abstenciones,4726,,
+interf,4b confcos,1,créditos a la percepción,0,,
+interf,4b cred2,1,Thinker después: exacta n=3 con oráculo,0.2500,0.9800,antes
+interf,4b cred2,1,Thinker después: columna n=3 con oráculo,0.7407,0.9967,antes
+interf,4b cred2,1,abstenciones,0,,
+interf,4b cred2,1,créditos a la percepción,569,,
+interf,4b confcos+cred2,1,Thinker después: exacta n=3 con oráculo,0.8340,0.9800,antes
+interf,4b confcos+cred2,1,Thinker después: columna n=3 con oráculo,0.9627,0.9967,antes
+interf,4b confcos+cred2,1,abstenciones,4225,,
+interf,4b confcos+cred2,1,créditos a la percepción,581,,
+interf,total,1,segundos,98.9000,,
