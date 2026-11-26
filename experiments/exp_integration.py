@@ -25,6 +25,9 @@ tareas y para medir; dónde las recibe la red está dicho en cada prueba.
                       L1 a+b, b símbolo una imagen y un símbolo perfecto -> (a+b) mod 10
                       L2 a+b imágenes   dos imágenes -> (a+b) mod 10 (sin acarreo)
                       L3 suma completa  varias columnas con acarreo (subcomando `conjunta`)
+                  `escalera_h` repite R0-L2 con un cambio mínimo de arquitectura, la
+                  homeostasis de las salidas (`CortexHomeostatico`), contra el colapso de
+                  símbolos que aparece en la escalera.
                   La percepción se mide con la mejor biyección símbolo -> dígito (pureza),
                   porque al Thinker le sirve cualquier código consistente.
   ligadura        (2) en cada episodio se ligan 4 pares (imagen de clave, imagen de valor)
@@ -112,13 +115,51 @@ class Digitos:
         return self.X[split][idx[int(rng.integers(len(idx)))]]
 
 
+class CortexHomeostatico(Cortex):
+    """Cambio mínimo de arquitectura que se prueba en 1b (no está en el núcleo): homeostasis
+    de las neuronas de salida. Cada vez que la red aprende de una decisión, el umbral de la
+    salida elegida sube `h` y el de las demás baja h/C (suma cero), como el `theta_plus` de
+    las capas ocultas. Una salida que acapara decisiones se vuelve más difícil de disparar,
+    y una que nunca se usa termina por ganar alguna y recibir su recompensa. Ataca el
+    colapso de símbolos; no cambia cómo se reparte el crédito."""
+
+    def __init__(self, *args, homeostasis: float = 0.02, **kw):
+        super().__init__(*args, **kw)
+        self.h = float(homeostasis)
+        self.umbral = np.zeros(self.C, dtype=np.float32)
+
+    def forward(self, x, explore: bool = False) -> int:
+        super().forward(x)
+        self._V = self._V - self.umbral
+        self.pred = int(self.rng.choice(self.C, p=self._p())) if explore else int(np.argmax(self._V))
+        return self.pred
+
+    predict = forward
+
+    def _adaptar(self):
+        self.umbral -= np.float32(self.h / self.C)
+        self.umbral[self.pred] += np.float32(self.h)
+
+    def reinforce(self, reward: float):
+        self._adaptar()
+        super().reinforce(reward)
+
+    def teach(self, target: int):
+        self._adaptar()
+        super().teach(target)
+
+
 class Vista:
     """Percepción visual: el Cortex de exp_vision (2 niveles: 98.5 % con MNIST completo).
     Su decisión (argmax o muestreo) es el símbolo que recibe el Thinker."""
 
-    def __init__(self, seed: int, config: str = "depth2"):
+    def __init__(self, seed: int, config: str = "depth2", homeostasis: float = 0.0):
         self.config = config
-        self.net = Cortex((28, 28, 1), 10, seed=seed, **CONFIGS[config])
+        if homeostasis > 0.0:
+            self.net = CortexHomeostatico((28, 28, 1), 10, seed=seed, homeostasis=homeostasis,
+                                          **CONFIGS[config])
+        else:
+            self.net = Cortex((28, 28, 1), 10, seed=seed, **CONFIGS[config])
         self._E = encoder()
 
     def simbolo(self, img, explore: bool = False) -> int:
@@ -293,22 +334,23 @@ def prueba_conjunta(seed, tam, out, niveles=("L3",)):
     datos = Digitos(tam["n_pre"])
     Xt, yt = muestra_test(datos, rng, tam["n_test_pureza"])
     for nivel in niveles:
-        v = Vista(seed)
+        base, con_h, _ = nivel.partition("+H")             # "L1+H": con homeostasis de salida
+        v = Vista(seed, homeostasis=tam["homeostasis"] if con_h else 0.0)
         refuerzo = lambda pares, r: [v.reforzar(img, s, r) for img, s in pares]
-        th = Thinker(10 if nivel == "L0" else (20 if nivel in ("L1", "L2") else 21),
-                     registers=2 if nivel == "L3" else 0, seed=seed)
+        th = Thinker(10 if base == "L0" else (20 if base in ("L1", "L2") else 21),
+                     registers=2 if base == "L3" else 0, seed=seed)
         t0 = time.time(); win = []
         for e in range(tam["ep_conjunta"]):
-            if nivel == "R0":
+            if base == "R0":
                 d = int(rng.integers(10)); img = datos.una("train", d, rng)
                 s = v.simbolo(img, explore=True)
                 v.reforzar(img, s, 1.0 if s == d else -1.0)
                 win.append(s == d)
-            elif nivel == "L3":
+            elif base == "L3":
                 r = episodio_suma(th, con_vista(v), datos, "train", rng, int(rng.integers(1, 5)), True, refuerzo)
                 win += r["columnas"]
             else:
-                win.append(episodio_escalera(nivel, th, con_vista(v), datos, "train", rng, True, refuerzo)[0])
+                win.append(episodio_escalera(base, th, con_vista(v), datos, "train", rng, True, refuerzo)[0])
             if (e + 1) % tam["cada"] == 0:
                 conf = v.confusion(Xt[:500], yt[:500])
                 out("conjunta", nivel, f"curva columna ep={e + 1}", float(np.mean(win)), 0.1, "azar")
@@ -321,16 +363,16 @@ def prueba_conjunta(seed, tam, out, niveles=("L3",)):
         out("conjunta", nivel, "exactitud identidad (test)", float(np.trace(conf) / conf.sum()), 0.1, "azar")
         out("conjunta", nivel, "símbolos distintos usados", int((conf.sum(0) > 0).sum()), 10, "")
         plasticidad(th, False)
-        if nivel == "L3":
+        if base == "L3":
             m = evaluar_suma(th, con_vista(v), datos, rng, 3, tam["ep_eval"])
             out("conjunta", nivel, "exacta n=3 (test)", m["exacta"], 1e-4, "azar")
             out("conjunta", nivel, "columna n=3 (test)", m["columna"], 0.1, "azar")
             out("conjunta", nivel, "exacta n=3: cota con la pureza medida", "",
                 cota_independiente(pz, 6, 1.0), "pureza^6 (Thinker perfecto)")
-        elif nivel != "R0":
-            acc = float(np.mean([episodio_escalera(nivel, th, con_vista(v), datos, "test", rng, False)[0]
+        elif base != "R0":
+            acc = float(np.mean([episodio_escalera(base, th, con_vista(v), datos, "test", rng, False)[0]
                                  for _ in range(tam["ep_eval"])]))
-            k = 1 if nivel in ("L0", "L1") else 2
+            k = 1 if base in ("L0", "L1") else 2
             out("conjunta", nivel, "acierto tarea (test)", acc, cota_independiente(pz, k, 1.0),
                 f"pureza^{k} (cota si el Thinker fuera perfecto)")
         out("conjunta", nivel, "segundos", round(time.time() - t0, 1), "", "")
@@ -584,15 +626,17 @@ TAM = dict(
     completa=dict(n_pre=10000, n_debil=1000, n_test=5000, n_test_pureza=2000, ep_suma=6000, ep_eval=500,
                   ep_conjunta=4000, cada=1000, escalera=("R0", "L0", "L1", "L2"), ep_ligadura=3000,
                   n_q_img=1000, n_pares=3000, n_pares_mutuos=3000, n_ref=5000, theta_modal=(0.7, 0.85),
-                  ep_interf=2000, n_test_interf=2000),
+                  ep_interf=2000, n_test_interf=2000, homeostasis=0.02,
+                  escalera_h=("R0+H", "L0+H", "L1+H", "L2+H")),
     rapida=dict(n_pre=300, n_debil=200, n_test=200, n_test_pureza=100, ep_suma=60, ep_eval=20,
                 ep_conjunta=20, cada=10, escalera=("R0", "L0"), ep_ligadura=40,
                 n_q_img=50, n_pares=60, n_pares_mutuos=20, n_ref=50, theta_modal=(0.7,),
-                ep_interf=20, n_test_interf=100),
+                ep_interf=20, n_test_interf=100, homeostasis=0.02, escalera_h=("L0+H",)),
 )
 PRUEBAS = dict(suma=prueba_suma,
                escalera=lambda s, t, o: prueba_conjunta(s, t, o, t["escalera"]),
                conjunta=lambda s, t, o: prueba_conjunta(s, t, o, ("L3",)),
+               escalera_h=lambda s, t, o: prueba_conjunta(s, t, o, t["escalera_h"]),
                ligadura=prueba_ligadura, modal=prueba_modal,
                interf_percepcion=prueba_interferencia_percepcion,
                interf_razonamiento=prueba_interferencia_razonamiento)

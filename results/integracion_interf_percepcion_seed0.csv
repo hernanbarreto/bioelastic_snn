@@ -1,0 +1,15 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+interferencia,4a,0,vista antes (test),0.9705,,entrenada con etiquetas
+interferencia,"4a Thinker pre-entrenado, vista con refuerzo",0,vista después (test),0.9695,0.9705,antes
+interferencia,"4a Thinker pre-entrenado, vista con refuerzo",0,pureza vista después,0.9695,0.9705,antes
+interferencia,"4a Thinker pre-entrenado, vista con refuerzo",0,suma exacta n=3 (test),0.6500,,
+interferencia,"4a Thinker pre-entrenado, vista congelada (control)",0,vista después (test),0.9705,0.9705,antes
+interferencia,"4a Thinker pre-entrenado, vista congelada (control)",0,pureza vista después,0.9705,0.9705,antes
+interferencia,"4a Thinker pre-entrenado, vista congelada (control)",0,suma exacta n=3 (test),0.6660,,
+interferencia,"4a Thinker desde cero, vista con refuerzo",0,vista después (test),0.9635,0.9705,antes
+interferencia,"4a Thinker desde cero, vista con refuerzo",0,pureza vista después,0.9635,0.9705,antes
+interferencia,"4a Thinker desde cero, vista con refuerzo",0,suma exacta n=3 (test),0.6060,,
+interferencia,"4a Thinker desde cero, vista congelada (control)",0,vista después (test),0.9705,0.9705,antes
+interferencia,"4a Thinker desde cero, vista congelada (control)",0,pureza vista después,0.9705,0.9705,antes
+interferencia,"4a Thinker desde cero, vista congelada (control)",0,suma exacta n=3 (test),0.6160,,
+interf_percepcion,total,0,segundos,293.8000,,

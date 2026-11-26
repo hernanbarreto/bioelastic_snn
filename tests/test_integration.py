@@ -140,3 +140,26 @@ def test_memoria_asociativa_completa_la_otra_modalidad_desde_un_ejemplar_nuevo()
         hits += int(np.argmax([ei._unidad(rec) @ ei._unidad(b) for b in B]) == c)
     assert hits == 5
     assert ei.p_at_1([B[2]], np.array([2]), list(B), np.arange(5)) == 1.0
+
+
+def test_homeostasis_de_salida_evita_que_un_simbolo_acapare_las_decisiones():
+    """Una percepción sesgada (enseñada a decir siempre 0) sigue diciendo 0 si nada la
+    corrige; con homeostasis de salida el umbral del símbolo que acapara sube (con suma
+    cero) hasta que otros símbolos ganan decisiones."""
+    datos = _sinteticos(10)
+
+    def usados(h):
+        v = ei.Vista(0, "depth1", homeostasis=h)
+        v.entrenar(datos.X["pre"][:50], np.zeros(50, dtype=int))
+        rng = np.random.default_rng(0)
+        elegidos = set()
+        for _ in range(300):
+            img = datos.una("train", int(rng.integers(10)), rng)
+            s = v.simbolo(img)
+            elegidos.add(s)
+            v.reforzar(img, s, 0.0)
+        if h:
+            assert abs(float(v.net.umbral.sum())) < 1e-3 and int(np.argmax(v.net.umbral)) == 0
+        return len(elegidos)
+    assert usados(0.0) == 1
+    assert usados(0.05) >= 5

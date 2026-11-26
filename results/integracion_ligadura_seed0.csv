@@ -1,0 +1,30 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+ligadura,oraculo,0,acierto ligadas,1.0000,0.1000,azar
+ligadura,oraculo,0,acierto no ligadas,1.0000,0.1000,azar
+ligadura,vista fuerte,0,exactitud imagen (test),0.9702,,depth2
+ligadura,vista fuerte tubería,0,acierto ligadas,0.9120,0.9132,p^3*oráculo
+ligadura,vista fuerte tubería,0,acierto ligadas | 9 imágenes bien,1.0000,1.0000,oráculo
+ligadura,vista fuerte tubería,0,acierto ligadas | alguna mal,0.6508,,
+ligadura,vista fuerte tubería,0,acierto no ligadas,0.9620,0.9702,p^1*oráculo
+ligadura,vista fuerte tubería,0,acierto no ligadas | 9 imágenes bien,1.0000,1.0000,oráculo
+ligadura,vista fuerte tubería,0,acierto no ligadas | alguna mal,0.8319,,
+ligadura,vista fuerte ruidosa,0,acierto ligadas,0.9280,0.9132,p^3*oráculo
+ligadura,vista fuerte ruidosa,0,acierto ligadas | 9 imágenes bien,1.0000,1.0000,oráculo
+ligadura,vista fuerte ruidosa,0,acierto ligadas | alguna mal,0.7025,,
+ligadura,vista fuerte ruidosa,0,acierto no ligadas,0.9600,0.9702,p^1*oráculo
+ligadura,vista fuerte ruidosa,0,acierto no ligadas | 9 imágenes bien,1.0000,1.0000,oráculo
+ligadura,vista fuerte ruidosa,0,acierto no ligadas | alguna mal,0.8198,,
+ligadura,vista débil,0,exactitud imagen (test),0.8780,,depth1
+ligadura,vista débil tubería,0,acierto ligadas,0.6880,0.6768,p^3*oráculo
+ligadura,vista débil tubería,0,acierto ligadas | 9 imágenes bien,1.0000,1.0000,oráculo
+ligadura,vista débil tubería,0,acierto ligadas | alguna mal,0.5478,,
+ligadura,vista débil tubería,0,acierto no ligadas,0.8760,0.8780,p^1*oráculo
+ligadura,vista débil tubería,0,acierto no ligadas | 9 imágenes bien,1.0000,1.0000,oráculo
+ligadura,vista débil tubería,0,acierto no ligadas | alguna mal,0.8249,,
+ligadura,vista débil ruidosa,0,acierto ligadas,0.1080,0.6768,p^3*oráculo
+ligadura,vista débil ruidosa,0,acierto ligadas | 9 imágenes bien,0.1313,1.0000,oráculo
+ligadura,vista débil ruidosa,0,acierto ligadas | alguna mal,0.0971,,
+ligadura,vista débil ruidosa,0,acierto no ligadas,0.8780,0.8780,p^1*oráculo
+ligadura,vista débil ruidosa,0,acierto no ligadas | 9 imágenes bien,1.0000,1.0000,oráculo
+ligadura,vista débil ruidosa,0,acierto no ligadas | alguna mal,0.8242,,
+ligadura,total,0,segundos,193.5000,,
