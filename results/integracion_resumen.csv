@@ -1,0 +1,251 @@
+prueba,variante,metrica,media,min,max,semillas,referencia_media,nota
+conjunta,L3+H,curva columna ep=1000,0.2203,0.2143,0.2273,3,0.1000,azar
+conjunta,L3+H,curva pureza ep=1000,0.4207,0.3880,0.4620,3,0.1000,símbolos usados=10
+conjunta,L3+H,curva columna ep=2000,0.2430,0.2250,0.2533,3,0.1000,azar
+conjunta,L3+H,curva pureza ep=2000,0.4560,0.3800,0.4980,3,0.1000,símbolos usados=10
+conjunta,L3+H,curva columna ep=3000,0.2581,0.2420,0.2664,3,0.1000,azar
+conjunta,L3+H,curva pureza ep=3000,0.5720,0.5160,0.6180,3,0.1000,símbolos usados=10
+conjunta,L3+H,curva columna ep=4000,0.2719,0.2560,0.2804,3,0.1000,azar
+conjunta,L3+H,curva pureza ep=4000,0.5960,0.5300,0.6580,3,0.1000,símbolos usados=10
+conjunta,L3+H,pureza percepción (test),0.5812,0.5195,0.6275,3,0.1000,azar
+conjunta,L3+H,exactitud identidad (test),0.0553,0.0410,0.0650,3,0.1000,azar
+conjunta,L3+H,símbolos distintos usados,10.0000,10.0000,10.0000,3,10.0000,
+conjunta,L3+H,exacta n=3 (test),0.0020,0.0000,0.0040,3,0.0001,azar
+conjunta,L3+H,columna n=3 (test),0.1804,0.1673,0.1900,3,0.1000,azar
+conjunta,L3+H,segundos,325.5000,292.1000,355.1000,3,,
+conjunta_h,total,segundos,325.7333,292.2000,355.4000,3,,
+conjunta,L3,curva columna ep=1000,0.2208,0.2078,0.2303,3,0.1000,azar
+conjunta,L3,curva pureza ep=1000,0.2287,0.1880,0.2960,3,0.1000,símbolos usados=5
+conjunta,L3,curva columna ep=2000,0.2166,0.2102,0.2217,3,0.1000,azar
+conjunta,L3,curva pureza ep=2000,0.2240,0.1640,0.3160,3,0.1000,símbolos usados=4
+conjunta,L3,curva columna ep=3000,0.2193,0.2113,0.2295,3,0.1000,azar
+conjunta,L3,curva pureza ep=3000,0.1993,0.1320,0.2720,3,0.1000,símbolos usados=5
+conjunta,L3,curva columna ep=4000,0.2266,0.2181,0.2400,3,0.1000,azar
+conjunta,L3,curva pureza ep=4000,0.2120,0.1360,0.2700,3,0.1000,símbolos usados=6
+conjunta,L3,pureza percepción (test),0.2070,0.1250,0.2875,3,0.1000,azar
+conjunta,L3,exactitud identidad (test),0.1002,0.0975,0.1045,3,0.1000,azar
+conjunta,L3,símbolos distintos usados,4.0000,2.0000,6.0000,3,10.0000,
+conjunta,L3,exacta n=3 (test),0.0000,0.0000,0.0000,3,0.0001,azar
+conjunta,L3,columna n=3 (test),0.1031,0.0973,0.1067,3,0.1000,azar
+conjunta,L3,segundos,382.8333,379.2000,389.0000,3,,
+conjunta,total,segundos,383.1000,379.5000,389.2000,3,,
+conjunta,R0+H,curva columna ep=1000,0.5543,0.5390,0.5690,3,0.1000,azar
+conjunta,R0+H,curva pureza ep=1000,0.8693,0.8600,0.8820,3,0.1000,símbolos usados=10
+conjunta,R0+H,curva columna ep=2000,0.8283,0.8250,0.8310,3,0.1000,azar
+conjunta,R0+H,curva pureza ep=2000,0.8973,0.8840,0.9120,3,0.1000,símbolos usados=10
+conjunta,R0+H,curva columna ep=3000,0.8683,0.8630,0.8730,3,0.1000,azar
+conjunta,R0+H,curva pureza ep=3000,0.9087,0.9020,0.9120,3,0.1000,símbolos usados=10
+conjunta,R0+H,curva columna ep=4000,0.8920,0.8810,0.9010,3,0.1000,azar
+conjunta,R0+H,curva pureza ep=4000,0.9247,0.9140,0.9360,3,0.1000,símbolos usados=10
+conjunta,R0+H,pureza percepción (test),0.9315,0.9245,0.9385,3,0.1000,azar
+conjunta,R0+H,exactitud identidad (test),0.9315,0.9245,0.9385,3,0.1000,azar
+conjunta,R0+H,símbolos distintos usados,10.0000,10.0000,10.0000,3,10.0000,
+conjunta,R0+H,segundos,31.4667,27.2000,34.4000,3,,
+conjunta,L0+H,curva columna ep=1000,0.4640,0.4520,0.4720,3,0.1000,azar
+conjunta,L0+H,curva pureza ep=1000,0.6967,0.6540,0.7200,3,0.1000,símbolos usados=10
+conjunta,L0+H,curva columna ep=2000,0.7353,0.6920,0.7630,3,0.1000,azar
+conjunta,L0+H,curva pureza ep=2000,0.8000,0.7560,0.8760,3,0.1000,símbolos usados=10
+conjunta,L0+H,curva columna ep=3000,0.7990,0.7740,0.8340,3,0.1000,azar
+conjunta,L0+H,curva pureza ep=3000,0.8333,0.7940,0.9020,3,0.1000,símbolos usados=10
+conjunta,L0+H,curva columna ep=4000,0.8227,0.7840,0.8870,3,0.1000,azar
+conjunta,L0+H,curva pureza ep=4000,0.8433,0.7820,0.9260,3,0.1000,símbolos usados=10
+conjunta,L0+H,pureza percepción (test),0.8453,0.7940,0.9325,3,0.1000,azar
+conjunta,L0+H,exactitud identidad (test),0.0955,0.0080,0.1775,3,0.1000,azar
+conjunta,L0+H,símbolos distintos usados,10.0000,10.0000,10.0000,3,10.0000,
+conjunta,L0+H,acierto tarea (test),0.8667,0.8140,0.9380,3,0.8453,pureza^1 (cota si el Thinker fuera perfecto)
+conjunta,L0+H,segundos,29.8333,27.1000,31.6000,3,,
+conjunta,L1+H,curva columna ep=1000,0.1453,0.1250,0.1740,3,0.1000,azar
+conjunta,L1+H,curva pureza ep=1000,0.4407,0.4060,0.4960,3,0.1000,símbolos usados=9
+conjunta,L1+H,curva columna ep=2000,0.3067,0.2830,0.3420,3,0.1000,azar
+conjunta,L1+H,curva pureza ep=2000,0.6007,0.5560,0.6620,3,0.1000,símbolos usados=10
+conjunta,L1+H,curva columna ep=3000,0.4770,0.4380,0.5420,3,0.1000,azar
+conjunta,L1+H,curva pureza ep=3000,0.6727,0.6460,0.6920,3,0.1000,símbolos usados=10
+conjunta,L1+H,curva columna ep=4000,0.5623,0.5300,0.6080,3,0.1000,azar
+conjunta,L1+H,curva pureza ep=4000,0.7133,0.6860,0.7480,3,0.1000,símbolos usados=10
+conjunta,L1+H,pureza percepción (test),0.7012,0.6690,0.7595,3,0.1000,azar
+conjunta,L1+H,exactitud identidad (test),0.0955,0.0475,0.1630,3,0.1000,azar
+conjunta,L1+H,símbolos distintos usados,10.0000,10.0000,10.0000,3,10.0000,
+conjunta,L1+H,acierto tarea (test),0.6253,0.6140,0.6400,3,0.7012,pureza^1 (cota si el Thinker fuera perfecto)
+conjunta,L1+H,segundos,33.9667,21.4000,47.4000,3,,
+conjunta,L2+H,curva columna ep=1000,0.1080,0.1050,0.1120,3,0.1000,azar
+conjunta,L2+H,curva pureza ep=1000,0.4247,0.4060,0.4400,3,0.1000,símbolos usados=10
+conjunta,L2+H,curva columna ep=2000,0.1183,0.1060,0.1350,3,0.1000,azar
+conjunta,L2+H,curva pureza ep=2000,0.4293,0.4040,0.4440,3,0.1000,símbolos usados=10
+conjunta,L2+H,curva columna ep=3000,0.1267,0.1170,0.1360,3,0.1000,azar
+conjunta,L2+H,curva pureza ep=3000,0.4340,0.4140,0.4540,3,0.1000,símbolos usados=10
+conjunta,L2+H,curva columna ep=4000,0.1507,0.1310,0.1730,3,0.1000,azar
+conjunta,L2+H,curva pureza ep=4000,0.4927,0.4320,0.5460,3,0.1000,símbolos usados=10
+conjunta,L2+H,pureza percepción (test),0.4950,0.4630,0.5320,3,0.1000,azar
+conjunta,L2+H,exactitud identidad (test),0.0852,0.0330,0.1875,3,0.1000,azar
+conjunta,L2+H,símbolos distintos usados,10.0000,10.0000,10.0000,3,10.0000,
+conjunta,L2+H,acierto tarea (test),0.1820,0.1560,0.2080,3,0.2458,pureza^2 (cota si el Thinker fuera perfecto)
+conjunta,L2+H,segundos,73.4000,65.3000,82.9000,3,,
+escalera_h,total,segundos,168.8667,153.6000,196.5000,3,,
+conjunta,R0,curva columna ep=1000,0.4647,0.4250,0.4970,3,0.1000,azar
+conjunta,R0,curva pureza ep=1000,0.7133,0.6440,0.8020,3,0.1000,símbolos usados=7
+conjunta,R0,curva columna ep=2000,0.7060,0.6520,0.7960,3,0.1000,azar
+conjunta,R0,curva pureza ep=2000,0.7820,0.7100,0.9140,3,0.1000,símbolos usados=8
+conjunta,R0,curva columna ep=3000,0.7493,0.6920,0.8400,3,0.1000,azar
+conjunta,R0,curva pureza ep=3000,0.7947,0.7340,0.9040,3,0.1000,símbolos usados=8
+conjunta,R0,curva columna ep=4000,0.7817,0.7010,0.8940,3,0.1000,azar
+conjunta,R0,curva pureza ep=4000,0.8347,0.7500,0.9300,3,0.1000,símbolos usados=9
+conjunta,R0,pureza percepción (test),0.8375,0.7530,0.9235,3,0.1000,azar
+conjunta,R0,exactitud identidad (test),0.8375,0.7530,0.9235,3,0.1000,azar
+conjunta,R0,símbolos distintos usados,9.0000,8.0000,10.0000,3,10.0000,
+conjunta,R0,segundos,32.4000,27.6000,40.5000,3,,
+conjunta,L0,curva columna ep=1000,0.3587,0.3410,0.3880,3,0.1000,azar
+conjunta,L0,curva pureza ep=1000,0.5093,0.4620,0.5460,3,0.1000,símbolos usados=7
+conjunta,L0,curva columna ep=2000,0.5423,0.5330,0.5600,3,0.1000,azar
+conjunta,L0,curva pureza ep=2000,0.5900,0.5140,0.6740,3,0.1000,símbolos usados=7
+conjunta,L0,curva columna ep=3000,0.5823,0.5490,0.6460,3,0.1000,azar
+conjunta,L0,curva pureza ep=3000,0.6193,0.5380,0.6680,3,0.1000,símbolos usados=7
+conjunta,L0,curva columna ep=4000,0.5937,0.5240,0.6670,3,0.1000,azar
+conjunta,L0,curva pureza ep=4000,0.6213,0.5180,0.6760,3,0.1000,símbolos usados=7
+conjunta,L0,pureza percepción (test),0.6227,0.5260,0.6710,3,0.1000,azar
+conjunta,L0,exactitud identidad (test),0.0693,0.0015,0.1120,3,0.1000,azar
+conjunta,L0,símbolos distintos usados,7.0000,7.0000,7.0000,3,10.0000,
+conjunta,L0,acierto tarea (test),0.6420,0.5740,0.6800,3,0.6227,pureza^1 (cota si el Thinker fuera perfecto)
+conjunta,L0,segundos,36.7000,31.9000,45.3000,3,,
+conjunta,L1,curva columna ep=1000,0.1827,0.1750,0.1890,3,0.1000,azar
+conjunta,L1,curva pureza ep=1000,0.4660,0.3840,0.5620,3,0.1000,símbolos usados=7
+conjunta,L1,curva columna ep=2000,0.3953,0.3600,0.4610,3,0.1000,azar
+conjunta,L1,curva pureza ep=2000,0.5833,0.4780,0.6460,3,0.1000,símbolos usados=6
+conjunta,L1,curva columna ep=3000,0.5203,0.4450,0.5690,3,0.1000,azar
+conjunta,L1,curva pureza ep=3000,0.6067,0.5100,0.7060,3,0.1000,símbolos usados=6
+conjunta,L1,curva columna ep=4000,0.5790,0.4810,0.6310,3,0.1000,azar
+conjunta,L1,curva pureza ep=4000,0.6427,0.5040,0.7560,3,0.1000,símbolos usados=6
+conjunta,L1,pureza percepción (test),0.6328,0.4985,0.7425,3,0.1000,azar
+conjunta,L1,exactitud identidad (test),0.1357,0.1020,0.2000,3,0.1000,azar
+conjunta,L1,símbolos distintos usados,7.6667,7.0000,8.0000,3,10.0000,
+conjunta,L1,acierto tarea (test),0.5900,0.4480,0.7200,3,0.6328,pureza^1 (cota si el Thinker fuera perfecto)
+conjunta,L1,segundos,37.8333,31.9000,48.8000,3,,
+conjunta,L2,curva columna ep=1000,0.1120,0.1040,0.1240,3,0.1000,azar
+conjunta,L2,curva pureza ep=1000,0.3640,0.3040,0.4080,3,0.1000,símbolos usados=7
+conjunta,L2,curva columna ep=2000,0.1197,0.1080,0.1380,3,0.1000,azar
+conjunta,L2,curva pureza ep=2000,0.3167,0.2680,0.4020,3,0.1000,símbolos usados=6
+conjunta,L2,curva columna ep=3000,0.1510,0.1250,0.1780,3,0.1000,azar
+conjunta,L2,curva pureza ep=3000,0.3567,0.3060,0.3960,3,0.1000,símbolos usados=4
+conjunta,L2,curva columna ep=4000,0.1477,0.1230,0.1880,3,0.1000,azar
+conjunta,L2,curva pureza ep=4000,0.3953,0.3240,0.4700,3,0.1000,símbolos usados=5
+conjunta,L2,pureza percepción (test),0.3900,0.3190,0.4465,3,0.1000,azar
+conjunta,L2,exactitud identidad (test),0.0928,0.0425,0.1315,3,0.1000,azar
+conjunta,L2,símbolos distintos usados,6.3333,5.0000,8.0000,3,10.0000,
+conjunta,L2,acierto tarea (test),0.1547,0.1300,0.1740,3,0.1549,pureza^2 (cota si el Thinker fuera perfecto)
+conjunta,L2,segundos,81.9000,69.4000,102.7000,3,,
+escalera,total,segundos,189.1667,162.7000,237.7000,3,,
+interferencia,4a,vista antes (test),0.9715,0.9705,0.9735,3,,entrenada con etiquetas
+interferencia,"4a Thinker pre-entrenado, vista con refuerzo",vista después (test),0.9712,0.9695,0.9740,3,0.9715,antes
+interferencia,"4a Thinker pre-entrenado, vista con refuerzo",pureza vista después,0.9712,0.9695,0.9740,3,0.9715,antes
+interferencia,"4a Thinker pre-entrenado, vista con refuerzo",suma exacta n=3 (test),0.7320,0.6500,0.7820,3,,
+interferencia,"4a Thinker pre-entrenado, vista congelada (control)",vista después (test),0.9715,0.9705,0.9735,3,0.9715,antes
+interferencia,"4a Thinker pre-entrenado, vista congelada (control)",pureza vista después,0.9715,0.9705,0.9735,3,0.9715,antes
+interferencia,"4a Thinker pre-entrenado, vista congelada (control)",suma exacta n=3 (test),0.7213,0.6660,0.8140,3,,
+interferencia,"4a Thinker desde cero, vista con refuerzo",vista después (test),0.9682,0.9635,0.9710,3,0.9715,antes
+interferencia,"4a Thinker desde cero, vista con refuerzo",pureza vista después,0.9682,0.9635,0.9710,3,0.9715,antes
+interferencia,"4a Thinker desde cero, vista con refuerzo",suma exacta n=3 (test),0.6067,0.5480,0.6660,3,,
+interferencia,"4a Thinker desde cero, vista congelada (control)",vista después (test),0.9715,0.9705,0.9735,3,0.9715,antes
+interferencia,"4a Thinker desde cero, vista congelada (control)",pureza vista después,0.9715,0.9705,0.9735,3,0.9715,antes
+interferencia,"4a Thinker desde cero, vista congelada (control)",suma exacta n=3 (test),0.5487,0.4060,0.6240,3,,
+interf_percepcion,total,segundos,363.7667,293.8000,419.3000,3,,
+interferencia,4b,vista fuerte (test),0.9700,0.9660,0.9735,3,,depth2
+interferencia,4b,vista débil (test),0.8797,0.8750,0.8875,3,,depth1
+interferencia,4b,Thinker antes: exacta n=3 con oráculo,0.9840,0.9600,1.0000,3,,
+interferencia,4b control: sigue con oráculo,Thinker después: exacta n=3 con oráculo,0.9673,0.9560,0.9760,3,0.9840,antes
+interferencia,4b control: sigue con oráculo,Thinker después: columna n=3 con oráculo,0.9922,0.9900,0.9953,3,0.9949,antes
+interferencia,4b vista fuerte,Thinker después: exacta n=3 con oráculo,0.9073,0.8760,0.9540,3,0.9840,antes
+interferencia,4b vista fuerte,Thinker después: columna n=3 con oráculo,0.9724,0.9600,0.9880,3,0.9949,antes
+interferencia,4b vista débil,Thinker después: exacta n=3 con oráculo,0.3700,0.2500,0.5160,3,0.9840,antes
+interferencia,4b vista débil,Thinker después: columna n=3 con oráculo,0.7604,0.6793,0.8407,3,0.9949,antes
+interf_razonamiento,total,segundos,95.7000,86.6000,101.8000,3,,
+ligadura,oraculo,acierto ligadas,1.0000,1.0000,1.0000,3,0.1000,azar
+ligadura,oraculo,fracción COPIAR ligadas,1.0000,1.0000,1.0000,3,,
+ligadura,oraculo,acierto no ligadas,1.0000,1.0000,1.0000,3,0.1000,azar
+ligadura,oraculo,fracción COPIAR no ligadas,0.0000,0.0000,0.0000,3,,
+ligadura,vista fuerte,exactitud imagen (test),0.9707,0.9702,0.9714,3,,depth2
+ligadura,vista fuerte tubería,acierto ligadas,0.9040,0.8900,0.9120,3,0.9147,p^3*oráculo
+ligadura,vista fuerte tubería,acierto ligadas | 9 imágenes bien,1.0000,1.0000,1.0000,3,1.0000,oráculo
+ligadura,vista fuerte tubería,acierto ligadas | alguna mal,0.6205,0.5736,0.6508,3,,
+ligadura,vista fuerte tubería,fracción COPIAR ligadas,0.9513,0.9360,0.9680,3,1.0000,oráculo
+ligadura,vista fuerte tubería,acierto no ligadas,0.9500,0.9360,0.9620,3,0.9707,p^1*oráculo
+ligadura,vista fuerte tubería,acierto no ligadas | 9 imágenes bien,1.0000,1.0000,1.0000,3,1.0000,oráculo
+ligadura,vista fuerte tubería,acierto no ligadas | alguna mal,0.7877,0.7217,0.8319,3,,
+ligadura,vista fuerte tubería,fracción COPIAR no ligadas,0.0353,0.0340,0.0360,3,0.0000,oráculo
+ligadura,vista fuerte ruidosa,acierto ligadas,0.9200,0.9100,0.9280,3,0.9147,p^3*oráculo
+ligadura,vista fuerte ruidosa,acierto ligadas | 9 imágenes bien,1.0000,1.0000,1.0000,3,1.0000,oráculo
+ligadura,vista fuerte ruidosa,acierto ligadas | alguna mal,0.6622,0.6250,0.7025,3,,
+ligadura,vista fuerte ruidosa,fracción COPIAR ligadas,0.9593,0.9540,0.9660,3,1.0000,oráculo
+ligadura,vista fuerte ruidosa,acierto no ligadas,0.9653,0.9600,0.9700,3,0.9707,p^1*oráculo
+ligadura,vista fuerte ruidosa,acierto no ligadas | 9 imágenes bien,1.0000,1.0000,1.0000,3,1.0000,oráculo
+ligadura,vista fuerte ruidosa,acierto no ligadas | alguna mal,0.8434,0.8198,0.8618,3,,
+ligadura,vista fuerte ruidosa,fracción COPIAR no ligadas,0.0233,0.0200,0.0280,3,0.0000,oráculo
+ligadura,vista débil,exactitud imagen (test),0.8795,0.8780,0.8806,3,,depth1
+ligadura,vista débil tubería,acierto ligadas,0.6987,0.6820,0.7260,3,0.6802,p^3*oráculo
+ligadura,vista débil tubería,acierto ligadas | 9 imágenes bien,1.0000,1.0000,1.0000,3,1.0000,oráculo
+ligadura,vista débil tubería,acierto ligadas | alguna mal,0.5577,0.5123,0.6130,3,,
+ligadura,vista débil tubería,fracción COPIAR ligadas,0.8173,0.8140,0.8200,3,1.0000,oráculo
+ligadura,vista débil tubería,acierto no ligadas,0.8593,0.8480,0.8760,3,0.8795,p^1*oráculo
+ligadura,vista débil tubería,acierto no ligadas | 9 imágenes bien,1.0000,1.0000,1.0000,3,1.0000,oráculo
+ligadura,vista débil tubería,acierto no ligadas | alguna mal,0.7961,0.7738,0.8249,3,,
+ligadura,vista débil tubería,fracción COPIAR no ligadas,0.0900,0.0820,0.1000,3,0.0000,oráculo
+ligadura,vista débil ruidosa,acierto ligadas,0.5087,0.1080,0.7140,3,0.6802,p^3*oráculo
+ligadura,vista débil ruidosa,acierto ligadas | 9 imágenes bien,0.7104,0.1313,1.0000,3,1.0000,oráculo
+ligadura,vista débil ruidosa,acierto ligadas | alguna mal,0.4162,0.0971,0.5806,3,,
+ligadura,vista débil ruidosa,fracción COPIAR ligadas,0.5487,0.0000,0.8280,3,1.0000,oráculo
+ligadura,vista débil ruidosa,acierto no ligadas,0.8573,0.8320,0.8780,3,0.8795,p^1*oráculo
+ligadura,vista débil ruidosa,acierto no ligadas | 9 imágenes bien,1.0000,1.0000,1.0000,3,1.0000,oráculo
+ligadura,vista débil ruidosa,acierto no ligadas | alguna mal,0.7931,0.7593,0.8242,3,,
+ligadura,vista débil ruidosa,fracción COPIAR no ligadas,0.0627,0.0000,0.1060,3,0.0000,oráculo
+ligadura,total,segundos,208.5333,199.1000,217.7000,3,,
+modal,memoria asociativa theta=0.7,imagen -> voz P@1,0.6363,0.5700,0.7040,3,0.1000,azar
+modal,memoria asociativa theta=0.7,voz -> imagen P@1,0.7378,0.7233,0.7567,3,0.1000,azar
+modal,memoria asociativa theta=0.7,neuronas,85.3333,78.0000,98.0000,3,,3000 pares
+modal,memoria asociativa theta=0.7,segundos,4.5333,3.6000,5.4000,3,,
+modal,memoria asociativa theta=0.85,imagen -> voz P@1,0.7980,0.7790,0.8250,3,0.1000,azar
+modal,memoria asociativa theta=0.85,voz -> imagen P@1,0.8389,0.8300,0.8533,3,0.1000,azar
+modal,memoria asociativa theta=0.85,neuronas,1648.0000,1622.0000,1694.0000,3,,3000 pares
+modal,memoria asociativa theta=0.85,segundos,22.7000,20.8000,25.4000,3,,
+modal,control: pares sin relación,imagen -> voz P@1,0.0800,0.0750,0.0860,3,0.1000,azar
+modal,control: pares sin relación,voz -> imagen P@1,0.1045,0.0800,0.1467,3,0.1000,azar
+modal,control: pares sin relación,neuronas,143.0000,138.0000,147.0000,3,,3000 pares
+modal,control: pares sin relación,segundos,6.1333,5.2000,8.0000,3,,
+modal,control: memoria perfecta,imagen -> voz P@1,0.8733,0.8660,0.8780,3,,cota del protocolo
+modal,control: memoria perfecta,voz -> imagen P@1,0.8956,0.8900,0.9000,3,,cota del protocolo
+modal,símbolos mutuos (sin etiquetas),imagen -> voz P@1,0.2077,0.1460,0.2460,3,0.1000,azar
+modal,símbolos mutuos (sin etiquetas),voz -> imagen P@1,0.2111,0.1533,0.2533,3,0.1000,azar
+modal,símbolos mutuos (sin etiquetas),pureza imagen,0.3660,0.2910,0.4110,3,0.1000,símbolos usados=10
+modal,símbolos mutuos (sin etiquetas),pureza voz,0.3211,0.2533,0.4033,3,0.1000,símbolos usados=10
+modal,referencia con etiquetas,imagen -> voz P@1,0.9363,0.9350,0.9390,3,0.1000,azar
+modal,referencia con etiquetas,voz -> imagen P@1,0.9444,0.9433,0.9467,3,0.1000,azar
+modal,referencia con etiquetas,pureza imagen,0.9640,0.9620,0.9650,3,0.1000,símbolos usados=10
+modal,referencia con etiquetas,pureza voz,0.9767,0.9733,0.9800,3,0.1000,símbolos usados=10
+modal,total,segundos,103.6000,84.0000,115.4000,3,,
+suma,oraculo R=1,exacta n=1,0.9493,0.9060,1.0000,3,0.0100,azar
+suma,oraculo R=1,columna n=1,0.9880,0.9640,1.0000,3,0.1000,azar
+suma,oraculo R=1,exacta n=3,0.5453,0.3120,1.0000,3,0.0001,azar
+suma,oraculo R=1,columna n=3,0.7933,0.6893,1.0000,3,0.1000,azar
+suma,oraculo R=2,exacta n=1,0.9613,0.9260,0.9900,3,0.0100,azar
+suma,oraculo R=2,columna n=1,1.0000,1.0000,1.0000,3,0.1000,azar
+suma,oraculo R=2,exacta n=3,0.9313,0.8680,0.9740,3,0.0001,azar
+suma,oraculo R=2,columna n=3,0.9815,0.9673,0.9920,3,0.1000,azar
+suma,vista,exactitud imagen (test),0.9712,0.9686,0.9752,3,,"depth2, 10000 etiquetas"
+suma,1a tubería (Thinker entrenado con oráculo),exacta n=1,0.9127,0.8840,0.9400,3,0.9069,cota indep. p^2n*oráculo
+suma,1a tubería (Thinker entrenado con oráculo),columna n=1,0.9427,0.9360,0.9460,3,,
+suma,1a tubería (Thinker entrenado con oráculo),todas las imágenes bien n=1,0.9427,0.9360,0.9460,3,0.9432,p^2n
+suma,1a tubería (Thinker entrenado con oráculo),exacta | todas bien n=1,0.9681,0.9444,0.9937,3,0.9613,oráculo
+suma,1a tubería (Thinker entrenado con oráculo),exacta | alguna mal n=1,0.0000,0.0000,0.0000,3,0.0000,
+suma,1a tubería (Thinker entrenado con oráculo),exacta n=3,0.7707,0.7380,0.7960,3,0.7822,cota indep. p^2n*oráculo
+suma,1a tubería (Thinker entrenado con oráculo),columna n=3,0.9131,0.9060,0.9173,3,,
+suma,1a tubería (Thinker entrenado con oráculo),todas las imágenes bien n=3,0.8353,0.8200,0.8540,3,0.8393,p^2n
+suma,1a tubería (Thinker entrenado con oráculo),exacta | todas bien n=3,0.9224,0.8618,0.9567,3,0.9313,oráculo
+suma,1a tubería (Thinker entrenado con oráculo),exacta | alguna mal n=3,0.0046,0.0000,0.0137,3,0.0000,
+suma,1a ruidosa (Thinker entrenado sobre lo percibido),exacta n=1,0.8660,0.8260,0.9180,3,0.9069,cota indep. p^2n*oráculo
+suma,1a ruidosa (Thinker entrenado sobre lo percibido),columna n=1,0.9307,0.9240,0.9400,3,,
+suma,1a ruidosa (Thinker entrenado sobre lo percibido),todas las imágenes bien n=1,0.9327,0.9280,0.9400,3,0.9432,p^2n
+suma,1a ruidosa (Thinker entrenado sobre lo percibido),exacta | todas bien n=1,0.9286,0.8882,0.9892,3,0.9613,oráculo
+suma,1a ruidosa (Thinker entrenado sobre lo percibido),exacta | alguna mal n=1,0.0000,0.0000,0.0000,3,0.0000,
+suma,1a ruidosa (Thinker entrenado sobre lo percibido),exacta n=3,0.6980,0.6760,0.7420,3,0.7822,cota indep. p^2n*oráculo
+suma,1a ruidosa (Thinker entrenado sobre lo percibido),columna n=3,0.8885,0.8780,0.9007,3,,
+suma,1a ruidosa (Thinker entrenado sobre lo percibido),todas las imágenes bien n=3,0.8293,0.8180,0.8380,3,0.8393,p^2n
+suma,1a ruidosa (Thinker entrenado sobre lo percibido),exacta | todas bien n=3,0.8421,0.8067,0.9071,3,0.9313,oráculo
+suma,1a ruidosa (Thinker entrenado sobre lo percibido),exacta | alguna mal n=3,0.0000,0.0000,0.0000,3,0.0000,
+suma,total,segundos,278.8667,268.2000,286.4000,3,,
