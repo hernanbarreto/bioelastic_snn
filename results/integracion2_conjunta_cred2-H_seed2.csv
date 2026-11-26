@@ -1,0 +1,18 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+conjunta,L3 cred2+H,2,curva columna ep=1000,0.2112,0.1000,azar
+conjunta,L3 cred2+H,2,curva pureza ep=1000,0.4440,0.1000,símbolos usados=10
+conjunta,L3 cred2+H,2,curva columna ep=2000,0.2510,0.1000,azar
+conjunta,L3 cred2+H,2,curva pureza ep=2000,0.5220,0.1000,símbolos usados=10
+conjunta,L3 cred2+H,2,curva columna ep=3000,0.2744,0.1000,azar
+conjunta,L3 cred2+H,2,curva pureza ep=3000,0.6380,0.1000,símbolos usados=10
+conjunta,L3 cred2+H,2,curva columna ep=4000,0.3665,0.1000,azar
+conjunta,L3 cred2+H,2,curva pureza ep=4000,0.7680,0.1000,símbolos usados=10
+conjunta,L3 cred2+H,2,pureza percepción (test),0.7455,0.1000,azar
+conjunta,L3 cred2+H,2,símbolos distintos usados,10,10,
+conjunta,L3 cred2+H,2,créditos a la percepción,72,,
+conjunta,L3 cred2+H,2,precisión del crédito (código final),0.3889,0.1000,símbolo enseñado == símbolo final del dígito real
+conjunta,L3 cred2+H,2,"precisión del crédito, 2.a mitad",0.3889,0.1000,
+conjunta,L3 cred2+H,2,exacta n=3 (test),0.0400,0.1717,pureza^6 (Thinker perfecto)
+conjunta,L3 cred2+H,2,columna n=3 (test),0.3660,0.1000,azar
+conjunta,L3 cred2+H,2,segundos,160.2000,,
+conjunta,total,2,segundos,160.4000,,
