@@ -282,6 +282,32 @@ class Cortex:
             replays=self.replays,
         )
 
+    def cost(self) -> dict:
+        """Operaciones sinápticas (multiplicación-suma) por inferencia y memoria, por parte.
+
+        Cuenta lo que hace el código, no lo que guarda: un área sensorial evalúa su
+        diccionario en cada posición, y un área de asociación con el pase denso evalúa
+        todas sus neuronas (n x fan-in máximo). Es una cota superior para las áreas que
+        usan el índice invertido. El repaso agrega, por paso de entrenamiento, `replay`
+        codificaciones más de la jerarquía."""
+        parts = {}
+        for i, a in enumerate(self.areas):
+            c = a.cost()
+            parts[f"area{i}"] = dict(macs=c["macs"], memory_bytes=c["memory_bytes"])
+        for i, h in enumerate(self.heads):
+            L = h.layer
+            kf = int(L.fill[:L.n].max()) if L.n else 0
+            parts[f"head{i}"] = dict(macs=L.n * kf,
+                                     memory_bytes=L.memory()["total"] + h.readout.W.nbytes + h.readout.count.nbytes)
+        if self.proj is not None:
+            parts["proj"] = dict(macs=self.C * self.proj.n,          # cota: todas las entradas activas
+                                 memory_bytes=self.proj.W.nbytes + self.proj.count.nbytes)
+        infer = sum(p["macs"] for p in parts.values())
+        area_macs = sum(parts[f"area{i}"]["macs"] for i in range(len(self.areas)))
+        return dict(parts=parts, macs_per_inference=infer,
+                    macs_per_training_step=infer + self.replay * (area_macs + parts.get("proj", {}).get("macs", 0)),
+                    memory_bytes=sum(p["memory_bytes"] for p in parts.values()))
+
     def save(self, path):
         """Guarda estructura y pesos. El contexto en curso (retardos, trazas) no se guarda."""
         out = {"config": np.array(json.dumps(self._config)),

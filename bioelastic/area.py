@@ -195,6 +195,14 @@ class FeatureArea:
                     units=feats * (self.oh * self.ow + self.ph * self.pw),   # simples + complejas
                     synapses=feats * self.D)
 
+    def cost(self) -> dict:
+        """Operaciones por lámina codificada. El diccionario se comparte entre posiciones:
+        se guardan F x D sinapsis pero se evalúan P x F x D (una por posición)."""
+        n = self.n
+        P = self.oh * self.ow
+        return dict(stored_synapses=int(self.alive.sum()) * self.D, macs=P * n * self.D,
+                    memory_bytes=self.W.nbytes + self.alive.nbytes + self.wins.nbytes + self.born.nbytes)
+
     def state(self) -> dict:
         return dict(W=self.W, alive=self.alive, wins=self.wins, born=self.born,
                     free=np.array(self.free, dtype=np.int64),
