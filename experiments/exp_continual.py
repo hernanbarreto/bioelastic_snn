@@ -98,16 +98,18 @@ class BalancedBuffer:
         self.n = 0
         self.rng = np.random.default_rng(seed)
 
-    def add(self, x, y):
+    def add(self, x, y) -> int:
+        """Guarda (x, y); devuelve el lugar escrito o -1 si no entró."""
         if self.n < len(self.X):
             self.X[self.n] = x; self.y[self.n] = y; self.n += 1
-            return
+            return self.n - 1
         cnt = np.bincount(self.y, minlength=N_CLASSES)
         big = int(np.argmax(cnt))
         if cnt[y] >= cnt[big]:
-            return
+            return -1
         i = int(self.rng.choice(np.flatnonzero(self.y == big)))
         self.X[i] = x; self.y[i] = y
+        return i
 
     def sample(self, m):
         if self.n == 0:
@@ -171,8 +173,9 @@ class KNNBuffer(_Baseline):
         self._nrm = np.zeros(size, dtype=np.float32)
 
     def learn(self, x, y):
-        self.buf.add(x, y)
-        self._nrm[:self.buf.n] = np.linalg.norm(self.buf.X[:self.buf.n], axis=1) + 1e-6
+        i = self.buf.add(x, y)
+        if i >= 0:
+            self._nrm[i] = np.linalg.norm(self.buf.X[i]) + 1e-6
 
     def scores(self, s):
         z = np.zeros(N_CLASSES)
@@ -197,7 +200,7 @@ class StreamingLDA(_Baseline):
         super().__init__(seed)
         D = 784
         self.mu = np.zeros((N_CLASSES, D)); self.cnt = np.zeros(N_CLASSES)
-        self.S = np.zeros((D, D)); self.n = 0
+        self.Ssum = np.zeros((D, D)); self.n = 0              # S = Ssum / n
         self.shrink = shrink; self.every = every; self._since = every; self._W = None
 
     def learn(self, x, y):
@@ -205,13 +208,16 @@ class StreamingLDA(_Baseline):
         if self.cnt[y] == 0:
             self._since = self.every                          # clase nueva: recalcular ya
         d = x - self.mu[y]
-        self.S = (self.n * self.S + np.outer(d, d) * (self.cnt[y] / (self.cnt[y] + 1.0))) / (self.n + 1.0)
+        f = self.cnt[y] / (self.cnt[y] + 1.0)
+        if f > 0:
+            self.Ssum += np.outer(d, f * d)
         self.mu[y] += d / (self.cnt[y] + 1.0)
         self.cnt[y] += 1; self.n += 1; self._since += 1
 
     def scores(self, s):
         if self._W is None or self._since >= self.every:
-            P = np.linalg.inv((1.0 - self.shrink) * self.S + self.shrink * np.eye(len(self.S)))
+            S = self.Ssum / max(self.n, 1)
+            P = np.linalg.inv((1.0 - self.shrink) * S + self.shrink * np.eye(len(S)))
             self._W = P @ self.mu.T
             self._b = -0.5 * np.einsum("cd,dc->c", self.mu, self._W)
             self._since = 0
@@ -219,8 +225,8 @@ class StreamingLDA(_Baseline):
         return self._masked(z)
 
     def stats(self):
-        return dict(neurons=int((self.cnt > 0).sum()), features=0, synapses=self.S.size,
-                    bytes=int((self.S.size + self.mu.size) * 4))
+        return dict(neurons=int((self.cnt > 0).sum()), features=0, synapses=self.Ssum.size,
+                    bytes=int((self.Ssum.size + self.mu.size) * 4))
 
 
 class MLPReplay(_Baseline):
@@ -301,6 +307,7 @@ def build(spec: str):
           gate=N       error asimétrico: clases sin objetivo en N aprendizajes, inactivas
           protect      además, no tocar neuronas de clases inactivas
           merge        desalojo por fusión del par más redundante (en vez de utilidad)
+          floor=X      piso de plasticidad de la lectura de la memoria
           relax=N      metaplasticidad de la lectura que se relaja con constante N
           v1=N         tamaño máximo del diccionario de V1
           anti=X       fuerza del anti-STDP
@@ -309,6 +316,7 @@ def build(spec: str):
           pnorm=X      escalado sináptico de las salidas de la proyección (norma X)
           pmean        la proyección aprende medias de clase (regla hebbiana sin término negativo)
           rehearse=X   ensayos por paso en la propia memoria (Cortex._rehearse_one)
+          focus        el repaso se concentra en las clases ausentes del flujo
           replay=X     repasos por paso
           vote=X       voto por orden de llegada con constante X (ver BioElasticNet._votes)
           k=N          ganadoras por volea en la memoria
@@ -345,6 +353,8 @@ def build(spec: str):
             layer["evict"] = "merge"
         elif m == "relax":
             readout["relax"] = float(v)
+        elif m == "floor":
+            readout["floor"] = float(v)
         elif m == "v1":
             area["max_features"] = int(v)
         elif m == "anti":
@@ -359,6 +369,8 @@ def build(spec: str):
             top["projection"] = {**top.get("projection", cfg.get("projection", {})), "rule": "mean"}
         elif m == "rehearse":
             top["rehearse"] = float(v)
+        elif m == "focus":
+            top["replay_focus"] = "absent"
         elif m == "replay":
             top["replay"] = float(v)
         elif m == "vote":

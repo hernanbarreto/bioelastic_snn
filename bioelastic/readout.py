@@ -23,6 +23,10 @@ Aprendizaje continuo (opcional, apagado por defecto):
                  negativo: lo que se enseña ahora no mueve las filas de otras clases
                  (clasificador por media de clase, Mensink et al. 2013; es la parte de
                  medias del LDA en flujo de Hayes & Kanan 2020).
+  floor          piso de plasticidad: la consolidación nunca baja la tasa de una entrada
+                 por debajo de `floor` (fracción de la tasa de una entrada nueva). Sin piso,
+                 una neurona usada mil veces conserva 0,5 % de plasticidad y una red que ya
+                 no puede crear neuronas deja de aprender clases nuevas.
   relax          metaplasticidad que se relaja: el contador de consolidación de cada
                  entrada decae con constante `relax` (en aprendizajes), así una sinapsis
                  que dejó de usarse recupera plasticidad (cf. Benna & Fusi 2016).
@@ -36,7 +40,8 @@ class Readout:
     def __init__(self, n_outputs: int, *, lr: float = 0.5, temperature: float = 0.25,
                  w_init: float = 1.0, consolidation: float = 5.0, baseline_beta: float = 0.02,
                  active_window: int = 0, relax: float = 0.0, row_norm: float = 0.0,
-                 rule: str = "delta", mean_floor: float = 1e-3, capacity: int = 256):
+                 rule: str = "delta", mean_floor: float = 1e-3, floor: float = 0.0,
+                 capacity: int = 256):
         self.C = int(n_outputs)
         self.lr = float(lr)
         self.temperature = float(temperature)
@@ -51,6 +56,7 @@ class Readout:
         self.active_window = int(active_window)
         self.relax = float(relax)
         self.row_norm = float(row_norm)
+        self.floor = float(floor)
         if rule not in ("delta", "mean"):
             raise ValueError(f"regla desconocida: {rule}")
         self.rule = rule
@@ -130,7 +136,7 @@ class Readout:
             dt = (self.t - self._count_t[idx]).astype(np.float32)
             self.count[idx] *= np.exp(-dt / np.float32(self.relax))
             self._count_t[idx] = self.t
-        pre = h / (1.0 + self.count[idx] / self.consolidation)
+        pre = h * np.maximum(self.floor, 1.0 / (1.0 + self.count[idx] / self.consolidation))
         self.count[idx] += 1.0
         return pre.astype(np.float32)
 

@@ -29,12 +29,13 @@ from .readout import Readout
 
 class Cortex:
     def __init__(self, input_shape, n_outputs: int, *, areas=(), heads=({},), projection=None,
-                 replay: float = 0.0, rehearse: float = 0.0, joint: bool = True,
-                 temperature: float = 0.25, seed: int = 0):
+                 replay: float = 0.0, rehearse: float = 0.0, replay_focus: str = "uniform",
+                 joint: bool = True, temperature: float = 0.25, seed: int = 0):
         self._config = dict(input_shape=input_shape, n_outputs=int(n_outputs),
                             areas=[dict(a) for a in areas], heads=[],
                             projection=projection, replay=float(replay),
-                            rehearse=float(rehearse), joint=bool(joint),
+                            rehearse=float(rehearse), replay_focus=str(replay_focus),
+                            joint=bool(joint),
                             temperature=float(temperature), seed=int(seed))
         self.is_sheet = not np.isscalar(input_shape)
         self.input_shape = tuple(int(v) for v in input_shape) if self.is_sheet else int(input_shape)
@@ -42,6 +43,9 @@ class Cortex:
         self.temperature = float(temperature)
         self.replay = float(replay); self._replay_debt = 0.0; self.replays = 0
         self.rehearse = float(rehearse); self._rehearse_debt = 0.0; self.rehearsals = 0
+        if replay_focus not in ("uniform", "absent"):
+            raise ValueError(f"replay_focus desconocido: {replay_focus}")
+        self.replay_focus = replay_focus
         self.joint = bool(joint)
         self.rng = np.random.default_rng(seed)
         self.areas: list[FeatureArea] = []
@@ -192,13 +196,19 @@ class Cortex:
         """Consolidación por repetición: un recuerdo del área de asociación (el patrón que
         guarda una de sus neuronas) se reactiva y entrena la proyección directa con la clase
         de esa neurona. Las clases se eligen de forma pareja, así lo viejo se repasa aunque
-        el flujo ya no lo muestre."""
+        el flujo ya no lo muestre. Con replay_focus="absent" (y una proyección con
+        `active_window`) se repasan sólo las clases ausentes del flujo: las presentes ya
+        reciben ejemplos reales."""
         mem, space = self._replay_source()
         if mem is None:
             return
         L = mem.layer
         pref = mem.readout.preferred(np.arange(L.n))
         classes = np.unique(pref[pref >= 0])
+        if self.replay_focus == "absent" and self.proj.active_window > 0 and len(classes):
+            absent = classes[~self.proj.active()[classes]]
+            if len(absent):
+                classes = absent
         if len(classes) == 0:
             return
         c = int(self.rng.choice(classes))

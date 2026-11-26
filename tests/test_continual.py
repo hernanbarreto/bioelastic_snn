@@ -183,3 +183,34 @@ def test_reused_feature_slot_also_clears_the_projection():
     net.proj.W[:, ids] = 1.0
     net._on_reuse(0, 0)
     assert not net.proj.W[:, ids].any()
+
+
+def test_replay_focus_on_absent_classes():
+    from bioelastic import Cortex
+    rng = np.random.default_rng(5)
+    net = Cortex((8, 8, 1), 4, areas=[dict(rf=3, pool=2, max_features=16, theta=0.8)],
+                 heads=[dict(source="input")], projection=dict(source="all", active_window=20),
+                 replay=1.0, replay_focus="absent", joint=False)
+    for _ in range(300):
+        c = int(rng.integers(4)); net.step(_blob(rng, c), c)
+    seen = []
+    learn = net.proj.learn
+    net.proj.learn = lambda idx, h, c, p=None, replay=False: (seen.append((c, replay)), learn(idx, h, c, p=p, replay=replay))
+    for _ in range(200):                               # sólo 0 y 1: el repaso va a 2 y 3
+        c = int(rng.integers(2)); net.step(_blob(rng, c), c)
+    rep = [c for c, r in seen[60:] if r]
+    assert rep and set(rep) <= {2, 3}
+
+
+def test_plasticity_floor_keeps_mature_inputs_learnable():
+    idx = np.array([0]); h = np.ones(1, dtype=np.float32)
+    plain, floored = Readout(3), Readout(3, floor=0.2)
+    for r in (plain, floored):
+        r.add_input(cls=0)
+        for _ in range(1000):
+            r.learn(idx, h, 0)
+    for r in (plain, floored):
+        w = r.W[1, 0]
+        r.learn(idx, h, 1)
+        r.dw = r.W[1, 0] - w
+    assert floored.dw > 20 * plain.dw
