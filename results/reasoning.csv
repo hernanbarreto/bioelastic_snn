@@ -1,0 +1,13 @@
+test,system,evaluated_on,accuracy,chance
+R1 ligadura,red actual (ventana + traza),claves con ligaduras nuevas,0.5180,0.1250
+R1 ligadura,+ memoria rápida de sucesores,claves con ligaduras nuevas,1.0000,0.1250
+R2 composición,red actual,"f(f(x)), x no vistos a 2 saltos",0.0000,0.0625
+R2 composición,red actual,"f(f(f(x))), nunca entrenado",0.1250,0.0625
+R2 composición,+ bucle (la salida reentra),"f(f(x)), x no vistos a 2 saltos",1.0000,0.0625
+R2 composición,+ bucle (la salida reentra),"f(f(f(x))), nunca entrenado",1.0000,0.0625
+R2 composición,+ bucle (la salida reentra),"10 saltos, nunca entrenado",1.0000,0.0625
+R3 longitud,red actual (ventana + traza),largos 10-20 (entrenó con 1-6),0.5100,0.5000
+R3 longitud,"+ bucle, sólo respuesta final",largos 10-20 (entrenó con 1-6),1.0000,0.5000
+R3 longitud,"+ bucle, sólo respuesta final",largo 100,1.0000,0.5000
+R3 longitud,"+ bucle, pasos intermedios supervisados",largos 10-20 (entrenó con 1-6),1.0000,0.5000
+R3 longitud,"+ bucle, pasos intermedios supervisados",largo 100,1.0000,0.5000
