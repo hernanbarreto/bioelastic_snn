@@ -347,9 +347,11 @@ def run_battery(over, seeds=SEEDS, n=3000, plan="mezclada"):
     tasks = (0, 1, 2, 3, 4, 5, 6)
     ev_all = [(f"C{t} {name}", fn) for t in tasks for name, fn in H.evals_for(W, t, t)]
     sched = H.plan_mixed(tasks, 7 * n // 2, n // 4) if plan == "mezclada" else H.plan_blocks(tasks, n // 2, n // 4)
-    t0 = time.time()
+    t0 = time.time(); c0 = time.process_time()
     out, cost = H.run(W, lambda s: H.make_thinker(W, 7, seed=s, **over), sched, ev_all, seeds, 200)
-    ms_ep = (time.time() - t0) / (len(seeds) * (len(sched) + 200 * len(ev_all))) * 1e3
+    n_ep = len(seeds) * (len(sched) + 200 * len(ev_all))
+    ms_ep = (time.time() - t0) / n_ep * 1e3
+    cost["ms_cpu"] = (time.process_time() - c0) / n_ep * 1e3      # CPU del proceso: no depende de la carga ajena
     return out, ms_ep, cost
 
 
@@ -358,6 +360,7 @@ def report_battery(log, test, label, res):
     for name, accs in out.items():
         log.row(test, label, "congelado, casos no vistos", name, float(np.mean(accs)), float(np.std(accs)), len(accs))
     log.row(test, label, "costo", "ms por episodio (entrenar + evaluar)", float(ms_ep), 0.0, len(SEEDS))
+    log.row(test, label, "costo", "ms de CPU por episodio (entrenar + evaluar)", float(cost["ms_cpu"]), 0.0, len(SEEDS))
     allv = np.array([v for v in out.values()])
     log.row(test, label, "resumen", "mínimo sobre casos y semillas", float(allv.min()), 0.0, len(SEEDS))
     return dict(acc=out, ms_per_episode=ms_ep, cost=cost, min=float(allv.min()))
@@ -419,7 +422,327 @@ def group_f3():
     st.finish()
 
 
-GROUPS = {"f1": group_f1, "f1v": group_f1v, "f2": group_f2, "f3": group_f3}
+# ---------------------------------------------------------------- F4: neuromoduladores
+NM = {}                                                    # constantes elegidas en validación (f4v)
+NM_KEYS = ("rate", "forget", "sure", "epsilon", "decay", "capture", "lr", "temperature", "volatility", "noise")
+
+
+NE_OLD = dict(ne="fiabilidad", unexplained_gain=4.0)     # la primera señal de NE del control (ablación)
+
+
+def _traced_reset(self):
+    """`reset` que antes deja en `self.trace` la media de los meta-parámetros del episodio.
+    Es un método ligado (no una clausura): `copy.deepcopy` lo liga a la copia, así una
+    instantánea congelada no reinicia la red original."""
+    tr = self.modulators.trace
+    if tr:
+        self.trace.append({k: float(np.mean([t[k] for t in tr])) for k in NM_KEYS})
+        self.modulators.trace = []
+    type(self).reset(self)
+
+
+def make_nm(nm=None, **over):
+    """Thinker con los 7 meta-parámetros regulados por neuromoduladores. Para medir, cada
+    episodio deja en `net.trace` la media de los meta-parámetros que fijaron los canales."""
+    import types
+    nm = dict(NM) if nm is None else nm
+    base = make(modulators=(nm or True), **over)
+
+    def mk(seed, n):
+        net = base(seed, n)
+        net.trace = []
+        net.modulators.keep_trace = True
+        net.reset = types.MethodType(_traced_reset, net)
+        return net
+    return mk
+
+
+def harlow_stability(mk, P=800, seeds=SEEDS, cps=(0, 10, 25, 50, 100, 200, 300, 400, 600, 800)):
+    """F2.5 de la ronda anterior: Harlow por la compuerta, sin resultado percibido (`prev_io`),
+    instantáneas congeladas; ensayo 2 sobre 50 problemas nuevos en cada instantánea."""
+    cur, rest, on = M.run_curve(mk, lambda i: ("objeto", 0), P, list(cps), [("W", "objeto", 0)], seeds=seeds,
+                                perceive=False)
+    return cur["W"], on
+
+
+def report_stability(log, name, label, arr, cps, start=50):
+    m, sd = ms(arr)
+    for j, c in enumerate(cps):
+        log.row(name, label, f"instantánea tras {c} problemas", "ensayo 2", float(m[j]), float(sd[j]), len(arr))
+    after = arr[:, list(cps).index(start):]
+    log.row(name, label, f"instantáneas desde {start}", "mínimo por semilla", float(after.min(1).mean()),
+            float(after.min(1).std()), len(arr))
+    log.row(name, label, f"instantáneas desde {start}", "instantáneas < 0.95 (cantidad)",
+            float((after < 0.95).sum()), 0.0, len(arr))
+    return dict(checkpoints=list(cps), trial2_mean=m, trial2_sd=sd, per_seed=arr,
+                min_after=after.min(1), dips=int((after < 0.95).sum()))
+
+
+def group_f4():
+    from bioelastic.metalearning import PARAMS
+    st = Store("f4")
+    P = 3000
+    plus = ("exito", "sorpresa", "td", "novedad", "persistencia")
+    conds = [("valores fijos a mano (Thinker, tasa 1)", make()),
+             ("tasa fija 0.15", M.make_meta(fixed={"rate": 0.15})),
+             ("tasa fija 0.3", M.make_meta(fixed={"rate": 0.3})),
+             ("ronda anterior: los 7 aprendidos por perturbación", M.make_meta(meta=tuple(PARAMS), signals=plus)),
+             ("neuromoduladores: los 7 adaptativos", make_nm()),
+             ("ablación: sin memoria bayesiana (tasa 1)", make_nm(dict(NM, memory=None))),
+             ("ablación: sólo la memoria bayesiana (control con valores fijos)", make_nm(dict(NM, control=False))),
+             ("ablación: horizonte del episodio (5-HT sin acortar)", make_nm(dict(NM, horizon="episodio"))),
+             ("ablación: NE = fiabilidad de la regla (primera versión)", make_nm(dict(NM, **NE_OLD)))]
+    for label, mk in conds:
+        st.run("F4.1 " + label, lambda log, mk=mk, label=label: M.report_regimes(
+            log, "F4.1 harlow S/V, todo aprende", label, M.run_regimes(mk, P, pretrain=100)))
+    s15 = st.get("F4.1 tasa fija 0.15"); s10 = st.get("F4.1 valores fijos a mano (Thinker, tasa 1)")
+    s03 = st.get("F4.1 tasa fija 0.3")
+
+    def oracle(log):
+        best_s = [max(a, b, c) for a, b, c in zip(s15["S"]["frozen"], s10["S"]["frozen"], s03["S"]["frozen"])]
+        best_v = [max(a, b, c) for a, b, c in zip(s15["V"]["frozen"], s10["V"]["frozen"], s03["V"]["frozen"])]
+        both = [(a + b) / 2 for a, b in zip(best_s, best_v)]
+        log.row("F4.1 harlow S/V, todo aprende", "óptimo por régimen (mejor tasa fija de cada uno, oráculo)",
+                "congelado", "elige el premiado, promedio S y V", float(np.mean(both)), float(np.std(both)), len(both))
+        return dict(S=best_s, V=best_v, both=both)
+    st.run("F4.1 óptimo por régimen", oracle)
+    cps = (0, 10, 25, 50, 100, 200, 300, 400, 600, 800)
+    for label, mk in (("ronda anterior (prev_io)", make(gate=True, prev_io=True)),
+                      ("neuromoduladores", make_nm(gate=True, prev_io=True)),
+                      ("ablación: horizonte del episodio", make_nm(dict(NM, horizon="episodio"), gate=True, prev_io=True)),
+                      ("ablación: sin temperatura de conducta (NE sólo en epsilon)",
+                       make_nm(dict(NM, temp=(1.0, None)), gate=True, prev_io=True)),
+                      ("ablación: NE = fiabilidad de la regla (primera versión)",
+                       make_nm(dict(NM, **NE_OLD), gate=True, prev_io=True))):
+        st.run("F4.2 " + label, lambda log, mk=mk, label=label: report_stability(
+            log, "F4.2 harlow congelado (prev_io, sin resultado percibido)", label, harlow_stability(mk, cps=cps)[0], cps))
+    # F4.3 con el control estabilizado: cierre del anillo y FIN con preguntas de aprendizaje (F2)
+    # y batería C0-C6 con back (F3)
+    tests = (("L=8 (más largo que lo entrenado)", dict(L=8)), ("R=1 (cada relación observada una vez)", dict(R=1)))
+    for label, over in (("back + cogmap (F2)", dict(back=True, cogmap=True)),
+                        ("back + cogmap + neuromoduladores", dict(back=True, cogmap=True, modulators=(dict(NM) or True))),
+                        ("ablación: horizonte del episodio", dict(back=True, cogmap=True, modulators=dict(NM, horizon="episodio"))),
+                        ("ablación: NE = fiabilidad de la regla (primera versión)",
+                         dict(back=True, cogmap=True, modulators=dict(NM, **NE_OLD)))):
+        st.run("F4.3 anillo | " + label, lambda log, over=over, label=label: M.report_line(
+            log, "F4.3 anillo con preguntas de aprendizaje", label,
+            M.run_line(make(n_cues=4, **over), F2_B, struct="anillo", perceive=True, tests=tests), 50))
+        st.run("F4.3 FIN | " + label, lambda log, over=over, label=label: M.report_line(
+            log, "F4.3 línea con FIN y preguntas de aprendizaje", label,
+            M.run_line(make(n_cues=4, **over), F2_B, struct="linea", perceive=True, use_end=True, queries=(2, 3),
+                       tests=(tests[0],)), 50))
+    st.run("F4.4 batería | back + neuromoduladores", lambda log: report_battery(
+        log, "F4.4 batería C0-C6, multitarea mezclada", "back + neuromoduladores",
+        run_battery(dict(back=True, modulators=(dict(NM) or True)))))
+    # (el RETROCEDER que no encuentra nada ahora deja el foco: se vuelve a medir la batería de F3)
+    st.run("F4.4 batería | back", lambda log: report_battery(
+        log, "F4.4 batería C0-C6, multitarea mezclada", "back (sin neuromoduladores)", run_battery(dict(back=True))))
+    st.finish()
+
+
+def group_f4v():
+    """Validación (semillas 10-12) de las constantes de los canales: régimen S/V (1500
+    problemas) y estabilidad de Harlow congelado (400 problemas). Las del control (temperatura
+    mínima, n0) no cambian estas medidas (la memoria decide el régimen S/V y Harlow queda en
+    1.00 con todas); de la memoria se elige prior_q=1.0 y phi=0.02, que son los valores por
+    defecto de `BayesMemory`. (Una validación anterior, con la causa «otro» recibiendo parte
+    del ruido y volatilidades hasta 0.4 en la grilla, dio 0.796 en S/V.)"""
+    st = Store("f4v")
+    grid = [dict(memory=dict(prior_q=2.0)), dict(memory=dict(prior_q=1.0)), dict(memory=dict(prior_q=4.0)),
+            dict(memory=dict(prior_q=2.0, phi=0.01)), dict(memory=dict(prior_q=2.0, phi=0.04)),
+            dict(memory=dict(prior_q=2.0), temp=(0.25, None)), dict(memory=dict(prior_q=2.0), n0=20.0)]
+    for g in grid:
+        name = json.dumps(g)
+
+        def fn(log, g=g, name=name):
+            sm = M.report_regimes(log, "F4v harlow S/V", name, M.run_regimes(make_nm(g), 1500, seeds=VAL_SEEDS,
+                                                                                pretrain=100))
+            arr, _ = harlow_stability(make_nm(g, gate=True, prev_io=True), P=400, seeds=VAL_SEEDS,
+                                      cps=(25, 50, 100, 200, 300, 400))
+            st_ = report_stability(log, "F4v harlow congelado", name, arr, (25, 50, 100, 200, 300, 400))
+            score = float(np.mean(sm["frozen_mean_SV"])) + 0.5 * float(np.mean(st_["min_after"]))
+            log.row("F4v resumen", name, "validación", "S/V + 0.5 x mínimo de Harlow", score, 0.0, len(VAL_SEEDS))
+            return dict(sv=sm["frozen_mean_SV"], harlow_min=st_["min_after"], score=score)
+        st.run(name, fn)
+    st.finish()
+
+
+def group_f4w():
+    """Validación (semillas 10-12) de la señal de NE del control: fiabilidad de la regla
+    (versión anterior: en un régimen ruidoso y estable NE queda alta para siempre y la conducta
+    en línea sortea) contra incertidumbre inesperada (fallos por encima de los esperados).
+    Medidas: régimen S/V en línea y congelado (1500 problemas), mínimo de Harlow congelado
+    (400 problemas) y, para las finalistas, cierre del anillo y FIN (400 bloques)."""
+    st = Store("f4w")
+    grid = [dict(), dict(ne="inesperada"), dict(ne="inesperada", ne_gain=2.0),
+            dict(ne="inesperada", unexplained_gain=0.0), dict(ne="inesperada", unexplained_gain=0.0, ne_gain=8.0),
+            dict(ne="inesperada", unexplained_gain=0.0, ne_floor=0.05), dict(ne="inesperada", unexplained_gain=0.0, ne_floor=0.1),
+            dict(ne="inesperada", unexplained_gain=0.0, beta=0.02)]
+    for g in grid:
+        name = json.dumps(g)
+
+        def fn(log, g=g, name=name):
+            sm = M.report_regimes(log, "F4w harlow S/V", name, M.run_regimes(make_nm(g), 1500, seeds=VAL_SEEDS,
+                                                                                pretrain=100))
+            arr, _ = harlow_stability(make_nm(g, gate=True, prev_io=True), P=400, seeds=VAL_SEEDS,
+                                      cps=(25, 50, 100, 200, 300, 400))
+            st_ = report_stability(log, "F4w harlow congelado", name, arr, (25, 50, 100, 200, 300, 400))
+            online = float(np.mean(sm["S"]["online_last_third"]) + np.mean(sm["V"]["online_last_third"])) / 2
+            frozen = float(np.mean(sm["frozen_mean_SV"]))
+            score = frozen + online + 0.5 * float(np.mean(st_["min_after"]))
+            log.row("F4w resumen", name, "validación", "S/V en línea (promedio S y V)", online, 0.0, len(VAL_SEEDS))
+            log.row("F4w resumen", name, "validación", "S/V congelado + en línea + 0.5 x mínimo de Harlow", score, 0.0,
+                    len(VAL_SEEDS))
+            return dict(sv=sm["frozen_mean_SV"], online=online, harlow_min=st_["min_after"], score=score)
+        st.run(name, fn)
+    tests = (("L=8 (más largo que lo entrenado)", dict(L=8)),)
+    for g in (dict(), dict(ne="inesperada", unexplained_gain=0.0)):
+        name = json.dumps(g)
+        over = dict(back=True, cogmap=True, modulators=(dict(NM, **g) or True))
+        st.run("anillo " + name, lambda log, over=over, name=name: M.report_line(
+            log, "F4w anillo con preguntas de aprendizaje", name,
+            M.run_line(make(n_cues=4, **over), 400, seeds=VAL_SEEDS, struct="anillo", perceive=True, tests=tests), 50))
+        st.run("FIN " + name, lambda log, over=over, name=name: M.report_line(
+            log, "F4w línea con FIN y preguntas de aprendizaje", name,
+            M.run_line(make(n_cues=4, **over), 400, seeds=VAL_SEEDS, struct="linea", perceive=True, use_end=True,
+                       queries=(2, 3), tests=tests), 50))
+    st.finish()
+
+
+# ---------------------------------------------------------------- F5: todo encendido
+OLD = dict(prev_io=False, back=False, task_sets=False, cogmap=False, modulators=False)   # defaults de la v0.3
+
+
+def hard_cases(over, seeds=SEEDS, n=3000):
+    """Los grupos de `exp_thinking_hard` (solas, ruido, grande, largo, multi), sin escribir
+    sus CSV: [(prueba, {caso: [acc por semilla]})]."""
+    import exp_thinking_hard as H
+    W = H.World(32); WB = H.World(256); WL = H.World(64)
+    tasks = (0, 1, 2, 3, 4, 5, 6)
+    ev_all = [(f"C{t} {name}", fn) for t in tasks for name, fn in H.evals_for(W, t, t)]
+    runs = []
+    for task in (1, 2, 3, 4, 5, 6):
+        two = task in (1, 2, 4)
+        runs.append((f"C{task} sola", W, lambda s, two=two: H.make_thinker(W, 2 if two else 1, seed=s, **over),
+                     H.plan_single(task, n), H.evals_for(W, task, cue=1 if two else 0), 0.0))
+    for task in (3, 5, 6):
+        runs.append((f"C{task} etiquetas 10 % al azar", W, lambda s: H.make_thinker(W, 1, seed=s, **over),
+                     H.plan_single(task, n), H.evals_for(W, task, 0), 0.1))
+    for task in (1, 3, 5, 6):
+        two = task == 1
+        runs.append((f"C{task} vocabulario 256", WB, lambda s, two=two: H.make_thinker(WB, 2 if two else 1, seed=s, **over),
+                     H.plan_single(task, n), H.evals_for(WB, task, cue=1 if two else 0), 0.0))
+    runs.append(("C3 cadenas largas (max_steps=20)", WL, lambda s: H.make_thinker(WL, 1, seed=s, max_steps=20, **over),
+                 H.plan_single(3, n), [("12-16 saltos", lambda net, r: H.c3(WL, net, r, False, 0, hops=int(r.integers(12, 17)), distractors=8))], 0.0))
+    runs.append(("C5 órdenes largos (max_steps=20)", WL, lambda s: H.make_thinker(WL, 1, seed=s, max_steps=20, **over),
+                 H.plan_single(5, n), [("orden de 16, distancia >= 8", lambda net, r: H.c5(WL, net, r, False, 0, L=16, min_gap=8))], 0.0))
+    runs.append(("multitarea en bloques, orden inverso (f al final)", W, lambda s: H.make_thinker(W, 7, seed=s, **over),
+                 H.plan_blocks(tasks, n // 2, n // 4, reverse=True), ev_all, 0.0))
+    return runs
+
+
+def run_harlow_suite(over, seeds=SEEDS):
+    """Harlow por la compuerta con resultado percibido (B1) + reversión y 3 objetos, y Harlow
+    sin resultado percibido (`prev_io`): instantáneas congeladas."""
+    rev = ("reversión en el ensayo 4 (T=8)", dict(T=8, reverse_at=3))
+    three = ("3 objetos (entrenado con 2)", dict(k=3))
+    res = M.run_harlow(make(gate=True, **over), 400, seeds=seeds, k=2, perceive=True, split=True, tests=(rev, three))
+    return res
+
+
+def group_f5():
+    import exp_thinking_hard as H
+    import exp_integration as EI
+    import exp_integration2 as EI2
+    st = Store("f5")
+    systems = (("v0.3 (todo apagado)", OLD), ("todo encendido (nuevo por defecto)", {}))
+    # F5.1 batería C0-C6 (multitarea mezclada y en bloques) y latencia
+    for label, over in systems:
+        st.run("F5.1 mezclada | " + label, lambda log, over=over, label=label: report_battery(
+            log, "F5.1 batería C0-C6, multitarea mezclada", label, run_battery(over)))
+        st.run("F5.1 bloques | " + label, lambda log, over=over, label=label: report_battery(
+            log, "F5.1 batería C0-C6, multitarea en bloques (olvido)", label, run_battery(over, plan="bloques")))
+    # F5.2 resto de exp_thinking_hard (todo encendido; la v0.3 está en results/thinking_hard_*.csv)
+    for test, Wd, mk, plan, evals, noisy in hard_cases({}):
+        def fn(log, test=test, Wd=Wd, mk=mk, plan=plan, evals=evals, noisy=noisy):
+            t0 = time.time()
+            out, cost = H.run(Wd, mk, plan, evals, SEEDS, 200, noisy=noisy)
+            for name, accs in out.items():
+                log.row("F5.2 " + test, "todo encendido", "congelado, casos no vistos", name, float(np.mean(accs)),
+                        float(np.std(accs)), len(accs))
+            log.row("F5.2 " + test, "todo encendido", "costo", "segundos", float(time.time() - t0), 0.0, len(SEEDS))
+            return dict(acc=out, cost=cost)
+        st.run("F5.2 " + test, fn)
+    # F5.3 suma decimal con acarreo (símbolos perfectos, 1 registro, 12 000 episodios), 8 cifras
+    for label, over in systems:
+        def carry(log, over=over, label=label):
+            datos = EI.Digitos(10)
+            res = {n: [] for n in (1, 3, 8)}; secs = []
+            for seed in SEEDS:
+                rng = np.random.default_rng(1000 + seed)
+                th = H.Thinker(21, registers=1, seed=seed, **over)
+                t0 = time.time()
+                EI2.entrenar_suma(th, EI2.Oraculo(), datos, rng, 12000, {}, {})
+                secs.append(time.time() - t0)
+                for n in res:
+                    res[n].append(EI2.evaluar_suma(th, EI2.Oraculo(), datos, rng, n, 500)["exacta"])
+            for n, v in res.items():
+                log.row("F5.3 suma con acarreo (1 registro, 12 000 episodios)", label, "congelado", f"exacta, {n} cifras",
+                        float(np.mean(v)), float(np.std(v)), len(v))
+            log.row("F5.3 suma con acarreo (1 registro, 12 000 episodios)", label, "costo", "segundos de entrenamiento",
+                    float(np.mean(secs)), float(np.std(secs)), len(secs))
+            return {str(k): v for k, v in res.items()}
+        st.run("F5.3 acarreo | " + label, carry)
+    # F5.4 Harlow (B1), reversión, 3 objetos; Harlow sin resultado percibido (estabilidad)
+    for label, over in systems:
+        def harlow(log, over=over, label=label):
+            res = run_harlow_suite(over)
+            sm = M.report_harlow(log, "F5.4 harlow por la compuerta (B1)", label, res, 50)
+            for tname, arr in res["tests"].items():
+                sm["test " + tname] = M.report_by_trial(log, "F5.4 congelado, " + tname, label, arr)
+            return sm
+        st.run("F5.4 harlow B1 | " + label, harlow)
+        cps = (0, 10, 25, 50, 100, 200, 300, 400, 600, 800)
+        st.run("F5.4 harlow prev_io | " + label, lambda log, over=over, label=label: report_stability(
+            log, "F5.4 harlow congelado (prev_io, sin resultado percibido)", label,
+            harlow_stability(make(gate=True, **dict(over, prev_io=True)), cps=cps)[0], cps))
+    # F5.5 transferencia de estructura (línea), anillo y FIN con preguntas de aprendizaje
+    tests = (("L=8 (más largo que lo entrenado)", dict(L=8)), ("R=1 (cada relación observada una vez)", dict(R=1)))
+    for label, over in systems:
+        st.run("F5.5 línea | " + label, lambda log, over=over, label=label: M.report_line(
+            log, "F5.5 transferencia de estructura (línea)", label,
+            M.run_line(make(n_cues=4, **over), 300, struct="linea", perceive=True, tests=tests), 25))
+        st.run("F5.5 anillo | " + label, lambda log, over=over, label=label: M.report_line(
+            log, "F5.5 anillo con preguntas de aprendizaje", label,
+            M.run_line(make(n_cues=4, **over), F2_B, struct="anillo", perceive=True, tests=tests), 50))
+        st.run("F5.5 FIN | " + label, lambda log, over=over, label=label: M.report_line(
+            log, "F5.5 línea con FIN y preguntas de aprendizaje", label,
+            M.run_line(make(n_cues=4, **over), F2_B, struct="linea", perceive=True, use_end=True, queries=(2, 3),
+                       tests=(tests[0],)), 50))
+    # F5.6 familias de reglas (F1) y regímenes S/V (F4) con todo encendido
+    cps = [0, 25, 50, 100, 200, 400, 410, 425, 450, 500, 600, 800, 805, 810, 825, 850, 1000]
+    sched = lambda i: ("W" if i < 400 or i >= 800 else "A", 0)       # noqa: E731
+    ev = [("W (premia un objeto)", "W", 0), ("A (el premio alterna)", "A", 0)]
+    st.run("F5.6 familias sin consigna | todo encendido", lambda log: report_families(
+        log, "F5.6 sin consigna W -> A -> W", "todo encendido", run_families(make(gate=True), sched, 1000, cps, ev), cps,
+        switches=(400, 800), ts_ref=((400, 799), (800, 399))))
+    fams = [("W", 0, 300), ("A", 1, 300), ("W", 2, 100), ("A", 3, 100)]
+    starts = np.cumsum([0] + [n for _, _, n in fams])
+
+    def sched2(i):
+        j = int(np.searchsorted(starts, i, side="right")) - 1
+        return fams[j][0], fams[j][1]
+    cps2 = [0, 300, 600, 605, 610, 625, 700, 705, 710, 725, 800]
+    ev2 = [("W (consigna 0)", "W", 0), ("A (consigna 1)", "A", 1), ("W' (consigna 2)", "W", 2), ("A' (consigna 3)", "A", 3)]
+    st.run("F5.6 familias con consigna | todo encendido", lambda log: report_families(
+        log, "F5.6 con consigna W, A, W', A'", "todo encendido", run_families(make(gate=True, n_cues=4), sched2, 800, cps2, ev2),
+        cps2, switches=(0, 300, 600, 700), ts_ref=((600, 299), (700, 599))))
+    st.run("F5.6 regímenes S/V | todo encendido", lambda log: M.report_regimes(
+        log, "F5.6 harlow S/V, todo aprende", "todo encendido", M.run_regimes(make(), 3000, pretrain=100)))
+    st.finish()
+
+
+GROUPS = {"f1": group_f1, "f1v": group_f1v, "f2": group_f2, "f3": group_f3, "f4": group_f4, "f4v": group_f4v, "f4w": group_f4w, "f5": group_f5}
 
 
 def main():

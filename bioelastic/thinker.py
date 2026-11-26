@@ -288,6 +288,11 @@ def _items(items, prev):
     return t
 
 
+class _Stay(tuple):
+    """El foco tras una consulta que no devolvió nada (RETROCEDER sin predecesor): el mismo
+    contenido, con la marca de que la consulta falló. El control ve la marca, no el contenido."""
+
+
 class _Held(frozenset):
     """Lo sostenido, con la copia eferente de la compuerta que lo guardó: qué ítem de la
     pregunta era (el primero o uno posterior). El control no ve el ítem, sólo eso."""
@@ -318,7 +323,7 @@ class Thinker:
                  replacing: bool = True,
                  decay: float = 1e-2, mixed: bool | str = "solo", clock: bool = False,
                  lookahead: bool = False, search: str = "guiada", credit: str = "estricto",
-                 task_sets: bool | dict = False, cogmap: bool | str = False,
+                 task_sets: bool | dict = False, cogmap: bool | str = False, modulators: bool | dict = False,
                  doubt: float = 0.0, explain: str = "refutadas", reg_credit: str = "simple",
                  reg_reset: str = "cero", prev_io: bool | str = False, back: bool | str = False,
                  seed: int = 0, say: dict | None = None):
@@ -401,6 +406,13 @@ class Thinker:
         # (señal siempre visible, sin coincidencia con lo sostenido), como ablación.
         self._back_match = bool(back) and back not in ("sin_senal", "automatico")
         self._back_auto = back == "automatico"
+        # Consultar lo que precedió no borra lo que se tenía en mente: si nada precedió, el foco
+        # queda y el control ve que la consulta falló (una señal propia: «retrocedí y llegué al
+        # primero» y «no pude retroceder» dejan el mismo foco sin predecesor, pero piden cosas
+        # distintas). Antes un RETROCEDER fallido vaciaba el foco y, como los predecesores sólo
+        # se ven al retroceder, desde el primero de una cadena no se podía seguir (el inverso a
+        # través de la arista no observada de un anillo fallaba siempre).
+        self._back_keep = back is True
         self.back = back if back == "sin_senal" else bool(back)
         if memory and self.back:
             acts.append(BACK)
@@ -428,7 +440,8 @@ class Thinker:
         # respuesta y recompensa previas (`prev_io`): 5 para el foco y 5 para el ítem de la compuerta
         self.prev_io = prev_io if prev_io == "separado" else bool(prev_io)
         self.o_prev = o; o += 10 if self.prev_io else 0
-        self.o_back = o; o += (5 if self._back_match else 3) if self.back is True else 0  # predecesores: nada / uno / varios (`back`), ¿sostenido?
+        # predecesores: nada / uno / varios (`back`), ¿es lo sostenido?, ¿la consulta falló?
+        self.o_back = o; o += ((5 if self._back_match else 3) + int(self._back_keep)) if self.back is True else 0
         # completitud del mapa (`cogmap`, ver `bioelastic.cogmap`): sin mapa / a medio armar / completo
         # ablaciones: "sin_posicion", "sin_tamano" (sin tamaño esperado), "sin_juicio" (sin
         # crédito al juicio como módulo candidato)
@@ -463,12 +476,26 @@ class Thinker:
         self.decisions = np.zeros(self._n_act, dtype=np.int64)
         self._V = None
         self._ctl_gain = 1.0                               # ganancia de la plasticidad del control
+        self._beh_temp = None                              # temperatura de la conducta (None: la del Thinker)
+        self._beh_eps = None                               # exploración de la conducta (None: epsilon)
+        self._trial_td = False                             # TD con horizonte de un ensayo (ver `feedback`)
         # conjuntos de tareas (`task_sets`, ver `bioelastic.tasksets`): el control que rige
         # se infiere de la estadística de los desenlaces
         self.task_sets = None
         if task_sets:
             from .tasksets import TaskSets
             self.task_sets = TaskSets(**(task_sets if isinstance(task_sets, dict) else {}))
+        # neuromoduladores (`modulators`, ver `bioelastic.modulators`): cada meta-parámetro lo
+        # fija su canal (DA, ACh, NE, 5-HT) con su propia señal local
+        self.modulators = None
+        if modulators:
+            from .modulators import BayesMemory, Neuromodulators
+            kw = dict(modulators) if isinstance(modulators, dict) else {}
+            mem = kw.pop("memory", {})
+            if self.fast is not None and mem is not None:   # None: memoria episódica de siempre
+                self.fast = BayesMemory(N, **mem)
+            self.modulators = Neuromodulators(self, **kw)
+        self._ts_pred = None
         self.reset()
 
     # ------------------------------------------------------------------ episodio
@@ -555,6 +582,8 @@ class Thinker:
             idx.append(self.o_back + min(len(back[0]), 2))
             if self._back_match and hold:                  # ¿el predecesor es lo sostenido?
                 idx.append(self.o_back + 3 + int(self._best(back) in hold))
+            if isinstance(focus, _Stay):                   # la consulta no devolvió nada: el foco quedó
+                idx.append(self.o_back + 5)
         if self.cogmap:
             idx.append(self.o_map + (self._mapc if mapc is None else mapc))
         if self._cm_pos:
@@ -651,7 +680,13 @@ class Thinker:
                 self.ev[s_idx] += s_val
         p = self._policy(s_idx, s_val, allowed)
         if explore:
-            q = (1.0 - self.epsilon) * p + self.epsilon / len(allowed)
+            # aleatoriedad de la conducta (`modulators`: la fija NE). El aprendizaje y la búsqueda
+            # interna siguen con la temperatura y el piso de exploración del Thinker: los márgenes no
+            # se encogen al explorar menos y la búsqueda sigue considerando las alternativas
+            pb = p if self._beh_temp is None else self._softmax(
+                self.temperature * np.log(np.clip(p, 1e-300, None)) / self._beh_temp)
+            eps = self.epsilon if self._beh_eps is None else self._beh_eps
+            q = (1.0 - eps) * pb + eps / len(allowed)
             k = int(self.rng.choice(len(allowed), p=q))
         else:
             k = int(np.argmax(p))
@@ -970,7 +1005,10 @@ class Thinker:
                 focus = (o,)
             elif a == BACK:                                   # la relación al revés
                 b = self._best(bk)
-                focus = (b,) if b >= 0 else ()
+                if b >= 0 or not self._back_keep or not len(focus):
+                    focus = (b,) if b >= 0 else ()
+                else:                                         # nada precedió: el foco queda, marcado
+                    focus = _Stay(focus)
             else:
                 break
             recall = self._recall(focus)
@@ -1024,6 +1062,8 @@ class Thinker:
             self._prev = (int(self._out), bool(ok))
         if self.task_sets is not None and (target is not None or reward is not None):
             self._ts_evidence(target, reward)              # inferencia: también congelado
+        if self.modulators is not None and (target is not None or reward is not None):
+            self._nm_step(target, reward)                  # neuromoduladores: también congelado
 
         if not self.plastic:
             return
@@ -1116,6 +1156,15 @@ class Thinker:
             if self.replay:
                 self._replay()
         self._r += float(reward or 0.0)
+        if self._trial_td and self._V is not None and (target is not None or reward is not None):
+            # horizonte de un ensayo (`modulators`, 5-HT): la recompensa de una respuesta se
+            # acredita a las decisiones de esa respuesta. Sin esto, el crítico arrastraba valor
+            # entre ensayos y el fin arbitrario del episodio daba un δ de -3 al último ensayo en
+            # cada problema de Harlow (castigaba la respuesta correcta). Los registros conservan
+            # su traza entre ensayos: escribir el acarreo se paga en la columna siguiente.
+            self._update(self._r - self._V)
+            self.Ec[:] = 0.0; self.ev[:] = 0.0
+            self._V = None; self._r = 0.0
 
     # ------------------------------------------------------------------ percepción que duda
     def _perceptual(self, target: int, alternatives) -> str:
@@ -1271,6 +1320,8 @@ class Thinker:
             return [(b,)] if b >= 0 else []
         if a == BACK:
             b = self._best(back) if back is not None else -1
+            if b < 0 and self._back_keep and len(focus):     # nada precedió: el foco queda, marcado
+                return [_Stay(focus)]
             return [(b,)] if b >= 0 else []
         out, sure = self._sim("say", c, over)
         if sure:
@@ -1558,6 +1609,7 @@ class Thinker:
         lik = np.full(K + 1, 0.5)
         act = T.active
         out, conf = self._ts_rollout(act, ep)
+        self._ts_pred = (out, conf)
         lik[act] = T.likelihood(act, out, conf, target)
         if lik[act] < T.explained:                         # no lo explicó: se vigila al resto
             for k in range(K):
@@ -1572,7 +1624,34 @@ class Thinker:
         if k == K:
             k = self._ts_new(cue)
         self._ts_switch(k, cue)
+        T.count(cue, k, self.plastic)
         self._ctl_gain = T.gain(cue)
+
+    # ------------------------------------------------------------------ neuromoduladores
+    def _nm_step(self, target, reward):
+        """Tras el desenlace y antes de aprender: los canales fijan los meta-parámetros del
+        ensayo. La predicción del control es la de su política más probable (la misma
+        simulación que usan los conjuntos de tareas, si están)."""
+        if self.task_sets is not None and self._ts_pred is not None:
+            pred = self._ts_pred
+        else:
+            self._ctl_gain = 1.0
+            pred = self._rollout(self.Wc, self._episode())
+        if target is None:
+            target = self._out if (reward or 0.0) > 0 else None
+        explained = 0.0
+        if (self.plastic and target is not None and self._out != target and self.hindsight
+                and self._cached is None and self.modulators.control):
+            # ¿el error tiene una explicación fiable? (la búsqueda retrospectiva, que el resto
+            # de `feedback` reutiliza): un error de estrategia con un camino fiable no es ruido
+            paths = self._search(int(target))
+            self._cached = [paths]
+            if paths is not None:
+                (sl, _), _, al = paths[0][-1]
+                ok, n = self.rel.get((sl.tobytes(), al), (0, 0))
+                explained = (ok + 1.0) / (n + 2.0)
+        self.modulators.step(target, reward, pred, explained)
+        self._ts_pred = None
 
     def stats(self) -> dict:
         if self.task_sets is not None:

@@ -1,0 +1,288 @@
+prueba,sistema,tramo,medida,media,desvio,semillas
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}","en línea, último tercio","elige el premiado, régimen S",0.6634,0.0042,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}",congelado,"elige el premiado, régimen S",0.8174,0.0092,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}","en línea, último tercio","memoria da el premiado, régimen S",0.7989,0.0094,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}",congelado,"memoria da el premiado, régimen S",0.8174,0.0092,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}","en línea, último tercio","tasa de ligadura, régimen S",0.5564,0.0170,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}",congelado,"tasa de ligadura, régimen S",0.5019,0.0284,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}","en línea, último tercio","elige el premiado, régimen V",0.7227,0.0136,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}",congelado,"elige el premiado, régimen V",0.8061,0.0075,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}","en línea, último tercio","memoria da el premiado, régimen V",0.7947,0.0075,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}",congelado,"memoria da el premiado, régimen V",0.8061,0.0075,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}","en línea, último tercio","tasa de ligadura, régimen V",0.7926,0.0085,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}",congelado,"tasa de ligadura, régimen V",0.8048,0.0157,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}",congelado,"elige el premiado, promedio S y V",0.8117,0.0060,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}",congelado,"memoria da el premiado, promedio S y V",0.8117,0.0060,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}","en línea, último tercio","forget, régimen S",0.0194,0.0004,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}","en línea, último tercio","sure, régimen S",0.7603,0.0051,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}","en línea, último tercio","epsilon, régimen S",0.0826,0.0024,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}","en línea, último tercio","decay, régimen S",0.0106,0.0004,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}","en línea, último tercio","capture, régimen S",2.8059,0.0450,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}","en línea, último tercio","lr, régimen S",0.1598,0.0020,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}","en línea, último tercio","temperature, régimen S",0.8437,0.0212,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}","en línea, último tercio","volatility, régimen S",0.0955,0.0015,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}","en línea, último tercio","noise, régimen S",0.2160,0.0108,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}","en línea, último tercio","forget, régimen V",0.0195,0.0004,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}","en línea, último tercio","sure, régimen V",0.7132,0.0019,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}","en línea, último tercio","epsilon, régimen V",0.0601,0.0010,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}","en línea, último tercio","decay, régimen V",0.0109,0.0005,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}","en línea, último tercio","capture, régimen V",2.1947,0.0265,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}","en línea, último tercio","lr, régimen V",0.1711,0.0003,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}","en línea, último tercio","temperature, régimen V",0.6413,0.0094,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}","en línea, último tercio","volatility, régimen V",0.1381,0.0029,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}}","en línea, último tercio","noise, régimen V",0.0938,0.0055,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0}}",instantánea tras 25 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0}}",instantánea tras 50 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0}}",instantánea tras 100 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0}}",instantánea tras 200 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0}}",instantánea tras 300 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0}}",instantánea tras 400 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0}}",instantáneas desde 50,mínimo por semilla,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0}}",instantáneas desde 50,instantáneas < 0.95 (cantidad),0.0000,0.0000,3
+F4v resumen,"{""memory"": {""prior_q"": 2.0}}",validación,S/V + 0.5 x mínimo de Harlow,1.3117,0.0000,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}","en línea, último tercio","elige el premiado, régimen S",0.6542,0.0014,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}",congelado,"elige el premiado, régimen S",0.8212,0.0086,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}","en línea, último tercio","memoria da el premiado, régimen S",0.8002,0.0095,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}",congelado,"memoria da el premiado, régimen S",0.8212,0.0086,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}","en línea, último tercio","tasa de ligadura, régimen S",0.5468,0.0174,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}",congelado,"tasa de ligadura, régimen S",0.4915,0.0281,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}","en línea, último tercio","elige el premiado, régimen V",0.7201,0.0116,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}",congelado,"elige el premiado, régimen V",0.8076,0.0065,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}","en línea, último tercio","memoria da el premiado, régimen V",0.7938,0.0073,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}",congelado,"memoria da el premiado, régimen V",0.8076,0.0065,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}","en línea, último tercio","tasa de ligadura, régimen V",0.7849,0.0092,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}",congelado,"tasa de ligadura, régimen V",0.7960,0.0143,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}",congelado,"elige el premiado, promedio S y V",0.8144,0.0056,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}",congelado,"memoria da el premiado, promedio S y V",0.8144,0.0056,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}","en línea, último tercio","forget, régimen S",0.0195,0.0004,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}","en línea, último tercio","sure, régimen S",0.7632,0.0052,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}","en línea, último tercio","epsilon, régimen S",0.0832,0.0022,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}","en línea, último tercio","decay, régimen S",0.0107,0.0004,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}","en línea, último tercio","capture, régimen S",2.8181,0.0408,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}","en línea, último tercio","lr, régimen S",0.1608,0.0028,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}","en línea, último tercio","temperature, régimen S",0.8484,0.0200,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}","en línea, último tercio","volatility, régimen S",0.0936,0.0015,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}","en línea, último tercio","noise, régimen S",0.2220,0.0109,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}","en línea, último tercio","forget, régimen V",0.0196,0.0003,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}","en línea, último tercio","sure, régimen V",0.7142,0.0019,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}","en línea, último tercio","epsilon, régimen V",0.0609,0.0008,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}","en línea, último tercio","decay, régimen V",0.0110,0.0004,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}","en línea, último tercio","capture, régimen V",2.2060,0.0262,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}","en línea, último tercio","lr, régimen V",0.1712,0.0031,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}","en línea, último tercio","temperature, régimen V",0.6479,0.0074,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}","en línea, último tercio","volatility, régimen V",0.1364,0.0029,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 1.0}}","en línea, último tercio","noise, régimen V",0.0979,0.0056,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 1.0}}",instantánea tras 25 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 1.0}}",instantánea tras 50 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 1.0}}",instantánea tras 100 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 1.0}}",instantánea tras 200 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 1.0}}",instantánea tras 300 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 1.0}}",instantánea tras 400 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 1.0}}",instantáneas desde 50,mínimo por semilla,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 1.0}}",instantáneas desde 50,instantáneas < 0.95 (cantidad),0.0000,0.0000,3
+F4v resumen,"{""memory"": {""prior_q"": 1.0}}",validación,S/V + 0.5 x mínimo de Harlow,1.3144,0.0000,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}","en línea, último tercio","elige el premiado, régimen S",0.6470,0.0043,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}",congelado,"elige el premiado, régimen S",0.8091,0.0081,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}","en línea, último tercio","memoria da el premiado, régimen S",0.7935,0.0070,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}",congelado,"memoria da el premiado, régimen S",0.8091,0.0081,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}","en línea, último tercio","tasa de ligadura, régimen S",0.5764,0.0172,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}",congelado,"tasa de ligadura, régimen S",0.5227,0.0269,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}","en línea, último tercio","elige el premiado, régimen V",0.7189,0.0111,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}",congelado,"elige el premiado, régimen V",0.8061,0.0075,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}","en línea, último tercio","memoria da el premiado, régimen V",0.7945,0.0079,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}",congelado,"memoria da el premiado, régimen V",0.8061,0.0075,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}","en línea, último tercio","tasa de ligadura, régimen V",0.8080,0.0085,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}",congelado,"tasa de ligadura, régimen V",0.8189,0.0149,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}",congelado,"elige el premiado, promedio S y V",0.8076,0.0062,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}",congelado,"memoria da el premiado, promedio S y V",0.8076,0.0062,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}","en línea, último tercio","forget, régimen S",0.0196,0.0004,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}","en línea, último tercio","sure, régimen S",0.7547,0.0050,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}","en línea, último tercio","epsilon, régimen S",0.0834,0.0015,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}","en línea, último tercio","decay, régimen S",0.0109,0.0004,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}","en línea, último tercio","capture, régimen S",2.7829,0.0471,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}","en línea, último tercio","lr, régimen S",0.1596,0.0018,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}","en línea, último tercio","temperature, régimen S",0.8509,0.0133,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}","en línea, último tercio","volatility, régimen S",0.0996,0.0016,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}","en línea, último tercio","noise, régimen S",0.2041,0.0107,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}","en línea, último tercio","forget, régimen V",0.0196,0.0003,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}","en línea, último tercio","sure, régimen V",0.7113,0.0017,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}","en línea, último tercio","epsilon, régimen V",0.0610,0.0007,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}","en línea, último tercio","decay, régimen V",0.0111,0.0005,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}","en línea, último tercio","capture, régimen V",2.1717,0.0252,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}","en línea, último tercio","lr, régimen V",0.1732,0.0010,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}","en línea, último tercio","temperature, régimen V",0.6489,0.0063,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}","en línea, último tercio","volatility, régimen V",0.1412,0.0028,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 4.0}}","en línea, último tercio","noise, régimen V",0.0862,0.0052,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 4.0}}",instantánea tras 25 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 4.0}}",instantánea tras 50 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 4.0}}",instantánea tras 100 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 4.0}}",instantánea tras 200 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 4.0}}",instantánea tras 300 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 4.0}}",instantánea tras 400 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 4.0}}",instantáneas desde 50,mínimo por semilla,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 4.0}}",instantáneas desde 50,instantáneas < 0.95 (cantidad),0.0000,0.0000,3
+F4v resumen,"{""memory"": {""prior_q"": 4.0}}",validación,S/V + 0.5 x mínimo de Harlow,1.3076,0.0000,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}","en línea, último tercio","elige el premiado, régimen S",0.6385,0.0087,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}",congelado,"elige el premiado, régimen S",0.7962,0.0112,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}","en línea, último tercio","memoria da el premiado, régimen S",0.7838,0.0079,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}",congelado,"memoria da el premiado, régimen S",0.7962,0.0112,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}","en línea, último tercio","tasa de ligadura, régimen S",0.6083,0.0178,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}",congelado,"tasa de ligadura, régimen S",0.5508,0.0321,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}","en línea, último tercio","elige el premiado, régimen V",0.7084,0.0151,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}",congelado,"elige el premiado, régimen V",0.8015,0.0095,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}","en línea, último tercio","memoria da el premiado, régimen V",0.7880,0.0078,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}",congelado,"memoria da el premiado, régimen V",0.8015,0.0095,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}","en línea, último tercio","tasa de ligadura, régimen V",0.7656,0.0130,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}",congelado,"tasa de ligadura, régimen V",0.7738,0.0180,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}",congelado,"elige el premiado, promedio S y V",0.7989,0.0080,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}",congelado,"memoria da el premiado, promedio S y V",0.7989,0.0080,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}","en línea, último tercio","forget, régimen S",0.0196,0.0004,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}","en línea, último tercio","sure, régimen S",0.7467,0.0049,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}","en línea, último tercio","epsilon, régimen S",0.0842,0.0022,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}","en línea, último tercio","decay, régimen S",0.0110,0.0006,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}","en línea, último tercio","capture, régimen S",2.6946,0.0476,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}","en línea, último tercio","lr, régimen S",0.1610,0.0035,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}","en línea, último tercio","temperature, régimen S",0.8581,0.0195,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}","en línea, último tercio","volatility, régimen S",0.1076,0.0019,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}","en línea, último tercio","noise, régimen S",0.1853,0.0110,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}","en línea, último tercio","forget, régimen V",0.0197,0.0003,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}","en línea, último tercio","sure, régimen V",0.7183,0.0030,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}","en línea, último tercio","epsilon, régimen V",0.0626,0.0009,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}","en línea, último tercio","decay, régimen V",0.0113,0.0006,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}","en línea, último tercio","capture, régimen V",2.2784,0.0365,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}","en línea, último tercio","lr, régimen V",0.1678,0.0021,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}","en línea, último tercio","temperature, régimen V",0.6632,0.0082,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}","en línea, último tercio","volatility, régimen V",0.1410,0.0048,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}","en línea, último tercio","noise, régimen V",0.1104,0.0083,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}",instantánea tras 25 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}",instantánea tras 50 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}",instantánea tras 100 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}",instantánea tras 200 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}",instantánea tras 300 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}",instantánea tras 400 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}",instantáneas desde 50,mínimo por semilla,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}",instantáneas desde 50,instantáneas < 0.95 (cantidad),0.0000,0.0000,3
+F4v resumen,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.01}}",validación,S/V + 0.5 x mínimo de Harlow,1.2989,0.0000,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}","en línea, último tercio","elige el premiado, régimen S",0.6594,0.0058,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}",congelado,"elige el premiado, régimen S",0.8114,0.0081,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}","en línea, último tercio","memoria da el premiado, régimen S",0.8012,0.0062,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}",congelado,"memoria da el premiado, régimen S",0.8114,0.0081,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}","en línea, último tercio","tasa de ligadura, régimen S",0.5435,0.0136,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}",congelado,"tasa de ligadura, régimen S",0.5036,0.0167,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}","en línea, último tercio","elige el premiado, régimen V",0.7246,0.0143,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}",congelado,"elige el premiado, régimen V",0.8076,0.0084,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}","en línea, último tercio","memoria da el premiado, régimen V",0.7955,0.0074,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}",congelado,"memoria da el premiado, régimen V",0.8076,0.0084,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}","en línea, último tercio","tasa de ligadura, régimen V",0.7716,0.0069,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}",congelado,"tasa de ligadura, régimen V",0.7638,0.0158,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}",congelado,"elige el premiado, promedio S y V",0.8095,0.0079,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}",congelado,"memoria da el premiado, promedio S y V",0.8095,0.0079,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}","en línea, último tercio","forget, régimen S",0.0195,0.0003,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}","en línea, último tercio","sure, régimen S",0.7624,0.0042,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}","en línea, último tercio","epsilon, régimen S",0.0830,0.0018,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}","en línea, último tercio","decay, régimen S",0.0106,0.0004,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}","en línea, último tercio","capture, régimen S",2.8652,0.0323,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}","en línea, último tercio","lr, régimen S",0.1605,0.0040,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}","en línea, último tercio","temperature, régimen S",0.8470,0.0163,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}","en línea, último tercio","volatility, régimen S",0.0945,0.0011,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}","en línea, último tercio","noise, régimen S",0.2226,0.0088,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}","en línea, último tercio","forget, régimen V",0.0196,0.0002,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}","en línea, último tercio","sure, régimen V",0.7108,0.0012,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}","en línea, último tercio","epsilon, régimen V",0.0610,0.0011,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}","en línea, último tercio","decay, régimen V",0.0110,0.0004,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}","en línea, último tercio","capture, régimen V",2.1617,0.0218,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}","en línea, último tercio","lr, régimen V",0.1701,0.0022,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}","en línea, último tercio","temperature, régimen V",0.6490,0.0100,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}","en línea, último tercio","volatility, régimen V",0.1264,0.0014,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}","en línea, último tercio","noise, régimen V",0.0970,0.0039,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}",instantánea tras 25 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}",instantánea tras 50 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}",instantánea tras 100 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}",instantánea tras 200 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}",instantánea tras 300 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}",instantánea tras 400 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}",instantáneas desde 50,mínimo por semilla,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}",instantáneas desde 50,instantáneas < 0.95 (cantidad),0.0000,0.0000,3
+F4v resumen,"{""memory"": {""prior_q"": 2.0, ""phi"": 0.04}}",validación,S/V + 0.5 x mínimo de Harlow,1.3095,0.0000,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}","en línea, último tercio","elige el premiado, régimen S",0.6641,0.0048,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}",congelado,"elige el premiado, régimen S",0.8174,0.0092,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}","en línea, último tercio","memoria da el premiado, régimen S",0.7989,0.0094,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}",congelado,"memoria da el premiado, régimen S",0.8174,0.0092,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}","en línea, último tercio","tasa de ligadura, régimen S",0.5567,0.0175,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}",congelado,"tasa de ligadura, régimen S",0.5026,0.0291,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}","en línea, último tercio","elige el premiado, régimen V",0.7159,0.0099,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}",congelado,"elige el premiado, régimen V",0.8061,0.0075,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}","en línea, último tercio","memoria da el premiado, régimen V",0.7947,0.0075,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}",congelado,"memoria da el premiado, régimen V",0.8061,0.0075,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}","en línea, último tercio","tasa de ligadura, régimen V",0.7931,0.0092,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}",congelado,"tasa de ligadura, régimen V",0.8051,0.0151,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}",congelado,"elige el premiado, promedio S y V",0.8117,0.0060,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}",congelado,"memoria da el premiado, promedio S y V",0.8117,0.0060,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}","en línea, último tercio","forget, régimen S",0.0195,0.0003,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}","en línea, último tercio","sure, régimen S",0.7603,0.0051,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}","en línea, último tercio","epsilon, régimen S",0.0831,0.0024,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}","en línea, último tercio","decay, régimen S",0.0107,0.0002,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}","en línea, último tercio","capture, régimen S",2.8059,0.0450,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}","en línea, último tercio","lr, régimen S",0.1580,0.0037,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}","en línea, último tercio","temperature, régimen S",0.8731,0.0183,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}","en línea, último tercio","volatility, régimen S",0.0955,0.0015,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}","en línea, último tercio","noise, régimen S",0.2160,0.0108,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}","en línea, último tercio","forget, régimen V",0.0196,0.0002,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}","en línea, último tercio","sure, régimen V",0.7132,0.0019,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}","en línea, último tercio","epsilon, régimen V",0.0612,0.0012,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}","en línea, último tercio","decay, régimen V",0.0110,0.0003,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}","en línea, último tercio","capture, régimen V",2.1947,0.0265,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}","en línea, último tercio","lr, régimen V",0.1724,0.0030,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}","en línea, último tercio","temperature, régimen V",0.7092,0.0088,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}","en línea, último tercio","volatility, régimen V",0.1381,0.0029,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}","en línea, último tercio","noise, régimen V",0.0938,0.0055,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}",instantánea tras 25 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}",instantánea tras 50 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}",instantánea tras 100 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}",instantánea tras 200 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}",instantánea tras 300 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}",instantánea tras 400 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}",instantáneas desde 50,mínimo por semilla,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}",instantáneas desde 50,instantáneas < 0.95 (cantidad),0.0000,0.0000,3
+F4v resumen,"{""memory"": {""prior_q"": 2.0}, ""temp"": [0.25, null]}",validación,S/V + 0.5 x mínimo de Harlow,1.3117,0.0000,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}","en línea, último tercio","elige el premiado, régimen S",0.6703,0.0045,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}",congelado,"elige el premiado, régimen S",0.8174,0.0092,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}","en línea, último tercio","memoria da el premiado, régimen S",0.7989,0.0094,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}",congelado,"memoria da el premiado, régimen S",0.8174,0.0092,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}","en línea, último tercio","tasa de ligadura, régimen S",0.5496,0.0168,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}",congelado,"tasa de ligadura, régimen S",0.4958,0.0271,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}","en línea, último tercio","elige el premiado, régimen V",0.7280,0.0091,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}",congelado,"elige el premiado, régimen V",0.8061,0.0075,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}","en línea, último tercio","memoria da el premiado, régimen V",0.7947,0.0075,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}",congelado,"memoria da el premiado, régimen V",0.8061,0.0075,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}","en línea, último tercio","tasa de ligadura, régimen V",0.7828,0.0080,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}",congelado,"tasa de ligadura, régimen V",0.7969,0.0158,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}",congelado,"elige el premiado, promedio S y V",0.8117,0.0060,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}",congelado,"memoria da el premiado, promedio S y V",0.8117,0.0060,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}","en línea, último tercio","forget, régimen S",0.0175,0.0004,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}","en línea, último tercio","sure, régimen S",0.7603,0.0051,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}","en línea, último tercio","epsilon, régimen S",0.0832,0.0017,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}","en línea, último tercio","decay, régimen S",0.0088,0.0002,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}","en línea, último tercio","capture, régimen S",2.8059,0.0450,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}","en línea, último tercio","lr, régimen S",0.2150,0.0016,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}","en línea, último tercio","temperature, régimen S",0.8491,0.0152,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}","en línea, último tercio","volatility, régimen S",0.0955,0.0015,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}","en línea, último tercio","noise, régimen S",0.2160,0.0108,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}","en línea, último tercio","forget, régimen V",0.0173,0.0004,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}","en línea, último tercio","sure, régimen V",0.7132,0.0019,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}","en línea, último tercio","epsilon, régimen V",0.0601,0.0003,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}","en línea, último tercio","decay, régimen V",0.0087,0.0003,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}","en línea, último tercio","capture, régimen V",2.1947,0.0265,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}","en línea, último tercio","lr, régimen V",0.2333,0.0020,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}","en línea, último tercio","temperature, régimen V",0.6409,0.0023,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}","en línea, último tercio","volatility, régimen V",0.1381,0.0029,3
+F4v harlow S/V,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}","en línea, último tercio","noise, régimen V",0.0938,0.0055,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}",instantánea tras 25 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}",instantánea tras 50 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}",instantánea tras 100 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}",instantánea tras 200 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}",instantánea tras 300 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}",instantánea tras 400 problemas,ensayo 2,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}",instantáneas desde 50,mínimo por semilla,1.0000,0.0000,3
+F4v harlow congelado,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}",instantáneas desde 50,instantáneas < 0.95 (cantidad),0.0000,0.0000,3
+F4v resumen,"{""memory"": {""prior_q"": 2.0}, ""n0"": 20.0}",validación,S/V + 0.5 x mínimo de Harlow,1.3117,0.0000,3

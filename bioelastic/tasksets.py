@@ -60,9 +60,10 @@ class TaskSet:
 class TaskSets:
     def __init__(self, alpha: float = 0.5, hazard: float = 0.03, kmax: int = 16,
                  shrink: float = 0.0, explained: float = 0.8, rho_rate: float = 0.05,
-                 rho_max: float = 0.98, confident: float = 0.6, gated: bool = True):
+                 rho_max: float = 0.98, confident: float = 0.6, gated: bool = True,
+                 novel: float = 0.6):
         self.alpha = float(alpha)          # peso de «uno nuevo» en el CRP
-        self.hazard = float(hazard)        # probabilidad por ensayo de que cambie la causa latente
+        self.hazard = float(hazard)        # prior de la probabilidad por ensayo de que cambie la causa latente
         self.kmax = int(kmax)              # conjuntos como máximo (después se recicla el menos usado)
         self.shrink = float(shrink)        # inicialización de uno nuevo (ver docstring)
         self.explained = float(explained)  # verosimilitud del que rige por encima de la cual no se vigila al resto
@@ -70,11 +71,15 @@ class TaskSets:
         self.rho_max = float(rho_max)
         self.confident = float(confident)  # confianza mínima de una predicción para medir la fiabilidad
         self.gated = bool(gated)           # el control aprende en proporción a la creencia en el que rige
+        self.novel = float(novel)          # creencia mínima en «uno nuevo» para una consigna nunca vista
         self.sets: list[TaskSet] = []
         self.belief: dict = {}             # consigna -> creencia sobre [conjuntos..., nuevo]
         self.active = -1
         self.switches = 0
         self.created = 0
+        self.cue_trials: dict = {}         # por consigna: ensayos con plasticidad, cambios de conjunto
+        self.cue_switches: dict = {}       # y último conjunto que rigió (para medir)
+        self.cue_k: dict = {}
         self.recycled = 0
         self.simulated = 0                 # simulaciones (costo)
 
@@ -94,16 +99,33 @@ class TaskSets:
         K = len(self.sets)
         b = self.belief.get(cue)
         if b is None:
+            # consigna nunca vista: «uno nuevo» parte con al menos `novel` de la creencia. Se
+            # reutiliza un conjunto sólo si sus predicciones confiadas aciertan (transferencia);
+            # uno que no predice nada ahí no la explica y no se mezcla con la tarea nueva (sin
+            # esto, en la batería C0-C6 cinco tareas distintas quedaban en un mismo conjunto)
             b = self.prior()
+            if K and b[-1] < self.novel:
+                b[:-1] *= (1.0 - self.novel) / b[:-1].sum()
+                b[-1] = self.novel
         elif len(b) < K + 1:
             b = np.concatenate([b[:-1], np.zeros(K + 1 - len(b)), b[-1:]])
         self.belief[cue] = b
         return b
 
+    def count(self, cue, k: int, plastic: bool):
+        """Un ensayo de la consigna con el conjunto k rigiendo (sólo con plasticidad)."""
+        if not plastic:
+            return
+        self.cue_trials[cue] = self.cue_trials.get(cue, 0) + 1
+        if self.cue_k.get(cue, k) != k:
+            self.cue_switches[cue] = self.cue_switches.get(cue, 0) + 1
+        self.cue_k[cue] = k
+
     def predict(self, cue) -> np.ndarray:
         """Transición de un ensayo: la causa latente sigue con probabilidad 1 - hazard."""
         b = self._vec(cue)
-        b = (1.0 - self.hazard) * b + self.hazard * self.prior()
+        h = self.hazard
+        b = (1.0 - h) * b + h * self.prior()
         self.belief[cue] = b / b.sum()
         return self.belief[cue]
 
@@ -198,4 +220,5 @@ class TaskSets:
 
     def stats(self) -> dict:
         return dict(task_sets=len(self.sets), ts_switches=int(self.switches), ts_created=int(self.created),
+                    ts_cue_switches=int(sum(self.cue_switches.values())),
                     ts_recycled=int(self.recycled), ts_simulated=int(self.simulated))

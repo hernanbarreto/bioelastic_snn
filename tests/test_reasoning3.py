@@ -205,6 +205,29 @@ def test_predecessors_are_seen_only_after_going_back():
             assert 4 in seen1                                              # y es lo sostenido
 
 
+def test_going_back_from_the_first_keeps_the_focus_and_marks_the_failure():
+    """Retroceder desde algo sin predecesor no vacía el foco: queda, con la marca de que la
+    consulta falló (distinta de «retrocedí y llegué al primero»). "automatico" no cambia."""
+    from bioelastic.thinker import BACK, FOLLOW, _Stay, _recall_back
+    net = Thinker(20, memory=True, judge=True, speak=True, back=True, seed=0)
+    for a, b in ((1, 2), (2, 3)):
+        net.observe(a); net.observe(b); net.observe(None)
+    f = (1,); bk = _recall_back(net.fast.events, f)
+    c = net._content(f)
+    (stay,) = net._successors(BACK, f, net._recall(f), c, None, bk)
+    assert isinstance(stay, _Stay) and tuple(stay) == f
+    moved = net._successors(BACK, (2,), net._recall((2,)), net._content((2,)), None, _recall_back(net.fast.events, (2,)))
+    assert moved == [(1,)] and not isinstance(moved[0], _Stay)
+    mark = net.o_back + 5
+    s_stay = net._state(0, BACK, 1, stay, net._recall(f), frozenset(), back=bk)[0] % net.D_base
+    s_moved = net._state(0, BACK, 1, moved[0], net._recall(f), frozenset(), back=bk)[0] % net.D_base
+    assert mark in s_stay and mark not in s_moved
+    assert set(s_stay) - {mark} == set(s_moved)                           # sólo la marca las distingue
+    assert net._successors(FOLLOW, stay, net._recall(f), c, None, bk) == [(2,)]   # y se puede seguir desde ahí
+    old = Thinker(20, memory=True, judge=True, speak=True, back="automatico", seed=0)
+    assert old._successors(BACK, f, old._recall(f), c, None, bk) == []
+
+
 def _c5_long(net, rng, W):
     import sys
     sys.path.insert(0, "experiments")
@@ -229,3 +252,117 @@ def test_transitive_inference_with_back_has_no_positional_shortcut():
         H.TASKS[task](W, net, rng, True, cue)
     net.reset(); net.plastic = False
     assert np.mean([_c5_long(net, rng, W) for _ in range(60)]) > 0.95
+
+
+# ---------------------------------------------------------------- F4: neuromoduladores
+def _bm_recall(m, key):
+    from bioelastic.thinker import _recall_events
+    idx, val = _recall_events(m.events, key)
+    return int(idx[np.argmax(val)]) if len(idx) else -1
+
+
+def _bm_problem(m, rng, a, b, regime, T=12):
+    good = a; ok = []
+    m.reset()
+    for t in range(T):
+        if t:
+            ok.append(_bm_recall(m, (a, b)) == good)
+        y = (good if rng.random() < 0.7 else (b if good == a else a)) if regime == "S" else good
+        m.bind((a, b)); m.bind((y,)); m.bind(())
+        if regime == "V" and rng.random() < 0.2:
+            good = b if good == a else a
+    return np.mean(ok)
+
+
+def test_bayes_memory_lets_the_last_binding_win_without_evidence_of_noise():
+    from bioelastic.modulators import BayesMemory
+    m = BayesMemory(20)
+    for k, v in ((1, 5), (1, 6), (2, 7)):                                # A->B' y después A->B
+        m.bind((k,)); m.bind((v,)); m.bind(())
+    assert _bm_recall(m, (1,)) == 6 and _bm_recall(m, (2,)) == 7
+
+
+def test_bayes_memory_tells_noise_from_volatility():
+    """Desenlaces ruidosos y estables (S) contra deterministas y volátiles (V): la memoria
+    estima el ruido (ACh) y la volatilidad (NE) y con eso integra en S (como contar) y se
+    queda con lo último en V."""
+    from bioelastic.modulators import BayesMemory
+    rng = np.random.default_rng(0)
+    m = BayesMemory(200, prior_q=4.0)
+    accS = np.mean([_bm_problem(m, rng, 2 * i, 2 * i + 1, "S") for i in range(40)][10:])
+    nS, vS = m.noise(), m.volatility()
+    accV = np.mean([_bm_problem(m, rng, 2 * i, 2 * i + 1, "V") for i in range(40, 80)][10:])
+    nV, vV = m.noise(), m.volatility()
+    assert nS > 0.2 and nV < 0.1 and vV > vS
+    assert accS > 0.72 and accV > 0.75                                    # «lo último» en S da ~0.70
+
+
+def _harlow_net(**kw):
+    return Thinker(2 * 1200 + 2, memory=True, speak=True, judge=True, max_steps=10, gate=True,
+                   prev_io=True, seed=0, **kw)
+
+
+def test_neuromodulated_harlow_stays_solved_when_frozen():
+    """Harlow sin resultado percibido (`prev_io`) con los canales: congelado en distintos
+    momentos del entrenamiento, el ensayo 2 queda resuelto (sin la oscilación de la ronda
+    anterior, que venía del δ de fin de episodio)."""
+    import copy
+    net = _harlow_net(modulators=True)
+    rng = np.random.default_rng(0)
+    objs = rng.permutation(2 * 1200)
+    i = 0
+    snaps = []
+    for p in range(300):
+        _harlow(net, rng, [int(objs[2 * i]), int(objs[2 * i + 1])], "W"); i += 1
+        if p + 1 in (100, 200, 300):
+            fz = copy.deepcopy(net); fz.reset(); fz.plastic = False
+            acc = []
+            for _ in range(30):
+                acc.append(_harlow(fz, rng, [int(objs[2 * i]), int(objs[2 * i + 1])], "W", learn=False)[1]); i += 1
+            snaps.append(np.mean(acc))
+    assert min(snaps) >= 0.95, snaps
+    assert net._V is None                                                  # horizonte de un ensayo
+    assert net.modulators.params["epsilon"] < 0.03                         # regla fiable: poca exploración
+
+
+def test_ach_gain_ignores_outcomes_known_to_be_random():
+    from bioelastic.modulators import Neuromodulators
+    net = _harlow_net(modulators=True)
+    nm = net.modulators
+    net.reset(); net.answer(5, probe=6, explore=False)
+    net._ls = net._fs
+    gains = []
+    for t in range(200):                                                   # mismo estado, desenlace al azar
+        net._ctl_gain = 1.0
+        ok = t % 2 == 0
+        net._out = 5
+        nm.step(5 if ok else 6, None, (-1, 0.0))
+        gains.append(nm.params["lr"] / net.lr)
+    assert gains[0] > 0.9 and gains[-1] < 0.2
+
+
+def test_ne_is_unexpected_uncertainty_not_noise():
+    """NE del control: fallos por encima de los esperados. Con un desenlace ruidoso pero
+    estable (acierta el 70 %) la exploración se apaga; cuando la estrategia deja de rendir lo
+    que rendía, sube. La primera versión (fiabilidad de la regla) quedaba alta con el ruido."""
+    rng = np.random.default_rng(0)
+
+    def run(**nm_kw):
+        net = _harlow_net(modulators=nm_kw or True)
+        nm = net.modulators
+        net.reset(); net.answer(5, probe=6, explore=False)
+        net._ls = net._fs
+        ne = []
+        for t in range(700):
+            net._ctl_gain = 1.0; net._out = 5
+            ok = rng.random() < (0.7 if t < 600 else 0.0)                  # ruido estable y, al final, un cambio
+            nm.step(5 if ok else 6, None, (5, 1.0))
+            ne.append(nm.params["ne"])
+        return np.array(ne)
+    ne = run()
+    assert ne[0] > 0.8                                                     # contexto nuevo: explora
+    assert ne[300:600].mean() < 0.2                                        # ruido conocido: no explora
+    assert ne[610:640].max() > 0.8                                         # dejó de rendir: explora
+    assert ne[-1] < ne[610:640].max()                                      # y lo nuevo pasa a ser lo esperado
+    old = run(ne="fiabilidad", unexplained_gain=4.0)
+    assert old[300:600].mean() > 0.4
