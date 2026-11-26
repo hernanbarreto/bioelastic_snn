@@ -209,6 +209,12 @@ class ThinkerOraculo:
     def state_key(self):
         return (int(self._q[1]),)
 
+    def answer_distribution(self, pa, pb) -> np.ndarray:
+        """P(dígito) con la suma correcta, la percepción incierta y su acarreo actual."""
+        J = np.asarray(pa)[:, None] * np.asarray(pb)[None, :]
+        A = np.arange(10)
+        return np.bincount(((A[:, None] + A[None, :] + self.c) % 10).ravel(), weights=J.ravel(), minlength=10)
+
     def feedback(self, target=None, reward=None, alternatives=None, trust=None):
         self.input_credit = []
         if alternatives is None or self._q is None or self._q[0] == "fin":
@@ -320,8 +326,14 @@ class CreditoCadena:
     "aprendida": la del razonador `ChainRule`, que se aprende a la vez (abducción blanda,
     como Abductive Learning)."""
 
-    def __init__(self, regla="conocida", modo="blando", gamma=1.0, seed=0):
+    def __init__(self, regla="conocida", modo="blando", gamma=1.0, compuerta_ne=None, equiparticion=0.0, seed=0):
         self.regla, self.modo, self.gamma = regla, modo, float(gamma)
+        from bioelastic.posterior import Equipartition
+        # prior de equipartición sobre los símbolos (contra fusiones de conceptos)
+        self.eq = Equipartition(10, equiparticion) if equiparticion > 0 else None
+        # con NE del razonador por encima de `compuerta_ne`, la percepción no aprende de este
+        # episodio: la sorpresa inesperada se atribuye a un cambio de la regla, no a lo visto
+        self.compuerta_ne = compuerta_ne
         self.rng = np.random.default_rng(20_000 + seed)
         self.n = dict(episodios=0, ensenadas=0, verosimilitud_media=0.0)
         self.cols = []
@@ -339,6 +351,8 @@ class CreditoCadena:
         if not self.cols:
             return
         pa = [c[1][0] for c in self.cols]; pb = [c[1][1] for c in self.cols]
+        if self.eq is not None:
+            pa = [self.eq(x) for x in pa]; pb = [self.eq(x) for x in pb]
         digs = [c[2] for c in self.cols]
         if self.regla == "conocida":
             qa, qb, _, _, lik = chain_posterior(pa, pb, [known_sum_factor(d) for d in digs], np.eye(2)[int(y)],
@@ -348,6 +362,10 @@ class CreditoCadena:
         self.n["episodios"] += 1
         self.n["verosimilitud_media"] += (lik - self.n["verosimilitud_media"]) / self.n["episodios"]
         per = self._per
+        if self.compuerta_ne is not None and getattr(th, "unexpected_uncertainty", 0.0) > self.compuerta_ne:
+            self.n["compuerta"] = self.n.get("compuerta", 0) + 1
+            self.cols = []
+            return
         for (imgs, _, _, digitos, syms), xa, xb in zip(self.cols, qa, qb):
             for img, q, dg in zip(imgs, (xa, xb), digitos):
                 if self.modo == "muestreo":
@@ -400,11 +418,14 @@ def episodio(th, per, datos, split, rng, n, learn, cfg, st, objetivo=None, regis
             if regla:                                     # F3: otra regla para el dígito (el acarreo no cambia)
                 d = (d + regla) % 10
             cert = min(ca, cb) if cfg.get("conf") else 1.0
+            pdist = th.answer_distribution(pa, pb) if (registro is not None and pa is not None
+                                                       and hasattr(th, "answer_distribution")) else None
             out = th.answer((sa, 10 + sb), explore=learn, certainty=cert)
             if cfg.get("cred"):
                 alts = [aa, e2._desplazar(ab, 10)]
             info = dict(sa=sa, sb=sb, pa=pa, pb=pb, va=va, vb=vb, a=int(a[i]), b=int(b[i]),
-                        ca=getattr(per, "conflicto_a", None), cb=getattr(per, "conflicto_b", None))
+                        ca=getattr(per, "conflicto_a", None), cb=getattr(per, "conflicto_b", None),
+                        p_sis=None if pdist is None else float(pdist[out]))
         else:
             d = carry
             out = th.answer(END, explore=learn)
@@ -445,6 +466,8 @@ def _senales(th, per, info) -> dict:
         c = info.get(f"c{k}")
         if c is not None:
             out[f"conf_cx{k}"] = float(c)
+    if info.get("p_sis") is not None:                     # confianza del sistema: P(respuesta | percepción, regla)
+        out["p_sis"] = info["p_sis"]
     if isinstance(th, Thinker):
         c, sure = th.answer_confidence()
         out["pt"] = float(c); out["tsure"] = float(sure)
@@ -725,7 +748,7 @@ def construir(var_cfg, seed, tam):
         th = ThinkerOraculo()
     elif var_cfg.get("thinker") == "cadena":
         from bioelastic.posterior import ChainRule
-        th = ChainRule(seed=seed, **var_cfg.get("regla_kw", {}))
+        th = ChainRule(seed=seed, **(var_cfg.get("regla_kw") or {}))
     else:
         th = thinker_l3(seed, **var_cfg.get("thinker_kw", {}))
     cfg = dict(refuerzo=var_cfg.get("refuerzo", False), cred=var_cfg.get("cred2", False))
@@ -759,11 +782,13 @@ VARIANTES_F1 = {
 }
 
 
-VARIANTES_F1C = {
-    "conocida": dict(thinker="oraculo", cadena=dict(regla="conocida", modo="blando")),
-    "conocida_muestreo": dict(thinker="oraculo", cadena=dict(regla="conocida", modo="muestreo")),
-    "aprendida_muestreo": dict(thinker="cadena", cadena=dict(regla="aprendida", modo="muestreo")),
-    "aprendida_blando": dict(thinker="cadena", cadena=dict(regla="aprendida", modo="blando")),
+VARIANTES_F1C = {   # h = 0: sin homeostasis de salida (elegido en validación con MNIST-addition)
+    "conocida": dict(thinker="oraculo", h=0.0, cadena=dict(regla="conocida", modo="blando")),
+    "conocida_muestreo": dict(thinker="oraculo", h=0.0, cadena=dict(regla="conocida", modo="muestreo")),
+    "aprendida_muestreo": dict(thinker="cadena", h=0.0, cadena=dict(regla="aprendida", modo="muestreo")),
+    "aprendida_blando": dict(thinker="cadena", h=0.0, cadena=dict(regla="aprendida", modo="blando")),
+    # + prior de equipartición (beta = 1, elegido en el modelo tabular: 4/4 semillas sin fusiones)
+    "aprendida_eq": dict(thinker="cadena", h=0.0, cadena=dict(regla="aprendida", modo="muestreo", equiparticion=1.0)),
 }
 
 
@@ -909,7 +934,7 @@ def tabular_conjunto(curriculo: str, seed: int, columnas: int = 10000, lr: float
 
 
 def tabular_cadena(conocida: bool, curriculo: str, seed: int, columnas: int = 10000, lr: float = 0.5,
-                   half_life: float = 0.0, modo: str = "blando") -> dict:
+                   half_life: float = 0.0, modo: str = "blando", balance: float = 0.0) -> dict:
     """Modelo tabular del crédito conjunto por episodio (F1): la percepción es una tabla
     W[d] (softmax) y aprende con objetivo blando (W[d] += lr (q - p), la forma tabular del
     tercer factor q - p); el posterior es el conjunto sobre todo el episodio (dígitos y
@@ -924,6 +949,8 @@ def tabular_cadena(conocida: bool, curriculo: str, seed: int, columnas: int = 10
     regla = None if conocida else ChainRule(seed=seed, half_life=half_life)
     cu = Curriculum(sum_stages(curriculo), columnas)
     usado = 0; hits = []
+    from bioelastic.posterior import Equipartition
+    eq = Equipartition(10, balance) if balance > 0 else None
 
     def P(d):
         e = np.exp(W[d] - W[d].max())
@@ -931,6 +958,8 @@ def tabular_cadena(conocida: bool, curriculo: str, seed: int, columnas: int = 10
     while usado < columnas:
         A, B = sample_sum(cu.params(usado), rng)
         pa = [P(a) for a in A]; pb = [P(b) for b in B]
+        if eq is not None:
+            pa = [eq(x) for x in pa]; pb = [eq(x) for x in pb]
         sa = [int(rng.choice(10, p=x)) for x in pa]; sb = [int(rng.choice(10, p=x)) for x in pb]
         digs = []; c = 0
         for a, b in zip(A, B):
@@ -963,6 +992,19 @@ def fase_f0s(seed, tam, out, variante, extra):
     identidad, en +5 o en un código de desplazamientos que se compensan). Con
     `variante="conjunto"`, el modelo de co-adaptación `tabular_conjunto`; con "fin", el
     posterior que también usa el acarreo final."""
+    if variante == "cadena":
+        conds = [("conocida blando", True, "blando", 0.0), ("aprendida blando", False, "blando", 0.0),
+                 ("aprendida muestreo", False, "muestreo", 0.0), ("aprendida muestreo+equipartición", False, "muestreo", 1.0)]
+        for nombre, conocida, modo, bal in conds:
+            for cur in ("aleatorio", "mas0"):
+                var = f"cadena {nombre} | {cur}"
+                R = [tabular_cadena(conocida, cur, 100 * seed + k, tam["col_tabular"], modo=modo, balance=bal)
+                     for k in range(20)]
+                for m in ("pureza", "identidad", "columna_final"):
+                    v = np.array([r[m] for r in R])
+                    out("f0s", var, f"{m} (media de 20)", float(v.mean()), float(v.std()), "desvío en referencia")
+                out("f0s", var, "fracción con pureza >= 0.99", float(np.mean([r["pureza"] >= 0.99 for r in R])), "", "")
+        return
     if variante == "conjunto":
         for modo in ("muestreo", "map"):
             for cur in ("aleatorio", "mas0"):
@@ -993,6 +1035,11 @@ SISTEMAS = {
     **{k: v for k, v in VARIANTES_F1.items() if not k.startswith("b_")},
     "oraculo_post_fin": VARIANTES_F1["b_post_muestreo+fin"],      # Thinker oráculo + posterior con acarreo final
 }
+
+
+def _sistemas_cadena():  # noqa: D401
+    """Los sistemas de F1 con posterior conjunto (se definen más abajo)."""
+    SISTEMAS.update({f"cadena_{k}": v for k, v in VARIANTES_F1C.items()})
 SISTEMA = ["rep"]                    # el que usan F2, F4 y F5 (--sistema)
 CURRICULO = ["aleatorio"]            # con qué currículo se entrena en F2 y F5 (--curriculo)
 
@@ -1057,9 +1104,14 @@ def senales_columna(reg: list):
         "no establecido (Thinker)": 1 - g("tsure", 1),
         "conflicto percepción-Thinker": g("conflicto_pt"),
         "1-p sistema (pa*pb*pt)": 1 - g("ppa") * g("ppb") * g("pt", 1),
+        "1-P(respuesta | percepción, regla)": 1 - g("p_sis", 0.5),
     }
-    feats = np.stack([np.ones(len(ok)), np.log(np.clip(g("ppa") * g("ppb") * g("pt", 1), 1e-4, 1 - 1e-4)
-                                               / np.clip(1 - g("ppa") * g("ppb") * g("pt", 1), 1e-4, 1)),
+    # confianza cruda del sistema: P(respuesta | percepción, regla) si el razonador la da;
+    # si no, el producto de las probabilidades de la percepción y del Thinker
+    tiene = np.array(["p_sis" in r for r in filas], dtype=bool)
+    cruda = np.where(tiene, g("p_sis", 0.5), g("ppa") * g("ppb") * g("pt", 1))
+    sig["1-confianza cruda del sistema"] = 1 - cruda
+    feats = np.stack([np.ones(len(ok)), np.log(np.clip(cruda, 1e-4, 1 - 1e-4) / np.clip(1 - cruda, 1e-4, 1)),
                       sig["conflicto Cortex (máx a, b)"], sig["conflicto percepción-Thinker"], g("tsure", 1)], 1)
     return sig, ok, feats, filas
 
@@ -1105,9 +1157,9 @@ def fase_f2(seed, tam, out, variante, extra):
         for k, sc in sig.items():
             out("f2", var, f"AUROC error prequential (2.a mitad): {k}", auroc(sc[mitad], ~ok[mitad]), 0.5, "azar")
         out("f2", var, "AUROC error prequential (2.a mitad): 1-calibrada", auroc(1 - pre[mitad], ~ok[mitad]), 0.5, "")
-        e_raw, _ = ece(1 - sig["1-p sistema (pa*pb*pt)"][mitad], ok[mitad])
+        e_raw, _ = ece(1 - sig["1-confianza cruda del sistema"][mitad], ok[mitad])
         e_cal, curva_cal = ece(pre[mitad], ok[mitad])
-        out("f2", var, "ECE sistema cruda (prequential, 2.a mitad)", e_raw, 0.0, "pa*pb*pt")
+        out("f2", var, "ECE sistema cruda (prequential, 2.a mitad)", e_raw, 0.0, "P(respuesta) o pa*pb*pt")
         out("f2", var, "ECE sistema calibrada (prequential, 2.a mitad)", e_cal, 0.0, "")
         # test: señales con todo congelado (el calibrador también)
         rt = registrar_eval(th, Percepcion3(v), datos, rng, 3, tam["ep_eval"])
@@ -1117,7 +1169,7 @@ def fase_f2(seed, tam, out, variante, extra):
         for k, sc in sig_t.items():
             out("f2", var, f"AUROC error test: {k}", auroc(sc, ~ok_t), 0.5, "azar")
         out("f2", var, "AUROC error test: 1-calibrada", auroc(1 - p_cal, ~ok_t), 0.5, "")
-        e_raw_t, curva_raw_t = ece(1 - sig_t["1-p sistema (pa*pb*pt)"], ok_t)
+        e_raw_t, curva_raw_t = ece(1 - sig_t["1-confianza cruda del sistema"], ok_t)
         e_cal_t, curva_cal_t = ece(p_cal, ok_t)
         out("f2", var, "ECE sistema cruda (test)", e_raw_t, 0.0, "")
         out("f2", var, "ECE sistema calibrada (test)", e_cal_t, 0.0, "")
@@ -1229,6 +1281,81 @@ def fase_f3(seed, tam, out, variante, extra):
             out("f3", var, f"final: regla {nombre}, columna n=3 (oráculo)", float(np.mean([c for x in r for c in x["columnas"][:-1]])), "", "")
         extra[f"f3_{var}"] = dict(curva=[float(cols[i:i + 100].mean()) for i in range(0, len(cols), 100)],
                                   ne=[float(x) for x in ne[::10]], cambio=cambio, vuelta=vuelta)
+
+
+VARIANTES_F3C = {
+    "base": dict(),
+    "ne": dict(regla_kw=dict(neuromod=dict())),
+    "ne+compuerta": dict(regla_kw=dict(neuromod=dict()), compuerta_ne=3.0),
+}
+
+
+def fase_f3c(seed, tam, out, variante, extra):
+    """F3 sobre el sistema completo con posterior conjunto y regla aprendida (ChainRule,
+    percepción desde cero, objetivo muestreado con equipartición): después de `columnas` columnas la regla
+    del dígito pasa a ser (a + b + acarreo + 3) mod 10 durante columnas/2 y luego vuelve
+    durante columnas/4. NE (sorpresa del episodio bajo la regla actual por encima de la
+    esperada) olvida la evidencia vieja de la regla; con compuerta, además, la percepción
+    no aprende mientras NE está alto (cambió la regla, no lo que se ve)."""
+    from bioelastic.curriculum import Curriculum, sum_stages
+    datos, Xt, yt, Xc, yc = preparar(seed, tam)
+    for var in (list(VARIANTES_F3C) if variante is None else [variante]):
+        vc = VARIANTES_F3C[var]
+        base = dict(VARIANTES_F1C["aprendida_eq"])
+        base["regla_kw"] = vc.get("regla_kw", {})
+        base["cadena"] = dict(base["cadena"], compuerta_ne=vc.get("compuerta_ne"))
+        rng = np.random.default_rng(2000 + seed)
+        ei.muestra_test(datos, rng, tam["n_test_pureza"])
+        v, per, th, cfg = construir(base, seed, tam)
+        cc = cfg["posterior"]
+        C = tam["columnas"]
+        fases = [("aleatorio", 0, C), ("aleatorio", 3, C // 2), ("aleatorio", 0, C // 4)]
+        cols: list = []; marcas = []; pur = []; ne = []; ep_marcas = []
+        t0 = time.time()
+        for cur, regla, presup in fases:
+            marcas.append(len(cols)); ep_marcas.append(len(ne))
+            cu = Curriculum(sum_stages(cur), presup)
+            from bioelastic.curriculum import sample_sum
+            usado = 0
+            while usado < presup:
+                a, b = sample_sum(cu.params(usado), rng)
+                r = episodio(th, per, datos, "train", rng, 0, True, dict(posterior=cc, regla=regla), {}, digitos=(a, b))
+                cols.extend(r["columnas"][:-1]); usado += len(a)
+                ne.append(th.unexpected_uncertainty)
+            conf = v.confusion(Xc, yc)
+            pur.append(ei.pureza(conf))
+        cols = np.array(cols, dtype=np.float64)
+        cambio, vuelta = marcas[1], marcas[2]
+        W = 200
+        pre = float(cols[cambio - 1000:cambio].mean())
+        out("f3c", var, "segundos", round(time.time() - t0, 1), "", f"{C + C // 2 + C // 4} columnas")
+        out("f3c", var, "acierto columna antes del cambio", pre, "", "últimas 1000 columnas")
+        out("f3c", var, "pureza antes del cambio", pur[0], "", "")
+        out("f3c", var, "pureza al final de la regla nueva", pur[1], pur[0], "antes del cambio")
+        out("f3c", var, "pureza al final", pur[2], pur[0], "antes del cambio")
+        out("f3c", var, "caída inmediata (primeras 200 col.)", float(cols[cambio:cambio + W].mean()), pre, "")
+        out("f3c", var, "columnas hasta recuperar 0.9 x nivel previo", recuperacion(cols, cambio, 0.9 * pre, W),
+            vuelta - cambio, "largo de la fase")
+        out("f3c", var, "acierto al final de la regla nueva (últimas 1000)", float(cols[vuelta - 1000:vuelta].mean()), pre, "")
+        out("f3c", var, "al volver a la regla vieja: primeras 200 col.", float(cols[vuelta:vuelta + W].mean()), pre, "")
+        out("f3c", var, "al volver: columnas hasta 0.9 x nivel previo", recuperacion(cols, vuelta, 0.9 * pre, W),
+            len(cols) - vuelta, "largo de la fase")
+        out("f3c", var, "reinicios NE (olvido de la regla)", getattr(th, "resets", 0), "", "")
+        out("f3c", var, "episodios con la percepción en pausa (compuerta NE)", cc.n.get("compuerta", 0), "", "")
+        ne = np.array(ne)
+        e1 = ep_marcas[1]
+        out("f3c", var, "NE medio en la 2.a mitad de la fase 1", float(ne[e1 // 2:e1].mean()), "", "")
+        out("f3c", var, "NE medio en los 300 episodios tras el cambio", float(ne[e1:e1 + 300].mean()), "", "")
+        for nombre, regla in (("vieja", 0), ("nueva", 3)):
+            ei.plasticidad(th, False)
+            rr = [episodio(th, Percepcion3(v), datos, "test", rng, 3, False, dict(regla=regla), {})
+                  for _ in range(tam["ep_eval"])]
+            ei.plasticidad(th, True)
+            out("f3c", var, f"final: regla {nombre}, exacta n=3 (test)", float(np.mean([x["exacta"] for x in rr])), "", "")
+            out("f3c", var, f"final: regla {nombre}, columna n=3 (test)",
+                float(np.mean([c for x in rr for c in x["columnas"][:-1]])), "", "")
+        extra[f"f3c_{var}"] = dict(curva=[float(cols[i:i + 200].mean()) for i in range(0, len(cols), 200)],
+                                   marcas=marcas, pureza=pur)
 
 
 # ====================================================================== F4
@@ -1359,7 +1486,10 @@ def fase_f5(seed, tam, out, variante, extra):
                     stc = v.net.stats()
                     out("f5", var, "neuronas percepción", stc["neurons"], "", "")
                     out("f5", var, "sinapsis percepción", stc["synapses"], "", "")
-                out("f5", var, "neuronas conocimiento Thinker", th.say.layer.n, "", "")
+                if hasattr(th, "say"):
+                    out("f5", var, "neuronas conocimiento Thinker", th.say.layer.n, "", "")
+                elif hasattr(th, "T"):
+                    out("f5", var, "celdas de la regla aprendida con evidencia > 1", int((th.T > 1.0).sum()), "", "")
             else:                                         # dígito tardío: 9 ausente y después aparece
                 E1, E2 = tam["ep"] * 3 // 4, tam["ep"] // 4
                 gen = gen_sin_digito(9) if cur == "aleatorio" else \
@@ -1401,7 +1531,16 @@ TAM = dict(
                 homeostasis=0.02, congelada=True, ep_f3=800, columnas=80, cada_col=20, col_tabular=300,
                 f0=["rep", "a_oraculo", "a_ruido_0.8", "b_refuerzo", "b_cred2", "c_barajadas"]),
 )
-FASES = dict(f0=fase_f0, f0s=fase_f0s, f1=fase_f1, f1c=fase_f1c, f2=fase_f2, f3=fase_f3, f4=fase_f4, f5=fase_f5)
+_sistemas_cadena()
+FASES = dict(f0=fase_f0, f0s=fase_f0s, f1=fase_f1, f1c=fase_f1c, f3c=fase_f3c, f2=fase_f2, f3=fase_f3, f4=fase_f4, f5=fase_f5)
+
+
+def completo(path) -> bool:
+    """¿El CSV de una corrida existe y terminó (tiene la fila "total" del final)?"""
+    try:
+        return any(",total," in ln for ln in path.read_text().splitlines()[-3:])
+    except OSError:
+        return False
 
 
 def resumen():
@@ -1454,6 +1593,7 @@ def main():
     ap.add_argument("--ep", type=int, default=0, help="episodios de entrenamiento (0 = los de la fase)")
     ap.add_argument("--sistema", default="rep", help="sistema de L3 para F2, F4 y F5: " + ", ".join(SISTEMAS))
     ap.add_argument("--curriculo", default="aleatorio", help="currículo con el que se entrena en F2 y F5")
+    ap.add_argument("--skip-existing", action="store_true", help="no correr si el CSV de salida ya está completo")
     args = ap.parse_args()
     SISTEMA[0] = args.sistema
     CURRICULO[0] = args.curriculo
@@ -1480,6 +1620,9 @@ def main():
               + (f"_ep{args.ep}" if args.ep else "") + f"_seed{args.seed}")
     nombre = nombre.replace("val3_", "integracion3_").replace(f"_{args.fase}", f"_{args.fase}val", 1) \
         if args.val else nombre
+    if args.skip_existing and completo(RESULTS / f"{nombre}.csv"):
+        print("ya está:", nombre)
+        return
     log = CsvLog(nombre, HEADER)
     suf = "val" if args.val else ""
     FASES[args.fase](args.seed, TAM["completa"], lambda *r: log.row(r[0] + suf, r[1], args.seed, *r[2:]),

@@ -88,15 +88,23 @@ class Red:
             self.net.teach(soft=q)
 
 
-def evaluar(red, X, y, pares):
-    """Suma (par) y dígito (imagen) en `pares` pares de (X, y), sin aprender."""
+def evaluar(red, X, y, pares, meta=None):
+    """Suma (par) y dígito (imagen) en `pares` pares de (X, y), sin aprender. Con `meta`
+    (dict) guarda confianza y acierto de cada dígito y de cada suma (metacognición)."""
     ok_s = ok_d = 0; conf = np.zeros((10, 10), dtype=np.int64)
     for i in range(pares):
         a, b = 2 * i, 2 * i + 1
         p1, p2 = red.p(X[a]), red.p(X[b])
-        ok_s += suma_predicha(p1, p2) == int(y[a]) + int(y[b])
+        s_hat = suma_predicha(p1, p2)
+        ok_s += s_hat == int(y[a]) + int(y[b])
         for p, t in ((p1, y[a]), (p2, y[b])):
             conf[int(t), int(np.argmax(p))] += 1
+            if meta is not None:
+                meta.setdefault("pd", []).append(float(p.max())); meta.setdefault("okd", []).append(int(np.argmax(p)) == int(t))
+        if meta is not None:
+            J = p1[:, None] * p2[None, :]
+            ps = np.bincount(REGLA.ravel(), weights=J.ravel(), minlength=19)
+            meta.setdefault("ps", []).append(float(ps[s_hat])); meta.setdefault("oks", []).append(s_hat == int(y[a]) + int(y[b]))
     return ok_s / pares, float(np.trace(conf) / conf.sum()), conf
 
 
@@ -122,8 +130,14 @@ def correr(var, seed, n_pares, test, out, extra, cada=2500):
         if (i + 1) % cada == 0:
             out("suma_mnist", var, f"curva suma prequential par={i + 1}", float(np.mean(hits[-cada:])), "", "")
     out("suma_mnist", var, "segundos entrenamiento", round(time.time() - t0, 1), "", f"{n_pares} pares")
-    acc_s, acc_d, conf = evaluar(red, Xe, ye, n_eval)
+    meta: dict = {}
+    acc_s, acc_d, conf = evaluar(red, Xe, ye, n_eval, meta)
     nombre = "test" if test else "validación"
+    from bioelastic.metacog import auroc, ece
+    for k, (c_, o_) in (("dígito", ("pd", "okd")), ("suma", ("ps", "oks"))):
+        cc, oo = np.array(meta[c_]), np.array(meta[o_], dtype=bool)
+        out("suma_mnist", var, f"AUROC error {k} ({nombre}): 1-confianza", auroc(1 - cc, ~oo), 0.85, "criterio >= 0.85")
+        out("suma_mnist", var, f"ECE {k} ({nombre})", ece(cc, oo)[0], 0.05, "criterio <= 0.05")
     out("suma_mnist", var, f"exactitud suma ({nombre})", acc_s, 0.972 if test else "", "DeepProbLog 30k pares: 0.972")
     out("suma_mnist", var, f"exactitud dígito ({nombre})", acc_d, 0.95, "criterio del proyecto")
     from scipy.optimize import linear_sum_assignment
@@ -139,13 +153,20 @@ def main():
     ap.add_argument("--variante", default="base")
     ap.add_argument("--pares", type=int, default=27500)
     ap.add_argument("--test", action="store_true", help="evaluar en test (sólo corridas finales)")
+    ap.add_argument("--skip-existing", action="store_true", help="no correr si la salida ya está completa")
     a = ap.parse_args()
     tag = "" if a.test else "val"
     nombre = f"integracion3_suma_mnist{tag}_{a.variante}_p{a.pares}_seed{a.seed}"
+    from exp_integration3 import completo
+    if a.skip_existing and completo(RESULTS / f"{nombre}.csv"):
+        print("ya está:", nombre)
+        return
     log = CsvLog(nombre, HEADER)
     extra: dict = {}
+    t0 = time.time()
     correr(a.variante, a.seed, a.pares, a.test,
            lambda *r: log.row(r[0] + tag, r[1], a.seed, *r[2:]), extra)
+    log.row("suma_mnist" + tag, "total", a.seed, "segundos", round(time.time() - t0, 1), "", "")
     log.close()
     (RESULTS / f"{nombre}.json").write_text(json.dumps(extra))
 

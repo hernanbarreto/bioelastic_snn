@@ -1,0 +1,58 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+f3,base,0,segundos,17.6000,,5000 episodios
+f3,base,0,acierto columna antes del cambio,0.4700,,últimas 600 columnas
+f3,base,0,acierto columna al final de la regla nueva,0.3467,0.4700,antes del cambio
+f3,base,0,caída inmediata (primeras 200 col. tras el cambio),0.0200,0.4700,
+f3,base,0,columnas hasta recuperar 0.9 x nivel previo,7547,5085,largo de la fase
+f3,base,0,al volver a la regla vieja: primeras 200 col.,0.1650,0.4700,
+f3,base,0,al volver: columnas hasta 0.9 x nivel previo,2462,2462,largo de la fase
+f3,base,0,reinicios NE,0,,
+f3,base,0,"final: regla vieja, columna n=3 (oráculo)",0.3587,,
+f3,base,0,"final: regla nueva, columna n=3 (oráculo)",0.4493,,
+f3,ne,0,segundos,27.1000,,5000 episodios
+f3,ne,0,acierto columna antes del cambio,0.4283,,últimas 600 columnas
+f3,ne,0,acierto columna al final de la regla nueva,0.3700,0.4283,antes del cambio
+f3,ne,0,caída inmediata (primeras 200 col. tras el cambio),0.0250,0.4283,
+f3,ne,0,columnas hasta recuperar 0.9 x nivel previo,4622,5085,largo de la fase
+f3,ne,0,al volver a la regla vieja: primeras 200 col.,0.1500,0.4283,
+f3,ne,0,al volver: columnas hasta 0.9 x nivel previo,2462,2462,largo de la fase
+f3,ne,0,reinicios NE,3,,
+f3,ne,0,"final: regla vieja, columna n=3 (oráculo)",0.2247,,
+f3,ne,0,"final: regla nueva, columna n=3 (oráculo)",0.4267,,
+f3,ach,0,segundos,160.3000,,5000 episodios
+f3,ach,0,acierto columna antes del cambio,0.4517,,últimas 600 columnas
+f3,ach,0,acierto columna al final de la regla nueva,0.3950,0.4517,antes del cambio
+f3,ach,0,caída inmediata (primeras 200 col. tras el cambio),0.0350,0.4517,
+f3,ach,0,columnas hasta recuperar 0.9 x nivel previo,3134,5085,largo de la fase
+f3,ach,0,al volver a la regla vieja: primeras 200 col.,0.1300,0.4517,
+f3,ach,0,al volver: columnas hasta 0.9 x nivel previo,2462,2462,largo de la fase
+f3,ach,0,reinicios NE,0,,
+f3,ach,0,gamma final (ACh),0.4326,1.0000,1 = cree a la percepción lo que declara
+f3,ach,0,posterior: el Thinker no aprendió (desconfianza),84,,
+f3,ach,0,"final: regla vieja, columna n=3 (oráculo)",0.2487,,
+f3,ach,0,"final: regla nueva, columna n=3 (oráculo)",0.3540,,
+f3,ach+ne,0,segundos,191.0000,,5000 episodios
+f3,ach+ne,0,acierto columna antes del cambio,0.4633,,últimas 600 columnas
+f3,ach+ne,0,acierto columna al final de la regla nueva,0.3333,0.4633,antes del cambio
+f3,ach+ne,0,caída inmediata (primeras 200 col. tras el cambio),0.0300,0.4633,
+f3,ach+ne,0,columnas hasta recuperar 0.9 x nivel previo,7547,5085,largo de la fase
+f3,ach+ne,0,al volver a la regla vieja: primeras 200 col.,0.1450,0.4633,
+f3,ach+ne,0,al volver: columnas hasta 0.9 x nivel previo,2462,2462,largo de la fase
+f3,ach+ne,0,reinicios NE,12,,
+f3,ach+ne,0,gamma final (ACh),0.4310,1.0000,1 = cree a la percepción lo que declara
+f3,ach+ne,0,posterior: el Thinker no aprendió (desconfianza),22,,
+f3,ach+ne,0,"final: regla vieja, columna n=3 (oráculo)",0.3260,,
+f3,ach+ne,0,"final: regla nueva, columna n=3 (oráculo)",0.4993,,
+f3,post_fijo,0,segundos,164.7000,,5000 episodios
+f3,post_fijo,0,acierto columna antes del cambio,0.4767,,últimas 600 columnas
+f3,post_fijo,0,acierto columna al final de la regla nueva,0.3600,0.4767,antes del cambio
+f3,post_fijo,0,caída inmediata (primeras 200 col. tras el cambio),0.0450,0.4767,
+f3,post_fijo,0,columnas hasta recuperar 0.9 x nivel previo,3991,5085,largo de la fase
+f3,post_fijo,0,al volver a la regla vieja: primeras 200 col.,0.1500,0.4767,
+f3,post_fijo,0,al volver: columnas hasta 0.9 x nivel previo,2462,2462,largo de la fase
+f3,post_fijo,0,reinicios NE,0,,
+f3,post_fijo,0,gamma final (ACh),1.0000,1.0000,1 = cree a la percepción lo que declara
+f3,post_fijo,0,posterior: el Thinker no aprendió (desconfianza),0,,
+f3,post_fijo,0,"final: regla vieja, columna n=3 (oráculo)",0.3220,,
+f3,post_fijo,0,"final: regla nueva, columna n=3 (oráculo)",0.4307,,
+f3,total,0,segundos,575.3000,,

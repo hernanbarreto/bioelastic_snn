@@ -1,0 +1,15 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+suma_mnistval,sin_repaso,0,curva suma prequential par=2500,0.8520,,
+suma_mnistval,sin_repaso,0,curva suma prequential par=5000,0.9352,,
+suma_mnistval,sin_repaso,0,curva suma prequential par=7500,0.9616,,
+suma_mnistval,sin_repaso,0,curva suma prequential par=10000,0.9604,,
+suma_mnistval,sin_repaso,0,segundos entrenamiento,299.7000,,10000 pares
+suma_mnistval,sin_repaso,0,AUROC error dígito (validación): 1-confianza,0.9783,0.8500,criterio >= 0.85
+suma_mnistval,sin_repaso,0,ECE dígito (validación),0.0034,0.0500,criterio <= 0.05
+suma_mnistval,sin_repaso,0,AUROC error suma (validación): 1-confianza,0.9620,0.8500,criterio >= 0.85
+suma_mnistval,sin_repaso,0,ECE suma (validación),0.0078,0.0500,criterio <= 0.05
+suma_mnistval,sin_repaso,0,exactitud suma (validación),0.9724,,DeepProbLog 30k pares: 0.972
+suma_mnistval,sin_repaso,0,exactitud dígito (validación),0.9858,0.9500,criterio del proyecto
+suma_mnistval,sin_repaso,0,pureza dígito (validación),0.9858,,mejor biyección
+suma_mnistval,sin_repaso,0,neuronas,1626,,
+suma_mnistval,total,0,segundos,,,

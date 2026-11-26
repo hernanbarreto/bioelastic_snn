@@ -338,3 +338,46 @@ def test_regla_de_cadena_aprendida_con_percepcion_perfecta():
         bien &= r.answer(20) == c
         ok += bien
     assert ok / 200 > 0.9
+
+
+def test_regla_de_cadena_ne_detecta_el_cambio_de_regla_y_olvida():
+    from bioelastic.posterior import ChainRule
+    rng = np.random.default_rng(1)
+    r = ChainRule(seed=0, neuromod=dict(warmup=50))
+    oh = lambda d: np.eye(10)[d] * 0.999 + 0.0001  # noqa: E731
+    ne = []
+    for e in range(1600):
+        k = 3 if e >= 1200 else 0
+        n = int(rng.integers(1, 3)); A = rng.integers(10, size=n); B = rng.integers(10, size=n)
+        digs = []; c = 0
+        for a, b in zip(A, B):
+            s = int(a + b + c); digs.append((s + k) % 10); c = s // 10
+        ev0 = r.T.sum()
+        r.learn([oh(a) for a in A], [oh(b) for b in B], digs, c)
+        ne.append(r.unexpected_uncertainty)
+    assert max(ne[1200:1300]) > 3.0 > np.mean(ne[800:1200])
+    assert r.resets >= 1
+    pd = r.answer_distribution(oh(2), oh(3))
+    assert pd.shape == (10,) and abs(pd.sum() - 1) < 1e-9
+
+
+def test_distribucion_de_respuesta_del_oraculo_y_compuerta_ne():
+    th = e3_oraculo()
+    th.reset(); th.answer((4, 15))
+    pd = th.answer_distribution(np.eye(10)[2], np.eye(10)[3])   # con acarreo 0: 2 + 3 = 5
+    assert pd[5] == 1.0
+
+
+def e3_oraculo():
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "experiments"))
+    import exp_integration3 as e3
+    return e3.ThinkerOraculo()
+
+
+def test_equiparticion_favorece_los_simbolos_subusados():
+    from bioelastic.posterior import Equipartition
+    eq = Equipartition(3, beta=1.0, rate=0.5)
+    for _ in range(20):
+        eq(np.array([0.9, 0.05, 0.05]))                       # el símbolo 0 acapara
+    q = eq(np.array([1 / 3, 1 / 3, 1 / 3]))
+    assert q[0] < 1 / 3 < q[1]

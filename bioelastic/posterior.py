@@ -369,7 +369,7 @@ class ChainRule:
     la inferencia conjunta del episodio y devuelve las marginales para la percepción."""
 
     def __init__(self, base: int = 10, alpha: float = 0.1, half_life: float = 0.0, noise: float = 0.05,
-                 end_token: int = 20, offset: int = 10, seed: int = 0):
+                 end_token: int = 20, offset: int = 10, neuromod: dict | None = None, seed: int = 0):
         self.base = int(base); self.alpha = float(alpha)
         self.dec = 1.0 if half_life <= 0 else float(0.5 ** (1.0 / half_life))
         rng = np.random.default_rng(seed)
@@ -378,7 +378,28 @@ class ChainRule:
         self.E = rng.random((2, 2)) * noise
         self.end_token = int(end_token); self.offset = int(offset)
         self.plastic = True
+        # NE (opcional): la sorpresa de cada episodio (-log de su verosimilitud por columna
+        # bajo la regla actual) se compara con la esperada (ACh); si el exceso pasa
+        # `ne_reset`, la evidencia vieja se olvida más rápido (`forget` por episodio):
+        # cambió la regla, no la percepción.
+        self.neuromod = None if not neuromod else dict(dict(slow=0.01, fast=0.2, ne_reset=3.0, forget=0.3,
+                                                            warmup=100), **neuromod)
+        if self.neuromod:
+            from .metacog import SurpriseTracker
+            nm = self.neuromod
+            self._surprise = SurpriseTracker(nm["slow"], nm["fast"], nm["warmup"])
+        else:
+            self._surprise = None
+        self.resets = 0
         self.reset()
+
+    @property
+    def unexpected_uncertainty(self) -> float:
+        return self._surprise.unexpected if self._surprise is not None else 0.0
+
+    @property
+    def expected_uncertainty(self) -> float:
+        return self._surprise.expected if self._surprise is not None else 0.0
 
     def reset(self):
         self.c = np.array([1.0, 0.0])                          # creencia sobre el acarreo
@@ -408,6 +429,15 @@ class ChainRule:
         self.c = nxt / nxt.sum()
         return self._out
 
+    def answer_distribution(self, pa, pb) -> np.ndarray:
+        """P(dígito de la columna) bajo la incertidumbre de la percepción (pa, pb) y la
+        creencia actual sobre el acarreo, antes de responder: la confianza del sistema."""
+        T = self.T + self.alpha
+        P = T / T.sum(axis=(3, 4), keepdims=True)              # (a, b, c, d, c')
+        pd = np.einsum("a,b,c,abcd->d", np.asarray(pa, dtype=np.float64), np.asarray(pb, dtype=np.float64),
+                       self.c, P.sum(4))
+        return pd / pd.sum()
+
     def feedback(self, target=None, reward=None, alternatives=None, trust=None):
         self.input_credit = []                                 # aprende al final del episodio (`learn`)
 
@@ -415,6 +445,12 @@ class ChainRule:
         """Inferencia conjunta del episodio y aprendizaje de la regla (cuentas esperadas)."""
         factors = [self.factor(d) for d in digits]
         qa, qb, Q, cin, lik = chain_posterior(pa, pb, factors, self.end_lik(final), gamma)
+        if self._surprise is not None and self.plastic:
+            ne = self._surprise.update(-np.log(max(lik, 1e-300)) / max(len(digits), 1))
+            if ne > self.neuromod["ne_reset"]:
+                f = 1.0 - self.neuromod["forget"]
+                self.T *= f; self.E *= f
+                self.resets += 1
         if self.plastic:
             self.T *= self.dec; self.E *= self.dec
             # cuentas esperadas de (a, b, c, c') por columna: alpha_i, factor y beta_{i+1}
@@ -445,6 +481,26 @@ def _prior2(x, z, gamma=1.0):
     return (x / x.sum())[:, None] * (z / z.sum())[None, :]
 
 
+class Equipartition:
+    """Prior de equipartición sobre los símbolos (regularización de la entropía de la
+    distribución marginal de conceptos: Marconato et al., 2023, contra los atajos de
+    razonamiento que funden dos conceptos en uno). Lleva el uso medio u de cada símbolo
+    (promedio móvil de las distribuciones que le pasan) y devuelve p * (1/(K u))^beta
+    renormalizado: un símbolo sobreusado pierde peso, uno subusado gana. Es una ganancia
+    por símbolo, local y escalar, como la homeostasis de las salidas, pero aplicada al
+    posterior que se le enseña a la percepción y no a su decisión."""
+
+    def __init__(self, k: int, beta: float = 1.0, rate: float = 0.01):
+        self.k = int(k); self.beta = float(beta); self.rate = float(rate)
+        self.u = np.full(self.k, 1.0 / self.k)
+
+    def __call__(self, p):
+        p = np.asarray(p, dtype=np.float64)
+        self.u += self.rate * (p / p.sum() - self.u)
+        q = p * (1.0 / (self.k * np.maximum(self.u, 1e-6))) ** self.beta
+        return q / q.sum()
+
+
 def entropy(p: np.ndarray) -> float:
     p = np.asarray(p, dtype=np.float64)
     p = p[p > 0]
@@ -453,4 +509,4 @@ def entropy(p: np.ndarray) -> float:
 
 __all__ = ["CoOccurrence", "PosteriorCredit", "top_candidates", "joint_posterior",
            "status_likelihood", "predictive_conflict", "state_key", "gamma_for", "entropy", "product",
-           "known_sum_factor", "chain_posterior", "ChainRule"]
+           "known_sum_factor", "chain_posterior", "ChainRule", "Equipartition"]

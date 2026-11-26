@@ -175,13 +175,21 @@ def main():
     ap.add_argument("--variante", default=None)
     ap.add_argument("--scale", type=float, default=0.05)
     ap.add_argument("--n-eval", type=int, default=20)
+    ap.add_argument("--skip-existing", action="store_true", help="no correr si la salida ya está completa")
     a = ap.parse_args()
-    data = load_data()
+    from exp_integration3 import completo
+    data = None
     for var in ([a.variante] if a.variante else list(VARIANTES)):
         nombre = f"integracion3_metacog_{var}_seed{a.seed}"
+        if a.skip_existing and completo(RESULTS / f"{nombre}.csv"):
+            print("ya está:", nombre)
+            continue
+        data = data or load_data()
         log = CsvLog(nombre, HEADER)
         extra: dict = {}
+        t0 = time.time()
         correr(var, a.seed, a.scale, a.n_eval, data, lambda *r: log.row(r[0], r[1], a.seed, *r[2:]), extra)
+        log.row("metacog", "total", a.seed, "segundos", round(time.time() - t0, 1), "", "")
         log.close()
         (RESULTS / f"{nombre}.json").write_text(json.dumps(extra))
 
