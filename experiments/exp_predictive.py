@@ -173,7 +173,7 @@ def evaluate(net: Cortex, probes: Probes, E, X, y, collect: int = 0, extra=None)
     correct = np.zeros((len(y), nL), dtype=bool)
     rows = [[] for _ in range(nL)]
     usage = [np.zeros(a.out_shape[2]) for a in net.areas]
-    co = [np.zeros((a.out_shape[2],) * 2) for a in net.areas] if collect else []   # coactivación
+    co = [None for _ in net.areas] if collect else []    # coactivación por posición (dispersa)
     npos = [0 for _ in net.areas]
     ext = []
     t0 = time.time()
@@ -200,7 +200,9 @@ def evaluate(net: Cortex, probes: Probes, E, X, y, collect: int = 0, extra=None)
                 usage[j] += (c.reshape(-1, c.shape[-1]) > 0).sum(axis=0)
                 if i < collect:
                     Cs = sparse.csr_matrix(c.reshape(-1, c.shape[-1]))
-                    co[j] += (Cs.T @ Cs).toarray(); npos[j] += Cs.shape[0]
+                    S = (Cs.T @ Cs).tocsr()
+                    co[j] = S if co[j] is None else co[j] + S
+                    npos[j] += Cs.shape[0]
         if extra is not None:
             ext.append(extra(net, x, i))
     secs = time.time() - t0
@@ -224,7 +226,10 @@ def evaluate(net: Cortex, probes: Probes, E, X, y, collect: int = 0, extra=None)
         out["err_overlap"] = ov
         out["dict"] = [dict_stats(a, u[:a.F]) for a, u in zip(net.areas, usage)]
         for d, a, S, m in zip(out["dict"], net.areas, co, npos):   # redundancia de la actividad
-            d["code_maxcorr"] = code_maxcorr(S, m, np.asarray(S).diagonal(), a)
+            if S is None:
+                d["code_maxcorr"] = float("nan"); continue
+            S = S[:a.F, :a.F].toarray().astype(np.float32)
+            d["code_maxcorr"] = code_maxcorr(S, m, S.diagonal(), a)
     if extra is not None:
         out["extra"] = ext
     return out
@@ -285,12 +290,30 @@ def completion(net: Cortex, E, Xc, Xo) -> dict:
 
 
 # ---------------------------------------------------------------- una corrida
+def saccade(img, rng, jitter: int = 2, rot: float = 0.0):
+    """Una micro-sacada: la imagen corrida hasta `jitter` píxeles (relleno con 0) y, si `rot`,
+    girada hasta `rot` grados. Entrada y salida uint8 (H, W[, C])."""
+    from perturb import _shift
+    dy, dx = (int(v) for v in rng.integers(-jitter, jitter + 1, size=2))
+    out = _shift(np.asarray(img), dy, dx)
+    if rot:
+        from scipy.ndimage import rotate
+        out = rotate(out, float(rng.uniform(-rot, rot)), axes=(0, 1), reshape=False, order=1,
+                     mode="constant").astype(np.uint8)
+    return out
+
+
 def run_one(name: str, depth: int, seed: int, n_train: int, n_val: int, n_test: int,
             n_perturb: int, cfg: dict, cond: str, tag: str, log_every: int = 1000,
-            n_cka: int = 1000, extra_eval=None) -> dict:
+            n_cka: int = 1000, extra_eval=None, views: int = 1, jitter: int = 2,
+            rot: float = 0.0, perturbs=("noise", "occlude")) -> dict:
+    """Con `views` > 1 cada imagen de entrenamiento se presenta como una secuencia de
+    `views` vistas (la original y micro-sacadas); cada vista cuenta como una muestra del
+    presupuesto `n_train` (se ven n_train / views imágenes distintas)."""
     (Xtr, ytr), (Xva, yva), (Xte, yte) = split(name, seed)
     E = encoder(name)
     net = Cortex(sheet_shape(name), 10, seed=seed, **cfg)
+    vrng = np.random.default_rng(seed + 12345)
     dims = [int(np.prod(sheet_shape(name)))] + [int(np.prod(a.out_shape)) for a in net.areas]
     probes = Probes(dims)
     nL = len(dims)
@@ -299,7 +322,10 @@ def run_one(name: str, depth: int, seed: int, n_train: int, n_val: int, n_test: 
     preq = 0
     t0 = time.time()
     for i in range(n_train):
-        x = E(Xtr[i]); t = int(ytr[i])
+        img, v = divmod(i, views)
+        if v == 0 and views > 1:
+            net.new_sequence()                            # otra imagen: otra secuencia
+        x = E(Xtr[img] if v == 0 else saccade(Xtr[img], vrng, jitter, rot)); t = int(ytr[img])
         pred = net.forward(x)
         pp = probes.predict(levels_of(net, x))
         pe = area_pe(net)
@@ -325,7 +351,7 @@ def run_one(name: str, depth: int, seed: int, n_train: int, n_val: int, n_test: 
     test = evaluate(net, probes, E, Xte[:n_test], yte[:n_test], extra=extra_eval) if n_test else {}
     pert = {}
     loop = getattr(net, "fb", None) is not None and net.fb["iters"] > 0
-    for p in ("noise", "occlude") if n_perturb else ():
+    for p in perturbs if n_perturb else ():
         Xp = perturb(Xte[:n_perturb], p)
         pert[p] = evaluate(net, probes, E, Xp, yte[:n_perturb])
         if loop:                                          # misma red, sin el bucle descendente
@@ -346,6 +372,7 @@ def run_one(name: str, depth: int, seed: int, n_train: int, n_val: int, n_test: 
                features=[s["features"] for s in st["areas"]],
                macs_per_inference=cost["macs_per_inference"],
                memory_bytes=cost["memory_bytes"], synapses=st["synapses"],
+               views=views, jitter=jitter, rot=rot, distinct_images=n_train // views,
                reductions=("una pasada sobre n_train imágenes (no 55 000/45 000); validación = "
                            "primeras n_val de las últimas 5 000 de entrenamiento; test = primeras "
                            "n_test del test oficial; perturbaciones sobre las primeras n_perturb"))
@@ -511,7 +538,8 @@ def summarize(tag: str, out: str | None = None):
                              for k in rs[0]["val"]["err_overlap"]}
             row["dict"] = [{k: _ms([r["val"]["dict"][i][k] for r in rs])
                             for k in rs[0]["val"]["dict"][i]} for i in range(depth - 1)]
-        for p in ("noise", "occlude", "noise_fb_off", "occlude_fb_off", "clean_fb_off"):
+        for p in ("noise", "occlude", "shift3", "noise_fb_off", "occlude_fb_off", "shift3_fb_off",
+                  "clean_fb_off"):
             if all(p in r["perturb"] for r in rs):
                 row[f"{p}_acc"] = _ms([r["perturb"][p]["acc"]["net"] for r in rs])
                 row[f"{p}_probe"] = [_ms([r["perturb"][p]["probe"][i] for r in rs]) for i in range(nL)]
@@ -541,14 +569,15 @@ def summarize(tag: str, out: str | None = None):
         w = csv.writer(f)
         w.writerow(["name", "depth", "cond", "n_seeds", "n_train", "test_acc", "val_acc",
                     "preq_acc", "test_probe_by_level", "val_probe_by_level", "val_pe_by_level",
-                    "noise_acc", "occlude_acc", "ms_per_step", "ms_per_image", "macs_per_inference"])
+                    "noise_acc", "occlude_acc", "shift3_acc", "ms_per_step", "ms_per_image",
+                    "macs_per_inference"])
         for r in table:
             w.writerow([r["name"], r["depth"], r["cond"], len(r["seeds"]), r["n_train"],
                         fmt(r["test_acc"]), fmt(r["val_acc"]), fmt(r["preq_acc"]),
                         " | ".join(fmt(m) for m in r["test_probe"]),
                         " | ".join(fmt(m) for m in r["val_probe"]),
                         " | ".join(fmt(m) for m in r.get("val_pe", [])),
-                        fmt(r.get("noise_acc")), fmt(r.get("occlude_acc")),
+                        fmt(r.get("noise_acc")), fmt(r.get("occlude_acc")), fmt(r.get("shift3_acc")),
                         fmt(r["ms_per_step"]), fmt(r["ms_per_image"]), fmt(r["macs_per_inference"])])
     for r in table:
         print(r["name"], r["depth"], r["cond"], "val", fmt(r["val_acc"]), "test", fmt(r["test_acc"]),
@@ -612,6 +641,10 @@ def main():
     ap.add_argument("--tag", default="f0")
     ap.add_argument("--skip-existing", action="store_true", help="no repite corridas ya guardadas")
     ap.add_argument("--out", default="", help="nombre del resumen (summarize)")
+    ap.add_argument("--views", type=int, default=1, help="vistas por imagen (micro-sacadas)")
+    ap.add_argument("--jitter", type=int, default=2, help="desplazamiento máximo de una vista (px)")
+    ap.add_argument("--rot", type=float, default=0.0, help="giro máximo de una vista (grados)")
+    ap.add_argument("--perturbs", default="noise,occlude")
     args = ap.parse_args()
     if args.cmd == "summarize":
         summarize(args.name, args.out or None)
@@ -643,7 +676,8 @@ def main():
             if args.skip_existing and (RUNS / f"{args.tag}_{args.name}_d{depth}_{args.cond}_s{seed}.json").exists():
                 continue
             run_one(args.name, depth, seed, n_train, args.val, args.test, args.perturb, cfg,
-                    args.cond, args.tag)
+                    args.cond, args.tag, views=args.views, jitter=args.jitter, rot=args.rot,
+                    perturbs=tuple(args.perturbs.split(",")))
 
 
 if __name__ == "__main__":

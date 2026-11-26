@@ -302,3 +302,34 @@ def test_passthrough_adds_the_pooled_input_to_the_code():
     # cada célula compleja (pool 1, rf 2) ve un bloque 2x2 de la entrada: su máximo por canal
     assert np.allclose(c2[0, 0, a2.F:], c1[:2, :2].max(axis=(0, 1)))
     assert a2.potentials() is not None and np.isfinite(a2.potentials()).all()
+
+
+def test_trace_rule_pulls_a_feature_toward_the_next_view():
+    def run(trace):
+        a = FeatureArea((10, 10, 1), rf=3, pool=2, max_features=4, theta=0.99, floor=0.85, k=1,
+                        neurogenesis=False, lr=0.0, lr_min=0.0, trace=trace)
+        h = np.zeros((3, 3), dtype=np.float32); h[1, :] = 1.0          # barra horizontal
+        d = np.eye(3, dtype=np.float32)                                # diagonal
+        a.W[0] = h.ravel() / np.linalg.norm(h); a.W[1] = d.ravel() / np.linalg.norm(d)
+        a.alive[:2] = True; a.n = 2
+        x1 = np.zeros((10, 10, 1), dtype=np.float32); x1[4, 3:6, 0] = 1.0   # vista 1: barra
+        c = np.zeros((3, 3), dtype=np.float32); c[1, :2] = 1.0; c[2, 1] = 1.0   # la barra doblada
+        x2 = np.zeros((10, 10, 1), dtype=np.float32); x2[4:7, 4:7, 0] = c   # vista 2: se movió y dobló
+        a.reset_trace() if trace else None
+        a.encode(x1); a.learn(); a.encode(x2); a.learn()
+        return a, float(a.W[0].reshape(3, 3)[2].sum())       # peso fuera de la fila de la barra
+    plain, c0 = run(None)
+    tr, c1 = run(dict(lr=0.5, decay=0.5))
+    assert c0 == 0.0 and c1 > 0.2                            # la barra aprendió de la vista siguiente
+    assert tr._trace.max() > 0
+    tr.reset_trace()
+    assert not tr._trace.any()
+
+
+def test_cortex_new_sequence_resets_area_traces():
+    net = Cortex((8, 8, 1), 4, areas=[AREAS[0], dict(AREAS[1], trace=dict(lr=0.1))], **KW)
+    _stream(net, 50)
+    assert net.areas[1]._trace.any()
+    net.new_sequence()
+    assert not net.areas[1]._trace.any()
+    assert net.areas[0].tr is None

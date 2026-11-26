@@ -41,6 +41,13 @@ ese residuo (presináptico = célula compleja de arriba, postsináptico = residu
 abajo): dG_f = lr * sum_q c_q R_q / max(sum_q c_q^2, 1). `pe` es la fracción de la energía
 de la entrada que la predicción no explica.
 
+Regla de traza (opcional, `trace=dict(lr, decay)`; Földiák 1991): cada célula compleja
+guarda una traza de su actividad en las vistas anteriores de la misma secuencia (micro-
+sacadas sobre una imagen). Un rasgo que estuvo activo en q aprende también del parche que
+mejor le responde ahora en el vecindario 3x3 de q: dW_f ∝ traza * (x̂ - W_f). Así las vistas
+transformadas de lo mismo quedan en el mismo rasgo (invariancia por continuidad temporal).
+`reset_trace()` marca el comienzo de otra secuencia.
+
 Plasticidad dirigida por el error de predicción (opcional, dentro de `predictive`):
   modulate  exponente b: la tasa del diccionario (STDP y error local) se multiplica por
             g = clip((s / s_media)^b, gain_min, gain_max), donde s es la sorpresa (por defecto
@@ -79,7 +86,7 @@ class FeatureArea:
                  maintain_every: int = 500, neurogenesis: bool = True,
                  local: dict | None = None, n_classes: int = 0, seed: int = 0,
                  predictive: dict | None = None, lateral: dict | None = None,
-                 support: int = 0, passthrough: bool = False):
+                 support: int = 0, passthrough: bool = False, trace: dict | None = None):
         H, W, C = (int(v) for v in in_shape)
         self.in_shape = (H, W, C)
         self.rf = _pair(rf); self.stride = _pair(stride); self.pool = _pair(pool)
@@ -131,6 +138,26 @@ class FeatureArea:
         self._pool_pos = ((qy[:, :, None] + my) * self.ow + (qx[:, :, None] + mx)).reshape(-1, a * b)
         if self.passthrough:                                      # entradas que ve cada célula compleja
             self._pass_idx = np.stack([np.unique(self._gather[pp].ravel()) for pp in self._pool_pos])
+
+        # regla de traza: vecindario 3x3 de cada célula compleja (en células simples)
+        self.tr = None
+        if trace:
+            spec = dict(lr=0.05, decay=0.5)
+            unknown = set(trace) - set(spec)
+            if unknown:
+                raise ValueError(f"opciones de `trace` desconocidas: {sorted(unknown)}")
+            spec.update(trace)
+            self.tr = spec
+            self._trace = np.zeros((self.ph * self.pw, self.F), dtype=np.float32)
+            nb = []
+            for qy_ in range(self.ph):
+                for qx_ in range(self.pw):
+                    cells = [self._pool_pos[yy * self.pw + xx]
+                             for yy in range(max(qy_ - 1, 0), min(qy_ + 2, self.ph))
+                             for xx in range(max(qx_ - 1, 0), min(qx_ + 2, self.pw))]
+                    nb.append(np.concatenate(cells))
+            width = max(len(c) for c in nb)                       # se rellena repitiendo (bordes)
+            self._tr_nb = np.stack([np.resize(c, width) for c in nb])
 
         # error local: lector de clase propio del área
         self.local = None
@@ -243,7 +270,7 @@ class FeatureArea:
             else:
                 sheet = out
             ph, pw = self.ph, self.pw; a, b = self.pool
-            if self.local is None and self.pc is None:
+            if self.local is None and self.pc is None and self.tr is None:
                 o = sheet.reshape(self.oh, self.ow, n)[:ph * a, :pw * b].reshape(ph, a, pw * b * n)
                 code[:, :, :n] = o.max(axis=1).reshape(ph, pw, b, n).max(axis=2)   # células complejas
             else:                                                 # se recuerda qué célula simple ganó
@@ -406,6 +433,8 @@ class FeatureArea:
             act_full[vr] = act                                    # potencial por posición (inválidas: 0)
             self._learn_local(int(target), Pm, norms, act_full, arg, code,
                               prior if self.local.get("residual") else None, scale=g)
+        if self.tr is not None and act is not None:
+            self._learn_trace(Pm, norms, vr, act, code)
         self.t += 1
         n = self.n
         if act is not None:
@@ -479,6 +508,8 @@ class FeatureArea:
                     self.G[f] = np.float32(self.pc["init"]) * Pm[c]
                 if self.lat is not None:                          # sin inhibición aprendida
                     self.V[f, :] = 0.0; self.V[:, f] = 0.0; self.lat_m[f] = 0.0; self.lat_b[f] = 0.0
+                if self.tr is not None:
+                    self._trace[:, f] = 0.0
                 self.wins[f] = 0; self.born[f] = self.t
                 self.created += 1
                 fresh.append(f)
@@ -552,6 +583,39 @@ class FeatureArea:
         u, s = _segment_sum(f, Rn, cv)
         nf = np.bincount(np.searchsorted(u, f), minlength=len(u)).astype(np.float32)
         self.G[u] += (np.float32(lr) / nf)[:, None] * s
+
+    def reset_trace(self):
+        """Comienza otra secuencia: se borra la traza."""
+        if self.tr is not None:
+            self._trace[:] = 0.0
+
+    def _learn_trace(self, Pm, norms, vr, act, code):
+        """Földiák (1991): los rasgos activos en las vistas anteriores aprenden del parche que
+        mejor les responde ahora en el vecindario de donde estaban; después se actualiza la
+        traza con el código actual."""
+        n = self.n
+        prev = self._trace[:, :n]
+        qs, fs = np.nonzero(prev > 1e-3)
+        if len(qs):
+            a_full = np.zeros((self.oh * self.ow, n), dtype=np.float32)
+            a_full[vr] = act
+            cand = self._tr_nb[qs]                                # (m, vecinos)
+            vals = a_full[cand, fs[:, None]]
+            pos = cand[np.arange(len(qs)), vals.argmax(axis=1)]
+            ok = vals.max(axis=1) > 0.0
+            qs, fs, pos = qs[ok], fs[ok], pos[ok]
+            if len(qs):
+                w = prev[qs, fs]
+                if self.S:
+                    X = Pm[pos] * self.M[fs] / np.maximum(self._den[pos, fs], 1e-6)[:, None]
+                else:
+                    X = Pm[pos] / np.maximum(norms[pos], 1e-6)[:, None]
+                u, sx = _segment_sum(fs, X, w)
+                sw = np.bincount(np.searchsorted(u, fs), weights=w, minlength=len(u)).astype(np.float32)
+                Wn = self.W[u] + np.float32(self.tr["lr"]) * (sx / sw[:, None] - self.W[u])
+                self.W[u] = Wn / np.maximum(np.linalg.norm(Wn, axis=1, keepdims=True), 1e-8)
+        d = np.float32(self.tr["decay"])
+        self._trace[:, :n] = d * prev + code[:, :, :n].reshape(-1, n)
 
     def _surprise_gain(self, s) -> tuple[float, float]:
         """Ganancias de plasticidad y de neurogénesis: (s / media)^b, acotadas. Durante el

@@ -523,6 +523,11 @@ class Cortex:
         for head in self.heads:
             head.reset_context()
 
+    def new_sequence(self):
+        """Empieza otra secuencia de vistas (otra imagen): se borran las trazas de las áreas."""
+        for a in self.areas:
+            a.reset_trace()
+
     # ------------------------------------------------------------------ estado
     def stats(self) -> dict:
         areas = [a.stats() for a in self.areas]
