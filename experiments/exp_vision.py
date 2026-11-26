@@ -119,7 +119,7 @@ def _softmax(V, T):
     return e / e.sum()
 
 
-def run(name, model, seed, n_train, n_val, test, tag="", cfg=None, combos=False):
+def run(name, model, seed, n_train, n_val, test, tag="", cfg=None, combos=False, n_perturb=10_000):
     (Xtr, ytr), (Xva, yva), (Xte, yte) = split(name, seed)
     E = encoder(name)
     net = Cortex(sheet_shape(name), 10, seed=seed, **(CONFIGS[model] if cfg is None else cfg))
@@ -139,8 +139,9 @@ def run(name, model, seed, n_train, n_val, test, tag="", cfg=None, combos=False)
     tst = {}
     if test:                                              # el test se toca una sola vez, al final
         tst = parts_accuracy(net, E, Xte, yte)
-        for p in PERTURBATIONS:                           # perturbaciones nunca vistas
-            tst[p] = float(np.mean([net.predict(E(x)) == t for x, t in zip(perturb(Xte, p), yte)]))
+        for p in PERTURBATIONS if n_perturb else ():      # perturbaciones nunca vistas
+            Xp = perturb(Xte[:n_perturb], p)
+            tst[p] = float(np.mean([net.predict(E(x)) == t for x, t in zip(Xp, yte[:n_perturb])]))
     return net, ok / n_train, val, tst, secs
 
 
@@ -154,6 +155,8 @@ def main():
     ap.add_argument("--test", action="store_true", help="evalúa el test (una sola vez, al final)")
     ap.add_argument("--mlp", action="store_true", help="referencia MLP con backprop, misma pasada")
     ap.add_argument("--tag", default="")
+    ap.add_argument("--perturb", type=int, default=10_000,
+                    help="imágenes de test para las pruebas de perturbación (0 = ninguna)")
     args = ap.parse_args()
     summ = CsvLog(f"{args.name}{args.tag}_summary",
                   ["model", "seed", "n_train", "preq_acc", "val_acc", "val_parts", "test_acc",
@@ -166,7 +169,7 @@ def main():
     for model in args.models.split(","):
         for seed in (int(s) for s in args.seeds.split(",")):
             net, preq, val, tst, secs = run(args.name, model, seed, args.train, args.val,
-                                            args.test, args.tag)
+                                            args.test, args.tag, n_perturb=args.perturb)
             st = net.stats()
             summ.row(model, seed, args.train, preq, val["net"], fmt(val), tst.get("net", ""),
                      fmt(tst), *[tst.get(p, "") for p in PERTURBATIONS],

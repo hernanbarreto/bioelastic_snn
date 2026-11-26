@@ -117,6 +117,8 @@ def main():
     ap.add_argument("--lrs", default="3e-4,1e-3,3e-3")
     ap.add_argument("--test", action="store_true")
     ap.add_argument("--tag", default="")
+    ap.add_argument("--perturb", type=int, default=10_000,
+                    help="imágenes de test para las pruebas de perturbación (0 = ninguna)")
     args = ap.parse_args()
     E = encoder(args.name)
     side, _, channels = sheet_shape(args.name)
@@ -145,8 +147,10 @@ def main():
             row = [model, seed, args.train, lr, acc]
             if args.test:
                 row.append(float(np.mean(net.predict(S(Xte)) == yte)))
+                n = args.perturb
                 for p in PERTURBATIONS:
-                    row.append(float(np.mean(net.predict(S(perturb(Xte, p))) == yte)))
+                    row.append(float(np.mean(net.predict(S(perturb(Xte[:n], p))) == yte[:n]))
+                               if n else "")
             else:
                 row += [""] * (1 + len(PERTURBATIONS))
             log.row(*row, round(secs, 1))

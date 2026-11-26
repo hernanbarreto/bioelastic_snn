@@ -1,0 +1,2 @@
+lr,v1,v2,residual,local1,local2,sum12,w_drift1,w_drift2,secs
+0.5000,,"{""max_features"": 2048, ""k"": 8}",0,0.8620,0.8495,0.8620,1.0000,0.8664,124.9000
