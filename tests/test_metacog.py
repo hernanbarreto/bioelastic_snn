@@ -395,3 +395,20 @@ def test_compuerta_de_fiabilidad_sube_con_los_aciertos_y_baja_con_el_error_soste
     for _ in range(300):                                        # el código «acierta la mitad»
         g.update(rng.random() < 0.5)
     assert 0.1 < g.gamma < 0.45 < alto
+
+
+def test_labilizar_libera_la_consolidacion_y_la_ganancia_escala_la_tasa():
+    X, y = _barras(80, seed=7)
+    net = Cortex((28, 28, 1), 3, seed=0, **D2)
+    for x, t in zip(X, y):
+        net.step(x, t)
+    c0 = float(net.heads[0].readout.count[:net.heads[0].readout.n].sum())
+    assert c0 > 0
+    net.labilize(0.5)
+    assert abs(float(net.heads[0].readout.count[:net.heads[0].readout.n].sum()) - 0.5 * c0) < 1e-3 * c0
+    a = Cortex((28, 28, 1), 3, seed=0, **D2); b = Cortex((28, 28, 1), 3, seed=0, **D2)
+    a.forward(X[0]); a.teach(int(y[0])); b.forward(X[0]); b.teach(int(y[0]), gain=1.0)
+    np.testing.assert_array_equal(a.proj.W, b.proj.W)             # ganancia 1: igual que antes
+    lr = b.proj.lr
+    b.forward(X[1]); b.teach(int(y[1]), gain=3.0)
+    assert b.proj.lr == lr                                         # la tasa vuelve a su valor

@@ -1,0 +1,12 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+suma_mnist,base,4,curva suma prequential par=2500,0.4880,,
+suma_mnist,base,4,segundos entrenamiento,49.2000,,3000 pares
+suma_mnist,base,4,AUROC error dígito (test): 1-confianza,0.1607,0.8500,criterio >= 0.85
+suma_mnist,base,4,ECE dígito (test),0.6876,0.0500,criterio <= 0.05
+suma_mnist,base,4,AUROC error suma (test): 1-confianza,0.4988,0.8500,criterio >= 0.85
+suma_mnist,base,4,ECE suma (test),0.1427,0.0500,criterio <= 0.05
+suma_mnist,base,4,exactitud suma (test),0.5676,0.9720,DeepProbLog 30k pares: 0.972
+suma_mnist,base,4,exactitud dígito (test),0.0079,0.9500,criterio del proyecto
+suma_mnist,base,4,pureza dígito (test),0.6223,,mejor biyección
+suma_mnist,base,4,neuronas,2257,,
+suma_mnist,total,4,segundos,90.0000,,
