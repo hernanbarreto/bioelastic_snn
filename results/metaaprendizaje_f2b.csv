@@ -1,0 +1,131 @@
+prueba,sistema,tramo,medida,media,desvio,semillas
+F2.5 adquisición de la regla (familia W),"estado (prev_io), sin resultado percibido",instantánea tras 0 problemas,W (premia un objeto): ensayo 2,0.0000,0.0000,3
+F2.5 adquisición de la regla (familia W),"estado (prev_io), sin resultado percibido",instantánea tras 10 problemas,W (premia un objeto): ensayo 2,0.5200,0.0283,3
+F2.5 adquisición de la regla (familia W),"estado (prev_io), sin resultado percibido",instantánea tras 25 problemas,W (premia un objeto): ensayo 2,0.9000,0.0712,3
+F2.5 adquisición de la regla (familia W),"estado (prev_io), sin resultado percibido",instantánea tras 50 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.5 adquisición de la regla (familia W),"estado (prev_io), sin resultado percibido",instantánea tras 100 problemas,W (premia un objeto): ensayo 2,0.9067,0.1320,3
+F2.5 adquisición de la regla (familia W),"estado (prev_io), sin resultado percibido",instantánea tras 200 problemas,W (premia un objeto): ensayo 2,0.8200,0.1337,3
+F2.5 adquisición de la regla (familia W),"estado (prev_io), sin resultado percibido",instantánea tras 300 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.5 adquisición de la regla (familia W),"estado (prev_io), sin resultado percibido",instantánea tras 400 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.5 adquisición de la regla (familia W),"estado (prev_io), sin resultado percibido",instantánea tras 600 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.5 adquisición de la regla (familia W),"estado (prev_io), sin resultado percibido",instantánea tras 800 problemas,W (premia un objeto): ensayo 2,0.9267,0.1037,3
+F2.5 adquisición de la regla (familia W),episódica: B1 resultado percibido (la regla viene dada: copiar),instantánea tras 0 problemas,W (premia un objeto): ensayo 2,0.0000,0.0000,3
+F2.5 adquisición de la regla (familia W),episódica: B1 resultado percibido (la regla viene dada: copiar),instantánea tras 10 problemas,W (premia un objeto): ensayo 2,0.5000,0.4082,3
+F2.5 adquisición de la regla (familia W),episódica: B1 resultado percibido (la regla viene dada: copiar),instantánea tras 25 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.5 adquisición de la regla (familia W),episódica: B1 resultado percibido (la regla viene dada: copiar),instantánea tras 50 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.5 adquisición de la regla (familia W),episódica: B1 resultado percibido (la regla viene dada: copiar),instantánea tras 100 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.5 adquisición de la regla (familia W),episódica: B1 resultado percibido (la regla viene dada: copiar),instantánea tras 200 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.5 adquisición de la regla (familia W),episódica: B1 resultado percibido (la regla viene dada: copiar),instantánea tras 300 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.5 adquisición de la regla (familia W),episódica: B1 resultado percibido (la regla viene dada: copiar),instantánea tras 400 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.5 adquisición de la regla (familia W),episódica: B1 resultado percibido (la regla viene dada: copiar),instantánea tras 600 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.5 adquisición de la regla (familia W),episódica: B1 resultado percibido (la regla viene dada: copiar),instantánea tras 800 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, W -> A",instantánea tras 0 problemas,W (premia un objeto): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, W -> A",instantánea tras 25 problemas,W (premia un objeto): ensayo 2,0.8000,0.2828,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, W -> A",instantánea tras 50 problemas,W (premia un objeto): ensayo 2,0.9000,0.1414,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, W -> A",instantánea tras 100 problemas,W (premia un objeto): ensayo 2,0.8400,0.1233,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, W -> A",instantánea tras 200 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, W -> A",instantánea tras 400 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, W -> A",instantánea tras 425 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, W -> A",instantánea tras 450 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, W -> A",instantánea tras 500 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, W -> A",instantánea tras 600 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, W -> A",instantánea tras 800 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, W -> A",instantánea tras 0 problemas,A (el premio alterna): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, W -> A",instantánea tras 25 problemas,A (el premio alterna): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, W -> A",instantánea tras 50 problemas,A (el premio alterna): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, W -> A",instantánea tras 100 problemas,A (el premio alterna): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, W -> A",instantánea tras 200 problemas,A (el premio alterna): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, W -> A",instantánea tras 400 problemas,A (el premio alterna): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, W -> A",instantánea tras 425 problemas,A (el premio alterna): ensayo 2,0.9267,0.1037,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, W -> A",instantánea tras 450 problemas,A (el premio alterna): ensayo 2,0.9200,0.1131,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, W -> A",instantánea tras 500 problemas,A (el premio alterna): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, W -> A",instantánea tras 600 problemas,A (el premio alterna): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, W -> A",instantánea tras 800 problemas,A (el premio alterna): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, A -> W",instantánea tras 0 problemas,A (el premio alterna): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, A -> W",instantánea tras 25 problemas,A (el premio alterna): ensayo 2,0.9000,0.1414,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, A -> W",instantánea tras 50 problemas,A (el premio alterna): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, A -> W",instantánea tras 100 problemas,A (el premio alterna): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, A -> W",instantánea tras 200 problemas,A (el premio alterna): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, A -> W",instantánea tras 400 problemas,A (el premio alterna): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, A -> W",instantánea tras 425 problemas,A (el premio alterna): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, A -> W",instantánea tras 450 problemas,A (el premio alterna): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, A -> W",instantánea tras 500 problemas,A (el premio alterna): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, A -> W",instantánea tras 600 problemas,A (el premio alterna): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, A -> W",instantánea tras 800 problemas,A (el premio alterna): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, A -> W",instantánea tras 0 problemas,W (premia un objeto): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, A -> W",instantánea tras 25 problemas,W (premia un objeto): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, A -> W",instantánea tras 50 problemas,W (premia un objeto): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, A -> W",instantánea tras 100 problemas,W (premia un objeto): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, A -> W",instantánea tras 200 problemas,W (premia un objeto): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, A -> W",instantánea tras 400 problemas,W (premia un objeto): ensayo 2,0.0067,0.0094,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, A -> W",instantánea tras 425 problemas,W (premia un objeto): ensayo 2,0.8133,0.1644,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, A -> W",instantánea tras 450 problemas,W (premia un objeto): ensayo 2,0.8000,0.1720,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, A -> W",instantánea tras 500 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, A -> W",instantánea tras 600 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia, A -> W",instantánea tras 800 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia y control compartido (mixed=True), W -> A",instantánea tras 0 problemas,W (premia un objeto): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia y control compartido (mixed=True), W -> A",instantánea tras 25 problemas,W (premia un objeto): ensayo 2,0.5067,0.0899,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia y control compartido (mixed=True), W -> A",instantánea tras 50 problemas,W (premia un objeto): ensayo 2,0.8133,0.2640,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia y control compartido (mixed=True), W -> A",instantánea tras 100 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia y control compartido (mixed=True), W -> A",instantánea tras 200 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia y control compartido (mixed=True), W -> A",instantánea tras 400 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia y control compartido (mixed=True), W -> A",instantánea tras 425 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia y control compartido (mixed=True), W -> A",instantánea tras 450 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia y control compartido (mixed=True), W -> A",instantánea tras 500 problemas,W (premia un objeto): ensayo 2,0.8067,0.0618,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia y control compartido (mixed=True), W -> A",instantánea tras 600 problemas,W (premia un objeto): ensayo 2,0.5067,0.0525,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia y control compartido (mixed=True), W -> A",instantánea tras 800 problemas,W (premia un objeto): ensayo 2,0.5200,0.0566,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia y control compartido (mixed=True), W -> A",instantánea tras 0 problemas,A (el premio alterna): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia y control compartido (mixed=True), W -> A",instantánea tras 25 problemas,A (el premio alterna): ensayo 2,0.3467,0.1370,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia y control compartido (mixed=True), W -> A",instantánea tras 50 problemas,A (el premio alterna): ensayo 2,0.1867,0.2640,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia y control compartido (mixed=True), W -> A",instantánea tras 100 problemas,A (el premio alterna): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia y control compartido (mixed=True), W -> A",instantánea tras 200 problemas,A (el premio alterna): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia y control compartido (mixed=True), W -> A",instantánea tras 400 problemas,A (el premio alterna): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia y control compartido (mixed=True), W -> A",instantánea tras 425 problemas,A (el premio alterna): ensayo 2,0.6867,0.1087,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia y control compartido (mixed=True), W -> A",instantánea tras 450 problemas,A (el premio alterna): ensayo 2,0.8467,0.2168,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia y control compartido (mixed=True), W -> A",instantánea tras 500 problemas,A (el premio alterna): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia y control compartido (mixed=True), W -> A",instantánea tras 600 problemas,A (el premio alterna): ensayo 2,0.9333,0.0943,3
+F2.6 dos familias en secuencia,"estado (prev_io), consigna por familia y control compartido (mixed=True), W -> A",instantánea tras 800 problemas,A (el premio alterna): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), sin consigna (la familia hay que inferirla), W -> A",instantánea tras 0 problemas,W (premia un objeto): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), sin consigna (la familia hay que inferirla), W -> A",instantánea tras 25 problemas,W (premia un objeto): ensayo 2,0.8000,0.2828,3
+F2.6 dos familias en secuencia,"estado (prev_io), sin consigna (la familia hay que inferirla), W -> A",instantánea tras 50 problemas,W (premia un objeto): ensayo 2,0.9000,0.1414,3
+F2.6 dos familias en secuencia,"estado (prev_io), sin consigna (la familia hay que inferirla), W -> A",instantánea tras 100 problemas,W (premia un objeto): ensayo 2,0.8400,0.1233,3
+F2.6 dos familias en secuencia,"estado (prev_io), sin consigna (la familia hay que inferirla), W -> A",instantánea tras 200 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), sin consigna (la familia hay que inferirla), W -> A",instantánea tras 400 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), sin consigna (la familia hay que inferirla), W -> A",instantánea tras 425 problemas,W (premia un objeto): ensayo 2,0.7000,0.1020,3
+F2.6 dos familias en secuencia,"estado (prev_io), sin consigna (la familia hay que inferirla), W -> A",instantánea tras 450 problemas,W (premia un objeto): ensayo 2,0.4467,0.1517,3
+F2.6 dos familias en secuencia,"estado (prev_io), sin consigna (la familia hay que inferirla), W -> A",instantánea tras 500 problemas,W (premia un objeto): ensayo 2,0.2067,0.1482,3
+F2.6 dos familias en secuencia,"estado (prev_io), sin consigna (la familia hay que inferirla), W -> A",instantánea tras 600 problemas,W (premia un objeto): ensayo 2,0.1467,0.1050,3
+F2.6 dos familias en secuencia,"estado (prev_io), sin consigna (la familia hay que inferirla), W -> A",instantánea tras 800 problemas,W (premia un objeto): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), sin consigna (la familia hay que inferirla), W -> A",instantánea tras 0 problemas,A (el premio alterna): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), sin consigna (la familia hay que inferirla), W -> A",instantánea tras 25 problemas,A (el premio alterna): ensayo 2,0.1467,0.2074,3
+F2.6 dos familias en secuencia,"estado (prev_io), sin consigna (la familia hay que inferirla), W -> A",instantánea tras 50 problemas,A (el premio alterna): ensayo 2,0.1000,0.1414,3
+F2.6 dos familias en secuencia,"estado (prev_io), sin consigna (la familia hay que inferirla), W -> A",instantánea tras 100 problemas,A (el premio alterna): ensayo 2,0.0667,0.0943,3
+F2.6 dos familias en secuencia,"estado (prev_io), sin consigna (la familia hay que inferirla), W -> A",instantánea tras 200 problemas,A (el premio alterna): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), sin consigna (la familia hay que inferirla), W -> A",instantánea tras 400 problemas,A (el premio alterna): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"estado (prev_io), sin consigna (la familia hay que inferirla), W -> A",instantánea tras 425 problemas,A (el premio alterna): ensayo 2,0.3533,0.0754,3
+F2.6 dos familias en secuencia,"estado (prev_io), sin consigna (la familia hay que inferirla), W -> A",instantánea tras 450 problemas,A (el premio alterna): ensayo 2,0.5667,0.0377,3
+F2.6 dos familias en secuencia,"estado (prev_io), sin consigna (la familia hay que inferirla), W -> A",instantánea tras 500 problemas,A (el premio alterna): ensayo 2,0.8267,0.1236,3
+F2.6 dos familias en secuencia,"estado (prev_io), sin consigna (la familia hay que inferirla), W -> A",instantánea tras 600 problemas,A (el premio alterna): ensayo 2,0.8333,0.1247,3
+F2.6 dos familias en secuencia,"estado (prev_io), sin consigna (la familia hay que inferirla), W -> A",instantánea tras 800 problemas,A (el premio alterna): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"episódica: B1 resultado percibido, consigna por familia, W -> A",instantánea tras 0 problemas,W (premia un objeto): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"episódica: B1 resultado percibido, consigna por familia, W -> A",instantánea tras 25 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"episódica: B1 resultado percibido, consigna por familia, W -> A",instantánea tras 50 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"episódica: B1 resultado percibido, consigna por familia, W -> A",instantánea tras 100 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"episódica: B1 resultado percibido, consigna por familia, W -> A",instantánea tras 200 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"episódica: B1 resultado percibido, consigna por familia, W -> A",instantánea tras 400 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"episódica: B1 resultado percibido, consigna por familia, W -> A",instantánea tras 425 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"episódica: B1 resultado percibido, consigna por familia, W -> A",instantánea tras 450 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"episódica: B1 resultado percibido, consigna por familia, W -> A",instantánea tras 500 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"episódica: B1 resultado percibido, consigna por familia, W -> A",instantánea tras 600 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"episódica: B1 resultado percibido, consigna por familia, W -> A",instantánea tras 800 problemas,W (premia un objeto): ensayo 2,1.0000,0.0000,3
+F2.6 dos familias en secuencia,"episódica: B1 resultado percibido, consigna por familia, W -> A",instantánea tras 0 problemas,A (el premio alterna): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"episódica: B1 resultado percibido, consigna por familia, W -> A",instantánea tras 25 problemas,A (el premio alterna): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"episódica: B1 resultado percibido, consigna por familia, W -> A",instantánea tras 50 problemas,A (el premio alterna): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"episódica: B1 resultado percibido, consigna por familia, W -> A",instantánea tras 100 problemas,A (el premio alterna): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"episódica: B1 resultado percibido, consigna por familia, W -> A",instantánea tras 200 problemas,A (el premio alterna): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"episódica: B1 resultado percibido, consigna por familia, W -> A",instantánea tras 400 problemas,A (el premio alterna): ensayo 2,0.0000,0.0000,3
+F2.6 dos familias en secuencia,"episódica: B1 resultado percibido, consigna por familia, W -> A",instantánea tras 425 problemas,A (el premio alterna): ensayo 2,0.5200,0.0490,3
+F2.6 dos familias en secuencia,"episódica: B1 resultado percibido, consigna por familia, W -> A",instantánea tras 450 problemas,A (el premio alterna): ensayo 2,0.5133,0.0377,3
+F2.6 dos familias en secuencia,"episódica: B1 resultado percibido, consigna por familia, W -> A",instantánea tras 500 problemas,A (el premio alterna): ensayo 2,0.4533,0.0499,3
+F2.6 dos familias en secuencia,"episódica: B1 resultado percibido, consigna por familia, W -> A",instantánea tras 600 problemas,A (el premio alterna): ensayo 2,0.5067,0.0899,3
+F2.6 dos familias en secuencia,"episódica: B1 resultado percibido, consigna por familia, W -> A",instantánea tras 800 problemas,A (el premio alterna): ensayo 2,0.4933,0.0094,3
