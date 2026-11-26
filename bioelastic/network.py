@@ -150,6 +150,18 @@ class BioElasticNet:
 
     predict = forward
 
+    def peek(self, frame, confidence: bool = False):
+        """Qué respondería ante `frame`, sin tocar el contexto ni el estado para aprender.
+        Con `confidence`, devuelve también si la respuesta sale de conocimiento establecido
+        (una neurona que disparó y que ya fue útil antes)."""
+        idx, val = self._as_sparse(frame)
+        v = self.layer.forward(idx, val)
+        out = int(np.argmax(self.readout.potentials(v.winners, self._votes(v))))
+        if not confidence:
+            return out
+        sure = (not v.novel) and len(v.winners) > 0 and self.layer.hits[int(v.winners[0])] >= 1
+        return out, bool(sure)
+
     # ------------------------------------------------------------------ aprendizaje
     def _after_learning(self):
         if self.maintain_every and self.layer.t % self.maintain_every == 0:
