@@ -58,7 +58,10 @@ class FastMemory:
         """Liga lo anterior con lo actual. Un silencio (tokens vacío) corta la adyacencia."""
         self.t += 1
         if tokens and self.prev:
-            self.M[np.ix_(list(tokens), list(self.prev))] = self.t
+            if len(tokens) == 1 and len(self.prev) == 1:      # caso común: sin np.ix_
+                self.M[tokens[0], self.prev[0]] = self.t
+            else:
+                self.M[np.ix_(list(tokens), list(self.prev))] = self.t
         self.prev = tuple(tokens)
 
     def recall(self, keys):
@@ -320,10 +323,11 @@ class Thinker:
                 if clock >= self.max_steps:
                     allowed = allowed[(allowed != FOLLOW) & (allowed != SPEAK)]
                 c = self._content(focus, recall, reg)
+                peek = None                                # DECIR y HABLAR consultan lo mismo: una vez
                 for a in allowed:
                     step = path + [(s, allowed, int(a))]
                     if a == SAY:
-                        out, sure = self.say.peek(c, confidence=True)
+                        out, sure = peek = peek or self.say.peek(c, confidence=True)
                         if sure and out == target:
                             found.append(step)
                     if a == COPY and len(recall[0]) and int(recall[0][np.argmax(recall[1])]) == target:
@@ -332,7 +336,7 @@ class Thinker:
                         f = (int(recall[0][np.argmax(recall[1])]),)
                         nxt.append((f, self.fast.recall(f), step))
                     if a == SPEAK:
-                        out, sure = self.say.peek(c, confidence=True)
+                        out, sure = peek = peek or self.say.peek(c, confidence=True)
                         if sure:                           # sólo se encadena conocimiento establecido
                             f = (out,)
                             nxt.append((f, self.fast.recall(f) if self.fast is not None else _NONE, step))

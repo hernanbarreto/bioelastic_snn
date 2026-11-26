@@ -312,6 +312,7 @@ class BioElasticNet:
             getattr(L, name)[:n] = z[f"L_{name}"]
         L.t, L.created, L.pruned, L.evicted = (int(v) for v in z["L_meta"])
         L.n = n
+        L.reindex()
         R.W[:, :n] = z["R_W"]; R.count[:n] = z["R_count"]; R.n = n
         R.baseline = float(z["R_baseline"])
         return net

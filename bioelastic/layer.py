@@ -15,6 +15,13 @@ Plasticidad estructural a dos niveles:
     antes de `probation` pasos muere (`maintain`). La tasa de STDP de cada neurona
     decae con su uso (consolidación). Con `max_neurons`, reclutar desaloja a la de
     menor utilidad reciente.
+
+Rendimiento. El pase denso evalúa todas las neuronas vivas (costo n x fan-in). Con
+entrada dispersa (pocas aferentes activas respecto de D) se usa un índice invertido
+aferente -> sinapsis: una cota del potencial de cada neurona se acumula sólo sobre las
+sinapsis de aferentes activas (costo proporcional a ellas) y el potencial exacto se
+calcula sólo en las neuronas que pueden llegar al umbral. El resultado es idéntico bit
+a bit al pase denso (ver `_sparse_pass`).
 """
 from __future__ import annotations
 
@@ -23,6 +30,8 @@ from dataclasses import dataclass
 import numpy as np
 
 from .neuron import first_spike_times
+
+_U23 = 2.0 ** -23              # 2 x unidad de redondeo de float32
 
 
 @dataclass
@@ -39,6 +48,11 @@ class Volley:
 
 class ElasticLayer:
     _STATS = ("fill", "wins", "hits", "born", "util", "util_t", "hoff", "hoff_t")
+    # Desde qué tamaño se usa el índice invertido (por debajo, el pase denso es más barato).
+    SPARSE_MIN_NEURONS = 256
+    SPARSE_MIN_SYNAPSES = 32768
+    SPARSE_MAX_ACTIVE = 1 / 6        # fracción de aferentes activas por encima de la cual no conviene
+    SPARSE_MAX_TOUCHED = 1 / 8       # sinapsis activas / (n x fan-in) por encima: pase denso
 
     def __init__(self, n_inputs: int, *, fan_in: int | None = None, k: int = 4, theta: float = 0.7,
                  theta_plus: float = 0.0, theta_max: float = 0.15, theta_tau: float = 2000.0,
@@ -69,6 +83,12 @@ class ElasticLayer:
         self._alloc_stats(self.cap)
         self._s = np.zeros(self.D, dtype=np.float32)                # volea densa (scratch)
         self._slot = np.full(self.D, -1, dtype=np.int32)            # scratch para búsquedas
+        # cachés estructurales (ver `reindex`)
+        self._kf = -1                   # fan-in máximo de las vivas (-1 = recalcular)
+        self._ix = None                 # índice invertido (ptr, neurona, posición en w) de una foto
+        self._dirty = np.zeros(self.cap, dtype=bool)   # filas cambiadas desde la foto
+        self._dirty_ids: list[int] = []
+        self._neg = False               # ¿algún peso pudo quedar negativo?
         self.on_add = None              # hook(j)
         self.on_remove = None           # hook(j, last): la neurona `last` pasó a la posición j
 
@@ -94,11 +114,33 @@ class ElasticLayer:
         self._alloc_stats(new_cap)
         for name, arr in old.items():
             getattr(self, name)[:self.n] = arr[:self.n]
+        dirty = np.zeros(new_cap, dtype=bool); dirty[:self.cap] = self._dirty
+        self._dirty = dirty
         self.cap = new_cap
 
     def nbytes(self) -> int:
-        """Memoria de las sinapsis de las neuronas vivas (aferente int32 + peso float32)."""
+        """Memoria de las sinapsis de las neuronas vivas (aferente int32 + peso float32).
+        Es sólo la parte que crece con fan-in; el total real está en `memory()`."""
         return int(self.n) * self.K * 8
+
+    def memory(self) -> dict:
+        """Memoria real en bytes, por estructura (lo reservado, no sólo lo usado).
+
+        synapses   aferente + peso de las neuronas vivas (= `nbytes()`)
+        slack      ranuras reservadas sin neurona (la capacidad crece duplicándose)
+        stats      estadísticas por neurona (fill, wins, hits, born, util, hoff, ...)
+        scratch    buffers densos de tamaño D (volea y búsquedas)
+        index      índice invertido (4 + 8 bytes por sinapsis indexada + 8 por aferente)
+        """
+        per_row = self.K * (self.pre.itemsize + self.w.itemsize)
+        stats = sum(getattr(self, name).itemsize for name in self._STATS) + self._dirty.itemsize
+        index = 0
+        if self._ix is not None:
+            index = sum(a.nbytes for a in self._ix)
+        out = dict(synapses=self.n * per_row, slack=(self.cap - self.n) * per_row,
+                   stats=self.cap * stats, scratch=self._s.nbytes + self._slot.nbytes, index=index)
+        out["total"] = sum(out.values())
+        return out
 
     def synapses(self) -> int:
         return int(self.fill[:self.n].sum())
@@ -110,6 +152,46 @@ class ElasticLayer:
         out[self.pre[j, :f]] = self.w[j, :f]
         return out
 
+    # ------------------------------------------------------------------ cachés estructurales
+    def reindex(self):
+        """Descarta los cachés (fan-in máximo e índice invertido). Hace falta sólo si se
+        escriben `pre`, `w`, `fill` o `n` a mano después de haber usado la columna; los
+        métodos de la clase los mantienen al día solos."""
+        self._kf = -1
+        self._ix = None
+        self._dirty[:] = False
+        self._dirty_ids = []
+        self._neg = False
+
+    def _fan_max(self) -> int:
+        if self._kf < 0:
+            self._kf = int(self.fill[:self.n].max()) if self.n else 0
+        return self._kf
+
+    def _touch(self, j: int):
+        """La fila j cambió de aferentes: su entrada en el índice deja de valer."""
+        if self._ix is not None and not self._dirty[j]:
+            self._dirty[j] = True
+            self._dirty_ids.append(int(j))
+
+    def _build_index(self):
+        """Foto del índice invertido: para cada aferente, sus sinapsis como (neurona,
+        posición en `w.ravel()`), ordenadas por neurona. Cuesta O(sinapsis log sinapsis);
+        se rehace cuando cambiaron más de n/16 filas (las cambiadas se evalúan exactas)."""
+        n, K = self.n, self.K
+        fill = self.fill[:n]
+        used = np.arange(K)[None, :] < fill[:, None]
+        aff = self.pre[:n][used]
+        flat = np.flatnonzero(used.ravel())            # posición de cada sinapsis en w.ravel()
+        order = np.argsort(aff, kind="stable")
+        ptr = np.zeros(self.D + 1, dtype=np.int64)
+        np.cumsum(np.bincount(aff, minlength=self.D), out=ptr[1:])
+        flat = flat[order]
+        self._ix = (ptr, (flat // K).astype(np.int32), flat)
+        self._dirty[:] = False
+        self._dirty_ids = []
+        self._neg = bool((self.w[:n] < 0).any())
+
     # ------------------------------------------------------------------ dinámica
     def thresholds(self) -> np.ndarray:
         n = self.n
@@ -118,6 +200,121 @@ class ElasticLayer:
         decay = np.exp(-(self.t - self.hoff_t[:n]) / self.theta_tau)
         return (self.theta + self.hoff[:n] * decay).astype(np.float32)
 
+    def _thresholds_at(self, rows: np.ndarray) -> np.ndarray:
+        """`thresholds()[rows]` sin evaluar las demás neuronas (mismas operaciones)."""
+        if self.theta_plus <= 0.0:
+            return np.full(len(rows), self.theta, dtype=np.float32)
+        decay = np.exp(-(self.t - self.hoff_t[rows]) / self.theta_tau)
+        return (self.theta + self.hoff[rows] * decay).astype(np.float32)
+
+    def _cos_at(self, rows: np.ndarray, idx, val, norm: float, kf: int) -> np.ndarray:
+        """Potencial final normalizado de las neuronas `rows`, con la misma operación (y por
+        lo tanto los mismos bits) que el pase denso: cada fila se reduce por separado."""
+        s = self._s
+        s[idx] = val
+        cos = np.einsum("ij,ij->i", self.w[rows, :kf], s[self.pre[rows, :kf]]) / norm
+        s[idx] = 0.0
+        return cos
+
+    def _wants_sparse(self, idx, val, norm: float, kf: int) -> bool:
+        n = self.n
+        if (n < self.SPARSE_MIN_NEURONS or n * kf < self.SPARSE_MIN_SYNAPSES
+                or len(idx) >= self.D * self.SPARSE_MAX_ACTIVE or self.theta <= 0.0):
+            return False
+        if self.theta_plus < 0.0 or self.theta_max < 0.0 or not np.isfinite(norm):
+            return False
+        return not (self._neg or (len(val) and float(val.min()) < 0.0))
+
+    def _estimate(self, idx, val, st, ln, T: int, any_dirty: bool):
+        """(filas, suma float64 de w * val sobre sus sinapsis activas) para las neuronas
+        limpias y vivas con suma no nula, en orden ascendente.
+
+        (Se probó un núcleo Numba para esta acumulación: no mejora, porque el costo es el
+        acceso a memoria, una línea de caché por sinapsis activa, no el cálculo.)"""
+        n = self.n
+        ptr, nrn, flat = self._ix
+        if T == 0:
+            return np.empty(0, np.int64), np.empty(0)
+        if len(idx) <= 64:                              # pocas listas largas: se copian por tramos
+            ends = (st + ln).tolist()
+            r = np.concatenate([nrn[a:b] for a, b in zip(st.tolist(), ends)])
+            f = np.concatenate([flat[a:b] for a, b in zip(st.tolist(), ends)])
+        else:
+            pos = np.repeat(st - (np.cumsum(ln) - ln), ln) + np.arange(T)
+            r = nrn[pos]; f = flat[pos]
+        contrib = self.w.reshape(-1)[f].astype(np.float64) * np.repeat(val.astype(np.float64), ln)
+        ok = r < n
+        if any_dirty:
+            ok &= ~self._dirty[r]
+        if not ok.all():
+            r = r[ok]; contrib = contrib[ok]
+        if len(r) == 0:
+            return np.empty(0, np.int64), np.empty(0)
+        if len(r) * 16 >= n:
+            est = np.bincount(r, weights=contrib, minlength=n)
+            rows = np.flatnonzero(est != 0.0)
+            return rows, est[rows]
+        rows, inv = np.unique(r, return_inverse=True)
+        est = np.bincount(inv, weights=contrib, minlength=len(rows))
+        keep = est != 0.0
+        return rows[keep], est[keep]
+
+    def _sparse_pass(self, idx, val, norm: float, kf: int):
+        """Pase con índice invertido. Devuelve (cand, cos, theta) de las candidatas, o
+        (j, cos_j) si la columna queda en silencio, o None si conviene el pase denso.
+
+        Exactitud: con pesos y fuerzas no negativos, la suma en float64 de los productos de
+        las sinapsis activas (`est`) difiere del potencial que calcula el pase denso en
+        float32 a lo sumo en (kf + 2) * 2^-24 * est (error de cualquier suma de kf términos
+        positivos, más la división). Con el doble de esa cota como margen, una neurona con
+        est + margen < umbral no puede ser candidata, y una neurona sin sinapsis activas
+        tiene potencial exactamente 0. El potencial exacto (mismos bits que el pase denso)
+        se calcula sólo en las demás y en las filas cambiadas desde la última foto.
+        """
+        n = self.n
+        if self._ix is None or len(self._dirty_ids) > max(64, n >> 4):
+            self._build_index()
+            if self._neg:
+                return None
+        ptr, nrn, flat = self._ix
+        st = ptr[idx]
+        ln = ptr[idx + 1] - st
+        T = int(ln.sum())
+        if T > n * kf * self.SPARSE_MAX_TOUCHED:         # entrada poco dispersa para esta columna
+            return None
+        dirty = np.array(self._dirty_ids, dtype=np.int64) if self._dirty_ids else np.empty(0, np.int64)
+        if len(dirty):
+            dirty = np.sort(dirty[dirty < n])
+        rows, est = self._estimate(idx, val, st, ln, T, len(dirty) > 0)
+        est /= norm
+        tol = est * ((kf + 4) * _U23) + 1e-300
+        lb = min(self.theta, float(np.float32(self.theta))) * (1.0 - 1e-6)
+        need = rows[est + tol >= lb]
+        exact = np.union1d(need, dirty) if len(dirty) else need
+        if len(exact):
+            cos = self._cos_at(exact, idx, val, norm, kf)
+            th = self._thresholds_at(exact)
+            hit = cos >= th
+            if hit.any():
+                return exact[hit], cos[hit], th[hit]
+        else:
+            cos = np.empty(0, np.float32)
+        # Silencio: la de mayor potencial. Fuera de `exact`, las filas con est > 0 tienen
+        # potencial en [est - tol, est + tol] y las demás, exactamente 0.
+        lo = float((est - tol).max()) if len(est) else -np.inf
+        if len(cos):
+            lo = max(lo, float(cos.max()))
+        if lo == -np.inf:
+            return (0, np.zeros(1, np.float32))
+        near = rows[est + tol >= lo]
+        X = np.union1d(exact, near)
+        if len(X) > len(exact):
+            cos = self._cos_at(X, idx, val, norm, kf)
+        if len(X) and float(cos.max()) > 0.0:
+            i = int(np.argmax(cos))
+            return (int(X[i]), cos[i:i + 1])
+        return (0, np.zeros(1, np.float32))
+
     def forward(self, idx: np.ndarray, val: np.ndarray) -> Volley:
         """Pase TTFS: devuelve las k primeras neuronas en disparar."""
         norm = float(np.sqrt(val @ val)) if len(val) else 0.0
@@ -125,20 +322,24 @@ class ElasticLayer:
         if self.n == 0 or norm == 0.0:
             return Volley(idx, val, norm, empty, np.empty(0), np.empty(0), True)
         n = self.n
-        kf = int(self.fill[:n].max())
-        s = self._s
-        s[idx] = val
-        cos = np.einsum("ij,ij->i", self.w[:n, :kf], s[self.pre[:n, :kf]]) / norm   # V(1) normalizado
-        s[idx] = 0.0
-        theta = self.thresholds()
-        cand = np.flatnonzero(cos >= theta)
-        if len(cand) == 0:
-            # Columna en silencio: decisión forzada por la de mayor potencial (sin spike).
-            j = int(np.argmax(cos))
-            return Volley(idx, val, norm, np.array([j]), np.array([1.0]), cos[j:j + 1], True)
+        kf = self._fan_max()
+        res = self._sparse_pass(idx, val, norm, kf) if self._wants_sparse(idx, val, norm, kf) else None
+        if res is None:
+            cos = self._cos_at(slice(0, n), idx, val, norm, kf)   # V(1) normalizado
+            theta = self.thresholds()
+            cand = np.flatnonzero(cos >= theta)
+            if len(cand) == 0:
+                # Columna en silencio: decisión forzada por la de mayor potencial (sin spike).
+                j = int(np.argmax(cos))
+                return Volley(idx, val, norm, np.array([j]), np.array([1.0]), cos[j:j + 1], True)
+            cc, th = cos[cand], theta[cand]
+        elif len(res) == 2:                              # silencio (ver _sparse_pass)
+            return Volley(idx, val, norm, np.array([res[0]]), np.array([1.0]), res[1], True)
+        else:
+            cand, cc, th = res
         if len(cand) > self.max_candidates:            # inhibición: sólo las de mayor margen
-            margin = cos[cand] - theta[cand]
-            cand = cand[np.argpartition(-margin, self.max_candidates - 1)[:self.max_candidates]]
+            keep = np.argpartition(-(cc - th), self.max_candidates - 1)[:self.max_candidates]
+            cand, cc, th = cand[keep], cc[keep], th[keep]
         # Tiempo exacto del primer spike de cada candidata.
         order = np.argsort(-val, kind="stable")        # más fuerte = más temprano
         m = len(idx); M = len(cand)
@@ -151,12 +352,11 @@ class ElasticLayer:
         Wc = np.bincount(flat, weights=self.w[cand, :kf].ravel(), minlength=M * (m + 1))
         Wc = Wc.reshape(M, m + 1)[:, :m].T             # (m, M) pesos sobre la volea ordenada
         t_sorted = 1.0 - val[order].astype(np.float64)
-        t_star = first_spike_times(Wc, t_sorted, theta[cand].astype(np.float64), 1.0 / norm)
+        t_star = first_spike_times(Wc, t_sorted, th.astype(np.float64), 1.0 / norm)
         t_star = np.minimum(t_star, 1.0)               # cos >= theta garantiza cruce en t <= 1
         k = min(self.k, M)
         sel = np.argsort(t_star, kind="stable")[:k]
-        w = cand[sel]
-        return Volley(idx, val, norm, w, t_star[sel], cos[w], False)
+        return Volley(idx, val, norm, cand[sel], t_star[sel], cc[sel], False)
 
     # ------------------------------------------------------------------ plasticidad sináptica
     def stdp(self, j: int, v: Volley, mod: float = 1.0):
@@ -173,6 +373,8 @@ class ElasticLayer:
         f = int(self.fill[j])
         pre = self.pre[j]; w = self.w[j]
         x = (v.val / v.norm).astype(np.float32)
+        if mod > 0 and len(x) and float(x.min()) < 0.0:
+            self._neg = True
         slot = self._slot
         slot[pre[:f]] = np.arange(f, dtype=np.int32)
         sl = slot[v.idx]
@@ -192,6 +394,9 @@ class ElasticLayer:
                     keep = np.argpartition(-all_w, self.K - 1)[:self.K]
                     pre[:] = all_pre[keep]; w[:] = all_w[keep]; f = self.K
                 self.fill[j] = f
+                self._touch(j)
+                if self._kf >= 0:
+                    self._kf = max(self._kf, f)
             self.wins[j] += 1
             if self.theta_plus > 0.0:                  # homeostasis: ganar sube el umbral propio
                 cur = self.hoff[j] * np.exp(-(self.t - self.hoff_t[j]) / self.theta_tau)
@@ -246,6 +451,11 @@ class ElasticLayer:
         self.util[j] = 1.0; self.util_t[j] = self.t
         self.hoff[j] = 0.0; self.hoff_t[j] = self.t
         self.n += 1; self.created += 1
+        self._touch(j)
+        if self._kf >= 0:
+            self._kf = max(self._kf, m)
+        if m and float(val.min()) < 0.0:
+            self._neg = True
         if self.on_add is not None:
             self.on_add(j)
         return j
@@ -270,6 +480,8 @@ class ElasticLayer:
                 arr = getattr(self, name)
                 arr[j] = arr[last]
         self.n -= 1; self.pruned += 1
+        self._touch(j)
+        self._kf = -1
         if self.on_remove is not None:
             self.on_remove(j, last)
 

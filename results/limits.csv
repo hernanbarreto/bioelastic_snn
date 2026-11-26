@@ -1,0 +1,34 @@
+component,parameter,value,metric,measured
+search,max_steps,1,consultas por búsqueda,3
+search,max_steps,1,ms por búsqueda,0.1937
+search,max_steps,2,consultas por búsqueda,7
+search,max_steps,2,ms por búsqueda,0.4363
+search,max_steps,4,consultas por búsqueda,31
+search,max_steps,4,ms por búsqueda,2.0367
+search,max_steps,6,consultas por búsqueda,127
+search,max_steps,6,ms por búsqueda,19.4856
+search,max_steps,8,consultas por búsqueda,511
+search,max_steps,8,ms por búsqueda,87.3619
+search,max_steps,10,consultas por búsqueda,2047
+search,max_steps,10,ms por búsqueda,319.6778
+fastmem,símbolos,64,MB de memoria,0.0164
+fastmem,símbolos,64,us por reset (un episodio),0.7968
+fastmem,símbolos,64,us por recall,5.3081
+fastmem,símbolos,256,MB de memoria,0.2621
+fastmem,símbolos,256,us por reset (un episodio),7.4513
+fastmem,símbolos,256,us por recall,5.9079
+fastmem,símbolos,1024,MB de memoria,4.1943
+fastmem,símbolos,1024,us por reset (un episodio),229.3081
+fastmem,símbolos,1024,us por recall,29.9296
+fastmem,símbolos,4096,MB de memoria,67.1089
+fastmem,símbolos,4096,us por reset (un episodio),8834.9841
+fastmem,símbolos,4096,us por recall,84.0779
+evict,neuronas,1000,us por reclutamiento con presupuesto lleno,16.5503
+maintain,neuronas,1000,us por poda,4.0314
+evict,neuronas,10000,us por reclutamiento con presupuesto lleno,51.0360
+maintain,neuronas,10000,us por poda,9.0444
+evict,neuronas,100000,us por reclutamiento con presupuesto lleno,864.5738
+maintain,neuronas,100000,us por poda,92.4248
+forward,neuronas (imagen),1000,us por volea,1347.0851
+forward,neuronas (imagen),4000,us por volea,4027.1633
+forward,neuronas (imagen),16000,us por volea,19031.4848

@@ -1,0 +1,13 @@
+component,case,calls,us_before,us_after,x,same_output
+Cortex.predict depth1,"MNIST, entrenada con 1500",200,151.8654,188.0630,0.8075,True
+Cortex.step depth1,"MNIST, 300 pasos sobre la entrenada",300,308.2614,356.5264,0.8646,
+Cortex.predict depth2,"MNIST, entrenada con 1500",200,1148.8409,851.9348,1.3485,True
+Cortex.step depth2,"MNIST, 300 pasos sobre la entrenada",300,2156.2152,1799.6679,1.1981,
+Cortex.predict depth3,"MNIST, entrenada con 1500",200,2781.8404,2298.8542,1.2101,True
+Cortex.step depth3,"MNIST, 300 pasos sobre la entrenada",300,7699.7510,6063.7103,1.2698,
+ElasticLayer.forward,"densa (imagen, fan-in 256)",300,658.6102,658.5083,1.0002,
+ElasticLayer.forward,"dispersa (texto 8x256, 20000 neuronas)",400,723.2534,239.5329,3.0194,
+ElasticLayer.forward,columna 1000x32 (exp_scaling),256,33.6897,32.1666,1.0474,
+Thinker episodio,"T2 cadenas, 400 episodios desde cero",400,163.9807,139.4720,1.1757,True
+Thinker episodio,"T4 composición, 400 episodios desde cero",400,272.1732,239.5113,1.1364,True
+control A/A,"columna 1000x32, referencia contra referencia",256,33.1293,33.3635,0.9930,

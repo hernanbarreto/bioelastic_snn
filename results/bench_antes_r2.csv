@@ -1,0 +1,25 @@
+component,case,calls,us_per_call,calls_per_s,macs_per_call
+ElasticLayer.forward,densa n=2000 fan_in=256 (imagen),300,1613.4304,619.7974,
+ElasticLayer.forward,"dispersa n=20000 fan_in=16 (texto, 8 activas)",500,1381.7616,723.7139,
+ElasticLayer.forward,columna 1000x32 (exp_scaling),256,65.8440,15187.4109,
+BioElasticNet.step,"bionet 256->10, 2000 pasos desde cero",2000,317.6653,3147.9676,
+BioElasticNet.step,"texto 8x256 (exp_text), 6000 bytes desde cero",6000,268.1394,3729.4028,
+BioElasticNet.run_sequence,"FSDD stream, 400 palabras desde cero",400,4968.5593,201.2656,
+AudioEncoder,"FSDD, 400 grabaciones",400,59.3824,16840.0043,
+Cortex.step depth1,"MNIST, 1500 pasos desde cero",1500,273.8659,3651.4224,
+Cortex.predict depth1,"MNIST, red entrenada con 1500",300,186.8028,5353.2379,
+Cortex.step depth1,"MNIST, 300 pasos sobre red entrenada",300,354.1721,2823.4862,
+Cortex.step depth2,"MNIST, 1500 pasos desde cero",1500,3528.1234,283.4368,
+Cortex.predict depth2,"MNIST, red entrenada con 1500",300,3135.4689,318.9316,
+Cortex.step depth2,"MNIST, 300 pasos sobre red entrenada",300,5221.8845,191.5017,
+Cortex.step depth3,"MNIST, 1500 pasos desde cero",1500,11817.8941,84.6174,
+Cortex.predict depth3,"MNIST, red entrenada con 1500",300,5975.0960,167.3613,
+Cortex.step depth3,"MNIST, 300 pasos sobre red entrenada",300,16490.0824,60.6425,
+FeatureArea.encode V1,"rasgos=256 entrada (28, 28, 1)",200,2006.8714,498.2880,
+FeatureArea.encode V2,"rasgos=256 entrada (12, 12, 256)",200,2980.1655,335.5518,
+MLP 784-256-10 (backprop),"predict, 1 imagen por llamada",300,29.8601,33489.4537,203264
+MLP 784-256-10 (backprop),predict en lote de 300 (por imagen),300,3.9041,256143.1669,203264
+MLP 784-256-10 (backprop),paso SGD de 1 ejemplo,1500,619.7027,1613.6770,609792
+Cortex simbólico,"R1 ligadura, 800 episodios (10 forward c/u)",800,4269.8233,234.2017,
+Thinker episodio,"T2 cadenas (memoria), 800 episodios",800,485.7785,2058.5512,
+Thinker episodio,"T4 composición (habla interna), 800 episodios",800,738.1312,1354.7726,

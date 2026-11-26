@@ -50,3 +50,27 @@ def test_latency_encoder_noise_model():
     assert 0.05 < np.mean(s == 0) < 0.15
     assert 0.03 < s[s > 0].std() < 0.07
     assert np.array_equal(LatencyEncoder(1000)(x), x)
+
+
+def test_audio_encoder_degenerate_inputs_are_silence():
+    sr = 8000
+    for n_frames in (None, 16):
+        enc = AudioEncoder(sr=sr, n_bands=24, n_frames=n_frames)
+        rows = n_frames or 1
+        for wave in (np.zeros(0), np.zeros(sr // 2), np.full(sr // 2, 0.3), np.ones(10),
+                     np.full(500, np.nan), np.array([np.inf, -np.inf] * 300)):
+            with np.errstate(all="raise"):                     # sin avisos de 0/0 ni de NaN
+                out = enc(wave)
+            assert out.dtype == np.float32 and out.shape[1] == 24 and not out.any()
+            assert np.isfinite(out).all() and (n_frames is None or out.shape[0] == rows)
+
+
+def test_audio_encoder_ignores_corrupt_samples():
+    sr = 8000; t = np.arange(sr // 2) / sr
+    tone = np.sin(2 * np.pi * 800 * t).astype(np.float32)
+    enc = AudioEncoder(sr=sr, n_bands=24)
+    bad = tone.copy(); bad[1000] = np.nan; bad[2000] = np.inf
+    clean = tone.copy(); clean[[1000, 2000]] = 0.0
+    out = enc(bad)
+    assert np.isfinite(out).all() and np.array_equal(out, enc(clean))
+    assert int(out.mean(axis=0).argmax()) == int(enc(tone).mean(axis=0).argmax())

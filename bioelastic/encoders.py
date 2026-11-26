@@ -47,12 +47,18 @@ class AudioEncoder:
     """Cóclea: banco de filtros mel sobre STFT, compresión logarítmica y latencia.
 
     Devuelve (F, n_bands). Con n_frames fijo, normaliza la duración del segmento.
+
+    Entradas degeneradas: las muestras no finitas (NaN, inf) se toman como silencio; una
+    entrada vacía, o sin potencia por encima del piso numérico (`silence_power`, muy por
+    debajo de un bit de audio de 16 bits), es silencio y devuelve ceros (sin spikes). La
+    normalización es relativa al máximo de cada segmento, así que sin ese piso el silencio
+    total se codificaría como la máxima actividad en todas las bandas.
     """
 
     def __init__(self, sr: int = 8000, n_bands: int = 32, frame_ms: float = 25.0,
                  hop_ms: float = 10.0, fmin: float = 80.0, fmax: float | None = None,
                  dyn_range_db: float = 50.0, n_frames: int | None = None,
-                 trim_db: float = 30.0):
+                 trim_db: float = 30.0, silence_power: float = 1e-10):
         self.sr = int(sr)
         self.n_bands = int(n_bands)
         self.win = int(round(sr * frame_ms / 1000.0))
@@ -61,6 +67,7 @@ class AudioEncoder:
         self.dyn = float(dyn_range_db)
         self.n_frames = n_frames
         self.trim_db = float(trim_db)
+        self.silence_power = float(silence_power)
         self.n_inputs = self.n_bands
         self.fb = self._mel_filterbank(fmin, fmax or sr / 2.0)
         self.window = np.hanning(self.win).astype(np.float32)
@@ -79,14 +86,22 @@ class AudioEncoder:
         return fb
 
     def __call__(self, wave) -> np.ndarray:
-        x = np.asarray(wave, dtype=np.float32)
+        x = np.asarray(wave, dtype=np.float32).reshape(-1)
+        if len(x) == 0:
+            return np.zeros((self.n_frames or 1, self.n_bands), dtype=np.float32)
+        finite = np.isfinite(x)
+        if not finite.all():
+            x = np.where(finite, x, np.float32(0.0))
         x = x - x.mean()
         if len(x) < self.win:
             x = np.pad(x, (0, self.win - len(x)))
         n = 1 + (len(x) - self.win) // self.hop
         ix = np.arange(self.win)[None, :] + self.hop * np.arange(n)[:, None]
         spec = np.abs(np.fft.rfft(x[ix] * self.window, n=self.n_fft, axis=1)) ** 2
-        logmel = 10.0 * np.log10(spec @ self.fb.T + 1e-10)           # (F, bands) en dB
+        power = spec @ self.fb.T
+        if not float(power.max()) > self.silence_power:               # silencio: ningún spike
+            return np.zeros((self.n_frames or n, self.n_bands), dtype=np.float32)
+        logmel = 10.0 * np.log10(power + 1e-10)                      # (F, bands) en dB
         energy = logmel.max(axis=1)
         live = np.flatnonzero(energy > energy.max() - self.trim_db)  # recorta silencio
         logmel = logmel[live[0]:live[-1] + 1]

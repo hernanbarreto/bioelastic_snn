@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 
 from common import RESULTS
-from bioelastic.blueprint import BRAIN_SIM_REFERENCE, BYTES_PER_SYNAPSE, HUMAN
+from bioelastic.blueprint import BRAIN_SIM_REFERENCE, HUMAN, plan
 
 INK, INK2, GRID, SURFACE = "#191919", "#666666", "#e8e8e8", "#ffffff"
 BLUE, ORANGE, AQUA, GRAY = "#257de0", "#f47230", "#00b894", "#9c9c9c"
@@ -170,23 +170,24 @@ def scaling():
     style(a, "Costo por sinapsis al crecer la red (ns, un núcleo)", "neuronas instanciadas", pct=False)
     a.set_ylim(0, max(y) * 1.6)
 
-    mem = col(s, "synapse_bytes")
-    human_syn = HUMAN["neurons_cortex"] * HUMAN["synapses_per_cortical_neuron"]
-    b.plot([syn[0], human_syn], [syn[0] * BYTES_PER_SYNAPSE, human_syn * BYTES_PER_SYNAPSE],
-           color=GRID, lw=2, zorder=1)
+    mem = col(s, "memory_bytes") if "memory_bytes" in s[0] else col(s, "synapse_bytes")
+    human = plan(1.0, index=True, slack=1.5)                 # memoria total, no sólo sinapsis
+    human_syn = human["synapses"]
+    per_syn = human["memory_total_bytes"] / human_syn
+    b.plot([syn[0], human_syn], [syn[0] * per_syn, human_syn * per_syn], color=GRID, lw=2, zorder=1)
     b.scatter(syn, mem, s=70, color=BLUE, edgecolor=SURFACE, linewidth=2, zorder=3)
-    b.scatter([human_syn], [human_syn * BYTES_PER_SYNAPSE], s=70, color=ORANGE, edgecolor=SURFACE,
+    b.scatter([human_syn], [human_syn * per_syn], s=70, color=ORANGE, edgecolor=SURFACE,
               linewidth=2, zorder=3)
     k = BRAIN_SIM_REFERENCE
     b.scatter([k["synapses"]], [1e15], s=70, color=GRAY, edgecolor=SURFACE, linewidth=2, zorder=3)
     b.annotate("medido en esta máquina", (syn[-1], mem[-1]), xytext=(8, -12), textcoords="offset points",
                fontsize=8.5, color=INK)
-    b.annotate("corteza humana\n(extrapolado, 8 B/sinapsis)", (human_syn, human_syn * BYTES_PER_SYNAPSE),
+    b.annotate(f"corteza humana\n(extrapolado, {per_syn:.0f} B/sinapsis en total)", (human_syn, human_syn * per_syn),
                xytext=(-10, -6), textcoords="offset points", fontsize=8.5, color=INK, ha="right", va="top")
     b.annotate("K computer 2013\n(simulación real, ~1 PB)", (k["synapses"], 1e15), xytext=(-10, 4),
                textcoords="offset points", fontsize=8.5, color=INK, ha="right", va="bottom")
     b.set_xscale("log"); b.set_yscale("log")
-    style(b, "Memoria según el número de sinapsis", "sinapsis", pct=False)
+    style(b, "Memoria real según el número de sinapsis", "sinapsis", pct=False)
     b.xaxis.set_major_formatter(FuncFormatter(lambda v, _: f"$10^{{{int(round(math.log10(v)))}}}$"))
     units = {1e6: "1 MB", 1e9: "1 GB", 1e12: "1 TB", 1e15: "1 PB"}
     b.set_yticks(list(units)); b.set_yticklabels(list(units.values()))

@@ -1,0 +1,22 @@
+component,case,calls,us_per_call,calls_per_s
+ElasticLayer.forward,densa n=2000 fan_in=256 (imagen),300,1814.7045,551.0539
+ElasticLayer.forward,"dispersa n=20000 fan_in=16 (texto, 8 activas)",500,1509.7256,662.3720
+ElasticLayer.forward,columna 1000x32 (exp_scaling),256,125.0957,7993.8814
+BioElasticNet.step,"bionet 256->10, 2000 pasos desde cero",2000,398.4759,2509.5623
+BioElasticNet.step,"texto 8x256 (exp_text), 6000 bytes desde cero",6000,480.7024,2080.2891
+BioElasticNet.run_sequence,"FSDD stream, 400 palabras desde cero",400,7746.5711,129.0894
+AudioEncoder,"FSDD, 400 grabaciones",400,146.7662,6813.5594
+Cortex.step depth1,"MNIST, 1500 pasos desde cero",1500,462.7544,2160.9734
+Cortex.predict depth1,"MNIST, red entrenada con 1500",300,423.1000,2363.5076
+Cortex.step depth1,"MNIST, 300 pasos sobre red entrenada",300,638.0244,1567.3382
+Cortex.step depth2,"MNIST, 1500 pasos desde cero",1500,4805.6794,208.0871
+Cortex.predict depth2,"MNIST, red entrenada con 1500",300,3387.1026,295.2376
+Cortex.step depth2,"MNIST, 300 pasos sobre red entrenada",300,6242.7159,160.1867
+Cortex.step depth3,"MNIST, 1500 pasos desde cero",1500,16003.4760,62.4864
+Cortex.predict depth3,"MNIST, red entrenada con 1500",300,3639.0164,274.7995
+Cortex.step depth3,"MNIST, 300 pasos sobre red entrenada",300,11464.2825,87.2274
+FeatureArea.encode V1,"rasgos=256 entrada (28, 28, 1)",200,941.9749,1061.5995
+FeatureArea.encode V2,"rasgos=256 entrada (12, 12, 256)",200,2822.2365,354.3289
+Cortex simbólico,"R1 ligadura, 800 episodios (10 forward c/u)",800,3645.4472,274.3148
+Thinker episodio,"T2 cadenas (memoria), 800 episodios",800,347.2205,2880.0143
+Thinker episodio,"T4 composición (habla interna), 800 episodios",800,551.2315,1814.1199

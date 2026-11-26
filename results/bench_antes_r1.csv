@@ -1,0 +1,25 @@
+component,case,calls,us_per_call,calls_per_s,macs_per_call
+ElasticLayer.forward,densa n=2000 fan_in=256 (imagen),300,1697.5160,589.0961,
+ElasticLayer.forward,"dispersa n=20000 fan_in=16 (texto, 8 activas)",500,1245.5572,802.8535,
+ElasticLayer.forward,columna 1000x32 (exp_scaling),256,63.8760,15655.3360,
+BioElasticNet.step,"bionet 256->10, 2000 pasos desde cero",2000,297.4987,3361.3598,
+BioElasticNet.step,"texto 8x256 (exp_text), 6000 bytes desde cero",6000,410.6009,2435.4551,
+BioElasticNet.run_sequence,"FSDD stream, 400 palabras desde cero",400,7972.9920,125.4234,
+AudioEncoder,"FSDD, 400 grabaciones",400,130.6660,7653.1020,
+Cortex.step depth1,"MNIST, 1500 pasos desde cero",1500,390.6617,2559.7598,
+Cortex.predict depth1,"MNIST, red entrenada con 1500",300,343.8174,2908.5206,
+Cortex.step depth1,"MNIST, 300 pasos sobre red entrenada",300,559.7902,1786.3834,
+Cortex.step depth2,"MNIST, 1500 pasos desde cero",1500,4310.7098,231.9804,
+Cortex.predict depth2,"MNIST, red entrenada con 1500",300,1879.4981,532.0569,
+Cortex.step depth2,"MNIST, 300 pasos sobre red entrenada",300,3150.3803,317.4220,
+Cortex.step depth3,"MNIST, 1500 pasos desde cero",1500,14288.5435,69.9861,
+Cortex.predict depth3,"MNIST, red entrenada con 1500",300,5670.2706,176.3584,
+Cortex.step depth3,"MNIST, 300 pasos sobre red entrenada",300,17032.0065,58.7130,
+FeatureArea.encode V1,"rasgos=256 entrada (28, 28, 1)",200,1439.4690,694.7006,
+FeatureArea.encode V2,"rasgos=256 entrada (12, 12, 256)",200,3209.2340,311.6008,
+MLP 784-256-10 (backprop),"predict, 1 imagen por llamada",300,26.9737,37073.1261,203264
+MLP 784-256-10 (backprop),predict en lote de 300 (por imagen),300,4.1735,239605.8962,203264
+MLP 784-256-10 (backprop),paso SGD de 1 ejemplo,1500,540.5977,1849.8046,609792
+Cortex simbólico,"R1 ligadura, 800 episodios (10 forward c/u)",800,3727.0752,268.3069,
+Thinker episodio,"T2 cadenas (memoria), 800 episodios",800,377.4390,2649.4348,
+Thinker episodio,"T4 composición (habla interna), 800 episodios",800,540.6673,1849.5663,
