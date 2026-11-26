@@ -905,9 +905,8 @@ def val_score(rows, spec) -> float:
 SWEEP_A = {"sin causas": "",
            "causas": CAUSES,
            "causas, corrimiento 0.06": CAUSES + "+head.cause_shift=0.06",
-           "causas, corrimiento 0.03": CAUSES + "+head.cause_shift=0.03",
            "causas, racha 2": CAUSES + "+head.cause_streak=2",
-           "causas, racha 8": CAUSES + "+head.cause_streak=8",
+           "causas, ritmo 0.5": CAUSES + "+head.cause_rho=0.5",
            "causas sin proteger el lento": CAUSES + "+top.cause_slow=false",
            "sólo proteger (nunca reconsolidar)": CAUSES + "+head.cause_shift=-9"}
 SWEEP_B = {
@@ -1062,17 +1061,54 @@ def phase_f7x(a, data):
     save("f7_split", dict(phase="f7x", config=cfg, summary=summary, rows=rows), rows, keys)
 
 
+def stream_spec() -> str:
+    """Configuración para los flujos largos: la elegida en CD/cambio de etiqueta, con el
+    ajuste de plasticidad elegido en validación (ver phase_f7k)."""
+    p = RESULTS / "consolidacion_f7_plasticidad.json"
+    return json.loads(p.read_text())["chosen"] if p.exists() else chosen_spec()
+
+
 def phase_f7k(a, data):
-    """Flujo continuo reducido (escala 0,1): elegido contra c2 y ER-ACE con los mismos bytes."""
-    D = split_data(data)["test"]
-    spec = chosen_spec()
+    """Flujo continuo reducido (escala 0,1).
+    1) Validación (semillas 10 y 11): la plasticidad tardía bajaba con slow_error="own"
+       (f1b: 0,932 de una red nueva). Candidatos: el elegido, el elegido con sueño en
+       micro-fases y renormalización, y el elegido con el error conjunto. Criterio fijado
+       antes de mirar: final - olvido + min(plasticidad, 1).
+    2) Test (semillas 0-2): el ganador contra c2 y ER-ACE con los mismos bytes."""
+    S = split_data(data)
+    base = chosen_spec()
+    cands = {"elegido": base}
+    if "sleep_every" in base:
+        cands["elegido + renormalización"] = _with_mod(base, "top.sleep_downscale", 0.1)
+    else:
+        cands["elegido + sueño micro y renormalización"] = base + MICRO + "+top.sleep_downscale=0.1"
+    if "top.slow_error=own" in base:
+        cands["elegido con error conjunto"] = base.replace("+top.slow_error=own", "")
+    vrows: list = []
+    scores = {}
+    for name, sp in cands.items():
+        continual((sp.replace(C2, CONT, 1),), VAL_SEEDS, S["val"], scale=0.1, n_eval=30, log_rows=vrows,
+                  tag="f7k-val", split="val")
+        rs = [r for r in vrows if r["model"] == sp.replace(C2, CONT, 1)]
+        scores[name] = float(np.mean([r["final_clean_known"] - r["forget_clean"] + min(r["plasticity_ratio"], 1.0)
+                                      for r in rs]))
+        print(f"[f7k] validación {name}: {scores[name]:.4f} " +
+              " ".join(f"{k}={np.mean([r[k] for r in rs]):.3f}" for k in
+                       ("final_clean_known", "forget_clean", "plasticity_ratio", "sim_after_D")), flush=True)
+    best = max(cands, key=lambda k: scores[k])
+    spec = cands[best]
+    (RESULTS / "consolidacion_f7_plasticidad.json").write_text(json.dumps(dict(
+        chosen=spec, chosen_name=best, candidates=cands, scores=scores, val_seeds=VAL_SEEDS,
+        score="final_clean_known - forget_clean + min(plasticity_ratio, 1), flujo x0,1, split de validación",
+        rows=vrows, summary=agg(vrows, ("bench", "scenario", "model"), CONT_KEYS)), indent=1, default=float))
+    D = S["test"]
     rows: list = []
     cont = spec.replace(C2, CONT, 1)
     continual((cont, CONT), a.seeds, D, scale=0.1, n_eval=30, log_rows=rows, tag="f7k", split="test")
     nbc = int(np.mean([r["bytes_end"] for r in rows if r["bench"] == "continual" and r["model"] == cont]))
     continual((f"erace+bytes={nbc}+iters=3",), a.seeds, D, scale=0.1, n_eval=30, log_rows=rows, tag="f7k",
               split="test")
-    cfg = dict(seeds=a.seeds, chosen=cont, erace_bytes=nbc,
+    cfg = dict(seeds=a.seeds, chosen=cont, chosen_name=best, validation_scores=scores, erace_bytes=nbc,
                reductions="flujo continuo a escala 0,1 con tc=0.1 y presupuesto 500 (como en f0); "
                           "entrenamiento sin las imágenes de validación")
     finish("f7k", rows, {}, cfg)
@@ -1122,7 +1158,7 @@ def phase_f7c(a, data):
     """Criterio del proyecto: flujo completo de 200 000 pasos, elegido contra ER-ACE con
     los mismos bytes (3 semillas)."""
     D = split_data(data)["test"]
-    spec = chosen_spec()
+    spec = stream_spec()
     rows: list = []
     continual((spec,), a.seeds, D, scale=1.0, n_eval=30, log_rows=rows, tag="f7c", split="test")
     nb = int(np.mean([r["bytes_end"] for r in rows if r["model"] == spec]))

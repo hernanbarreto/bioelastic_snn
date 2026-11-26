@@ -46,6 +46,7 @@ class BioElasticNet:
                   ("tests", np.int32), ("m", np.float32), ("m_t", np.int64), ("cc", np.int16),
                   ("nm", np.float32))
     KEY_DIMS = 32                    # dimensiones de la expectativa de clave de cada recuerdo
+    RATE_EVENTS = 16                 # conflictos recientes con los que se mide el ritmo de un par
 
     def __init__(self, n_inputs: int, n_outputs: int, *, context: int = 1, delay: float = 0.15,
                  tau: float = 0.0, grow_on_error: bool = True, rho_sup: float = 0.98,
@@ -54,6 +55,7 @@ class BioElasticNet:
                  separation: float = 0.0, separation_relax: float = 0.0, recon_lock: int = 0,
                  causes: bool = False, cause_n: float = 10.0, cause_shift: float = 0.04,
                  cause_tau: float = 2000.0, cause_rate: float = 1.0, cause_streak: int = 4,
+                 cause_rho: float = 0.7,
                  layer: dict | None = None, readout: dict | None = None, seed: int = 0):
         self._config = dict(n_inputs=int(n_inputs), n_outputs=int(n_outputs), context=int(context),
                             delay=float(delay), tau=float(tau), grow_on_error=bool(grow_on_error),
@@ -64,7 +66,7 @@ class BioElasticNet:
                             recon_lock=int(recon_lock), causes=bool(causes), cause_n=float(cause_n),
                             cause_shift=float(cause_shift), cause_tau=float(cause_tau),
                             cause_rate=float(cause_rate),
-                            cause_streak=int(cause_streak),
+                            cause_streak=int(cause_streak), cause_rho=float(cause_rho),
                             layer=dict(layer or {}), readout=dict(readout or {}), seed=int(seed))
         self.N = int(n_inputs)
         self.tau = float(tau)
@@ -91,10 +93,12 @@ class BioElasticNet:
         # Inferencia de causas latentes (ver `_causes`).
         self.causes = bool(causes); self.cause_n = float(cause_n); self.cause_shift = float(cause_shift)
         self.cause_tau = float(cause_tau); self.cause_rate = float(cause_rate)
-        self.cause_streak = int(cause_streak)
+        self.cause_streak = int(cause_streak); self.cause_rho = float(cause_rho)
+        self._ci = np.zeros(int(n_outputs), dtype=np.float64)   # intervalo medio entre confirmaciones de cada clase
+        self._ct = np.full(int(n_outputs), -1, dtype=np.int64)  # última confirmación
         if self.causes and not episodic:
             raise ValueError("causes necesita la huella episódica (episodic=True)")
-        self._pairs: dict = {}                           # (a, b) -> (media de d, media de |d|^2, n, t, decisión)
+        self._pairs: dict = {}                           # (a, b) -> (media de d, media de |d|^2, n, t, decisión, tiempos)
         # Expectativa de clave: cada recuerdo guarda la media de las entradas que lo
         # confirmaron, comprimida por una proyección aleatoria fija a KEY_DIMS dimensiones.
         self._P = None; self._kq = None
@@ -406,11 +410,22 @@ class BioElasticNet:
 
             c = (T - 1) / n  ~  |media de d|^2 / varianza de d
 
-        el corrimiento relativo (un tamaño de efecto: no crece con n como T). Con al menos
-        `cause_n` conflictos: c + 2 e.e. < `cause_shift` (e.e. = sqrt(2 / KEY_DIMS) / n, el
-        error típico de c si es la misma causa: reescribir un recuerdo por error cuesta
-        mucho más que demorarse) -> la misma causa con otra etiqueta:
-        reconsolidar las ganadoras de a (`_reconsolidate`); si no, causa nueva:
+        el corrimiento relativo (un tamaño de efecto: no crece con n como T).
+
+        La clave sola no alcanza cuando una clase vecina se superpone con la vieja (medido:
+        las camisas que caen en neuronas de remera dan c ~ 0,03, como una remera
+        reetiquetada). Lo que cambia es el ritmo (contexto temporal): si la causa es la
+        misma, sus entradas siguen llegando tan seguido como antes, ahora en conflicto; de
+        una clase vecina sólo llega la parte que se superpone. rho = (intervalo medio entre
+        confirmaciones de a cuando estaba activa) / (intervalo medio entre los últimos
+        RATE_EVENTS conflictos a -> b).
+
+        Con al menos `cause_n` conflictos: c + 2 e.e. < `cause_shift` (e.e. = sqrt(2 /
+        KEY_DIMS) / n, el error típico de c si es la misma causa: reescribir un recuerdo por
+        error cuesta mucho más que demorarse) y rho >= `cause_rho` -> la misma causa con
+        otra etiqueta (el ritmo sólo se exige para entrar en ese estado: al reconsolidar,
+        los conflictos se van acabando solos): reconsolidar las ganadoras de a
+        (`_reconsolidate`); si no, causa nueva:
         neurogénesis, y lo de a queda protegido (sin cambio de lectura ni anti-STDP;
         `protect_classes` lo protege también en el sistema lento). Mientras la evidencia
         no alcanza, se trata como causa nueva (provisoria). Las ganadoras de causas activas
@@ -424,6 +439,13 @@ class BioElasticNet:
         agree = np.flatnonzero(pref == target)
         if len(agree):                                        # las que aciertan siguen activas
             ep["cc"][wn[agree]] = 0
+            if self._ct[target] >= 0:                         # ritmo de confirmación de la clase
+                dt = float(t - self._ct[target])
+                if self._ci[target] <= 0.0:
+                    self._ci[target] = dt
+                elif dt < 20.0 * self._ci[target]:            # (una vuelta tras una ausencia no cuenta)
+                    self._ci[target] += 0.05 * (dt - self._ci[target])
+            self._ct[target] = t
             j = int(wn[agree[0]])                             # la más temprana ajusta su expectativa
             ep["nm"][j] += 1.0
             self._kq[j] += np.float32(max(1.0 / float(ep["nm"][j]), 0.02)) * (px - self._kq[j])
@@ -441,7 +463,8 @@ class BioElasticNet:
                 continue                                      # una vez por causa: la más temprana
             d = px - self._kq[int(wn[k])]
             key = (a, int(target))
-            md, s2, nab, tl, _ = self._pairs.get(key, (np.zeros_like(px), 0.0, 0.0, t, None))
+            md, s2, nab, tl, was, times = self._pairs.get(key, (np.zeros_like(px), 0.0, 0.0, t, None, []))
+            times = (times + [t])[-self.RATE_EVENTS:]         # ritmo de los conflictos de este par
             nab = nab * float(np.exp(-(t - tl) / self.cause_tau)) + 1.0
             r = 1.0 / min(nab, 50.0)
             md = md + np.float32(r) * (d - md)
@@ -450,14 +473,19 @@ class BioElasticNet:
             if nab >= self.cause_n:
                 mm = float(md @ md); ne = min(nab, 50.0)
                 c = (ne * mm / max(s2 - mm, 1e-9) - 1.0) / ne
-                same = bool(c + 2.0 * np.sqrt(2.0 / self.KEY_DIMS) / ne < self.cause_shift)
-            self._pairs[key] = (md, s2, nab, t, same)
+                rho = 0.0
+                if len(times) == self.RATE_EVENTS and self._ci[a] > 0.0:
+                    rho = self._ci[a] * (len(times) - 1) / max(float(times[-1] - times[0]), 1.0)
+                same = bool(c + 2.0 * np.sqrt(2.0 / self.KEY_DIMS) / ne < self.cause_shift
+                            and (rho >= self.cause_rho or was is True))
+            self._pairs[key] = (md, s2, nab, t, same, times)
             verdicts[a] = same
         for i, k in enumerate(conf):
             if not dormant[i]:
                 continue                                      # causa activa: discriminación común
             if verdicts.get(int(pref[k])):
                 relabel[k] = True
+                ep["cc"][int(wn[k])] = 0                      # recién actualizada: vuelve a estar activa
             else:
                 prot[k] = True
         self.relabeled += int(relabel.sum()); self.protected += int(prot.sum())
