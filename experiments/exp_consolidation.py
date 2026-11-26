@@ -594,9 +594,65 @@ def phase_f4(a, data):
     finish("f4", rows, dict(retention_rows=lrows, retention_summary=lsum), cfg)
 
 
+SLEEP = "+top.replay=1+top.sleep_every=500+top.sleep_replays=500"
+MICRO = SLEEP + "+top.sleep_micro=2"
+SLEEPS = {
+    "despierto (replay=2)": C2 + STORED,
+    "sueño en bloque": C2 + STORED + SLEEP,
+    "sueño en micro-fases": C2 + STORED + MICRO,
+    "micro + renormalización": C2 + STORED + MICRO + "+top.sleep_downscale=0.1",
+    "micro + renorm. + poda": C2 + STORED + MICRO + "+top.sleep_downscale=0.1+top.sleep_prune=0.01",
+    "micro + renorm. + poda + liberación": C2 + STORED + MICRO +
+        "+top.sleep_downscale=0.1+top.sleep_prune=0.01+top.sleep_release=0.5",
+    "por carga (250 episodios) + renorm.": C2 + STORED +
+        "+top.replay=1+top.sleep_trigger=load+top.sleep_load=250+top.sleep_replays=500+top.sleep_micro=2"
+        "+top.sleep_downscale=0.1",
+}
+
+
+def phase_f5(a, data):
+    rows: list = []
+    for name, spec in SLEEPS.items():
+        for seed in a.seeds:
+            r = run_scenario("CD", spec, seed, data, timing=True, extra_evals=(2999,))
+            row = scenario_row("CD", spec, seed, r); row["variant"] = name
+            pre = r["extra"][2999]["full"]; post = r["hist"][0][2]["full"]
+            row["C_pre3000"] = float(np.mean([pre[c] for c in (10, 11, 12, 13)]))
+            row["C_post3000"] = float(np.mean([post[c] for c in (10, 11, 12, 13)]))
+            row["gain_3000"] = row["C_post3000"] - row["C_pre3000"]
+            pre_s = r["extra"][2999]["slow"]; post_s = r["hist"][0][2]["slow"]
+            row["slow_gain_3000"] = float(np.mean([post_s[c] - pre_s[c] for c in (10, 11, 12, 13)]))
+            rows.append(row)
+            print(f"[f5] CD {name} s{seed}: " + " ".join(f"{k}={row[k]:.3f}" for k in
+                  ("old", "new", "all", "slow_all", "gain_3000", "preq_last500", "lat_step_p50",
+                   "lat_step_p99", "lat_step_max")) +
+                  f" sueños={row.get('sleeps')} rep_sueño={row.get('sleep_replays')} liberados={row.get('released')}",
+                  flush=True)
+    for name, spec in (("despierto, presupuesto 600", C2 + STORED + "+budget=600"),
+                       ("sueño micro + renorm. + liberación, presupuesto 600", C2 + STORED + "+budget=600" + MICRO +
+                        "+top.sleep_downscale=0.1+top.sleep_release=0.5")):
+        for seed in a.seeds:
+            r = run_scenario("CD", spec, seed, data)
+            row = scenario_row("CD", spec, seed, r); row["variant"] = name
+            rows.append(row)
+            print(f"[f5] CD {name} s{seed}: " + " ".join(f"{k}={row[k]:.3f}" for k in
+                  ("old", "new", "all", "slow_all", "preq_last500")) + f" liberados={row.get('released')}", flush=True)
+    continual((CONT + STORED + MICRO + "+top.sleep_downscale=0.1",), a.seeds, data, scale=0.1, n_eval=30,
+              log_rows=rows, tag="f5")
+    cfg = dict(seeds=a.seeds, variants=SLEEPS, interference=SCENARIOS["CD"],
+               budget="12 000 repasos en CD en todas las variantes: despierto 2 por paso; con sueño 1 por "
+                      "paso despierto + 500 cada 500 pasos (12 sueños), salvo «por carga» (variable)",
+               gain="acierto en C justo antes (paso 2999) y después (paso 3000) del sueño del paso 3000",
+               capacity="preq_last500: acierto prequential en los primeros 500 pasos de D",
+               latency="ms por paso (forward + teach), percentiles; con 4 agentes compartiendo 2 CPU: "
+                       "comparar sólo dentro de esta tabla",
+               reductions="CD con 3 semillas; flujo continuo a escala 0,1 para la variante micro + renorm.")
+    finish("f5", rows, {}, cfg)
+
+
 SCEN_STEPS = {k: sum(p[1] for p in v) for k, v in SCENARIOS.items()}
 
-PHASES = {"f0": phase_f0, "f1": phase_f1, "f1b": phase_f1b, "f2": phase_f2, "f3": phase_f3, "f4": phase_f4}
+PHASES = {"f0": phase_f0, "f1": phase_f1, "f1b": phase_f1b, "f2": phase_f2, "f3": phase_f3, "f4": phase_f4, "f5": phase_f5}
 
 
 def main():

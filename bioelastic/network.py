@@ -43,7 +43,7 @@ class _State:
 class BioElasticNet:
     _EP_FIELDS = (("y", np.int16), ("t", np.int64), ("ctx", np.int32), ("norm", np.float32),
                   ("due", np.int64), ("gap", np.float32), ("fail", np.float32), ("ok", np.int8),
-                  ("tests", np.int32))
+                  ("tests", np.int32), ("m", np.float32), ("m_t", np.int64))
 
     def __init__(self, n_inputs: int, n_outputs: int, *, context: int = 1, delay: float = 0.15,
                  tau: float = 0.0, grow_on_error: bool = True, rho_sup: float = 0.98,
@@ -102,6 +102,7 @@ class BioElasticNet:
         #   t      paso en que se escribió;  ctx  etiqueta de contexto (`context_tag`)
         #   norm   norma del episodio (para recuperar por coseno, ver `recall`)
         #   due, gap, fail, ok, tests   calendario y resultado del autoexamen (Cortex)
+        #   m, m_t  último margen del sistema lento al reactivarlo, y cuándo (sueño)
         self.episodic = bool(episodic)
         self.episodes = np.zeros((0, self.layer.D), dtype=np.uint8) if self.episodic else None
         self.ep = {name: np.zeros(0, dtype=dt) for name, dt in self._EP_FIELDS} if self.episodic else None
@@ -137,7 +138,7 @@ class BioElasticNet:
             ep["t"][j] = self.layer.t; ep["ctx"][j] = int(self.context_tag)
             ep["norm"][j] = np.float32(np.sqrt(e @ e) / 255.0)
             ep["due"][j] = self.layer.t; ep["gap"][j] = 0.0; ep["fail"][j] = 0.0
-            ep["ok"][j] = -1; ep["tests"][j] = 0
+            ep["ok"][j] = -1; ep["tests"][j] = 0; ep["m"][j] = -1.0; ep["m_t"][j] = -1
 
     def _on_remove(self, j: int, last: int):
         self.readout.remove_input(j, last)
@@ -491,6 +492,8 @@ class BioElasticNet:
                     arr[:n] = z[f"ep_{name}"]
                 elif name == "y":                             # guardado sin campos: etiqueta = lectura
                     arr[:n] = R.preferred(np.arange(n))
+                elif name in ("m", "m_t"):
+                    arr[:n] = -1
                 elif name == "norm":
                     e = net.episodes[:n].astype(np.float32)
                     arr[:n] = np.sqrt(np.einsum("ij,ij->i", e, e)) / 255.0

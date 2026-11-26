@@ -373,3 +373,66 @@ def test_contrast_replay_only_touches_the_two_competing_rows_and_only_on_failure
     net._contrast(x, c, "input", rival)
     assert np.array_equal(net.proj.W, W1)
 
+
+# ---------------------------------------------------------------- F5: sueño
+def test_sleep_in_micro_phases_never_blocks_a_step_and_spends_its_budget():
+    rng = np.random.default_rng(13)
+    net = _cortex(replay=1.0, stored_labels=True, sleep_every=50, sleep_replays=30, sleep_micro=3)
+    per_step = []
+    for _ in range(200):
+        c = int(rng.integers(4)); x = _blob(rng, c)
+        r0, s0 = net.replays, net.sleep_replays
+        assert isinstance(net.step(x, c), int)         # responde y aprende en cada paso
+        per_step.append(net.sleep_replays - s0)
+    assert max(per_step) <= 3 and net.sleeps >= 3
+    assert net.sleep_replays == 30 * net.sleeps + (30 - net._sleep_debt if net.sleeping else 0)
+    block = _cortex(replay=1.0, stored_labels=True, sleep_every=50, sleep_replays=30)
+    for _ in range(120):
+        c = int(rng.integers(4)); block.step(_blob(rng, c), c)
+    assert block.sleeps == 2 and block.sleep_replays == 60 and not block.sleeping
+
+
+def test_sleep_downscales_globally_preserving_relative_weights_and_prunes():
+    rng = np.random.default_rng(14)
+    net = _cortex(replay=1.0, stored_labels=True, sleep_replays=1, sleep_downscale=0.2, sleep_prune=0.05)
+    for _ in range(150):
+        c = int(rng.integers(4)); net.step(_blob(rng, c), c)
+    net.sleep_replays_n = 0                           # sólo la renormalización
+    net.proj.learn = lambda *a, **k: None
+    W0 = net.proj.W.copy()
+    x = _blob(rng, 1)
+    p0 = net.forward(x)
+    net.sleep(0)
+    W1 = net.proj.W
+    keep = W1 != 0
+    assert np.allclose(W1[keep], 0.8 * W0[keep], rtol=1e-6)    # multiplicativo: relaciones intactas
+    assert net.pruned_synapses == int((~keep & (W0 != 0)).sum()) > 0
+    assert np.all(np.abs(W0[~keep & (W0 != 0)]) * 0.8 < 0.05 * np.abs(0.8 * W0).max() + 1e-7)
+
+
+def test_sleep_release_frees_consolidated_episodes_but_keeps_some_per_class():
+    rng = np.random.default_rng(15)
+    net = Cortex((8, 8, 1), 4, areas=[dict(rf=3, pool=2, max_features=16, theta=0.8)],
+                 heads=[dict(source="input", episodic=True, layer=dict(theta=0.995))],
+                 projection=dict(source="all"), replay=1.0, joint=False, stored_labels=True,
+                 sleep_replays=400, sleep_release=0.3, sleep_keep=3)
+    for _ in range(300):
+        c = int(rng.integers(4)); net.step(_blob(rng, c), c)
+    mem = net.heads[0]
+    n0 = mem.layer.n
+    net.sleep()
+    assert net.released > 0 and mem.layer.n == n0 - net.released
+    lab = mem.labels(True)
+    assert n0 > 4 * 3 and all((lab == c).sum() >= 3 for c in range(4))
+    assert set(np.unique(lab)) == set(range(4))        # ninguna clase se queda sin recuerdos
+
+
+def test_idle_advances_the_pending_sleep_without_touching_the_last_input():
+    rng = np.random.default_rng(16)
+    net = _cortex(replay=0.0, stored_labels=True, sleep_every=20, sleep_replays=10, sleep_micro=1)
+    for _ in range(40):
+        c = int(rng.integers(4)); net.step(_blob(rng, c), c)
+    net.forward(_blob(rng, 2))
+    caches = [a._cache for a in net.areas]
+    done = sum(net.idle(5) for _ in range(5))
+    assert done > 0 and all(a._cache is c for a, c in zip(net.areas, caches))

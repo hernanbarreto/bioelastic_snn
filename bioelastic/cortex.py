@@ -63,7 +63,10 @@ class Cortex:
                  schema_misfit_lr: float = 1.0, schema_beta: float = 0.02, schema_known: int = 20,
                  replay_mode: str = "passive", spacing: str = "none", space_base: float = 200.0,
                  space_factor: float = 2.0, active_margin: float = 0.0, fail_weight: float = 4.0,
-                 replay_contrast: bool = False,
+                 sleep_every: int = 0, sleep_trigger: str = "steps", sleep_load: int = 200,
+                 sleep_replays: int = 0, sleep_micro: int = 0, sleep_downscale: float = 0.0,
+                 sleep_scope: str = "proj", sleep_prune: float = 0.0, sleep_release: float = 0.0,
+                 sleep_keep: int = 10, replay_contrast: bool = False,
                  seed: int = 0, workers: int = 1, homeostasis: float = 0.0):
         self._config = dict(input_shape=input_shape, n_outputs=int(n_outputs),
                             areas=[dict(a) for a in areas], heads=[],
@@ -82,6 +85,11 @@ class Cortex:
                             replay_mode=str(replay_mode), spacing=str(spacing), space_base=float(space_base),
                             space_factor=float(space_factor), active_margin=float(active_margin),
                             fail_weight=float(fail_weight),
+                            sleep_every=int(sleep_every), sleep_trigger=str(sleep_trigger),
+                            sleep_load=int(sleep_load), sleep_replays=int(sleep_replays),
+                            sleep_micro=int(sleep_micro), sleep_downscale=float(sleep_downscale),
+                            sleep_scope=str(sleep_scope), sleep_prune=float(sleep_prune),
+                            sleep_release=float(sleep_release), sleep_keep=int(sleep_keep),
                             replay_contrast=bool(replay_contrast),
                             seed=int(seed))
         self.arbiter = float(arbiter)
@@ -144,6 +152,19 @@ class Cortex:
         self.tests = 0; self.test_errors = 0
         self.replay_contrast = bool(replay_contrast)          # repaso dirigido como examen de a dos
         self._steps = 0                                       # pasos de enseñanza (reloj del calendario)
+        # Sueño (ver `_sleep_tick`).
+        if sleep_trigger not in ("steps", "load"):
+            raise ValueError(f"sleep_trigger desconocido: {sleep_trigger}")
+        if sleep_scope not in ("proj", "all"):
+            raise ValueError(f"sleep_scope desconocido: {sleep_scope}")
+        self.sleep_every = int(sleep_every); self.sleep_trigger = sleep_trigger
+        self.sleep_load = int(sleep_load); self.sleep_replays_n = int(sleep_replays)
+        self.sleep_micro = int(sleep_micro); self.sleep_downscale = float(sleep_downscale)
+        self.sleep_scope = sleep_scope; self.sleep_prune = float(sleep_prune)
+        self.sleep_release = float(sleep_release); self.sleep_keep = int(sleep_keep)
+        self.sleeps = 0; self.sleep_replays = 0; self.released = 0; self.pruned_synapses = 0
+        self.sleeping = False; self._sleep_debt = 0; self._sleep_start = 0
+        self._last_sleep = 0; self._created_at_sleep = 0
         self.rng = np.random.default_rng(seed)
         self.areas: list[FeatureArea] = []
         shape = self.input_shape
@@ -500,6 +521,108 @@ class Cortex:
                     self._rehearse_one()
         if conf is not None:
             conf[2].watch = -1
+        if self.sleep_replays_n > 0 and (self.sleep_every > 0 or self.sleep_trigger == "load"):
+            self._sleep_tick(self.sleep_micro if self.sleep_micro > 0 else None)
+
+    # ------------------------------------------------------------------ sueño
+    def _sleep_due(self) -> bool:
+        if self.sleep_trigger == "load":                      # carga: episodios nuevos sin dormir
+            store = self._store()
+            return store is not None and store.layer.created - self._created_at_sleep >= self.sleep_load
+        return self._steps - self._last_sleep >= self.sleep_every
+
+    def _start_sleep(self, replays: int):
+        self.sleeping = True; self._sleep_debt = int(replays)
+        self._sleep_start = self._steps; self._last_sleep = self._steps
+
+    def _sleep_tick(self, budget: int | None):
+        """Sueño (Klinzing, Niethard y Born 2019): consolidación activa de sistemas
+        (repaso intercalado del almacén rápido al lento, sin entrada nueva) seguida de
+        renormalización sináptica global (Tononi y Cirelli 2014: los pesos del sistema
+        lento se multiplican por 1 - `sleep_downscale`, lo que conserva sus relaciones) y
+        poda (sinapsis del lento por debajo de `sleep_prune` x el máximo; y, con
+        `sleep_release`, los episodios que el lento ya predice con margen >= ese valor
+        dejan el almacén rápido, conservando `sleep_keep` por clase: el lugar queda para lo
+        nuevo).
+
+        Empieza cada `sleep_every` pasos (sleep_trigger="steps") o cuando el almacén
+        escribió `sleep_load` episodios desde el último sueño ("load") y dura
+        `sleep_replays` repasos. Con `sleep_micro` > 0 corre en micro-fases de a lo sumo
+        ese número de repasos por paso (o por llamada a `idle`): la red nunca deja de
+        responder ni de aprender; con 0, el sueño entero ocurre en el paso que lo dispara."""
+        if not self.sleeping:
+            if not self._sleep_due():
+                return 0
+            self._start_sleep(self.sleep_replays_n)
+        k = self._sleep_debt if budget is None else min(int(budget), self._sleep_debt)
+        for _ in range(k):
+            self._replay_one()
+        self.sleep_replays += k; self._sleep_debt -= k
+        if self._sleep_debt <= 0:
+            self._end_sleep()
+        return k
+
+    def _end_sleep(self):
+        self.sleeping = False; self.sleeps += 1
+        d = self.sleep_downscale
+        if d > 0.0:
+            f = np.float32(1.0 - d)
+            if self.proj is not None:
+                self.proj.W[:, :self.proj.n] *= f
+            if self.sleep_scope == "all":
+                for h in self.heads:
+                    h.readout.W[:, :h.readout.n] *= f
+        if self.sleep_prune > 0.0 and self.proj is not None:
+            W = self.proj.W[:, :self.proj.n]
+            thr = self.sleep_prune * float(np.abs(W).max()) if W.size else 0.0
+            small = (np.abs(W) < thr) & (W != 0.0)
+            self.pruned_synapses += int(small.sum())
+            W[small] = 0.0
+        store = self._store()
+        if self.sleep_release > 0.0 and store is not None and store.ep is not None:
+            self._release(store)
+        if store is not None:
+            self._created_at_sleep = store.layer.created
+
+    def _release(self, store):
+        """Los episodios que el sistema lento ya resuelve (margen medido en este sueño >=
+        `sleep_release`) dejan el almacén rápido; quedan al menos `sleep_keep` por clase."""
+        n = store.layer.n; ep = store.ep
+        lab = self._labels(store)
+        cand = np.flatnonzero((ep["m_t"][:n] >= self._sleep_start) & (ep["m"][:n] >= self.sleep_release))
+        if len(cand) == 0:
+            return
+        cnt = np.bincount(lab[lab >= 0], minlength=self.C)
+        out = []
+        for j in cand[np.argsort(-ep["m"][cand], kind="stable")]:   # primero lo mejor consolidado
+            c = int(lab[j])
+            if c >= 0 and cnt[c] > self.sleep_keep:
+                cnt[c] -= 1; out.append(int(j))
+        for j in sorted(out, reverse=True):                   # descendente: seguro con swap-remove
+            store.layer.remove(j)
+        self.released += len(out)
+
+    def sleep(self, replays: int | None = None) -> int:
+        """Duerme ahora, de un bloque (p. ej. entre sesiones): `replays` repasos (por
+        defecto `sleep_replays`) y después renormalización, poda y liberación."""
+        self._start_sleep(self.sleep_replays_n if replays is None else replays)
+        return self._idle_run(None)
+
+    def idle(self, budget: int = 1) -> int:
+        """Entre consultas: avanza a lo sumo `budget` repasos del sueño pendiente (o lo
+        empieza si corresponde). No toca lo necesario para aprender la última entrada."""
+        if not self.sleeping and not (self.sleep_replays_n > 0 and self._sleep_due()):
+            return 0
+        if not self.sleeping:
+            self._start_sleep(self.sleep_replays_n)
+        return self._idle_run(budget)
+
+    def _idle_run(self, budget):
+        caches = [a._cache for a in self.areas]               # el repaso pisa la última codificación
+        k = self._sleep_tick(budget)
+        for a, c in zip(self.areas, caches):
+            a._cache = c
+        return k
 
     # ------------------------------------------------------------------ esquemas
     def _coverage(self) -> float:
@@ -648,7 +771,7 @@ class Cortex:
             return
         c = int(self.rng.choice(classes))
         j = int(self.rng.choice(np.flatnonzero(pref == c)))
-        self._replay_pattern(mem.episode(j), c, space)
+        self._replay_pattern(mem.episode(j), c, space, mem, j)
 
     def _reactivate(self, x, space: str):
         """Recuerdo denso `x` (espacio de la memoria) -> (volea normalizada de la proyección,
@@ -672,9 +795,10 @@ class Cortex:
         for a, X in zip(self.areas, codes):
             a.learn_readout(c, X)
 
-    def _replay_pattern(self, x, c: int, space: str):
+    def _replay_pattern(self, x, c: int, space: str, mem=None, j: int = -1):
         """Reactiva el recuerdo denso `x` (espacio de la memoria) y entrena la proyección
-        directa con la clase c, con el error completo."""
+        directa con la clase c, con el error completo. Con `mem` y `j`, anota en el
+        episodio el margen del sistema lento antes de aprender (lo usa el sueño)."""
         r = self._reactivate(x, space)
         if r is None:
             return
@@ -682,7 +806,10 @@ class Cortex:
         self._replay_local(c, codes)
         V = self.proj.potentials(idx, h)
         e = np.exp((V - V.max()) / self.temperature)
-        self.proj.learn(idx, h, c, p=e / e.sum(), replay=True)
+        q = e / e.sum()
+        if mem is not None and j >= 0 and mem.ep is not None:
+            self._note_margin(mem, j, q, c)
+        self.proj.learn(idx, h, c, p=q, replay=True)
         self.replays += 1
 
     def _contrast(self, x, c: int, space: str, rival: int):
@@ -708,6 +835,11 @@ class Cortex:
         q = np.zeros(self.C); q[pair] = e
         self._replay_local(c, codes)
         self.proj.learn(idx, h, c, p=q, replay=True)
+
+    def _note_margin(self, mem, j: int, q, c: int):
+        other = np.delete(q, c)
+        mem.ep["m"][j] = np.float32(q[c] - (other.max() if len(other) else 0.0))
+        mem.ep["m_t"][j] = self._steps
 
     # ------------------------------------------------------------------ autoexamen espaciado
     def _pick_scheduled(self, mem, lab):
@@ -759,6 +891,7 @@ class Cortex:
         e = np.exp((V - V.max()) / self.temperature); q = e / e.sum()
         other = np.delete(q, c)
         passed = int(np.argmax(q)) == c and q[c] - (other.max() if len(other) else 0.0) > self.active_margin
+        self._note_margin(mem, j, q, c)
         self.tests += 1
         if not passed:
             self.test_errors += 1
@@ -861,7 +994,8 @@ class Cortex:
                      + sum(h["neurons"] for h in heads) * self.C
                      + (self.proj.n * self.C if self.proj is not None else 0),
             replays=self.replays, recalls=self.recalls, assimilated=self.assimilated,
-            tests=self.tests,
+            tests=self.tests, sleeps=self.sleeps, sleep_replays=self.sleep_replays,
+            released=self.released,
         )
 
     def cost(self) -> dict:
