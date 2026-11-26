@@ -29,13 +29,18 @@ Pruebas (cada corrida, una semilla, < 10 minutos en un núcleo):
               para romperlo sobre lo ya entrenado: ruido gaussiano en las imágenes,
               dígitos tipográficos (un estilo que la percepción nunca vio) y números más
               largos que en el entrenamiento.
-  escalera    L0-L2 desde cero (ver exp_integration.py): base / H / cred+H / cred2+H.
-  conjunta    L3 desde cero (suma completa): base / H / cred+H / cred2+H.
+  escalera    L0-L2 desde cero (ver exp_integration.py): base / H / credU+H / cred2+H.
+  conjunta    L3 desde cero (suma completa): base / H / credU+H / cred2+H.
+              (H: homeostasis de las salidas de la percepción; credU: todas las
+              alternativas y basta con una sola explicación, aunque otras no se conozcan.)
   ligadura    vista débil, Thinker aprendiendo sobre lo percibido: base / conf /
               confcos / cred / cred2 / confcos+cred2.
   interf      4b: el Thinker que sabía sumar sigue aprendiendo sobre la vista débil;
               se lo vuelve a medir con símbolos perfectos. Control (sigue con oráculo) /
               base / conf / confcos / cred2 / confcos+cred2.
+  estilo      adaptación sin etiquetas a dígitos tipográficos: la percepción (MNIST)
+              recibe sólo el crédito del Thinker que ya sabe sumar. Control (nadie
+              aprende) / refuerzo +-1 de la ronda 1 / cred2 / cred.
   resumen     results/integracion2_resumen.csv
 
   python experiments/exp_integration2.py <prueba> [--seed S] [--variante V] [--rapida]
@@ -128,6 +133,7 @@ def _credito(th, per, imgs, offs, digitos, st):
     per.ensenar(imgs[slot], s)
     st["creditos"] = st.get("creditos", 0) + 1
     st["creditos_bien"] = st.get("creditos_bien", 0) + int(s == int(digitos[slot]))
+    st.setdefault("pares", []).append((int(digitos[slot]), s))
 
 
 # ====================================================================== suma
@@ -305,24 +311,33 @@ def prueba_suma(seed, tam, out, variante):
 
 # ====================================================================== acarreo
 def prueba_acarreo(seed, tam, out, variante=None):
-    """Suma decimal con símbolos perfectos (oráculo): registros y cómo empiezan."""
+    """Suma decimal con símbolos perfectos (oráculo): registros y cómo empiezan. Variante
+    "largo": el doble de episodios (12000) para las configuraciones que importan."""
     datos = ei.Digitos(tam["n_pre"])
-    for R, reset in ((1, "cero"), (1, "escrito"), (2, "cero"), (2, "escrito")):
+    largo = variante == "largo"
+    configs = ((1, "cero"), (1, "escrito"), (2, "cero")) if largo else \
+        ((1, "cero"), (1, "escrito"), (2, "cero"), (2, "escrito"))
+    ep = tam["ep_suma"] * (2 if largo else 1)
+    for R, reset in configs:
         rng = np.random.default_rng(1000 + seed)
         th = thinker_suma(seed, R, reset)
         t0 = time.time()
-        entrenar_suma(th, Oraculo(), datos, rng, tam["ep_suma"], {}, {})
+        entrenar_suma(th, Oraculo(), datos, rng, ep, {}, {})
+        var = f"R={R} {reset}" + (f" ({ep} episodios)" if largo else "")
         for n in (1, 3, 8):
             m = evaluar_suma(th, Oraculo(), datos, rng, n, tam["ep_eval"])
-            out("acarreo", f"R={R} {reset}", f"exacta n={n}", m["exacta"], 10.0 ** -(n + 1), "azar")
-            out("acarreo", f"R={R} {reset}", f"columna n={n}", m["columna"], 0.1, "azar")
-        out("acarreo", f"R={R} {reset}", "segundos", round(time.time() - t0, 1), "", "")
+            out("acarreo", var, f"exacta n={n}", m["exacta"], 10.0 ** -(n + 1), "azar")
+            out("acarreo", var, f"columna n={n}", m["columna"], 0.1, "azar")
+        out("acarreo", var, "segundos", round(time.time() - t0, 1), "", "")
 
 
 # ====================================================================== escalera y L3
+# credU: todas las alternativas, basta una sola explicación (explain="unica");
+# cred2: sólo la segunda opción de la percepción, con las demás explicaciones descartadas
+# por conocimiento establecido (explain="refutadas", el valor por defecto del Thinker)
 VARIANTES_CONJ = {"base": dict(h=False, cred=False, k=10), "H": dict(h=True, cred=False, k=10),
-                  "cred+H": dict(h=True, cred=True, k=10), "cred2+H": dict(h=True, cred=True, k=2),
-                  "cred": dict(h=False, cred=True, k=10)}
+                  "credU+H": dict(h=True, cred=True, k=10, explain="unica"),
+                  "cred2+H": dict(h=True, cred=True, k=2), "cred+H": dict(h=True, cred=True, k=10)}
 
 
 def episodio_escalera(nivel, th, per, datos, split, rng, learn, cfg, st):
@@ -364,7 +379,8 @@ def prueba_conjunta(seed, tam, out, variante, niveles):
         v = ei.Vista(seed, homeostasis=tam["homeostasis"] if cfg["h"] else 0.0)
         per = Percepcion(v, k=cfg["k"])
         th = Thinker(10 if nivel == "L0" else (20 if nivel in ("L1", "L2") else 21),
-                     registers=2 if nivel == "L3" else 0, seed=seed)
+                     registers=2 if nivel == "L3" else 0, seed=seed,
+                     explain=cfg.get("explain", "refutadas"))
         st: dict = {}
         scfg = dict(cred=cfg["cred"], refuerzo=True)
         t0 = time.time(); win = []
@@ -385,6 +401,15 @@ def prueba_conjunta(seed, tam, out, variante, niveles):
         out("conjunta", var, "pureza percepción (test)", pz, 0.1, "azar")
         out("conjunta", var, "símbolos distintos usados", int((conf.sum(0) > 0).sum()), 10, "")
         out("conjunta", var, "créditos a la percepción", st.get("creditos", 0), "", "")
+        if st.get("pares"):
+            from scipy.optimize import linear_sum_assignment
+            r, c = linear_sum_assignment(-conf)
+            codigo = dict(zip(r.tolist(), c.tolist()))       # dígito -> símbolo de la percepción al final
+            ok = [codigo[d] == s for d, s in st["pares"]]
+            out("conjunta", var, "precisión del crédito (código final)", float(np.mean(ok)), 0.1,
+                "símbolo enseñado == símbolo final del dígito real")
+            mitad = len(ok) // 2
+            out("conjunta", var, "precisión del crédito, 2.a mitad", float(np.mean(ok[mitad:])), 0.1, "")
         ei.plasticidad(th, False)
         if nivel == "L3":
             m = evaluar_suma(th, Percepcion(v), datos, rng, 3, tam["ep_eval"])
@@ -505,6 +530,9 @@ def prueba_interf(seed, tam, out, variante=None):
     entrenar_suma(th0, Oraculo(), datos, rng, tam["ep_suma"], {}, {})
     m0 = evaluar_suma(th0, Oraculo(), datos, rng, 3, tam["ep_eval"])
     out("interf", "4b", "Thinker antes: exacta n=3 con oráculo", m0["exacta"], "", "")
+    Xt, yt = ei.muestra_test(datos, np.random.default_rng(60 + seed), tam["n_test_interf"])
+    p0 = float(np.trace(debil.confusion(Xt, yt)) / len(yt))
+    out("interf", "4b", "vista débil (test)", p0, "", "depth1")
     for var, cfg in VARIANTES_INTERF.items():
         th = copy.deepcopy(th0)
         st: dict = {}
@@ -519,16 +547,73 @@ def prueba_interf(seed, tam, out, variante=None):
         out("interf", f"4b {var}", "Thinker después: columna n=3 con oráculo", m["columna"], m0["columna"], "antes")
         out("interf", f"4b {var}", "abstenciones", th.abstained, "", "")
         out("interf", f"4b {var}", "créditos a la percepción", st.get("creditos", 0), "", "")
+        if st.get("creditos"):
+            out("interf", f"4b {var}", "precisión del crédito", st["creditos_bien"] / st["creditos"], "",
+                "símbolo enseñado == dígito real")
+            out("interf", f"4b {var}", "vista débil después (test)",
+                float(np.trace(per.v.confusion(Xt, yt)) / len(yt)), p0, "antes")
+
+
+# ====================================================================== adaptación a un estilo no visto
+VARIANTES_ESTILO = {"control: nadie aprende": None, "refuerzo (ronda 1)": dict(refuerzo=True),
+                    "cred2": dict(cred=True, k=2), "cred": dict(cred=True, k=10)}
+
+
+def prueba_estilo(seed, tam, out, variante=None):
+    """¿El razonamiento puede enseñarle a la percepción un estilo que nunca vio, sin
+    etiquetas? Percepción entrenada con MNIST manuscrito y Thinker que ya sabe sumar
+    (con símbolos perfectos) reciben sumas cuyos dígitos son tipográficos. La única señal
+    es el dígito de cada columna. Se mide la percepción sobre otros ejemplares
+    tipográficos (mismas 10 tipografías, otra rotación y tamaño), sobre MNIST (olvido) y
+    la suma con símbolos perfectos (si el Thinker se degradó)."""
+    rng = np.random.default_rng(8000 + seed)
+    datos = ei.Digitos(tam["n_pre"])
+    tipo_tr = digitos_tipograficos(tam["n_tipo_tr"], 800 + seed)
+    tipo_te = digitos_tipograficos(tam["n_tipo"], 900 + seed)
+    if tipo_tr is None:
+        return
+    pool = _Pool(*tipo_tr)
+    Xt, yt = ei.muestra_test(datos, rng, tam["n_test_interf"])
+    base = ei.vista_entrenada(datos, seed, tam["n_pre"])
+    th0 = thinker_suma(seed)
+    entrenar_suma(th0, Oraculo(), datos, rng, tam["ep_suma"], {}, {})
+    m0 = evaluar_suma(th0, Oraculo(), datos, rng, 3, tam["ep_eval"])
+    acc = lambda v, X, y: float(np.trace(v.confusion(X, y)) / len(y))  # noqa: E731
+    a_tipo0, a_mnist0 = acc(base, *tipo_te), acc(base, Xt, yt)
+    out("estilo", "antes", "vista: tipográficos (test)", a_tipo0, "", "nunca vio este estilo")
+    out("estilo", "antes", "vista: MNIST (test)", a_mnist0, "", "")
+    out("estilo", "antes", "suma exacta n=3 con oráculo", m0["exacta"], "", "")
+    for var, cfg in VARIANTES_ESTILO.items():
+        v = copy.deepcopy(base)
+        th = copy.deepcopy(th0)
+        per = Percepcion(v, k=(cfg or {}).get("k", 2))
+        st: dict = {}
+        t0 = time.time()
+        if cfg is not None:
+            entrenar_suma(th, per, pool, rng, tam["ep_estilo"], cfg, st)
+        out("estilo", var, "vista: tipográficos (test)", acc(v, *tipo_te), a_tipo0, "antes")
+        out("estilo", var, "vista: MNIST (test)", acc(v, Xt, yt), a_mnist0, "antes")
+        m = evaluar_suma(th, per, _Pool(*tipo_te), rng, 3, tam["ep_romper"])
+        out("estilo", var, "suma exacta n=3 con tipográficos (test)", m["exacta"],
+            ei.cota_independiente(m["imagen"], 6, m0["exacta"]), "cota indep. p^6*oráculo")
+        m = evaluar_suma(th, Oraculo(), datos, rng, 3, tam["ep_eval"])
+        out("estilo", var, "suma exacta n=3 con oráculo", m["exacta"], m0["exacta"], "antes")
+        out("estilo", var, "créditos a la percepción", st.get("creditos", 0), "", "")
+        if st.get("creditos"):
+            out("estilo", var, "precisión del crédito", st["creditos_bien"] / st["creditos"], "", "")
+        out("estilo", var, "segundos", round(time.time() - t0, 1), "", "")
 
 
 # ====================================================================== principal
 TAM = dict(
     completa=dict(n_pre=10000, n_debil=1000, n_test=5000, n_test_pureza=2000, ep_suma=6000, ep_eval=500,
                   ep_conjunta=4000, cada=1000, ep_ligadura=3000, ep_interf=2000, homeostasis=0.02,
-                  duda=0.2, n_cal=500, sigmas=(0.5, 0.7), n_tipo=60, ep_romper=300, n_largos=(1, 3, 6, 10)),
+                  duda=0.2, n_cal=500, sigmas=(0.5, 0.7), n_tipo=60, ep_romper=300, n_largos=(1, 3, 6, 10),
+                  n_tipo_tr=200, ep_estilo=1500, n_test_interf=2000),
     rapida=dict(n_pre=300, n_debil=200, n_test=200, n_test_pureza=100, ep_suma=40, ep_eval=10,
                 ep_conjunta=20, cada=10, ep_ligadura=30, ep_interf=20, homeostasis=0.02,
-                duda=0.2, n_cal=50, sigmas=(0.5,), n_tipo=3, ep_romper=5, n_largos=(1, 3, 6)),
+                duda=0.2, n_cal=50, sigmas=(0.5,), n_tipo=3, ep_romper=5, n_largos=(1, 3, 6),
+                n_tipo_tr=3, ep_estilo=10, n_test_interf=50),
 )
 PRUEBAS = dict(
     acarreo=prueba_acarreo,
@@ -537,6 +622,7 @@ PRUEBAS = dict(
     conjunta=lambda s, t, o, v: prueba_conjunta(s, t, o, v, ("L3",)),
     ligadura=prueba_ligadura,
     interf=prueba_interf,
+    estilo=prueba_estilo,
 )
 DEFECTO = dict(suma="base", escalera="base", conjunta="base")
 

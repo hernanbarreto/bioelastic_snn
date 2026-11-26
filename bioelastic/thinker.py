@@ -81,10 +81,12 @@ Aprendizaje, todo local:
     ni modelo interno). Ante un error, la búsqueda retrospectiva también pregunta qué
     símbolo en cada ranura de la pregunta (entre los alternativos que propone la
     percepción, `feedback(alternatives=...)`) o qué valor de cada registro habría llevado
-    al objetivo con el conocimiento actual. Si hay una sola explicación y es una ranura,
-    el error es de percepción: `input_credit` dice qué símbolo debió percibirse (para
-    enseñárselo a la percepción) y el Thinker no aprende de esa respuesta. Si es un
-    registro, se corrige sólo el escritor de registros, no el conocimiento.
+    al objetivo con el conocimiento actual. Si hay una sola explicación (y, con
+    `explain="refutadas"`, todas las demás alternativas quedan descartadas por conocimiento
+    establecido: con conocimiento incompleto, «única» puede ser sólo «la única que conozco»)
+    y es una ranura, el error es de percepción: `input_credit` dice qué símbolo debió
+    percibirse (para enseñárselo a la percepción) y el Thinker no aprende de esa
+    respuesta. Si es un registro, se corrige sólo el escritor de registros.
   * Registros al empezar un episodio (`reg_reset`). "cero" (versión anterior): valen 0,
     que es un valor con significado; si el control termina usando el 0 para «me llevo
     una», la primera columna (sin acarreo, registro en 0) contradice esa convención y el
@@ -262,7 +264,8 @@ class Thinker:
                  replacing: bool = True,
                  decay: float = 1e-2, mixed: bool | str = "solo", clock: bool = False,
                  lookahead: bool = False, search: str = "guiada", credit: str = "estricto",
-                 doubt: float = 0.0, reg_credit: str = "simple", reg_reset: str = "cero",
+                 doubt: float = 0.0, explain: str = "refutadas", reg_credit: str = "simple",
+                 reg_reset: str = "cero",
                  seed: int = 0, say: dict | None = None):
         N = self.N = int(n_symbols)
         self.R = int(registers)
@@ -306,6 +309,10 @@ class Thinker:
         # intermedios, esos episodios no escriben conocimiento (se aprende más lento).
         self.credit = str(credit)
         self.doubt = float(doubt)              # certeza perceptiva mínima para aprender de una respuesta
+        # explicación perceptiva de un error: "refutadas" (una sola alternativa lleva al
+        # objetivo y todas las demás están descartadas por conocimiento establecido) o
+        # "unica" (basta con que una sola lleve al objetivo, aunque otras no se conozcan)
+        self.explain = str(explain)
         self.reg_credit = str(reg_credit)      # "simple" o "conocido" (ver docstring)
         self.reg_reset = str(reg_reset)        # "cero" o "silencio" (ver docstring)
         self.abstained = 0                     # respuestas de las que no aprendió por duda perceptiva
@@ -962,8 +969,8 @@ class Thinker:
             paths = self._search(target)
             self._cached = [paths]
             if paths is None:                              # no fue de estrategia: ¿fue lo percibido?
-                expl = self._explain_inputs(target, alternatives)
-                if len(expl) == 1:
+                expl, unknown = self._explain_inputs(target, alternatives)
+                if len(expl) == 1 and (self.explain == "unica" or unknown == 0):
                     slot, sym = expl[0]
                     if slot >= 0:
                         self.input_credit = [(slot, sym)]
@@ -981,10 +988,19 @@ class Thinker:
         """Explicaciones de un error con el conocimiento actual (búsqueda retrospectiva sin
         efectos, sólo con conocimiento establecido): que una ranura de la pregunta fuera
         otro de sus símbolos alternativos, o que un registro leído tuviera el otro valor.
-        Devuelve [(ranura, símbolo)]; un registro b va como ranura -1 - b."""
+        Devuelve ([(ranura, símbolo)], cuántas alternativas quedaron sin descartar: ni
+        llevan al objetivo ni el conocimiento establecido dice a qué otra cosa llevarían).
+        Un registro b va como ranura -1 - b."""
         items, cue, reg, given, events = self._episode()
         first = list(items[0])
-        found = []
+        found = []; unknown = 0
+
+        def probar(ep, cand):
+            nonlocal unknown
+            if self._search(target, start=ep) is not None:
+                found.append(cand)
+            elif self.explain == "refutadas" and self._search(target, start=ep, refute=True) is None:
+                unknown += 1
         for i, alts in enumerate(alternatives):
             if i >= len(first):
                 break
@@ -993,16 +1009,13 @@ class Thinker:
                 if sym in first:                           # lo percibido (o una ranura repetida)
                     continue
                 alt = list(first); alt[i] = sym
-                ep = ((tuple(alt),) + tuple(items[1:]), cue, reg, given, events)
-                if self._search(target, start=ep) is not None:
-                    found.append((i, sym))
+                probar(((tuple(alt),) + tuple(items[1:]), cue, reg, given, events), (i, sym))
         for b in range(self.R):                            # explicación rival: el registro
             if reg[b] < 0:
                 continue
             r2 = reg.copy(); r2[b] = 1 - r2[b]
-            if self._search(target, start=(items, cue, r2, given, events)) is not None:
-                found.append((-1 - b, int(r2[b])))
-        return found
+            probar((items, cue, r2, given, events), (-1 - b, int(r2[b])))
+        return found, unknown
 
     def _abstain(self):
         """No aprende de la última respuesta: se descartan las trazas (TD no la cierra ni
@@ -1088,7 +1101,7 @@ class Thinker:
         p = net.readout.probs(net.readout.potentials(v.winners, net._votes(v)))
         return [(int(o),) for o in np.flatnonzero(p >= self.branch)]
 
-    def _search(self, target: int, start=None, over=None):
+    def _search(self, target: int, start=None, over=None, refute: bool = False):
         """Busca, con el conocimiento actual (según el modelo interno) y sin efectos, una
         secuencia de pasos (compuerta incluida) que habría llevado al objetivo. Devuelve
         una lista de caminos [(estado, permitidas, acción)], o None si no encuentra ninguno.
@@ -1100,7 +1113,9 @@ class Thinker:
         "amplitud": la búsqueda exhaustiva por niveles de la versión anterior.
 
         `start`: un episodio guardado (si no, la última pregunta). `over`: hipótesis sobre
-        el conocimiento que se dan por ciertas (ver `_adjudicate`).
+        el conocimiento que se dan por ciertas (ver `_adjudicate`). `refute`: busca, en
+        cambio, un camino a una respuesta establecida *distinta* del objetivo (para saber
+        si una explicación quedó descartada o sólo no se conoce).
 
         Sólo cuenta conocimiento establecido: un acierto por casualidad no prueba que el
         error fue de estrategia."""
@@ -1110,7 +1125,7 @@ class Thinker:
         else:
             rec = lambda f: _NONE  # noqa: E731
         if self.search == "amplitud":
-            return self._search_bfs(target, items, cue, reg, given, rec, over)
+            return self._search_bfs(target, items, cue, reg, given, rec, over, refute)
         tie = itertools.count()
         # nodo: (costo, desempate, tipo, foco, sostén, recuerdo, última, reloj/ítem, camino)
         if self.gate:
@@ -1153,7 +1168,7 @@ class Thinker:
                         heapq.heappush(heap, (cst, next(tie), "t", f, hold, rec(f), a, clock + 1, step))
                 else:
                     out, sure = self._outcome(a, focus, recall, c, s, over)
-                    if sure and out == target:
+                    if sure and (out != target if refute else out == target):
                         if self.reliability:
                             ok, n_try = self.rel.get((s[0].tobytes(), a), (0, 0))
                             cst -= self.reliability * float(np.log((ok + 1.0) / (n_try + 2.0)))
@@ -1174,7 +1189,7 @@ class Thinker:
                 return int(a)
         return None
 
-    def _search_bfs(self, target, items, cue, reg, given, rec, over):
+    def _search_bfs(self, target, items, cue, reg, given, rec, over, refute=False):
         if self.gate:                                       # la compuerta, enumerada
             roots = [((), frozenset(), -1, [])]
             for i, it in enumerate(items):
@@ -1206,7 +1221,7 @@ class Thinker:
                             nxt.append((f, hold, rec(f), a, step))
                     else:
                         out, sure = self._outcome(a, focus, recall, c, s, over)
-                        if sure and out == target:
+                        if sure and (out != target if refute else out == target):
                             found.append(step)
             if found:
                 return found

@@ -439,6 +439,22 @@ def test_input_credit_names_the_misperceived_slot_and_spares_knowledge():
     assert th.say.peek((np.array([8, 13]), np.ones(2, dtype=np.float32))) == 1
 
 
+def test_an_explanation_is_unique_only_if_the_others_are_ruled_out():
+    """Si una alternativa no se conoce (nunca vio (5, 13)), «única» sería sólo «la única
+    que conozco»: con `explain="refutadas"` (por defecto) no hay crédito; con "unica", sí."""
+    for explain, credit in (("refutadas", []), ("unica", [(0, 3)])):
+        th = Thinker(20, seed=0, explain=explain)
+        rng = np.random.default_rng(0)
+        for _ in range(3):
+            for i in rng.permutation(100):
+                a, b = divmod(int(i), 10)
+                if a != 5:
+                    th.reset(); th.answer((a, 10 + b)); th.feedback(target=(a + b) % 10)
+        th.reset(); th.answer((8, 13))
+        th.feedback(target=6, alternatives=[[3, 5], []])
+        assert th.input_credit == credit
+
+
 def test_two_explanations_give_no_input_credit():
     """Con todas las alternativas en las dos ranuras, cambiar cualquiera de las dos explica
     el error: no hay una sola explicación y el Thinker aprende como siempre."""
