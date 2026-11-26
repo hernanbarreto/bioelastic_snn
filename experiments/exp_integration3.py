@@ -326,8 +326,17 @@ class CreditoCadena:
     "aprendida": la del razonador `ChainRule`, que se aprende a la vez (abducción blanda,
     como Abductive Learning)."""
 
-    def __init__(self, regla="conocida", modo="blando", gamma=1.0, compuerta_ne=None, equiparticion=0.0, seed=0):
+    def __init__(self, regla="conocida", modo="blando", gamma=1.0, compuerta_ne=None, equiparticion=0.0,
+                 fiabilidad=None, seed=0):
         self.regla, self.modo, self.gamma = regla, modo, float(gamma)
+        # fiabilidad (sólo con la regla conocida, donde los símbolos tienen significado
+        # fijo): gamma = r^k con r = acierto por columna del razonamiento sobre lo percibido,
+        # por encima del azar; dict(k, rate, lo). Ver exp_mnist_addition.Fiabilidad.
+        self.fiab = None
+        if fiabilidad is not None:
+            from bioelastic.posterior import ReliabilityGate
+            self.fiab = ReliabilityGate(**dict(dict(chance=0.1, k=2.0, rate=0.01, lo=0.02), **fiabilidad))
+            self.gamma = self.fiab.gamma
         from bioelastic.posterior import Equipartition
         # prior de equipartición sobre los símbolos (contra fusiones de conceptos)
         self.eq = Equipartition(10, equiparticion) if equiparticion > 0 else None
@@ -342,6 +351,8 @@ class CreditoCadena:
         self.cols = []
 
     def columna(self, th, per, imgs, syms, priors, y, alts, st, digitos):
+        if self.fiab is not None:
+            self.fiab.update(th._out == y)
         th.feedback(target=y)
         self.cols.append((imgs, priors, int(y), digitos, syms))
 
@@ -361,6 +372,9 @@ class CreditoCadena:
             qa, qb, _, _, lik = th.learn(pa, pb, digs, int(y), self.gamma)
         self.n["episodios"] += 1
         self.n["verosimilitud_media"] += (lik - self.n["verosimilitud_media"]) / self.n["episodios"]
+        if self.fiab is not None:
+            self.gamma = self.fiab.gamma
+            self.n["gamma"] = self.gamma
         per = self._per
         if self.compuerta_ne is not None and getattr(th, "unexpected_uncertainty", 0.0) > self.compuerta_ne:
             self.n["compuerta"] = self.n.get("compuerta", 0) + 1
@@ -789,6 +803,8 @@ VARIANTES_F1C = {   # h = 0: sin homeostasis de salida (elegido en validación c
     "aprendida_blando": dict(thinker="cadena", h=0.0, cadena=dict(regla="aprendida", modo="blando")),
     # + prior de equipartición (beta = 1, elegido en el modelo tabular: 4/4 semillas sin fusiones)
     "aprendida_eq": dict(thinker="cadena", h=0.0, cadena=dict(regla="aprendida", modo="muestreo", equiparticion=1.0)),
+    # regla conocida con la evidencia perceptiva pesada por su fiabilidad medida (contra los atajos)
+    "conocida_fiab": dict(thinker="oraculo", h=0.0, cadena=dict(regla="conocida", modo="blando", fiabilidad=dict())),
 }
 
 

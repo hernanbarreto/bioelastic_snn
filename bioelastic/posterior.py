@@ -481,6 +481,42 @@ def _prior2(x, z, gamma=1.0):
     return (x / x.sum())[:, None] * (z / z.sum())[None, :]
 
 
+class ReliabilityGate:
+    """Cuánto pesa la evidencia perceptiva en el posterior, según cuánto demostró acertar.
+
+    Con la regla conocida los símbolos tienen un significado fijo, y un posterior que usa
+    la propia percepción como prior puede auto-confirmar un código equivocado pero
+    localmente consistente (atajo de razonamiento: p. ej. la mitad de los ejemplares de
+    cada dígito vistos como d+1 y la otra mitad como d-1; las sumas de dos imágenes
+    aciertan la mitad de las veces y el posterior sólo sabe cambiarles el signo). El
+    compromiso ocurre en las primeras decenas de ejemplos, cuando la percepción es casi
+    uniforme. La compuerta lleva un promedio móvil r de un desenlace observable (¿la
+    predicción hecha con lo más probable para la percepción acertó?) y devuelve
+
+        gamma = clip(((r - chance) / (1 - chance)) ** k, lo, hi)
+
+    el exponente del prior perceptivo en el posterior (`joint_posterior(gamma=...)`,
+    `chain_posterior(gamma=...)`). Mientras la percepción no demuestra que acierta casi no
+    pesa (los objetivos salen de la regla y la respuesta: insesgados); un error sostenido
+    la vuelve a bajar y reabre el código en vez de consolidarlo. Es incertidumbre esperada
+    (ACh) sobre el canal perceptivo, medida con un desenlace que no pasa por su prior."""
+
+    def __init__(self, chance: float = 0.0, k: float = 2.0, rate: float = 0.01, lo: float = 0.02,
+                 hi: float = 1.0):
+        self.chance, self.k, self.rate = float(chance), float(k), float(rate)
+        self.lo, self.hi = float(lo), float(hi)
+        self.r = float(chance)
+        self.gamma = self.lo
+
+    def update(self, ok: bool) -> float:
+        """Registra un desenlace y devuelve el gamma que valía antes de verlo."""
+        g = self.gamma
+        self.r += self.rate * (float(ok) - self.r)
+        rel = max(self.r - self.chance, 0.0) / max(1.0 - self.chance, 1e-9)
+        self.gamma = float(np.clip(rel ** self.k, self.lo, self.hi))
+        return g
+
+
 class Equipartition:
     """Prior de equipartición sobre los símbolos (regularización de la entropía de la
     distribución marginal de conceptos: Marconato et al., 2023, contra los atajos de
@@ -509,4 +545,4 @@ def entropy(p: np.ndarray) -> float:
 
 __all__ = ["CoOccurrence", "PosteriorCredit", "top_candidates", "joint_posterior",
            "status_likelihood", "predictive_conflict", "state_key", "gamma_for", "entropy", "product",
-           "known_sum_factor", "chain_posterior", "ChainRule", "Equipartition"]
+           "known_sum_factor", "chain_posterior", "ChainRule", "Equipartition", "ReliabilityGate"]

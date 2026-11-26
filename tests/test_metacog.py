@@ -381,3 +381,17 @@ def test_equiparticion_favorece_los_simbolos_subusados():
         eq(np.array([0.9, 0.05, 0.05]))                       # el símbolo 0 acapara
     q = eq(np.array([1 / 3, 1 / 3, 1 / 3]))
     assert q[0] < 1 / 3 < q[1]
+
+
+def test_compuerta_de_fiabilidad_sube_con_los_aciertos_y_baja_con_el_error_sostenido():
+    from bioelastic.posterior import ReliabilityGate
+    g = ReliabilityGate(chance=0.067, k=2.0, rate=0.05, lo=0.02)
+    assert g.update(False) == 0.02                              # sin evidencia: casi no pesa
+    for _ in range(200):
+        g.update(True)
+    alto = g.gamma
+    assert alto > 0.9
+    rng = np.random.default_rng(0)
+    for _ in range(300):                                        # el código «acierta la mitad»
+        g.update(rng.random() < 0.5)
+    assert 0.1 < g.gamma < 0.45 < alto

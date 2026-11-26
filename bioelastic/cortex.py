@@ -471,12 +471,23 @@ class Cortex:
     def _modulated(self) -> bool:
         return bool(self.metacog or self.hypercorrection > 0.0 or self.neuromod)
 
-    def teach(self, target: int | None = None, soft=None):
+    def labilize(self, fraction: float):
+        """Reconsolidación: las lecturas de las áreas de asociación pierden una fracción de
+        su consolidación acumulada (el contador que frena sus cambios) y vuelven a ser
+        plásticas. Para cuando el sistema sabe, por un desenlace que sí observa, que su
+        código actual no es fiable: lo consolidado en esas condiciones no debe protegerse."""
+        f = np.float32(1.0 - min(max(float(fraction), 0.0), 1.0))
+        for h in self.heads:
+            h.readout.count[:h.readout.n] *= f
+
+    def teach(self, target: int | None = None, soft=None, gain: float = 1.0):
         """Aprende de la última decisión con el objetivo `target`, o con un objetivo
         blando `soft` (distribución sobre las salidas, p. ej. el posterior que calcula el
         razonamiento): cada regla local usa soft - p como tercer factor donde usaba
         1[objetivo] - p (lecturas de las áreas de asociación, proyección, lectores locales
-        y árbitro). La estructura (neuronas nuevas, STDP) sigue a la clase más probable."""
+        y árbitro). La estructura (neuronas nuevas, STDP) sigue a la clase más probable.
+        `gain`: ganancia escalar de la tasa de las lecturas para esta vez (neuromodulador
+        externo: p. ej. más plasticidad mientras el código no es fiable)."""
         if soft is not None:
             soft = np.asarray(soft, dtype=np.float64)
             soft = soft / soft.sum()
@@ -485,10 +496,12 @@ class Cortex:
         self._soft = soft
         try:
             if self._modulated():
-                g = self._outcome(self.pred == int(target))
+                g = self._outcome(self.pred == int(target)) * float(gain)
                 grow = bool(self.neuromod and self.neuromod["grow"]
                             and self.unexpected_uncertainty > self.neuromod["ne_reset"])
                 return self._gained(g, lambda: self._teach(target), grow)
+            if gain != 1.0:
+                return self._gained(float(gain), lambda: self._teach(target))
             return self._teach(target)
         finally:
             self._soft = None
