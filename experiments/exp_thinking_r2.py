@@ -217,10 +217,10 @@ def main():
             kw = {"modelo": dict(model="perfecto"), "repeticion": dict(replay=0),
                   "consolidacion": dict(consolidate="paciencia"), "confianza": dict(confidence=False),
                   "reactivo": dict(reactive=False), "trazas": dict(replacing=False),
-                  "credito": dict(credit="estricto")}[piece]
+                  "credito": dict(credit="eslabon")}[piece]
             label = {"modelo": "modelo perfecto (la red misma)",
                      "trazas": "trazas acumulativas",
-                     "credito": "crédito estricto (nada al eslabón intermedio)"}.get(piece, "sin " + piece)
+                     "credito": "crédito al eslabón intermedio (ronda 1)"}.get(piece, "sin " + piece)
             t4(log, label, kw)
             blocks(log, label, W, kw, reverse=True)
             c5_single(log, label, W, dict(kw, gate=True), test="C5 transitiva sola, sostén aprendido")

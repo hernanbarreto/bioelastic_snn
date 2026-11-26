@@ -215,7 +215,7 @@ class Thinker:
                  model: str = "aprendido", confidence: bool = True, reactive: bool = True,
                  replacing: bool = True,
                  decay: float = 1e-2, mixed: bool | str = "solo", clock: bool = False,
-                 lookahead: bool = False, search: str = "guiada", credit: str = "eslabon",
+                 lookahead: bool = False, search: str = "guiada", credit: str = "estricto",
                  seed: int = 0, say: dict | None = None):
         N = self.N = int(n_symbols)
         self.R = int(registers)
@@ -250,13 +250,13 @@ class Thinker:
         self.hindsight = bool(hindsight)
         self.decay = float(decay)              # contracción L1 del control: gana la explicación más simple
         self.search = str(search)              # "guiada" (mejor primero, acotada) o "amplitud" (exhaustiva)
-        # a quién se enseña si falta conocimiento: "eslabon" (al primer paso que se apoyó en
-        # conocimiento no establecido, aunque sea intermedio, con el objetivo final),
-        # "estricto" (ídem, pero si ese paso es intermedio no se enseña nada: el objetivo
-        # final no dice qué debía dar un eslabón intermedio) o "percepcion" (siempre a lo
-        # percibido). "estricto" evita las marcas basura que en orden adverso rompieron f en
-        # 1 de 5 semillas, pero si el control empieza por pasos intermedios no aprende nada
-        # (la transitiva de test_thinker cae a 0.44); por eso no es el valor por defecto.
+        # a quién se enseña si falta conocimiento: "estricto" (al primer paso que se apoyó en
+        # conocimiento no establecido; si ese paso es intermedio no se enseña nada: el
+        # objetivo final no dice qué debía dar un eslabón intermedio), "eslabon" (ronda 1:
+        # el eslabón intermedio aprende el objetivo final) o "percepcion" (siempre a lo
+        # percibido). Con "eslabon", esas marcas basura rompían el orden adverso en 1-2 de 5
+        # semillas; con "estricto", 5 de 5 bien. Costo: si el control empieza por pasos
+        # intermedios, esos episodios no escriben conocimiento (se aprende más lento).
         self.credit = str(credit)
         self.gate = bool(gate)
         self.model = str(model)                # "aprendido" (SelfModel) o "perfecto" (ejecuta la red)

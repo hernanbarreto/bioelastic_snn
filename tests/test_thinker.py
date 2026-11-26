@@ -112,9 +112,14 @@ def test_inner_speech_composes_knowledge_on_unseen_inputs():
 def test_hindsight_blames_strategy_and_protects_knowledge():
     net = Thinker(16, n_cues=2, speak=True, seed=4)
     f = np.roll(np.arange(16), 3)
-    for x in range(16):                                    # conocimiento: f
-        for _ in range(3):
-            net.reset(); net.answer(x, cue=0); net.feedback(target=int(f[x]))
+    # conocimiento: f. Con crédito estricto, los episodios en que el control empezó por
+    # HABLAR no escriben nada (el objetivo final no dice qué debía dar el eslabón
+    # intermedio): con 3 repeticiones seguidas por símbolo sólo quedaba 1 de 16
+    # establecido; con 6 pasadas en orden al azar, los 16.
+    rng = np.random.default_rng(4)
+    for _ in range(6):
+        for x in rng.permutation(16):
+            net.reset(); net.answer(int(x), cue=0); net.feedback(target=int(f[x]))
     net.Wc[:] = 0.0                                        # control sin experiencia: dice directo
     before = net.blame.copy()
     net.reset(); out = net.answer(2, cue=1)                # estrategia ingenua para f(f(x))
