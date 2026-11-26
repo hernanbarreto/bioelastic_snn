@@ -6,14 +6,14 @@ mismo núcleo procesa imagen, voz, texto o sensores (sólo cambia el encoder). S
 corre un **Thinker**: un lazo de razonamiento sobre símbolos con memoria rápida, registros y
 aprendizaje por refuerzo.
 
-NumPy (y SciPy para el encoder de imagen). **143 tests**, incluidos tests de regresión
+NumPy (y SciPy para el encoder de imagen). **156 tests**, incluidos tests de regresión
 bit a bit. Todo lo que figura abajo está medido con los scripts de `experiments/`, y los CSV de
 cada corrida están en `results/`.
 
 > **Estado (v0.3-dev, noviembre 2026).** Este README separa lo **medido** de lo que sigue
 > siendo **hipótesis**. El objetivo del proyecto es encontrar dónde falla: la sección
 > [Dónde falla](#dónde-falla) importa tanto como los resultados.
-> Hay cuatro rondas en curso que implementan mecanismos del aprendizaje humano
+> Hay rondas en curso que implementan mecanismos del aprendizaje humano
 > (ver [En curso](#en-curso-mecanismos-del-aprendizaje-humano)).
 
 ## Arquitectura
@@ -50,7 +50,8 @@ flowchart LR
 | Láminas 6 y 1 (predicción descendente) | rama `agent/predictivo` | en curso |
 | Cingulado anterior (detección del propio error), ACh/NE | rama `integracion3` | en curso |
 | Consolidación en sueño, reconsolidación, esquemas | rama `agent/consolidacion` | en curso |
-| Aprender a aprender (prefrontal como meta-RL) | rama `agent/metaaprendizaje` | en curso |
+| Aprender a aprender (prefrontal como meta-RL) | `prev_io` del Thinker, `MetaThinker` | hecho (ver resultados) |
+| Mapa cognitivo recorrible en ambos sentidos | `back` del Thinker | hecho, con costo |
 | Cerebelo (69 de los 86 mil millones de neuronas) | — | no modelado |
 
 ## Resultados medidos
@@ -104,6 +105,26 @@ separación al reclutar, el resultado sobre todas las clases sube de 0.651 a **0
 ER-ACE con los mismos bytes (0.784). El pulóver, que antes se olvidaba por completo (~0.01), queda
 en 0.42.
 
+### Aprender a aprender (Thinker, 3 semillas)
+
+Problemas al estilo Harlow: en cada uno aparecen 2 objetos nunca vistos, uno premiado, 6 ensayos.
+El Thinker no ve el resultado como percepción: sólo recibe, como parte de su estado, cuál fue su
+última respuesta y si fue premiada (`prev_io`). Después de entrenar, **se congelan los pesos** y se
+mide en problemas nuevos.
+
+| Problemas de entrenamiento | 10 | 25 | 50 | 200 |
+|---|---|---|---|---|
+| Acierto en el ensayo 2, pesos congelados | 0.52 ± 0.03 | 0.90 ± 0.07 | 1.00 ± 0.00 | 0.82 ± 0.13 |
+
+Con los pesos fijos resuelve problemas nuevos en un ensayo: el aprendizaje rápido ocurre en el
+estado, no en los pesos (como propone Wang et al. 2018 para la corteza prefrontal). Con 3 objetos
+acierta 0.35, 0.66 y 0.82 en los ensayos 1 a 3, el óptimo de una memoria de un ensayo (0.33, 0.67, 0.83). Una reversión nunca vista se
+corrige en un ensayo (0.83 en el ensayo siguiente). Control: si las dos señales entran por separado y no conjugadas,
+queda en azar (0.50).
+
+Mapa relacional: con la acción RETROCEDER (`back`) la relación inversa pasa de 0 % a 100 %
+(pesos congelados, también con 8 elementos y cada relación vista una sola vez).
+
 ### Percepción + razonamiento
 
 | Prueba | Resultado |
@@ -136,6 +157,12 @@ El índice invertido exacto de la capa dispersa es idéntico bit a bit a la pasa
   lenguaje.
 - **El Thinker razona sobre tareas formales chicas.** No hay evidencia de razonamiento en lenguaje
   natural ni en dominios abiertos.
+- **Aprender a aprender tiene límites medidos.** Ajustar por recompensa los meta-parámetros de la
+  memoria rápida no escala: con 7 a la vez rinde peor que los valores elegidos a mano (0.50 ± 0.36).
+  Entre familias de reglas opuestas no hay aceleración, y sin consigna la regla nueva tarda ~400
+  problemas y **sobrescribe la vieja** (queda en 0 %). El cierre de un anillo queda en 0 % cuando
+  las relaciones llegan mezcladas con preguntas: el control no distingue un mapa completo de uno
+  parcial. `back` baja la inferencia transitiva de 5 saltos a 0.72, por eso queda apagado.
 - **Selección de hiperparámetros.** Parte de la exploración previa miró subconjuntos del test de
   MNIST y Fashion: esas cifras son algo optimistas. Los resultados de la v0.3 usan validación
   separada.
@@ -160,8 +187,8 @@ se prueban todos juntos.
 | Un recuerdo consolidado sólo se modifica si hay error de predicción | Sevenster, Beckers & Kindt 2013–2014 (y la replicación fallida de 2022) | `agent/consolidacion` |
 | Recordar enseña más que releer; el espaciado retiene mejor | Roediger & Karpicke 2006 | `agent/consolidacion` |
 | Sueño: repaso activo y renormalización sináptica global | Klinzing, Niethard & Born 2019 | `agent/consolidacion` |
-| La dopamina entrena a la prefrontal para que sea un aprendiz rápido propio | Wang et al. 2018 | `agent/metaaprendizaje` |
-| Mapas cognitivos: estructura relacional reutilizable | Behrens et al. 2018 | `agent/metaaprendizaje` |
+| La dopamina entrena a la prefrontal para que sea un aprendiz rápido propio | Wang et al. 2018 | **medido** (ver resultados) |
+| Mapas cognitivos: estructura relacional reutilizable | Behrens et al. 2018 | **medido** (ver resultados) |
 
 ## Escala: qué significa «capacidad humana»
 
@@ -189,7 +216,7 @@ sección de resultados, no esta tabla.
 
 ```bash
 pip install -e ".[dev]"
-pytest                                          # 143 tests
+pytest                                          # 156 tests
 python experiments/exp_vision.py mnist          # idem: fashion, cifar10
 python experiments/exp_fsdd.py                  # voz
 python experiments/exp_continual.py             # flujo continuo no estacionario
