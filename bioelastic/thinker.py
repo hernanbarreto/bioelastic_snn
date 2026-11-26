@@ -73,6 +73,34 @@ Aprendizaje, todo local:
     si ahora se explican, se enseña el control sin volver a vivir el episodio (ganancia
     de repetir: Mattar y Daw, 2018).
 
+  * Percepción que se equivoca (opcional; por defecto todo lo percibido vale como cierto).
+    Cada símbolo puede llegar con la certeza con que se percibió (`observe`/`answer` con
+    `certainty`): la memoria episódica la guarda con cada evento y los registros heredan
+    la de la pregunta que los escribió. Si la respuesta se apoyó en algo percibido con
+    certeza menor que `doubt`, el Thinker no aprende de ella (ni conocimiento, ni control,
+    ni modelo interno). Ante un error, la búsqueda retrospectiva también pregunta qué
+    símbolo en cada ranura de la pregunta (entre los alternativos que propone la
+    percepción, `feedback(alternatives=...)`) o qué valor de cada registro habría llevado
+    al objetivo con el conocimiento actual. Si hay una sola explicación y es una ranura,
+    el error es de percepción: `input_credit` dice qué símbolo debió percibirse (para
+    enseñárselo a la percepción) y el Thinker no aprende de esa respuesta. Si es un
+    registro, se corrige sólo el escritor de registros, no el conocimiento.
+  * Registros al empezar un episodio (`reg_reset`). "cero" (versión anterior): valen 0,
+    que es un valor con significado; si el control termina usando el 0 para «me llevo
+    una», la primera columna (sin acarreo, registro en 0) contradice esa convención y el
+    conocimiento queda mezclado (suma decimal con un registro: 1-2 de 5 semillas con la
+    convención invertida). "silencio": ninguna de sus dos neuronas está activa hasta que
+    se escribe, así que las dos convenciones son igual de buenas. "escrito": el escritor
+    también escribe el valor inicial, desde una entrada propia de «inicio», y lo aprende
+    con la misma retrospectiva (ver `_write_start`).
+  * Crédito de los registros (`reg_credit`). "simple": un valor del registro que el
+    modelo interno nunca vio cuenta como que no lleva al objetivo (versión anterior).
+    "conocido": sin saber qué habría dado el otro valor no hay evidencia y no se enseña
+    nada; así un escritor que siempre escribe lo mismo no se refuerza por ignorancia.
+    "establecido": además, el valor que lleva al objetivo tiene que salir de conocimiento
+    establecido (el modelo interno lo da por fiable): un conocimiento todavía mezclado no
+    le da etiquetas ruidosas al escritor.
+
 El controlador ve el *estado* del proceso, no el contenido: decide cómo pensar, no qué
 pensar. No ve un reloj absoluto: sabe qué hizo recién (copia eferente) y qué le devuelve
 la memoria. Con varias consignas, cada señal llega conjugada con la consigna
@@ -120,27 +148,45 @@ def _recall_events(events, keys):
 
 class FastMemory:
     """Memoria episódica de un disparo: cada transición (lo anterior -> lo actual) es un
-    evento con su propia clave conjuntiva, como un índice hipocampal. Dura un episodio."""
+    evento con su propia clave conjuntiva, como un índice hipocampal. Dura un episodio.
+    Cada evento guarda además la certeza con que se percibieron sus dos extremos (la
+    menor de las dos), para saber cuánto confiar en lo que se recupere de él."""
 
     def __init__(self, n: int):
         self.n = int(n)
         self.events: list = []                             # (clave: frozenset, símbolos, cuándo)
+        self.cert: list = []                               # certeza de cada evento
         self.prev: tuple = ()
+        self.prev_cert = 1.0
         self.t = 0
 
     def reset(self):
-        self.events = []
-        self.prev = (); self.t = 0
+        self.events = []; self.cert = []
+        self.prev = (); self.prev_cert = 1.0; self.t = 0
 
-    def bind(self, tokens: tuple):
+    def bind(self, tokens: tuple, certainty: float = 1.0):
         """Liga lo anterior con lo actual. Un silencio (tokens vacío) corta la adyacencia."""
         self.t += 1
         if tokens and self.prev:
             self.events.append((frozenset(self.prev), tuple(tokens), self.t))
+            self.cert.append(min(self.prev_cert, float(certainty)))
         self.prev = tuple(tokens)
+        self.prev_cert = float(certainty)
 
     def recall(self, keys):
         return _recall_events(self.events, keys)
+
+    def certainty(self, keys) -> float:
+        """Certeza de lo que devolvería `recall(keys)`: la menor entre los eventos que ganan
+        (los que comparten más símbolos con `keys`). 1 si no se recupera nada."""
+        if len(keys) == 0 or not self.events:
+            return 1.0
+        keys = set(keys)
+        over = [len(k & keys) for k, _, _ in self.events]
+        top = max(over)
+        if top == 0:
+            return 1.0
+        return min(c for c, o in zip(self.cert, over) if o == top)
 
     def has_successor(self, sym: int) -> bool:
         return any(sym in k for k, _, _ in self.events)
@@ -216,6 +262,7 @@ class Thinker:
                  replacing: bool = True,
                  decay: float = 1e-2, mixed: bool | str = "solo", clock: bool = False,
                  lookahead: bool = False, search: str = "guiada", credit: str = "estricto",
+                 doubt: float = 0.0, reg_credit: str = "simple", reg_reset: str = "cero",
                  seed: int = 0, say: dict | None = None):
         N = self.N = int(n_symbols)
         self.R = int(registers)
@@ -258,6 +305,15 @@ class Thinker:
         # semillas; con "estricto", 5 de 5 bien. Costo: si el control empieza por pasos
         # intermedios, esos episodios no escriben conocimiento (se aprende más lento).
         self.credit = str(credit)
+        self.doubt = float(doubt)              # certeza perceptiva mínima para aprender de una respuesta
+        self.reg_credit = str(reg_credit)      # "simple" o "conocido" (ver docstring)
+        self.reg_reset = str(reg_reset)        # "cero" o "silencio" (ver docstring)
+        self.abstained = 0                     # respuestas de las que no aprendió por duda perceptiva
+        self.blamed_inputs = 0                 # errores explicados por una sola ranura mal percibida
+        self.input_credit: list = []           # [(ranura, símbolo)] de la última respuesta
+        self._trust = 1.0                      # certeza de lo que usó la última respuesta
+        self._reg_cert = 1.0                   # certeza de lo que escribió los registros
+        self._cached = None                    # búsqueda retrospectiva ya hecha para esta respuesta
         self.gate = bool(gate)
         self.model = str(model)                # "aprendido" (SelfModel) o "perfecto" (ejecuta la red)
         self.confidence = bool(confidence)     # el control ve la confianza del modelo interno
@@ -305,6 +361,7 @@ class Thinker:
         self.judge = BioElasticNet(self.D_state, N, seed=seed + 1) if judge else None
         # escritura de registros: pesos iniciales al azar para romper la simetría
         self.Wr = self.rng.normal(0.0, 1.0, (self.R, 2, self.D_content + self.D_state))
+        self.Wr0 = np.zeros((self.R, 2))                   # escritura al inicio (reg_reset="escrito")
         self.wv = np.zeros(self.D_state)                   # crítico
         self.plastic = True
         self.decisions = np.zeros(_N_ACTIONS, dtype=np.int64)
@@ -318,7 +375,11 @@ class Thinker:
             self._update(self._r - self._V)
         self.Ec = np.zeros_like(self.Wc); self.Er = np.zeros_like(self.Wr); self.ev = np.zeros_like(self.wv)
         self._V = None; self._r = 0.0
-        self.reg = np.zeros(self.R, dtype=np.int64)
+        # registros al empezar: "cero" (versión anterior: valen 0, un valor con significado)
+        # o "silencio" (ninguna de sus dos neuronas activa: todavía no se escribió nada)
+        self.reg = np.full(self.R, -1 if self.reg_reset == "silencio" else 0, dtype=np.int64)
+        self._start = True                                 # todavía no respondió en este episodio
+        self._reg_cert = 1.0
         self._out = -1; self._path = []
         self._wx = None                                    # entrada con la que se escribieron los registros
         self._cf = None                                    # contenido de la última respuesta dicha
@@ -349,7 +410,8 @@ class Thinker:
         reg = self.reg if reg is None else reg
         idx = list(focus); val = [1.0] * len(focus)
         for b in range(self.R):
-            idx.append(self.o_reg + 2 * b + int(reg[b])); val.append(1.0)
+            if reg[b] >= 0:                                # en silencio no aporta nada
+                idx.append(self.o_reg + 2 * b + int(reg[b])); val.append(1.0)
         return np.array(idx, dtype=np.int64), np.array(val, dtype=np.float32)
 
     def _finish_state(self, idx, cue):
@@ -369,7 +431,8 @@ class Thinker:
         if self.gate:                                      # qué ítem de la pregunta se sostuvo
             idx.append(self.o_gate + 5 + (0 if not hold else 1 + min(getattr(hold, "origin", 0), 1)))
         for b in range(self.R):
-            idx.append(self.o_sreg + 2 * b + int(reg[b]))
+            if reg[b] >= 0:
+                idx.append(self.o_sreg + 2 * b + int(reg[b]))
         if self.clock:
             idx.append(self.o_clock + clock)
         if self.lookahead and best >= 0:
@@ -472,6 +535,16 @@ class Thinker:
         self._wx = (idx, val)
         self.reg = new
 
+    def _write_start(self, explore):
+        """Con `reg_reset="escrito"`: antes de la primera pregunta del episodio el escritor
+        también escribe los registros, desde una entrada propia de «inicio» (`Wr0`). El valor
+        con que empieza cada registro se aprende con la misma retrospectiva que los demás,
+        así que no impone una convención que después haya que contradecir."""
+        for b in range(self.R):
+            p = self._softmax(self.Wr0[b])
+            self.reg[b] = int(self.rng.choice(2, p=p)) if explore else int(np.argmax(p))
+        self._wx = "inicio"
+
     def _hindsight(self, target: int):
         """Aprendizaje retrospectivo de los registros (un paso hacia atrás, sin BPTT).
 
@@ -483,16 +556,30 @@ class Thinker:
         if self._prev_wx is None or self._cf is None:
             return
         c_idx, c_val = self._cf
-        idx, val = self._prev_wx
+        start = isinstance(self._prev_wx, str)            # los escribió el inicio del episodio
+        idx, val = (None, None) if start else self._prev_wx
         for b in range(self.R):
-            outs = []
+            outs = []; sure = []
             for bit in (0, 1):
                 ci = c_idx.copy()
                 ci[ci == self.o_reg + 2 * b + (1 - bit)] = self.o_reg + 2 * b + bit
-                outs.append(self._peek_sim((ci, c_val)))
+                if self.reg_credit == "establecido":
+                    o, ok = self._sim("say", (ci, c_val))
+                    outs.append(o); sure.append(ok)
+                else:
+                    outs.append(self._peek_sim((ci, c_val)))
+            if self.reg_credit != "simple" and min(outs) < 0:
+                continue                                    # no sabe qué habría dado el otro valor
             ok = [o == target for o in outs]
+            if self.reg_credit == "establecido" and not any(k and t for k, t in zip(ok, sure)):
+                continue                                    # el valor que lleva al objetivo no es conocimiento establecido
             if ok[0] != ok[1]:
                 want = 1 if ok[1] else 0
+                if start:
+                    p = self._softmax(self.Wr0[b])
+                    g = -p; g[want] += 1.0
+                    self.Wr0[b] += self.reg_lr * g
+                    continue
                 p = self._softmax(self.Wr[b][:, idx] @ val)
                 g = -p; g[want] += 1.0
                 self.Wr[b][:, idx] += self.reg_lr * g[:, None] * val[None, :]
@@ -675,16 +762,24 @@ class Thinker:
             self.revised[2] += 1
 
     # ------------------------------------------------------------------ percibir y responder
-    def observe(self, tokens=None):
-        """Percibe sin responder. `None` es un silencio."""
+    def observe(self, tokens=None, certainty: float = 1.0):
+        """Percibe sin responder. `None` es un silencio. `certainty`: con qué certeza se
+        percibió (la guarda la memoria episódica con el evento)."""
         if self.fast is not None:
-            self.fast.bind(self._tok(tokens))
+            self.fast.bind(self._tok(tokens), certainty)
 
-    def answer(self, tokens, cue: int = 0, explore: bool = False, probe=None) -> int:
+    def answer(self, tokens, cue: int = 0, explore: bool = False, probe=None,
+               certainty: float = 1.0) -> int:
         """Percibe la pregunta, piensa los pasos que decida y responde. Devuelve el símbolo
         (-1 = nada). `probe`: un segundo término de la pregunta (p. ej. Y en «¿X > Y?»).
         Sin compuerta, es lo que se sostiene; con compuerta, es un ítem más de la pregunta
-        y la red decide qué hacer con él."""
+        y la red decide qué hacer con él. `certainty`: con qué certeza se percibió la
+        pregunta (ver `doubt`)."""
+        used = []                                             # certeza de lo recuperado que se usó
+        if self._start:
+            self._start = False
+            if self.reg_reset == "escrito" and self.R:
+                self._write_start(explore)
         items = [self._tok(tokens)]
         if probe is not None and self.gate:
             items.append(self._tok(probe))
@@ -713,6 +808,7 @@ class Thinker:
             self._path.append(a)
             c_idx, c_val = self._content(focus)
             if a == FOLLOW:                                   # el recuerdo pasa al foco
+                used.append(self.fast.certainty(focus))
                 b = self._best(recall)
                 focus = (b,) if b >= 0 else ()
             elif a == SPEAK:                                  # habla interna
@@ -730,6 +826,7 @@ class Thinker:
             self._observe_self("say", (c_idx, c_val), out)
             self._cf = (c_idx, c_val)
         elif a == COPY:
+            used.append(self.fast.certainty(focus))
             out = self._best(recall)
         elif a == EMIT:
             out = focus[0] if focus else -1
@@ -738,7 +835,13 @@ class Thinker:
             out = int(self.judge.forward(js))
             self._observe_self("judge", js, out)
             self._js = js
+        # certeza de lo que usó esta respuesta: la pregunta, lo recuperado y los registros
+        # que leyó; los que escribe ahora heredan la de la pregunta y lo recuperado
+        seen = min([float(certainty)] + used)
+        self._trust = min(seen, self._reg_cert) if self.R else seen
+        self._cached = None
         self._write_registers(c_idx, c_val, s_idx, s_val, explore)
+        self._reg_cert = seen
         self._key = (s_idx.tobytes(), a)
         self._out = out
         return out
@@ -750,11 +853,24 @@ class Thinker:
         events = tuple(self.fast.events) if self.fast is not None else ()
         return (items, cue, reg, given, events)
 
-    def feedback(self, target: int | None = None, reward: float | None = None):
+    def feedback(self, target: int | None = None, reward: float | None = None,
+                 alternatives=None):
         """Consecuencia de la última respuesta: el objetivo correcto y/o una recompensa.
-        Con sólo el objetivo, la recompensa es +1 si acertó y -1 si no."""
+        Con sólo el objetivo, la recompensa es +1 si acertó y -1 si no.
+
+        `alternatives`: por cada ranura de la pregunta (en el orden en que llegó a
+        `answer`), los símbolos que la percepción también consideraba (p. ej. su segunda
+        opción, o todos). Con eso, un error puede quedar explicado como de percepción
+        (ver `input_credit`)."""
         if not self.plastic:
             return
+        self.input_credit = []
+        reg_only = False
+        if target is not None and (alternatives is not None or self.doubt > 0.0):
+            verdict = self._perceptual(int(target), alternatives)
+            if verdict == "abstiene":
+                return
+            reg_only = verdict == "registro"
         if target is not None:
             target = int(target)
             if reward is None:
@@ -767,7 +883,7 @@ class Thinker:
                 r[0] += int(not wrong); r[1] += 1
             strategy_error = False
             if wrong and self.hindsight:
-                paths = self._search(target)
+                paths = self._cached[0] if self._cached is not None else self._search(target)
                 if paths is not None:                      # se podía con lo que ya sabe:
                     self._teach_control(paths)             # el error es de estrategia
                     strategy_error = True
@@ -806,7 +922,7 @@ class Thinker:
                             self._cf = self._consults[i][0]
                             last = SAY; refresh = True
                 if last == SAY:
-                    if wrong:
+                    if wrong and not reg_only:             # (si lo explica un registro, el conocimiento no se toca)
                         conflict = self._correct("say", self._cf, target, cue, ep, refresh)
                     else:
                         self.say.teach(target)
@@ -822,7 +938,7 @@ class Thinker:
                         self.judge.teach(target)
                         self.kver += 1
                         self._confirm("judge", self._js, target, cue, ep)
-                if wrong:                                   # error sin explicar: queda para repetir
+                if wrong and not reg_only:                  # error sin explicar: queda para repetir
                     self._remember(ep, target)
             if not wrong:                                   # la cadena acertó: sus eslabones también
                 for c, _ in self._consults:
@@ -834,6 +950,68 @@ class Thinker:
             if self.replay:
                 self._replay()
         self._r += float(reward or 0.0)
+
+    # ------------------------------------------------------------------ percepción que duda
+    def _perceptual(self, target: int, alternatives) -> str:
+        """Crédito perceptivo de la última respuesta, antes de aprender de ella. Devuelve
+        "abstiene" si el Thinker no debe aprender de esta respuesta (la percepción dudó, o
+        la única explicación del error es una ranura mal percibida), "registro" si la única
+        explicación es un registro mal escrito, o "" si se aprende como siempre."""
+        verdict = ""
+        if self._out != target and alternatives is not None and self.hindsight:
+            paths = self._search(target)
+            self._cached = [paths]
+            if paths is None:                              # no fue de estrategia: ¿fue lo percibido?
+                expl = self._explain_inputs(target, alternatives)
+                if len(expl) == 1:
+                    slot, sym = expl[0]
+                    if slot >= 0:
+                        self.input_credit = [(slot, sym)]
+                        self.blamed_inputs += 1
+                        self._abstain()
+                        return "abstiene"
+                    verdict = "registro"
+        if self._trust < self.doubt:
+            self.abstained += 1
+            self._abstain()
+            return "abstiene"
+        return verdict
+
+    def _explain_inputs(self, target: int, alternatives) -> list:
+        """Explicaciones de un error con el conocimiento actual (búsqueda retrospectiva sin
+        efectos, sólo con conocimiento establecido): que una ranura de la pregunta fuera
+        otro de sus símbolos alternativos, o que un registro leído tuviera el otro valor.
+        Devuelve [(ranura, símbolo)]; un registro b va como ranura -1 - b."""
+        items, cue, reg, given, events = self._episode()
+        first = list(items[0])
+        found = []
+        for i, alts in enumerate(alternatives):
+            if i >= len(first):
+                break
+            for sym in alts:
+                sym = int(sym)
+                if sym in first:                           # lo percibido (o una ranura repetida)
+                    continue
+                alt = list(first); alt[i] = sym
+                ep = ((tuple(alt),) + tuple(items[1:]), cue, reg, given, events)
+                if self._search(target, start=ep) is not None:
+                    found.append((i, sym))
+        for b in range(self.R):                            # explicación rival: el registro
+            if reg[b] < 0:
+                continue
+            r2 = reg.copy(); r2[b] = 1 - r2[b]
+            if self._search(target, start=(items, cue, r2, given, events)) is not None:
+                found.append((-1 - b, int(r2[b])))
+        return found
+
+    def _abstain(self):
+        """No aprende de la última respuesta: se descartan las trazas (TD no la cierra ni
+        la premia o castiga), y el escritor de registros no se corregirá con lo que escribió
+        a partir de ella. El conocimiento, el modelo interno, la fiabilidad y la repetición
+        no la registran."""
+        self.Ec[:] = 0.0; self.Er[:] = 0.0; self.ev[:] = 0.0
+        self._V = None; self._r = 0.0
+        self._wx = None
 
     # ------------------------------------------------------------------ repetición (Dyna)
     def _version(self):
@@ -1050,5 +1228,6 @@ class Thinker:
     def stats(self) -> dict:
         return dict(neurons=self.say.layer.n, expanded=int(self.expanded), replayed=int(self.replayed),
                     judge_neurons=self.judge.layer.n if self.judge is not None else 0,
-                    revised=self.revised.tolist(),
+                    revised=self.revised.tolist(), abstained=int(self.abstained),
+                    blamed_inputs=int(self.blamed_inputs),
                     **{name: int(n) for name, n in zip(ACTION_NAMES, self.decisions)})

@@ -411,3 +411,94 @@ def test_contradicting_cues_without_reconciling_strategy_do_not_corrupt_knowledg
         net.feedback(target=int(f[x]) if cue == 0 else int(g[x]))
     outs = [net.say.peek((np.array([x]), np.ones(1, dtype=np.float32))) for x in range(16)]
     assert np.mean([o in (f[x], g[x]) for x, o in enumerate(outs)]) >= 0.9
+
+
+# ---------------------------------------------------------------- percepción que duda (integración r2)
+def _mod_sum_thinker(seed=0, passes=3, **kw):
+    """Thinker que sabe (a, 10+b) -> (a+b) mod 10 con símbolos perfectos, establecido."""
+    th = Thinker(20, seed=seed, **kw)
+    rng = np.random.default_rng(seed)
+    for _ in range(passes):
+        for i in rng.permutation(100):
+            a, b = divmod(int(i), 10)
+            th.reset(); th.answer((a, 10 + b)); th.feedback(target=(a + b) % 10)
+    return th
+
+
+def test_input_credit_names_the_misperceived_slot_and_spares_knowledge():
+    th = _mod_sum_thinker()
+    th.reset()
+    assert th.answer((8, 13)) == 1                      # la percepción vio 8 donde había un 3
+    blame = th.blame.copy()
+    th.feedback(target=6, alternatives=[[3, 5], []])    # segunda opción de cada ranura
+    assert th.input_credit == [(0, 3)] and th.blamed_inputs == 1
+    assert (th.blame == blame).all()                    # el Thinker no se culpa ni aprende
+    assert not th.Ec.any() and not th.ev.any() and th._V is None
+    for _ in range(3):                                  # aunque se repita, no se consolida
+        th.reset(); th.answer((8, 13)); th.feedback(target=6, alternatives=[[3], []])
+    assert th.say.peek((np.array([8, 13]), np.ones(2, dtype=np.float32))) == 1
+
+
+def test_two_explanations_give_no_input_credit():
+    """Con todas las alternativas en las dos ranuras, cambiar cualquiera de las dos explica
+    el error: no hay una sola explicación y el Thinker aprende como siempre."""
+    th = _mod_sum_thinker()
+    th.reset(); th.answer((8, 13))
+    blame = th.blame.copy()
+    th.feedback(target=6, alternatives=[list(range(10)), [10 + x for x in range(10)]])
+    assert th.input_credit == [] and th.blame[1] == blame[1] + 1
+
+
+def test_doubtful_perception_does_not_teach_the_thinker():
+    th = _mod_sum_thinker(doubt=0.5)
+    th.reset(); th.answer((8, 13), certainty=0.3)
+    tags = dict(th._tags); rel = {k: list(v) for k, v in th.rel.items()}
+    th.feedback(target=6)
+    assert th.abstained == 1 and th._tags == tags and th.rel == rel and not th.Ec.any()
+    th.reset(); th.answer((8, 13), certainty=0.9)       # segura: aprende (marca la contradicción)
+    th.feedback(target=6)
+    assert th.abstained == 1 and len(th._tags) == len(tags) + 1
+
+
+def test_episodic_memory_keeps_the_certainty_of_what_it_bound():
+    m = FastMemory(10)
+    m.bind((1,), 0.9); m.bind((5,), 0.3); m.bind(()); m.bind((2,)); m.bind((6,))
+    assert m.certainty((1,)) == 0.3 and m.certainty((2,)) == 1.0 and m.certainty((7,)) == 1.0
+    th = Thinker(10, memory=True, seed=0, doubt=0.5)
+    th.Wc[COPY, 0] = 5.0                                 # el control copia
+    th.reset(); th.observe(1, certainty=0.95); th.observe(5, certainty=0.2); th.observe(None)
+    assert th.answer(1, certainty=0.99) == 5 and th._trust == 0.2
+    th.feedback(target=5)                                # acertó, pero con un valor dudoso
+    assert th.abstained == 1
+
+
+def _dec_episode(net, rng, learn, n):
+    a = rng.integers(10, size=n); b = rng.integers(10, size=n)
+    net.reset(); carry = 0; ok = True
+    for i in range(n + 1):
+        if i < n:
+            s = int(a[i]) + int(b[i]) + carry; d, carry = s % 10, s // 10
+            out = net.answer((int(a[i]), 10 + int(b[i])), explore=learn)
+        else:
+            d = carry; out = net.answer(20, explore=learn)
+        if learn:
+            net.feedback(target=d)
+        ok &= out == d
+    return ok
+
+
+def test_one_register_carries_in_decimal_when_its_start_value_is_learned():
+    """Suma decimal con un solo registro. Si el registro empieza en 0 (`reg_reset="cero"`)
+    y el control adopta la convención 0 = «me llevo una», la primera columna (sin acarreo)
+    la contradice y no converge (semilla 0: 0.01 con 6 dígitos). Si el valor inicial lo
+    escribe el propio escritor (`"escrito"`), el acarreo sale (1.0). Con 5+5 semillas en
+    experiments/exp_integration2.py acarreo."""
+    res = {}
+    for reset in ("cero", "escrito"):
+        rng = np.random.default_rng(1000)
+        net = Thinker(21, registers=1, seed=0, reg_reset=reset)
+        for _ in range(3500):
+            _dec_episode(net, rng, True, int(rng.integers(1, 5)))
+        net.reset(); net.plastic = False
+        res[reset] = np.mean([_dec_episode(net, rng, False, 6) for _ in range(60)])
+    assert res["cero"] < 0.3 and res["escrito"] > 0.9
