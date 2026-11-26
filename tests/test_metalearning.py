@@ -1,7 +1,7 @@
 import numpy as np
 
 from bioelastic.metalearning import GradedMemory, MetaController, MetaThinker
-from bioelastic.thinker import Thinker
+from bioelastic.thinker import FastMemory, Thinker
 
 
 def _bind(m, pairs):
@@ -172,3 +172,51 @@ def test_previous_answer_and_reward_are_state_even_when_frozen():
     net.reset()
     assert net._prev is None
 
+
+# ---------------------------------------------------------------- F3: mapa recorrible al revés
+def test_recall_back_returns_what_preceded():
+    from bioelastic.thinker import _recall_back
+    m = FastMemory(20)
+    for a, b in ((1, 2), (2, 3), (7, 3)):
+        m.bind((a,)); m.bind((b,)); m.bind(())
+    idx, val = _recall_back(m.events, (2,))
+    assert list(idx) == [1]
+    idx, val = _recall_back(m.events, (3,))
+    assert set(idx) == {2, 7} and int(idx[np.argmax(val)]) == 7      # el más reciente, más fuerte
+    assert len(_recall_back(m.events, (1,))[0]) == 0
+
+
+def test_back_option_off_keeps_the_state_layout():
+    a = Thinker(20, memory=True, judge=True, speak=True, seed=0)
+    b = Thinker(20, memory=True, judge=True, speak=True, seed=0, back=False, prev_io=False)
+    assert a.Wc.shape == b.Wc.shape == (8, a.D_state) and a.D_state == b.D_state
+    c = Thinker(20, memory=True, judge=True, speak=True, seed=0, back=True)
+    assert c.Wc.shape[0] == 9 and c.D_state == a.D_state + 1 + 3
+
+
+def _pred_block(net, rng, learn, L=5):
+    syms = [int(x) for x in rng.permutation(40)[:L]]
+    net.reset()
+    for i in rng.permutation(L - 1):
+        net.observe(syms[i]); net.observe(syms[i + 1]); net.observe(None)
+    j = int(rng.integers(1, L))
+    out = net.answer(syms[j], explore=learn)
+    net.feedback(target=syms[j - 1])
+    return out == syms[j - 1]
+
+
+def test_inverse_relation_is_inferred_only_with_the_bidirectional_map():
+    """Se observan sólo relaciones «X -> sucesor»; se pregunta el anterior de X. Sin
+    recorrido inverso no hay forma (0); con RETROCEDER el control lo aprende con unos
+    símbolos y, congelado, lo aplica a símbolos nuevos (y a cadenas más largas)."""
+    res = {}
+    for back in (False, True):
+        rng = np.random.default_rng(0)
+        net = Thinker(40, memory=True, speak=True, judge=True, max_steps=10, seed=0, back=back)
+        for _ in range(300):
+            _pred_block(net, rng, True)
+        net.reset(); net.plastic = False
+        res[back] = (np.mean([_pred_block(net, rng, False) for _ in range(100)]),
+                     np.mean([_pred_block(net, rng, False, L=9) for _ in range(100)]))
+    assert res[False][0] < 0.1
+    assert res[True][0] > 0.95 and res[True][1] > 0.95

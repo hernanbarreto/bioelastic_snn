@@ -113,6 +113,15 @@ Aprendizaje, todo local:
     sólo la coincidencia. Esa regla es un O exclusivo de las dos señales: un control lineal
     sólo la representa con la conjunción (`prev_io="separado"`, las dos señales por
     separado, queda como ablación).
+  * Mapa relacional recorrible en los dos sentidos (`back`). Cada ligadura de la memoria
+    episódica es una relación entre símbolos, no sólo «qué vino después»: la acción
+    RETROCEDER lleva al foco lo que precedió al foco (la relación al revés) y el control ve,
+    como con el recuerdo, si hay nada, uno o varios predecesores. Así relaciones que nunca
+    se observaron en ese sentido (el anterior de X, el principio de una cadena) se pueden
+    inferir con el mismo control ciego a la identidad, y lo aprendido con unos símbolos
+    vale para otros (la estructura queda en el control; la identidad, en la memoria del
+    episodio). Con `back="sin_senal"` la acción existe pero el control no ve los
+    predecesores (ablación).
 
 El controlador ve el *estado* del proceso, no el contenido: decide cómo pensar, no qué
 pensar. No ve un reloj absoluto: sabe qué hizo recién (copia eferente) y qué le devuelve
@@ -131,9 +140,11 @@ import numpy as np
 from .network import BioElasticNet
 
 SAY, COPY, FOLLOW, SPEAK, EMIT, JUDGE, FOCUS, HOLD = range(8)
+BACK = 8                                   # sólo con `back` (no cambia nada sin la opción)
 ACTION_NAMES = ("decir", "copiar", "seguir", "hablar", "emitir", "juzgar", "enfocar", "sostener")
+_ALL_NAMES = ACTION_NAMES + ("retroceder",)
 _N_ACTIONS = len(ACTION_NAMES)
-_INTERNAL = (FOLLOW, SPEAK)
+_INTERNAL = (FOLLOW, SPEAK, BACK)
 _GATE = np.array([FOCUS, HOLD])
 _NONE = (np.empty(0, dtype=np.int64), np.empty(0, dtype=np.float32))
 
@@ -153,6 +164,26 @@ def _recall_events(events, keys):
     for (k, toks, t), o in zip(events, over):
         if o == top:
             for x in toks:
+                when[x] = max(when.get(x, 0), t)
+    idx = np.fromiter(when.keys(), dtype=np.int64, count=len(when))
+    s = np.fromiter(when.values(), dtype=np.float32, count=len(when))
+    return idx, s / s.max()
+
+
+def _recall_back(events, keys):
+    """La relación al revés: las claves de los eventos cuyos símbolos comparten más con
+    `keys` (lo que precedió a `keys`); lo ligado más recientemente llega con fuerza 1."""
+    if len(keys) == 0 or not events:
+        return _NONE
+    keys = set(keys)
+    over = [len(keys.intersection(toks)) for _, toks, _ in events]
+    top = max(over)
+    if top == 0:
+        return _NONE
+    when: dict = {}
+    for (k, _, t), o in zip(events, over):
+        if o == top:
+            for x in k:
                 when[x] = max(when.get(x, 0), t)
     idx = np.fromiter(when.keys(), dtype=np.int64, count=len(when))
     s = np.fromiter(when.values(), dtype=np.float32, count=len(when))
@@ -288,7 +319,7 @@ class Thinker:
                  decay: float = 1e-2, mixed: bool | str = "solo", clock: bool = False,
                  lookahead: bool = False, search: str = "guiada", credit: str = "estricto",
                  doubt: float = 0.0, explain: str = "refutadas", reg_credit: str = "simple",
-                 reg_reset: str = "cero", prev_io: bool | str = False,
+                 reg_reset: str = "cero", prev_io: bool | str = False, back: bool | str = False,
                  seed: int = 0, say: dict | None = None):
         N = self.N = int(n_symbols)
         self.R = int(registers)
@@ -360,6 +391,10 @@ class Thinker:
         if memory:
             acts += ([COPY] if copy else []) + [FOLLOW, EMIT]
         acts += ([SPEAK] if speak else []) + ([JUDGE] if judge else [])
+        self.back = back if back == "sin_senal" else bool(back)
+        if memory and self.back:
+            acts.append(BACK)
+        self._n_act = _N_ACTIONS + (1 if self.back else 0)
         self.actions = np.array(acts)
         # contenido (lo que ve la memoria de largo plazo): foco | registros. El recuerdo no
         # entra: para usarlo hay que copiarlo o llevarlo al foco (acciones del control).
@@ -371,7 +406,7 @@ class Thinker:
         self.lookahead = bool(lookahead)       # «¿el recuerdo sigue?» (ídem)
         o = 1                                  # 0: sesgo
         self.o_cue = o; o += self.n_cues
-        self.o_last = o; o += _N_ACTIONS + 1   # copia eferente: nada / acción anterior
+        self.o_last = o; o += self._n_act + 1  # copia eferente: nada / acción anterior
         self.o_mem = o; o += 3                 # recuerdo: nada / uno / varios
         self.o_match = o; o += 4               # ¿foco sostenido? ¿recuerdo sostenido?
         self.o_sreg = o; o += 2 * self.R
@@ -383,12 +418,13 @@ class Thinker:
         # respuesta y recompensa previas (`prev_io`): 5 para el foco y 5 para el ítem de la compuerta
         self.prev_io = prev_io if prev_io == "separado" else bool(prev_io)
         self.o_prev = o; o += 10 if self.prev_io else 0
+        self.o_back = o; o += 3 if self.back is True else 0  # predecesores: nada / uno / varios (`back`)
         self.D_base = o
         self.mixed = mixed if (mixed and self.n_cues > 1) else False
         self._shared = self.mixed != "solo"            # "solo": sólo señales conjugadas con la consigna
         self.D_state = self.D_base * (1 + self.n_cues) if self.mixed else self.D_base
         self.say = BioElasticNet(self.D_content, N, seed=seed, **(say or {}))
-        self.Wc = np.zeros((_N_ACTIONS, self.D_state))     # control (y compuerta)
+        self.Wc = np.zeros((self._n_act, self.D_state))    # control (y compuerta)
         # juicio (estado -> respuesta): prototipos conjuntivos sobre el estado, para que un
         # estado ambiguo quede ambiguo y no herede confianza de los vecinos
         self.judge = BioElasticNet(self.D_state, N, seed=seed + 1) if judge else None
@@ -397,7 +433,7 @@ class Thinker:
         self.Wr0 = np.zeros((self.R, 2))                   # escritura al inicio (reg_reset="escrito")
         self.wv = np.zeros(self.D_state)                   # crítico
         self.plastic = True
-        self.decisions = np.zeros(_N_ACTIONS, dtype=np.int64)
+        self.decisions = np.zeros(self._n_act, dtype=np.int64)
         self._V = None
         self.reset()
 
@@ -465,7 +501,7 @@ class Thinker:
             return [1 + int(prev[0] not in toks), 3 + int(not prev[1])]
         return [1 + 2 * int(prev[0] not in toks) + int(not prev[1])]
 
-    def _state(self, cue, last, clock, focus, recall, hold, reg=None, over=None, prev=None):
+    def _state(self, cue, last, clock, focus, recall, hold, reg=None, over=None, prev=None, back=None):
         reg = self.reg if reg is None else reg
         best = self._best(recall)
         idx = [0, self.o_cue + cue, self.o_last + last + 1,
@@ -477,6 +513,8 @@ class Thinker:
             idx.append(self.o_gate + 5 + (0 if not hold else 1 + min(getattr(hold, "origin", 0), 1)))
         if self.prev_io:
             idx += [self.o_prev + i for i in self._prev_code(focus, prev)]
+        if self.back is True and back is not None:
+            idx.append(self.o_back + min(len(back[0]), 2))
         for b in range(self.R):
             if reg[b] >= 0:
                 idx.append(self.o_sreg + 2 * b + int(reg[b]))
@@ -523,8 +561,11 @@ class Thinker:
 
     def _allowed(self, clock):
         if clock >= self.max_steps:
-            return self.actions[(self.actions != FOLLOW) & (self.actions != SPEAK)]
+            return self.actions[(self.actions != FOLLOW) & (self.actions != SPEAK) & (self.actions != BACK)]
         return self.actions
+
+    def _recall_back(self, focus):
+        return _recall_back(self.fast.events, focus) if self.fast is not None else _NONE
 
     # ------------------------------------------------------------------ TD(lambda)
     def _update(self, delta: float):
@@ -856,9 +897,10 @@ class Thinker:
         else:
             focus, hold = items[0], given
         recall = self._recall(focus)
+        bk = self._recall_back(focus) if self.back else None
         clock = 0
         while True:
-            s_idx, s_val = self._state(cue, last, clock, focus, recall, hold, prev=prev)
+            s_idx, s_val = self._state(cue, last, clock, focus, recall, hold, prev=prev, back=bk)
             a = self._decide(s_idx, s_val, self._allowed(clock), explore)
             self.decisions[a] += 1
             self._path.append(a)
@@ -872,9 +914,13 @@ class Thinker:
                 o = int(self.say.forward((c_idx, c_val)))
                 self._observe_self("say", (c_idx, c_val), o)
                 focus = (o,)
+            elif a == BACK:                                   # la relación al revés
+                b = self._best(bk)
+                focus = (b,) if b >= 0 else ()
             else:
                 break
             recall = self._recall(focus)
+            bk = self._recall_back(focus) if self.back else None
             clock += 1; last = a
         if a == SAY:
             self._consults.append(((c_idx, c_val), self._know((c_idx, c_val))[1]))
@@ -1154,12 +1200,16 @@ class Thinker:
             return (focus[0] if focus else -1), True
         return self._sim("judge", self._base(s), over)     # JUDGE
 
-    def _successors(self, a, focus, recall, c, over=None):
+    def _successors(self, a, focus, recall, c, over=None, back=None):
         """Focos posibles tras un paso interno (lista vacía si no lleva a nada establecido).
         HABLAR con conocimiento establecido pero inconsistente abre una rama por cada salida
-        plausible (probabilidad >= `branch`, sólo con el modelo perfecto)."""
+        plausible (probabilidad >= `branch`, sólo con el modelo perfecto). `back`: lo que
+        precedió al foco (para RETROCEDER)."""
         if a == FOLLOW:
             b = self._best(recall)
+            return [(b,)] if b >= 0 else []
+        if a == BACK:
+            b = self._best(back) if back is not None else -1
             return [(b,)] if b >= 0 else []
         out, sure = self._sim("say", c, over)
         if sure:
@@ -1199,8 +1249,12 @@ class Thinker:
             rec = lambda f: _recall_events(events, f)  # noqa: E731
         else:
             rec = lambda f: _NONE  # noqa: E731
+        if self.back and self.fast is not None:
+            rbk = lambda f: _recall_back(events, f)  # noqa: E731
+        else:
+            rbk = lambda f: None  # noqa: E731
         if self.search == "amplitud":
-            return self._search_bfs(target, items, cue, reg, given, rec, over, refute, prev)
+            return self._search_bfs(target, items, cue, reg, given, rec, over, refute, prev, rbk)
         tie = itertools.count()
         # nodo: (costo, desempate, tipo, foco, sostén, recuerdo, última, reloj/ítem, camino)
         if self.gate:
@@ -1230,7 +1284,8 @@ class Thinker:
                     else:
                         heapq.heappush(heap, (cst, next(tie), "t", f, h, rec(f), a, 0, step))
                 continue
-            s = self._state(cue, last, clock, focus, recall, hold, reg, over, prev)
+            bk = rbk(focus)
+            s = self._state(cue, last, clock, focus, recall, hold, reg, over, prev, bk)
             allowed = self._allowed(clock)
             q = (1.0 - self.epsilon) * self._policy(*s, allowed) + self.epsilon / len(allowed)
             c = self._content(focus, reg=reg)
@@ -1242,7 +1297,7 @@ class Thinker:
                 step = path + [(s, allowed, a)]
                 cst = cost - float(np.log(q[k]))
                 if a in _INTERNAL:
-                    for f in self._successors(a, focus, recall, c, over):
+                    for f in self._successors(a, focus, recall, c, over, bk):
                         heapq.heappush(heap, (cst, next(tie), "t", f, hold, rec(f), a, clock + 1, step))
                 else:
                     out, sure = self._outcome(a, focus, recall, c, s, over)
@@ -1269,7 +1324,8 @@ class Thinker:
                 return int(a)
         return None
 
-    def _search_bfs(self, target, items, cue, reg, given, rec, over, refute=False, prev=None):
+    def _search_bfs(self, target, items, cue, reg, given, rec, over, refute=False, prev=None,
+                    rbk=lambda f: None):
         if self.gate:                                       # la compuerta, enumerada
             roots = [((), frozenset(), -1, [])]
             for i, it in enumerate(items):
@@ -1287,7 +1343,8 @@ class Thinker:
             nxt = []; found = []
             for focus, hold, recall, last, path in frontier:
                 self.expanded += 1
-                s = self._state(cue, last, clock, focus, recall, hold, reg, over, prev)
+                bk = rbk(focus)
+                s = self._state(cue, last, clock, focus, recall, hold, reg, over, prev, bk)
                 allowed = self._allowed(clock)
                 c = self._content(focus, reg=reg)
                 forced = self._forced(s, path)
@@ -1297,7 +1354,7 @@ class Thinker:
                         continue
                     step = path + [(s, allowed, a)]
                     if a in _INTERNAL:
-                        for f in self._successors(a, focus, recall, c, over):
+                        for f in self._successors(a, focus, recall, c, over, bk):
                             nxt.append((f, hold, rec(f), a, step))
                     else:
                         out, sure = self._outcome(a, focus, recall, c, s, over)
@@ -1325,4 +1382,4 @@ class Thinker:
                     judge_neurons=self.judge.layer.n if self.judge is not None else 0,
                     revised=self.revised.tolist(), abstained=int(self.abstained),
                     blamed_inputs=int(self.blamed_inputs),
-                    **{name: int(n) for name, n in zip(ACTION_NAMES, self.decisions)})
+                    **{name: int(n) for name, n in zip(_ALL_NAMES, self.decisions)})

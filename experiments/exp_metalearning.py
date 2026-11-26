@@ -33,7 +33,7 @@ Tareas
             sorteados en cada pregunta).
 
   python experiments/exp_metalearning.py <grupo> [<grupo> ...]   (OMP_NUM_THREADS=1)
-  grupos: f0 f1 f2 f2b
+  grupos: f0 f1 f2 f2b f3
   (resultados en results/metaaprendizaje_<grupo>.csv y .json)
 """
 from __future__ import annotations
@@ -183,12 +183,14 @@ def run_harlow(make, P, seeds=SEEDS, T=6, k=2, mode="objeto", perceive=True, n_t
 
 # ---------------------------------------------------------------- estructura
 def line_block(net, rng, syms, YES, NO, R=3, struct="linea", perceive=True, explore=True,
-               learn=True, n_before=6, extra=None, queries=(1, 2, 3), end=None):
+               learn=True, n_before=6, extra=None, queries=(1, 2, 3), end=None, premises=False):
     """Un bloque de transferencia de estructura. `syms`: los L símbolos del bloque (orden
     oculto). `extra`: símbolos fuera del bloque (para "funcion"). Devuelve un dict con
     aciertos por tipo de pregunta (en su primera aparición) y errores de la fase de
     aprendizaje. `end`: símbolo FIN; si se da, en la línea también se pregunta qué sigue al
-    último (objetivo FIN), la misma pregunta que en el anillo es el cierre."""
+    último (objetivo FIN), la misma pregunta que en el anillo es el cierre. `premises`: las
+    relaciones observadas se muestran sólo como percepción (una vez cada una, en orden al
+    azar), sin preguntas de aprendizaje (control: sin primeras apariciones que fallar)."""
     L = len(syms)
     edges = [(i, i + 1) for i in range(L - 1)]
     if struct == "anillo":
@@ -218,12 +220,17 @@ def line_block(net, rng, syms, YES, NO, R=3, struct="linea", perceive=True, expl
     trials = [i for i, _ in edges for _ in range(R)]
     rng.shuffle(trials)
     seq = []
+    if premises:
+        for i in rng.permutation(len(edges)):
+            a, b = edges[int(i)]
+            net.observe(syms[a]); net.observe(syms[b]); net.observe(None)
+        trials = []
     for i in trials:
         y = target(i)
         seq.append(ask(syms[i], 0, y))
         if perceive:
             net.observe(syms[i]); net.observe(y); net.observe(None)
-    res = dict(errors=float(len(seq) - sum(seq)), ttc=float(_ttc(seq)))
+    res = dict(errors=float(len(seq) - sum(seq)), ttc=float(_ttc(seq))) if seq else {}
     if hidden is not None:                                # cierre del anillo
         res["closure"] = float(ask(syms[hidden[0]], 0, syms[hidden[1]]))
     elif end is not None and struct == "linea":           # ¿qué sigue al último? FIN
@@ -698,7 +705,31 @@ def group_f2b():
     dump("f2b", summary)
 
 
-GROUPS = {"f0": group_f0, "f1": group_f1, "f2": group_f2, "f2b": group_f2b}
+# ---------------------------------------------------------------- F3
+def group_f3():
+    log = CsvLog("metaaprendizaje_f3", HEADER)
+    summary = {}
+    B, WB = 300, 25
+    tests = (("L=8 (más largo que lo entrenado)", dict(L=8)), ("R=1 (cada relación observada una vez)", dict(R=1)))
+    for struct in ("linea", "anillo"):
+        for label, over in (("B1 (sin recorrido inverso)", {}),
+                            ("B1 + mapa recorrible al revés (back)", dict(back=True)),
+                            ("ablación: back sin la señal de predecesores", dict(back="sin_senal"))):
+            res = run_line(make_base(n_cues=4, **over), B, struct=struct, perceive=True, tests=tests)
+            summary[f"F3 {struct} | {label}"] = report_line(log, f"F3 {struct}", label, res, WB)
+            log.row(f"F3 {struct}", label, "al final", "neuronas de DECIR (conocimiento ligado a identidad)",
+                    float(np.mean(res["say_neurons"])), float(np.std(res["say_neurons"])), len(res["say_neurons"]))
+    # control del anillo: las aristas llegan sólo como percepción (sin preguntas de aprendizaje,
+    # así no hay primeras apariciones con el mapa a medio armar que contradigan el cierre)
+    for label, over in (("B1 (sin recorrido inverso)", {}), ("B1 + mapa recorrible al revés (back)", dict(back=True))):
+        res = run_line(make_base(n_cues=4, **over), B, struct="anillo", perceive=True, premises=True,
+                       tests=(tests[0],))
+        summary[f"F3 anillo, sólo premisas | {label}"] = report_line(log, "F3 anillo, sólo premisas", label, res, WB)
+    log.close()
+    dump("f3", summary)
+
+
+GROUPS = {"f0": group_f0, "f1": group_f1, "f2": group_f2, "f2b": group_f2b, "f3": group_f3}
 
 
 def main():
