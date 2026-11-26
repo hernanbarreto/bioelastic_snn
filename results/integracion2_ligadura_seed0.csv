@@ -11,7 +11,7 @@ ligadura,base,0,fracción COPIAR ligadas,0.8440,,
 ligadura,base,0,acierto no ligadas,0.8400,0.8780,p^1*oráculo (p después)
 ligadura,base,0,acierto no ligadas | imágenes bien,1.0000,1.0000,oráculo
 ligadura,base,0,fracción COPIAR no ligadas,0.0880,,
-ligadura,base,0,segundos,30.9000,,
+ligadura,base,0,segundos,15.6000,,
 ligadura,conf,0,vista débil después (test),0.8780,0.8780,antes
 ligadura,conf,0,abstenciones,1286,,umbral 0.695
 ligadura,conf,0,créditos a la percepción,0,,
@@ -21,7 +21,7 @@ ligadura,conf,0,fracción COPIAR ligadas,0.8240,,
 ligadura,conf,0,acierto no ligadas,0.7800,0.8780,p^1*oráculo (p después)
 ligadura,conf,0,acierto no ligadas | imágenes bien,0.8889,1.0000,oráculo
 ligadura,conf,0,fracción COPIAR no ligadas,0.0960,,
-ligadura,conf,0,segundos,31.5000,,
+ligadura,conf,0,segundos,15.4000,,
 ligadura,confcos,0,vista débil después (test),0.8780,0.8780,antes
 ligadura,confcos,0,abstenciones,1364,,umbral 0.211
 ligadura,confcos,0,créditos a la percepción,0,,
@@ -31,38 +31,38 @@ ligadura,confcos,0,fracción COPIAR ligadas,0.8240,,
 ligadura,confcos,0,acierto no ligadas,0.8440,0.8780,p^1*oráculo (p después)
 ligadura,confcos,0,acierto no ligadas | imágenes bien,1.0000,1.0000,oráculo
 ligadura,confcos,0,fracción COPIAR no ligadas,0.1040,,
-ligadura,confcos,0,segundos,28.3000,,
-ligadura,cred,0,vista débil después (test),0.6332,0.8780,antes
+ligadura,confcos,0,segundos,12.7000,,
+ligadura,cred,0,vista débil después (test),0.8480,0.8780,antes
 ligadura,cred,0,abstenciones,0,,umbral 0.000
-ligadura,cred,0,créditos a la percepción,1071,,
-ligadura,cred,0,precisión del crédito,0.4071,,
-ligadura,cred,0,acierto ligadas,0.0880,0.2539,p^3*oráculo (p después)
-ligadura,cred,0,acierto ligadas | imágenes bien,0.0000,1.0000,oráculo
-ligadura,cred,0,fracción COPIAR ligadas,0.0000,,
-ligadura,cred,0,acierto no ligadas,0.5860,0.6332,p^1*oráculo (p después)
+ligadura,cred,0,créditos a la percepción,154,,
+ligadura,cred,0,precisión del crédito,0.6039,,
+ligadura,cred,0,acierto ligadas,0.6160,0.6098,p^3*oráculo (p después)
+ligadura,cred,0,acierto ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,cred,0,fracción COPIAR ligadas,0.7400,,
+ligadura,cred,0,acierto no ligadas,0.7920,0.8480,p^1*oráculo (p después)
 ligadura,cred,0,acierto no ligadas | imágenes bien,1.0000,1.0000,oráculo
-ligadura,cred,0,fracción COPIAR no ligadas,0.0000,,
-ligadura,cred,0,segundos,43.9000,,
-ligadura,cred2,0,vista débil después (test),0.8562,0.8780,antes
+ligadura,cred,0,fracción COPIAR no ligadas,0.1200,,
+ligadura,cred,0,segundos,29.4000,,
+ligadura,cred2,0,vista débil después (test),0.8846,0.8780,antes
 ligadura,cred2,0,abstenciones,0,,umbral 0.000
-ligadura,cred2,0,créditos a la percepción,598,,
-ligadura,cred2,0,precisión del crédito,0.7943,,
-ligadura,cred2,0,acierto ligadas,0.6120,0.6277,p^3*oráculo (p después)
+ligadura,cred2,0,créditos a la percepción,636,,
+ligadura,cred2,0,precisión del crédito,0.8616,,
+ligadura,cred2,0,acierto ligadas,0.6580,0.6922,p^3*oráculo (p después)
 ligadura,cred2,0,acierto ligadas | imágenes bien,1.0000,1.0000,oráculo
-ligadura,cred2,0,fracción COPIAR ligadas,0.7880,,
-ligadura,cred2,0,acierto no ligadas,0.8540,0.8562,p^1*oráculo (p después)
+ligadura,cred2,0,fracción COPIAR ligadas,0.7940,,
+ligadura,cred2,0,acierto no ligadas,0.8420,0.8846,p^1*oráculo (p después)
 ligadura,cred2,0,acierto no ligadas | imágenes bien,1.0000,1.0000,oráculo
-ligadura,cred2,0,fracción COPIAR no ligadas,0.0900,,
-ligadura,cred2,0,segundos,30.1000,,
-ligadura,confcos+cred2,0,vista débil después (test),0.8580,0.8780,antes
-ligadura,confcos+cred2,0,abstenciones,989,,umbral 0.211
-ligadura,confcos+cred2,0,créditos a la percepción,603,,
-ligadura,confcos+cred2,0,precisión del crédito,0.7910,,
-ligadura,confcos+cred2,0,acierto ligadas,0.6500,0.6316,p^3*oráculo (p después)
+ligadura,cred2,0,fracción COPIAR no ligadas,0.0920,,
+ligadura,cred2,0,segundos,19.6000,,
+ligadura,confcos+cred2,0,vista débil después (test),0.8874,0.8780,antes
+ligadura,confcos+cred2,0,abstenciones,900,,umbral 0.211
+ligadura,confcos+cred2,0,créditos a la percepción,645,,
+ligadura,confcos+cred2,0,precisión del crédito,0.8868,,
+ligadura,confcos+cred2,0,acierto ligadas,0.6840,0.6988,p^3*oráculo (p después)
 ligadura,confcos+cred2,0,acierto ligadas | imágenes bien,1.0000,1.0000,oráculo
-ligadura,confcos+cred2,0,fracción COPIAR ligadas,0.7680,,
-ligadura,confcos+cred2,0,acierto no ligadas,0.7680,0.8580,p^1*oráculo (p después)
-ligadura,confcos+cred2,0,acierto no ligadas | imágenes bien,0.8710,1.0000,oráculo
-ligadura,confcos+cred2,0,fracción COPIAR no ligadas,0.1000,,
-ligadura,confcos+cred2,0,segundos,28.1000,,
-ligadura,total,0,segundos,198.1000,,
+ligadura,confcos+cred2,0,fracción COPIAR ligadas,0.8380,,
+ligadura,confcos+cred2,0,acierto no ligadas,0.8920,0.8874,p^1*oráculo (p después)
+ligadura,confcos+cred2,0,acierto no ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,confcos+cred2,0,fracción COPIAR no ligadas,0.0740,,
+ligadura,confcos+cred2,0,segundos,19.4000,,
+ligadura,total,0,segundos,115.6000,,

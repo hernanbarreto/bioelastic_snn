@@ -1,5 +1,6 @@
 prueba,variante,semilla,metrica,valor,referencia,nota
 interf,4b,1,Thinker antes: exacta n=3 con oráculo,0.9800,,
+interf,4b,1,vista débil (test),0.8845,,depth1
 interf,4b control: sigue con oráculo,1,Thinker después: exacta n=3 con oráculo,0.9880,0.9800,antes
 interf,4b control: sigue con oráculo,1,Thinker después: columna n=3 con oráculo,0.9960,0.9967,antes
 interf,4b control: sigue con oráculo,1,abstenciones,0,,
@@ -20,8 +21,12 @@ interf,4b cred2,1,Thinker después: exacta n=3 con oráculo,0.2500,0.9800,antes
 interf,4b cred2,1,Thinker después: columna n=3 con oráculo,0.7407,0.9967,antes
 interf,4b cred2,1,abstenciones,0,,
 interf,4b cred2,1,créditos a la percepción,569,,
+interf,4b cred2,1,precisión del crédito,0.8963,,símbolo enseñado == dígito real
+interf,4b cred2,1,vista débil después (test),0.8915,0.8845,antes
 interf,4b confcos+cred2,1,Thinker después: exacta n=3 con oráculo,0.8340,0.9800,antes
 interf,4b confcos+cred2,1,Thinker después: columna n=3 con oráculo,0.9627,0.9967,antes
 interf,4b confcos+cred2,1,abstenciones,4225,,
 interf,4b confcos+cred2,1,créditos a la percepción,581,,
-interf,total,1,segundos,98.9000,,
+interf,4b confcos+cred2,1,precisión del crédito,0.9208,,símbolo enseñado == dígito real
+interf,4b confcos+cred2,1,vista débil después (test),0.8950,0.8845,antes
+interf,total,1,segundos,71.3000,,
