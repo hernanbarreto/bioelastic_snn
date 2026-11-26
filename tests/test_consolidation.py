@@ -439,8 +439,8 @@ def test_idle_advances_the_pending_sleep_without_touching_the_last_input():
 
 
 # ---------------------------------------------------------------- F7: causas latentes
-def _cause_stream(seed=0):
-    """Clase 0: 15 de las dimensiones 0-29 activas al azar (muchas neuronas por clase)."""
+def _cause_stream(seed=0, streak=2):
+    """Clase 0: 15 de las dimensiones 0-29 activas al azar (varias neuronas por clase)."""
     rng = np.random.default_rng(seed)
 
     def sample(lo, hi):
@@ -448,12 +448,10 @@ def _cause_stream(seed=0):
         d = rng.choice(np.arange(lo, hi), 15, replace=False)
         x[d] = rng.uniform(0.5, 1.0, 15)
         return x
-    net = BioElasticNet(60, 3, episodic=True, causes=True, cause_active=5, cause_n=10,
-                        layer=dict(theta=0.75), readout=dict(consolidation=5.0))
+    net = BioElasticNet(60, 3, episodic=True, causes=True, cause_streak=streak, cause_n=10,
+                        layer=dict(theta=0.65), readout=dict(consolidation=5.0))
     for _ in range(300):
         net.step(sample(0, 30), 0)
-    for _ in range(10):                                    # la clase 0 deja de confirmarse
-        net.layer.tick()
     return net, sample
 
 
@@ -464,25 +462,33 @@ def test_same_key_with_a_new_label_updates_the_old_memory():
         net.causes = causes
         for _ in range(150):                               # las mismas claves, ahora con etiqueta 1
             net.step(sample(0, 30), 1)
-        acc[causes] = np.mean([net.predict(sample(0, 30)) == 1 for _ in range(100)])
+        acc[causes] = np.mean([net.predict(sample(0, 30)) == 1 for _ in range(200)])
         if causes:
-            assert net._pairs[(0, 1)][4] is True           # misma causa: la diferencia promedia cero
+            assert net._pairs[(0, 1)][4] is True           # la clave es la que el recuerdo esperaba
             assert net.relabeled > 0
-            flipped = int((net.labels(True) == 1).sum())
-    assert acc[True] > acc[False] + 0.1                    # se actualiza más rápido que sin inferencia
+    assert acc[True] > acc[False] + 0.2                    # se actualiza más rápido que sin inferencia
 
 
 def test_neighbouring_keys_with_a_new_label_create_a_new_cause_and_protect_the_old():
     net, sample = _cause_stream()
     n0 = net.layer.n
-    W0 = net.readout.W[:, :n0].copy()
     for _ in range(150):                                   # claves vecinas (desplazadas) con etiqueta 1
         net.step(sample(4, 34), 1)
-    assert net._pairs[(0, 1)][4] is False                  # causa nueva
-    assert net.protected > 0 and net.relabeled <= 2 and net.layer.n > n0
-    changed = (np.abs(net.readout.W[:, :n0] - W0).sum(axis=0) > 0).sum()
-    assert changed <= 2                                    # lo viejo intacto (salvo <= 2 dudosas)
-    assert np.mean([net.predict(sample(0, 30)) == 0 for _ in range(50)]) > 0.8
+    assert net._pairs[(0, 1)][4] is False                  # la clave no es la esperada: causa nueva
+    assert net.protected > 0 and net.relabeled == 0 and net.layer.n > n0
+    assert (net.labels(True)[:n0] == 0).all()              # los recuerdos viejos conservan su etiqueta
+    assert np.mean([net.predict(sample(0, 30)) == 0 for _ in range(200)]) > 0.9
+
+
+def test_a_memory_whose_label_keeps_being_confirmed_is_not_a_candidate():
+    rel = {}
+    for streak in (1, 6):
+        net, sample = _cause_stream(streak=streak)
+        rng = np.random.default_rng(3)
+        for _ in range(300):                               # las dos etiquetas conviven en la misma zona
+            net.step(sample(0, 30), int(rng.integers(2)))
+        rel[streak] = net.relabeled
+    assert rel[6] < 0.1 * rel[1]                           # sin rachas de conflictos no hay causa dormida
 
 
 def test_without_causes_the_head_behaves_as_before():
@@ -501,7 +507,7 @@ def test_without_causes_the_head_behaves_as_before():
 def test_protected_classes_are_not_depressed_in_the_slow_system():
     rng = np.random.default_rng(18)
     net = Cortex((8, 8, 1), 4, areas=[dict(rf=3, pool=2, max_features=16, theta=0.8)],
-                 heads=[dict(source="input", episodic=True, causes=True, cause_active=5, cause_n=3)],
+                 heads=[dict(source="input", episodic=True, causes=True, cause_streak=1, cause_n=3)],
                  projection=dict(source="all"), replay=0.0, joint=False)
     for _ in range(200):
         c = int(rng.integers(3)); net.step(_blob(rng, c), c)

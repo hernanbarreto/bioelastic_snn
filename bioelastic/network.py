@@ -43,15 +43,17 @@ class _State:
 class BioElasticNet:
     _EP_FIELDS = (("y", np.int16), ("t", np.int64), ("ctx", np.int32), ("norm", np.float32),
                   ("due", np.int64), ("gap", np.float32), ("fail", np.float32), ("ok", np.int8),
-                  ("tests", np.int32), ("m", np.float32), ("m_t", np.int64), ("ag_t", np.int64))
+                  ("tests", np.int32), ("m", np.float32), ("m_t", np.int64), ("cc", np.int16),
+                  ("nm", np.float32))
+    KEY_DIMS = 32                    # dimensiones de la expectativa de clave de cada recuerdo
 
     def __init__(self, n_inputs: int, n_outputs: int, *, context: int = 1, delay: float = 0.15,
                  tau: float = 0.0, grow_on_error: bool = True, rho_sup: float = 0.98,
                  anti: float = 0.3, grow_per_error: int = 4, maintain_every: int = 500,
                  protect: bool = False, vote_tau: float = 0.0, episodic: bool = False,
                  separation: float = 0.0, separation_relax: float = 0.0, recon_lock: int = 0,
-                 causes: bool = False, cause_n: float = 10.0, cause_T: float = 2.0,
-                 cause_tau: float = 2000.0, cause_rate: float = 1.0, cause_active: int = 100,
+                 causes: bool = False, cause_n: float = 10.0, cause_shift: float = 0.04,
+                 cause_tau: float = 2000.0, cause_rate: float = 1.0, cause_streak: int = 4,
                  layer: dict | None = None, readout: dict | None = None, seed: int = 0):
         self._config = dict(n_inputs=int(n_inputs), n_outputs=int(n_outputs), context=int(context),
                             delay=float(delay), tau=float(tau), grow_on_error=bool(grow_on_error),
@@ -60,8 +62,9 @@ class BioElasticNet:
                             protect=bool(protect), vote_tau=float(vote_tau), episodic=bool(episodic),
                             separation=float(separation), separation_relax=float(separation_relax),
                             recon_lock=int(recon_lock), causes=bool(causes), cause_n=float(cause_n),
-                            cause_T=float(cause_T), cause_tau=float(cause_tau), cause_rate=float(cause_rate),
-                            cause_active=int(cause_active),
+                            cause_shift=float(cause_shift), cause_tau=float(cause_tau),
+                            cause_rate=float(cause_rate),
+                            cause_streak=int(cause_streak),
                             layer=dict(layer or {}), readout=dict(readout or {}), seed=int(seed))
         self.N = int(n_inputs)
         self.tau = float(tau)
@@ -86,12 +89,20 @@ class BioElasticNet:
         self.recon_lock = int(recon_lock)
         self.locked_skips = 0
         # Inferencia de causas latentes (ver `_causes`).
-        self.causes = bool(causes); self.cause_n = float(cause_n); self.cause_T = float(cause_T)
+        self.causes = bool(causes); self.cause_n = float(cause_n); self.cause_shift = float(cause_shift)
         self.cause_tau = float(cause_tau); self.cause_rate = float(cause_rate)
-        self.cause_active = int(cause_active)
+        self.cause_streak = int(cause_streak)
         if self.causes and not episodic:
             raise ValueError("causes necesita la huella episódica (episodic=True)")
         self._pairs: dict = {}                           # (a, b) -> (media de d, media de |d|^2, n, t, decisión)
+        # Expectativa de clave: cada recuerdo guarda la media de las entradas que lo
+        # confirmaron, comprimida por una proyección aleatoria fija a KEY_DIMS dimensiones.
+        self._P = None; self._kq = None
+        if self.causes:
+            D = self.N * self.context
+            self._P = (np.random.default_rng([seed, 97]).standard_normal((self.KEY_DIMS, D))
+                       / np.sqrt(self.KEY_DIMS)).astype(np.float32)
+            self._kq = np.zeros((0, self.KEY_DIMS), dtype=np.float32)
         self.relabeled = 0; self.protected = 0; self.new_causes = 0
         self.protect_classes = np.empty(0, dtype=np.int64)
         self.rng = np.random.default_rng(seed)
@@ -152,7 +163,13 @@ class BioElasticNet:
             ep["norm"][j] = np.float32(np.sqrt(e @ e) / 255.0)
             ep["due"][j] = self.layer.t; ep["gap"][j] = 0.0; ep["fail"][j] = 0.0
             ep["ok"][j] = -1; ep["tests"][j] = 0; ep["m"][j] = -1.0; ep["m_t"][j] = -1
-            ep["ag_t"][j] = self.layer.t
+            ep["cc"][j] = 0; ep["nm"][j] = 1.0
+            if self._kq is not None:
+                if j >= len(self._kq):
+                    kq = np.zeros((len(self.episodes), self.KEY_DIMS), dtype=np.float32)
+                    kq[:len(self._kq)] = self._kq
+                    self._kq = kq
+                self._kq[j] = self._P @ (e / np.float32(max(float(np.sqrt(e @ e)), 1e-12)))
 
     def _on_remove(self, j: int, last: int):
         self.readout.remove_input(j, last)
@@ -160,6 +177,8 @@ class BioElasticNet:
             self.episodes[j] = self.episodes[last]
             for arr in self.ep.values():
                 arr[j] = arr[last]
+            if self._kq is not None:
+                self._kq[j] = self._kq[last]
         if self.watch == j:
             self.watch = -1
         elif self.watch == last:
@@ -359,71 +378,79 @@ class BioElasticNet:
         self._after_learning()
 
     # ------------------------------------------------------------------ causas latentes
-    def _unit(self, v: Volley) -> np.ndarray:
-        x = np.zeros(self.layer.D, dtype=np.float32)
-        x[v.idx] = v.val / np.float32(max(v.norm, 1e-12))
-        return x
-
     def _causes(self, v: Volley, st, target: int, pref: np.ndarray):
         """Inferencia de causas latentes (Gershman, Monfils, Norman y Niv 2017): ante un
-        error, ¿la entrada viene de la misma causa que el recuerdo recuperado (su etiqueta
-        cambió: se modifica) o de una causa nueva parecida (memoria nueva, la vieja se
-        protege)?
+        error de etiqueta, ¿la entrada viene de la misma causa que el recuerdo recuperado
+        (su etiqueta cambió: se modifica) o de una causa nueva parecida (memoria nueva, la
+        vieja se protege)?
 
-        Medido: el parecido de UNA entrada con el recuerdo (el coseno con la primera
-        ganadora, la misma señal que `Cortex.familiarity()` de la ronda de integración 3)
-        no separa los dos casos: un pulóver reetiquetado da 0,747 con las neuronas de
-        pulóver y un abrigo, 0,751 (validación, semilla 10). Como verosimilitud de una sola
-        observación no alcanza; sí como estadístico acumulado.
-        Lo que los separa es la consistencia a lo largo de las repeticiones: si es la misma
-        causa, las entradas en conflicto se distribuyen como los recuerdos que recuperan
-        (la diferencia entrada - huella recuperada promedia cero); si es una causa vecina,
-        la diferencia apunta siempre hacia el mismo lado. Para cada par «a -> b» (una
-        ganadora de la clase a, dormida: no confirmó su etiqueta en `cause_active` pasos;
-        el objetivo es b) se acumula, con olvido de constante `cause_tau` (contexto
-        temporal), la media m de d = x - e (entrada y huella episódica de la ganadora de a
-        más temprana, ambas normalizadas) y la media s2 de |d|^2. Es una prueba de
-        Hotelling isotrópica secuencial:
+        Medido (validación): el parecido de UNA entrada con el recuerdo (el coseno con la
+        primera ganadora, la misma señal que `Cortex.familiarity()` de la ronda de
+        integración 3) no separa los dos casos: un pulóver reetiquetado da 0,747 con las
+        neuronas de pulóver y un abrigo, 0,751. Tampoco la diferencia con la huella
+        episódica (las neuronas nacen de entradas atípicas: novedad o error, y eso sesga
+        la comparación) ni una media por etiqueta (se contamina cuando la etiqueta cambia
+        de significado). Lo que los separa es el error de predicción de la CLAVE acumulado
+        a lo largo de las repeticiones: cada recuerdo j guarda su expectativa de clave k_j,
+        la media de las entradas que lo confirmaron (proyectada a KEY_DIMS dimensiones por
+        una matriz aleatoria fija). Si es la misma causa, las entradas en conflicto son
+        como las que j esperaba: d = P x - k_j promedia cero; si es una causa vecina, d
+        apunta siempre hacia el mismo lado.
 
-            T = n |m|^2 / (s2 - |m|^2)          (~1 si es la misma causa)
+        Para cada par «a -> b» (una ganadora de la clase a, dormida: lleva `cause_streak`
+        conflictos seguidos sin que una entrada de su clase la confirme; el objetivo es b)
+        se acumulan, con olvido de
+        constante `cause_tau` (contexto temporal), la media m de d y la media s2 de |d|^2.
+        Con n observaciones efectivas (a lo sumo 50), T = n |m|^2 / (s2 - |m|^2) es el
+        estadístico de Hotelling isotrópico (~1 si es la misma causa) y
 
-        Con al menos `cause_n` conflictos: T < `cause_T` -> la misma causa con otra
-        etiqueta: reconsolidar las ganadoras de a (`_reconsolidate`); si no, causa nueva:
+            c = (T - 1) / n  ~  |media de d|^2 / varianza de d
+
+        el corrimiento relativo (un tamaño de efecto: no crece con n como T). Con al menos
+        `cause_n` conflictos: c + 2 e.e. < `cause_shift` (e.e. = sqrt(2 / KEY_DIMS) / n, el
+        error típico de c si es la misma causa: reescribir un recuerdo por error cuesta
+        mucho más que demorarse) -> la misma causa con otra etiqueta:
+        reconsolidar las ganadoras de a (`_reconsolidate`); si no, causa nueva:
         neurogénesis, y lo de a queda protegido (sin cambio de lectura ni anti-STDP;
         `protect_classes` lo protege también en el sistema lento). Mientras la evidencia
         no alcanza, se trata como causa nueva (provisoria). Las ganadoras de causas activas
-        (dos clases que conviven) aprenden como siempre.
+        (su etiqueta se sigue confirmando entre un conflicto y otro: dos clases que
+        conviven en esa zona, aunque sus claves se superpongan) aprenden como siempre.
         Devuelve (máscara de reconsolidación, máscara de protección) sobre las ganadoras."""
         ep = self.ep; t = self.layer.t; wn = v.winners
         n = len(wn)
         relabel = np.zeros(n, dtype=bool); prot = np.zeros(n, dtype=bool)
-        if pref[0] == target:                                 # confirma su causa
-            ep["ag_t"][int(wn[0])] = t
+        px = self._P[:, v.idx] @ (v.val / np.float32(max(v.norm, 1e-12)))
+        agree = np.flatnonzero(pref == target)
+        if len(agree):                                        # las que aciertan siguen activas
+            ep["cc"][wn[agree]] = 0
+            j = int(wn[agree[0]])                             # la más temprana ajusta su expectativa
+            ep["nm"][j] += 1.0
+            self._kq[j] += np.float32(max(1.0 / float(ep["nm"][j]), 0.02)) * (px - self._kq[j])
         conf = np.flatnonzero((pref >= 0) & (pref != target))
         if len(conf) == 0:
             return relabel, prot
-        dormant = np.array([t - int(ep["ag_t"][int(wn[k])]) > self.cause_active for k in conf])
+        ep["cc"][wn[conf]] = np.minimum(ep["cc"][wn[conf]] + 1, 30000)
+        dormant = ep["cc"][wn[conf]] >= self.cause_streak
         if not dormant.any():
             return relabel, prot
-        x = self._unit(v)
         verdicts = {}
         for i, k in enumerate(conf):
             a = int(pref[k])
             if not dormant[i] or a in verdicts:
                 continue                                      # una vez por causa: la más temprana
-            e = self.episode(int(wn[k]))
-            e /= np.float32(max(float(np.sqrt(e @ e)), 1e-12))
-            d = x - e
+            d = px - self._kq[int(wn[k])]
             key = (a, int(target))
-            md, s2, nab, tl, _ = self._pairs.get(key, (np.zeros_like(x), 0.0, 0.0, t, None))
+            md, s2, nab, tl, _ = self._pairs.get(key, (np.zeros_like(px), 0.0, 0.0, t, None))
             nab = nab * float(np.exp(-(t - tl) / self.cause_tau)) + 1.0
             r = 1.0 / min(nab, 50.0)
             md = md + np.float32(r) * (d - md)
             s2 = s2 + r * (float(d @ d) - s2)
             same = None                                       # None: aún sin evidencia
             if nab >= self.cause_n:
-                mm = float(md @ md)
-                same = min(nab, 50.0) * mm / max(s2 - mm, 1e-9) < self.cause_T
+                mm = float(md @ md); ne = min(nab, 50.0)
+                c = (ne * mm / max(s2 - mm, 1e-9) - 1.0) / ne
+                same = bool(c + 2.0 * np.sqrt(2.0 / self.KEY_DIMS) / ne < self.cause_shift)
             self._pairs[key] = (md, s2, nab, t, same)
             verdicts[a] = same
         for i, k in enumerate(conf):
@@ -586,6 +613,8 @@ class BioElasticNet:
                    R_W=R.W[:, :n], R_count=R.count[:n], R_baseline=np.float64(R.baseline))
         if self.episodes is not None:
             out["episodes"] = self.episodes[:n]
+            if self._kq is not None:
+                out["key_expect"] = self._kq[:n]
             out.update({f"ep_{name}": arr[:n] for name, arr in self.ep.items()})
         if self.separation > 0.0:
             out["L_vig"] = L.vig[:n] if L.vig is not None else np.zeros(n, dtype=np.float32)
@@ -625,6 +654,10 @@ class BioElasticNet:
                     e = net.episodes[:n].astype(np.float32)
                     arr[:n] = np.sqrt(np.einsum("ij,ij->i", e, e)) / 255.0
                 net.ep[name] = arr
+            if net._kq is not None:
+                net._kq = np.zeros((cap, cls.KEY_DIMS), dtype=np.float32)
+                if "key_expect" in z:
+                    net._kq[:n] = z["key_expect"]
         return net
 
     def save(self, path):

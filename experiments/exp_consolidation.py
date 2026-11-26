@@ -903,12 +903,13 @@ def val_score(rows, spec) -> float:
 
 
 SWEEP_A = {"sin causas": "",
-           "causas n=10 T=2": CAUSES,
-           "causas n=20 T=2": CAUSES + "+head.cause_n=20",
-           "causas n=10 T=1.7": CAUSES + "+head.cause_T=1.7",
-           "causas n=10 T=2.5": CAUSES + "+head.cause_T=2.5",
-           "causas n=10 T=2 activa=30": CAUSES + "+head.cause_active=30",
-           "causas n=10 T=2 sin proteger el lento": CAUSES + "+top.cause_slow=false"}
+           "causas": CAUSES,
+           "causas, corrimiento 0.06": CAUSES + "+head.cause_shift=0.06",
+           "causas, corrimiento 0.03": CAUSES + "+head.cause_shift=0.03",
+           "causas, racha 2": CAUSES + "+head.cause_streak=2",
+           "causas, racha 8": CAUSES + "+head.cause_streak=8",
+           "causas sin proteger el lento": CAUSES + "+top.cause_slow=false",
+           "sólo proteger (nunca reconsolidar)": CAUSES + "+head.cause_shift=-9"}
 SWEEP_B = {
     "recuerdo de respaldo (F1)": "+top.recall=fallback+top.recall_gain=0.5",
     "esquema congelado (F2)": "+top.schema=gate+top.schema_frozen=500",
