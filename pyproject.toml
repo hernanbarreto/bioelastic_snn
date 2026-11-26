@@ -4,15 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bioelastic-snn"
-version = "0.1.0"
-description = "SNN bio-elástica de aprendizaje online, agnóstica a la modalidad"
+version = "0.2.0"
+description = "SNN bio-elástica y profunda de aprendizaje online, agnóstica a la modalidad"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = ["numpy>=1.24"]
+dependencies = ["numpy>=1.24", "scipy"]
 
 [project.optional-dependencies]
-experiments = ["scipy", "scikit-learn", "matplotlib"]
-dev = ["pytest", "scipy", "scikit-learn"]
+experiments = ["scikit-learn", "matplotlib"]
+dev = ["pytest", "scikit-learn", "matplotlib"]
 
 [tool.setuptools]
 packages = ["bioelastic"]

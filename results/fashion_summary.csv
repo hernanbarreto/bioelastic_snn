@@ -1,0 +1,5 @@
+model,test_acc,preq_acc,areas,features,assoc_neurons,units,synapses,train_seconds
+depth1,0.8256,0.8122,1,0,6900,6910,1813775,152.8000
+depth2,0.8896,0.8731,2,256,6900,191230,2188815,287.2000
+depth3,0.8891,0.8731,3,512,6900,223230,2842639,591.5000
+mlp_backprop_lr0.001,0.8351,,2,,256,266,203264,

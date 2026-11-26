@@ -79,19 +79,23 @@ class Readout:
         self.count[idx] += 1.0
         return pre.astype(np.float32)
 
-    def learn(self, idx: np.ndarray, h: np.ndarray, target: int, V: np.ndarray | None = None):
+    def learn(self, idx: np.ndarray, h: np.ndarray, target: int, V: np.ndarray | None = None,
+              p: np.ndarray | None = None):
+        """`p` externo: la competencia entre salidas la resolvió la red completa."""
         if len(idx) == 0:
             return
-        p = self.probs(self.potentials(idx, h) if V is None else V)
+        if p is None:
+            p = self.probs(self.potentials(idx, h) if V is None else V)
         err = -p
         err[target] += 1.0
         self.W[:, idx] += (self.lr * err)[:, None].astype(np.float32) * self._plasticity(idx, h)[None, :]
 
     def learn_reward(self, idx: np.ndarray, h: np.ndarray, action: int, R: float,
-                     V: np.ndarray | None = None):
+                     V: np.ndarray | None = None, p: np.ndarray | None = None):
         if len(idx) == 0:
             return
-        p = self.probs(self.potentials(idx, h) if V is None else V)
+        if p is None:
+            p = self.probs(self.potentials(idx, h) if V is None else V)
         elig = -p
         elig[action] += 1.0
         adv = R - self.baseline

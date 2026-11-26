@@ -1,2 +1,5 @@
-test_acc,mlp_sgd_test_acc,neurons,created,pruned,train_seconds
-0.9717,0.9470,1914,2467,553,36.3000
+model,test_acc,preq_acc,areas,features,assoc_neurons,units,synapses,train_seconds
+depth1,0.9675,0.9578,1,0,2068,2078,423666,62.3000
+depth2,0.9852,0.9761,2,256,2068,186398,798706,206.2000
+depth3,0.9852,0.9765,3,512,2068,218398,1452530,538.4000
+mlp_backprop_lr0.001,0.9582,,2,,256,266,203264,

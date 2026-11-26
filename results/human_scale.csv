@@ -1,0 +1,5 @@
+scale,neurons,synapses,memory,core_seconds_per_step
+1e-06,16 k,112 M,896 MB,0.303
+0.0001,1.6 M,11.2 G,89.6 GB,30.3
+0.01,160 M,1.12 T,8.96 TB,3.03 k
+1,16 G,112 T,896 TB,303 k

@@ -46,10 +46,10 @@ def main():
     N = int(sys.argv[1]) if len(sys.argv) > 1 else 400000
     raw = load_text()[:N]
     data = TextEncoder()(raw)
-    net = BioElasticNet(256, 256, context=8, delay=0.1, layer=dict(max_neurons=30000))
+    net = BioElasticNet(256, 256, context=8, delay=0.1, layer=dict(max_neurons=30000, fan_in=16))
     grams = {o: NGram(o) for o in (2, 3, 5)}
     log = CsvLog("text_online", ["byte", "acc_win", "acc_2gram", "acc_3gram", "acc_5gram",
-                                 "neurons", "created", "pruned", "ctx_5gram"])
+                                 "neurons", "created", "pruned", "ctx_5gram", "synapse_bytes"])
     win = 0; gw = dict.fromkeys(grams, 0); t0 = time.time()
     for t in range(N - 1):
         y = int(data[t + 1])
@@ -61,7 +61,7 @@ def main():
         if (t + 1) % WIN == 0:
             st = net.stats()
             log.row(t + 1, win / WIN, gw[2] / WIN, gw[3] / WIN, gw[5] / WIN,
-                    st["neurons"], st["created"], st["pruned"], grams[5].size())
+                    st["neurons"], st["created"], st["pruned"], grams[5].size(), net.layer.nbytes())
             win = 0; gw = dict.fromkeys(grams, 0)
     log.close()
     print(f"{time.time() - t0:.0f}s")

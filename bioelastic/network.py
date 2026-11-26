@@ -1,12 +1,16 @@
-"""BioElasticNet: encoder -> línea de retardos -> capa elástica -> decisión.
+"""BioElasticNet: un área de asociación elástica con su capa de decisión.
 
-La red es la misma para cualquier modalidad. Lo único que cambia es el encoder
-(que traduce el dato crudo a voleas de latencia) y `context` (cuántos frames
-pasados ve la capa a través de retardos axonales).
+    volea -> memoria de entrada (retardos o traza lenta) -> columna elástica -> decisión
 
-Línea de retardos: el frame de hace `lag` pasos llega con sus spikes atrasados
-`lag * delay`. En código de latencia eso equivale a restarle fuerza, así que el
-orden temporal del flujo queda escrito en los tiempos de spike de una sola volea.
+Es la red completa de una sola área y también el bloque con el que `Cortex` arma
+redes profundas. No conoce la modalidad: recibe voleas de latencia.
+
+Memoria de entrada (dos constantes de tiempo dendríticas):
+  context/delay  línea de retardos: el frame de hace `lag` pasos llega con sus spikes
+                 atrasados `lag * delay`. En código de latencia eso es restarle fuerza,
+                 así que el *orden* reciente queda escrito en una sola volea.
+  tau            traza lenta: cada aferente conserva su último spike con decaimiento
+                 exp(-1/tau). Sin orden, pero con alcance largo (memoria de trabajo).
 
 Tres regímenes de aprendizaje, todos online y locales:
   teach(y)      supervisado: error por salida como tercer factor.
@@ -25,6 +29,7 @@ from .layer import ElasticLayer, Volley
 from .readout import Readout
 
 _EPS = 1e-3
+_TRACE_FLOOR = 0.05
 
 
 @dataclass
@@ -37,16 +42,17 @@ class _State:
 
 class BioElasticNet:
     def __init__(self, n_inputs: int, n_outputs: int, *, context: int = 1, delay: float = 0.15,
-                 grow_on_error: bool = True, rho_sup: float = 0.98, anti: float = 0.3,
-                 grow_per_error: int = 4, maintain_every: int = 500,
+                 tau: float = 0.0, grow_on_error: bool = True, rho_sup: float = 0.98,
+                 anti: float = 0.3, grow_per_error: int = 4, maintain_every: int = 500,
                  layer: dict | None = None, readout: dict | None = None, seed: int = 0):
         self._config = dict(n_inputs=int(n_inputs), n_outputs=int(n_outputs), context=int(context),
-                            delay=float(delay), grow_on_error=bool(grow_on_error),
+                            delay=float(delay), tau=float(tau), grow_on_error=bool(grow_on_error),
                             rho_sup=float(rho_sup), anti=float(anti),
                             grow_per_error=int(grow_per_error), maintain_every=int(maintain_every),
                             layer=dict(layer or {}), readout=dict(readout or {}), seed=int(seed))
         self.N = int(n_inputs)
-        self.context = int(context)
+        self.tau = float(tau)
+        self.context = 1 if self.tau > 0 else int(context)
         self.delay = float(delay)
         self.grow_on_error = bool(grow_on_error)
         self.rho_sup = float(rho_sup)
@@ -61,6 +67,8 @@ class BioElasticNet:
         self._pending_cls: int | None = None
         self._acc: dict | None = None
         self._buf: deque = deque(maxlen=self.context)
+        self._trace = np.zeros(self.N, dtype=np.float32) if self.tau > 0 else None
+        self._decay = np.float32(np.exp(-1.0 / self.tau)) if self.tau > 0 else None
         self._last: _State | None = None
 
     # ------------------------------------------------------------------ hooks estructurales
@@ -93,11 +101,21 @@ class BioElasticNet:
 
     def reset_context(self):
         self._buf.clear()
+        if self._trace is not None:
+            self._trace[:] = 0.0
 
     def _push(self, frame):
-        self._buf.appendleft(self._as_sparse(frame))
+        idx, val = self._as_sparse(frame)
+        if self._trace is None:
+            self._buf.appendleft((idx, val))
+        else:
+            self._trace *= self._decay
+            self._trace[idx] = np.maximum(self._trace[idx], val)
 
     def _composite(self):
+        if self._trace is not None:
+            idx = np.flatnonzero(self._trace > _TRACE_FLOOR)
+            return idx, self._trace[idx]
         if self.context == 1:
             return self._buf[0]
         idxs, vals = [], []
@@ -137,17 +155,22 @@ class BioElasticNet:
         if self.maintain_every and self.layer.t % self.maintain_every == 0:
             self.layer.maintain()
 
-    def teach(self, target: int):
-        """Supervisado: corrige la decisión y adapta/crea neuronas ocultas."""
+    def teach(self, target: int, pred: int | None = None, p: np.ndarray | None = None):
+        """Supervisado: corrige la decisión y adapta/crea neuronas ocultas.
+
+        `pred` y `p` permiten que varias áreas compartan una misma decisión y un mismo
+        error (el neuromodulador es global): los pasa `Cortex`.
+        """
         st = self._last; v = st.v; L = self.layer; R = self.readout
+        pred = st.pred if pred is None else pred
         L.tick()
         wn = v.winners
         pref = R.preferred(wn)
         if not v.novel:                                       # sin spike presináptico no hay plasticidad
-            R.learn(wn, st.h, target, st.V)
+            R.learn(wn, st.h, target, st.V, p)
         agree = np.flatnonzero(pref == target)
         best_agree = float(v.cos[agree[0]]) if len(agree) and not v.novel else 0.0
-        grow = v.novel or (self.grow_on_error and st.pred != target and best_agree < self.rho_sup)
+        grow = v.novel or (self.grow_on_error and pred != target and best_agree < self.rho_sup)
         if grow and self._recruit(v, target) >= 0:
             pass
         elif len(wn):
@@ -158,25 +181,28 @@ class BioElasticNet:
                 L.stdp(int(wn[0]), v, -self.anti)
         self._after_learning()
 
-    def reinforce(self, reward: float):
+    def reinforce(self, reward: float, pred: int | None = None, p: np.ndarray | None = None):
         """Recompensa escalar (sin etiqueta): R-STDP con baseline."""
         st = self._last; v = st.v; L = self.layer; R = self.readout
+        pred = st.pred if pred is None else pred
         L.tick()
         wn = v.winners
-        if v.novel:                                           # capa en silencio: neurona nueva
+        if v.novel:                                           # columna en silencio: neurona nueva
             self._recruit(v, None)
         else:
-            p_act = float(R.probs(st.V)[st.pred])
-            R.learn_reward(wn, st.h, st.pred, reward, st.V)
+            p = R.probs(st.V) if p is None else p
+            p_act = float(p[pred])
+            R.learn_reward(wn, st.h, pred, reward, st.V, p)
             if reward > 0:
                 j = int(wn[0]); L.stdp(j, v, +1.0); L.credit(j)
             elif self.grow_on_error and p_act > 0.5 and v.cos[0] < self.rho_sup:
                 self._recruit(v, None)                        # seguro y equivocado: dividir
         self._after_learning()
 
-    def observe(self, frame):
-        """No supervisado: sólo aprende representación."""
-        self.forward(frame)
+    def observe(self, frame=None):
+        """No supervisado: sólo aprende representación. Sin `frame` usa el último forward."""
+        if frame is not None:
+            self.forward(frame)
         v = self._last.v; L = self.layer
         L.tick()
         if v.novel:
@@ -251,30 +277,37 @@ class BioElasticNet:
         L = self.layer
         return dict(neurons=L.n, created=L.created, pruned=L.pruned, evicted=L.evicted)
 
-    def save(self, path):
-        """Guarda la red completa (estructura, pesos y contadores) en un .npz."""
+    def state(self) -> dict:
+        """Estructura, pesos y contadores como diccionario de arrays."""
         L, R = self.layer, self.readout
         n = L.n
-        arrays = {f"L_{name}": getattr(L, name)[:n] for name in L._STATS}
-        np.savez_compressed(path, config=json.dumps(self._config), Wt=L.Wt[:, :n],
-                            L_meta=np.array([L.t, L.created, L.pruned, L.evicted], dtype=np.int64),
-                            R_W=R.W[:, :n], R_count=R.count[:n],
-                            R_baseline=np.float64(R.baseline), **arrays)
+        out = {f"L_{name}": getattr(L, name)[:n] for name in L._STATS}
+        out.update(config=np.array(json.dumps(self._config)), L_pre=L.pre[:n], L_w=L.w[:n],
+                   L_meta=np.array([L.t, L.created, L.pruned, L.evicted], dtype=np.int64),
+                   R_W=R.W[:, :n], R_count=R.count[:n], R_baseline=np.float64(R.baseline))
+        return out
+
+    @classmethod
+    def from_state(cls, z) -> "BioElasticNet":
+        cfg = json.loads(str(z["config"]))
+        n = z["L_pre"].shape[0]
+        cap = max(256, 1 << int(np.ceil(np.log2(max(n, 1)))))
+        cfg["layer"]["capacity"] = cap; cfg["readout"]["capacity"] = cap
+        net = cls(cfg.pop("n_inputs"), cfg.pop("n_outputs"), **cfg)
+        L, R = net.layer, net.readout
+        L.pre[:n] = z["L_pre"]; L.w[:n] = z["L_w"]
+        for name in L._STATS:
+            getattr(L, name)[:n] = z[f"L_{name}"]
+        L.t, L.created, L.pruned, L.evicted = (int(v) for v in z["L_meta"])
+        L.n = n
+        R.W[:, :n] = z["R_W"]; R.count[:n] = z["R_count"]; R.n = n
+        R.baseline = float(z["R_baseline"])
+        return net
+
+    def save(self, path):
+        np.savez_compressed(path, **self.state())
 
     @classmethod
     def load(cls, path) -> "BioElasticNet":
         with np.load(path, allow_pickle=False) as z:
-            cfg = json.loads(str(z["config"]))
-            n = z["Wt"].shape[1]
-            cap = max(256, 1 << int(np.ceil(np.log2(max(n, 1)))))
-            cfg["layer"]["capacity"] = cap; cfg["readout"]["capacity"] = cap
-            net = cls(cfg.pop("n_inputs"), cfg.pop("n_outputs"), **cfg)
-            L, R = net.layer, net.readout
-            L.Wt[:, :n] = z["Wt"]
-            for name in L._STATS:
-                getattr(L, name)[:n] = z[f"L_{name}"]
-            L.t, L.created, L.pruned, L.evicted = (int(v) for v in z["L_meta"])
-            L.n = n
-            R.W[:, :n] = z["R_W"]; R.count[:n] = z["R_count"]; R.n = n
-            R.baseline = float(z["R_baseline"])
-        return net
+            return cls.from_state(z)

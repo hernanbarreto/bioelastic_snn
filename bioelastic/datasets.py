@@ -12,6 +12,7 @@ import numpy as np
 DATA = Path(__file__).resolve().parent.parent / "data"
 
 _MNIST = "https://raw.githubusercontent.com/fgnt/mnist/master/"
+_FASHION = "https://raw.githubusercontent.com/zalandoresearch/fashion-mnist/master/data/fashion/"
 _SHAKESPEARE = ("https://raw.githubusercontent.com/karpathy/char-rnn/master/"
                 "data/tinyshakespeare/input.txt")
 _FSDD = "https://github.com/Jakobovski/free-spoken-digit-dataset.git"
@@ -24,15 +25,24 @@ def _fetch(url: str, dest: Path) -> Path:
     return dest
 
 
-def load_mnist():
-    """(Xtr, ytr, Xte, yte) con X en uint8 (N, 28, 28)."""
+def _idx_dataset(url: str, folder: str):
     def idx(name, offset, shape):
-        raw = gzip.open(_fetch(_MNIST + name, DATA / "mnist" / name)).read()
+        raw = gzip.open(_fetch(url + name, DATA / folder / name)).read()
         return np.frombuffer(raw, dtype=np.uint8, offset=offset).reshape(shape)
     return (idx("train-images-idx3-ubyte.gz", 16, (-1, 28, 28)),
             idx("train-labels-idx1-ubyte.gz", 8, (-1,)),
             idx("t10k-images-idx3-ubyte.gz", 16, (-1, 28, 28)),
             idx("t10k-labels-idx1-ubyte.gz", 8, (-1,)))
+
+
+def load_mnist():
+    """Dígitos manuscritos. (Xtr, ytr, Xte, yte) con X en uint8 (N, 28, 28)."""
+    return _idx_dataset(_MNIST, "mnist")
+
+
+def load_fashion():
+    """Fashion-MNIST (prendas de ropa), mismo formato que MNIST."""
+    return _idx_dataset(_FASHION, "fashion")
 
 
 def load_text() -> bytes:

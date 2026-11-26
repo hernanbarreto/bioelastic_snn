@@ -1,4 +1,4 @@
-"""Mismo problema que bioNet_online_B (generador, semilla y ruido idénticos).
+"""Tarea sintética del bioNet original (generador, semilla y ruido idénticos).
 
 Protocolo del original: 800 muestras de evaluación, 3000 de warm-up, 16000 pasos
 online, evaluación cada 1000. Acá las 3000 de warm-up se descartan (no se usan).
