@@ -1,0 +1,29 @@
+prueba,sistema,caso,acc_media,acc_min,semillas,nodos_busqueda,neuronas_say,segundos
+C3 sola,con reloj y anticipación (v0),5-8 saltos,0.8000,0.0000,5,0.3961,3.0000,10.1231
+C3 sola,con reloj y anticipación (v0),"5-8 saltos, 16 distractores + 8 ruidos",0.8000,0.0000,5,0.3961,3.0000,10.1232
+C5 sola,establecido = hits>=1 (v0),"orden de 8, distancia >= 4",1.0000,1.0000,5,0.2534,27.4000,14.0307
+C6 sola,memoria por pares (v0),5 eventos,0.1830,0.1650,5,1.5505,72.2000,18.8532
+multitarea mezclada,búsqueda exhaustiva (v0),"C0 f(x), todos los x",1.0000,1.0000,5,0.6116,32.0000,54.1898
+multitarea mezclada,búsqueda exhaustiva (v0),"C1 v nunca compuesto, 1-2 saltos",1.0000,1.0000,5,0.6116,32.0000,54.1899
+multitarea mezclada,búsqueda exhaustiva (v0),"C1 v nunca compuesto, 3-4 saltos",1.0000,1.0000,5,0.6116,32.0000,54.1899
+multitarea mezclada,búsqueda exhaustiva (v0),C2 x nunca compuesto,1.0000,1.0000,5,0.6116,32.0000,54.1899
+multitarea mezclada,búsqueda exhaustiva (v0),C3 5-8 saltos,0.4000,0.0000,5,0.6116,32.0000,54.1899
+multitarea mezclada,búsqueda exhaustiva (v0),"C3 5-8 saltos, 16 distractores + 8 ruidos",0.4000,0.0000,5,0.6116,32.0000,54.1900
+multitarea mezclada,búsqueda exhaustiva (v0),"C3 3 saltos, orden reverso",0.4000,0.0000,5,0.6116,32.0000,54.1900
+multitarea mezclada,búsqueda exhaustiva (v0),"C3 3 saltos, hecho corregido",0.4000,0.0000,5,0.6116,32.0000,54.1900
+multitarea mezclada,búsqueda exhaustiva (v0),"C3 3 saltos, distractores que apuntan a la cadena",0.4000,0.0000,5,0.6116,32.0000,54.1900
+multitarea mezclada,búsqueda exhaustiva (v0),C4 x nunca compuesto,1.0000,1.0000,5,0.6116,32.0000,54.1900
+multitarea mezclada,búsqueda exhaustiva (v0),"C5 orden de 8, distancia >= 4",0.9070,0.6650,5,0.6116,32.0000,54.1900
+multitarea mezclada,búsqueda exhaustiva (v0),C6 5 eventos,1.0000,1.0000,5,0.6116,32.0000,54.1901
+multitarea mezclada,crédito a lo percibido (v0),"C0 f(x), todos los x",0.9810,0.9600,5,1.0946,710.8000,93.6895
+multitarea mezclada,crédito a lo percibido (v0),"C1 v nunca compuesto, 1-2 saltos",0.9750,0.9350,5,1.0946,710.8000,93.6896
+multitarea mezclada,crédito a lo percibido (v0),"C1 v nunca compuesto, 3-4 saltos",0.9790,0.9300,5,1.0946,710.8000,93.6897
+multitarea mezclada,crédito a lo percibido (v0),C2 x nunca compuesto,0.9600,0.8900,5,1.0946,710.8000,93.6897
+multitarea mezclada,crédito a lo percibido (v0),C3 5-8 saltos,1.0000,1.0000,5,1.0946,710.8000,93.6938
+multitarea mezclada,crédito a lo percibido (v0),"C3 5-8 saltos, 16 distractores + 8 ruidos",1.0000,1.0000,5,1.0946,710.8000,93.6939
+multitarea mezclada,crédito a lo percibido (v0),"C3 3 saltos, orden reverso",1.0000,1.0000,5,1.0946,710.8000,93.6939
+multitarea mezclada,crédito a lo percibido (v0),"C3 3 saltos, hecho corregido",1.0000,1.0000,5,1.0946,710.8000,93.6939
+multitarea mezclada,crédito a lo percibido (v0),"C3 3 saltos, distractores que apuntan a la cadena",1.0000,1.0000,5,1.0946,710.8000,93.6939
+multitarea mezclada,crédito a lo percibido (v0),C4 x nunca compuesto,0.9650,0.8950,5,1.0946,710.8000,93.6939
+multitarea mezclada,crédito a lo percibido (v0),"C5 orden de 8, distancia >= 4",0.0040,0.0000,5,1.0946,710.8000,93.6939
+multitarea mezclada,crédito a lo percibido (v0),C6 5 eventos,1.0000,1.0000,5,1.0946,710.8000,93.6939

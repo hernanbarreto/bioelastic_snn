@@ -1,0 +1,37 @@
+prueba,sistema,caso,acc_media,acc_min,semillas,nodos_busqueda,neuronas_say,segundos
+multitarea mezclada,thinker,"C0 f(x), todos los x",1.0000,1.0000,5,0.4516,32.0000,74.0509
+multitarea mezclada,thinker,"C1 v nunca compuesto, 1-2 saltos",1.0000,1.0000,5,0.4516,32.0000,74.0510
+multitarea mezclada,thinker,"C1 v nunca compuesto, 3-4 saltos",1.0000,1.0000,5,0.4516,32.0000,74.0511
+multitarea mezclada,thinker,C2 x nunca compuesto,0.9870,0.9350,5,0.4516,32.0000,74.0511
+multitarea mezclada,thinker,C3 5-8 saltos,1.0000,1.0000,5,0.4516,32.0000,74.0511
+multitarea mezclada,thinker,"C3 5-8 saltos, 16 distractores + 8 ruidos",1.0000,1.0000,5,0.4516,32.0000,74.0511
+multitarea mezclada,thinker,"C3 3 saltos, orden reverso",1.0000,1.0000,5,0.4516,32.0000,74.0511
+multitarea mezclada,thinker,"C3 3 saltos, hecho corregido",1.0000,1.0000,5,0.4516,32.0000,74.0511
+multitarea mezclada,thinker,"C3 3 saltos, distractores que apuntan a la cadena",1.0000,1.0000,5,0.4516,32.0000,74.0511
+multitarea mezclada,thinker,C4 x nunca compuesto,1.0000,1.0000,5,0.4516,32.0000,74.0511
+multitarea mezclada,thinker,"C5 orden de 8, distancia >= 4",1.0000,1.0000,5,0.4516,32.0000,74.0511
+multitarea mezclada,thinker,C6 5 eventos,1.0000,1.0000,5,0.4516,32.0000,74.0512
+multitarea en bloques (olvido),thinker,"C0 f(x), todos los x",1.0000,1.0000,5,0.4890,32.0000,51.6745
+multitarea en bloques (olvido),thinker,"C1 v nunca compuesto, 1-2 saltos",1.0000,1.0000,5,0.4890,32.0000,51.6763
+multitarea en bloques (olvido),thinker,"C1 v nunca compuesto, 3-4 saltos",1.0000,1.0000,5,0.4890,32.0000,51.6764
+multitarea en bloques (olvido),thinker,C2 x nunca compuesto,1.0000,1.0000,5,0.4890,32.0000,51.6764
+multitarea en bloques (olvido),thinker,C3 5-8 saltos,1.0000,1.0000,5,0.4890,32.0000,51.6764
+multitarea en bloques (olvido),thinker,"C3 5-8 saltos, 16 distractores + 8 ruidos",1.0000,1.0000,5,0.4890,32.0000,51.6764
+multitarea en bloques (olvido),thinker,"C3 3 saltos, orden reverso",1.0000,1.0000,5,0.4890,32.0000,51.6765
+multitarea en bloques (olvido),thinker,"C3 3 saltos, hecho corregido",1.0000,1.0000,5,0.4890,32.0000,51.6765
+multitarea en bloques (olvido),thinker,"C3 3 saltos, distractores que apuntan a la cadena",1.0000,1.0000,5,0.4890,32.0000,51.6765
+multitarea en bloques (olvido),thinker,C4 x nunca compuesto,1.0000,1.0000,5,0.4890,32.0000,51.6765
+multitarea en bloques (olvido),thinker,"C5 orden de 8, distancia >= 4",1.0000,1.0000,5,0.4890,32.0000,51.6765
+multitarea en bloques (olvido),thinker,C6 5 eventos,1.0000,1.0000,5,0.4890,32.0000,51.6765
+"multitarea en bloques, orden inverso (f al final)",thinker,"C0 f(x), todos los x",0.2610,0.0000,5,2.4896,365.4000,136.7810
+"multitarea en bloques, orden inverso (f al final)",thinker,"C1 v nunca compuesto, 1-2 saltos",0.0650,0.0050,5,2.4896,365.4000,136.7812
+"multitarea en bloques, orden inverso (f al final)",thinker,"C1 v nunca compuesto, 3-4 saltos",0.0610,0.0100,5,2.4896,365.4000,136.7812
+"multitarea en bloques, orden inverso (f al final)",thinker,C2 x nunca compuesto,0.0310,0.0150,5,2.4896,365.4000,136.7812
+"multitarea en bloques, orden inverso (f al final)",thinker,C3 5-8 saltos,1.0000,1.0000,5,2.4896,365.4000,136.7812
+"multitarea en bloques, orden inverso (f al final)",thinker,"C3 5-8 saltos, 16 distractores + 8 ruidos",1.0000,1.0000,5,2.4896,365.4000,136.7813
+"multitarea en bloques, orden inverso (f al final)",thinker,"C3 3 saltos, orden reverso",1.0000,1.0000,5,2.4896,365.4000,136.7813
+"multitarea en bloques, orden inverso (f al final)",thinker,"C3 3 saltos, hecho corregido",1.0000,1.0000,5,2.4896,365.4000,136.7813
+"multitarea en bloques, orden inverso (f al final)",thinker,"C3 3 saltos, distractores que apuntan a la cadena",1.0000,1.0000,5,2.4896,365.4000,136.7813
+"multitarea en bloques, orden inverso (f al final)",thinker,C4 x nunca compuesto,0.0180,0.0000,5,2.4896,365.4000,136.7813
+"multitarea en bloques, orden inverso (f al final)",thinker,"C5 orden de 8, distancia >= 4",0.8590,0.4600,5,2.4896,365.4000,136.7813
+"multitarea en bloques, orden inverso (f al final)",thinker,C6 5 eventos,1.0000,1.0000,5,2.4896,365.4000,136.7813

@@ -1,0 +1,12 @@
+prueba,sistema,caso,acc_media,acc_min,semillas,nodos_busqueda,neuronas_say,segundos
+C1 sola,thinker,"v nunca compuesto, 1-2 saltos",1.0000,1.0000,5,0.3140,32.0000,14.2426
+C1 sola,thinker,"v nunca compuesto, 3-4 saltos",1.0000,1.0000,5,0.3140,32.0000,14.2448
+C2 sola,thinker,x nunca compuesto,1.0000,1.0000,5,0.2403,32.0000,12.5446
+C3 sola,thinker,5-8 saltos,1.0000,1.0000,5,0.7310,2.8000,11.4355
+C3 sola,thinker,"5-8 saltos, 16 distractores + 8 ruidos",1.0000,1.0000,5,0.7310,2.8000,11.4356
+C3 sola,thinker,"3 saltos, orden reverso",1.0000,1.0000,5,0.7310,2.8000,11.4356
+C3 sola,thinker,"3 saltos, hecho corregido",1.0000,1.0000,5,0.7310,2.8000,11.4356
+C3 sola,thinker,"3 saltos, distractores que apuntan a la cadena",1.0000,1.0000,5,0.7310,2.8000,11.4356
+C4 sola,thinker,x nunca compuesto,1.0000,1.0000,5,0.2363,32.0000,15.4231
+C5 sola,thinker,"orden de 8, distancia >= 4",1.0000,1.0000,5,0.2422,28.2000,15.5928
+C6 sola,thinker,5 eventos,1.0000,1.0000,5,0.0856,2.0000,5.9845

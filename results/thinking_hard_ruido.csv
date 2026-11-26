@@ -1,0 +1,8 @@
+prueba,sistema,caso,acc_media,acc_min,semillas,nodos_busqueda,neuronas_say,segundos
+C3 etiquetas 10 % al azar,thinker,5-8 saltos,1.0000,1.0000,5,0.9630,15.6000,19.2277
+C3 etiquetas 10 % al azar,thinker,"5-8 saltos, 16 distractores + 8 ruidos",1.0000,1.0000,5,0.9630,15.6000,19.2320
+C3 etiquetas 10 % al azar,thinker,"3 saltos, orden reverso",1.0000,1.0000,5,0.9630,15.6000,19.2321
+C3 etiquetas 10 % al azar,thinker,"3 saltos, hecho corregido",1.0000,1.0000,5,0.9630,15.6000,19.2321
+C3 etiquetas 10 % al azar,thinker,"3 saltos, distractores que apuntan a la cadena",1.0000,1.0000,5,0.9630,15.6000,19.2322
+C5 etiquetas 10 % al azar,thinker,"orden de 8, distancia >= 4",1.0000,1.0000,5,0.5042,35.2000,18.8529
+C6 etiquetas 10 % al azar,thinker,5 eventos,1.0000,1.0000,5,0.3227,6.6000,8.5900

@@ -1,0 +1,37 @@
+prueba,sistema,caso,acc_media,acc_min,semillas,nodos_busqueda,neuronas_say,segundos
+multitarea mezclada,sin protección,"C0 f(x), todos los x",1.0000,1.0000,5,0.4816,60.2000,69.5530
+multitarea mezclada,sin protección,"C1 v nunca compuesto, 1-2 saltos",1.0000,1.0000,5,0.4816,60.2000,69.5532
+multitarea mezclada,sin protección,"C1 v nunca compuesto, 3-4 saltos",1.0000,1.0000,5,0.4816,60.2000,69.5532
+multitarea mezclada,sin protección,C2 x nunca compuesto,1.0000,1.0000,5,0.4816,60.2000,69.5533
+multitarea mezclada,sin protección,C3 5-8 saltos,1.0000,1.0000,5,0.4816,60.2000,69.5533
+multitarea mezclada,sin protección,"C3 5-8 saltos, 16 distractores + 8 ruidos",1.0000,1.0000,5,0.4816,60.2000,69.5533
+multitarea mezclada,sin protección,"C3 3 saltos, orden reverso",1.0000,1.0000,5,0.4816,60.2000,69.5533
+multitarea mezclada,sin protección,"C3 3 saltos, hecho corregido",1.0000,1.0000,5,0.4816,60.2000,69.5533
+multitarea mezclada,sin protección,"C3 3 saltos, distractores que apuntan a la cadena",1.0000,1.0000,5,0.4816,60.2000,69.5533
+multitarea mezclada,sin protección,C4 x nunca compuesto,1.0000,1.0000,5,0.4816,60.2000,69.5533
+multitarea mezclada,sin protección,"C5 orden de 8, distancia >= 4",0.8940,0.4700,5,0.4816,60.2000,69.5534
+multitarea mezclada,sin protección,C6 5 eventos,1.0000,1.0000,5,0.4816,60.2000,69.5534
+multitarea mezclada,pesos de control compartidos,"C0 f(x), todos los x",0.9250,0.6950,5,0.6935,58.2000,74.5195
+multitarea mezclada,pesos de control compartidos,"C1 v nunca compuesto, 1-2 saltos",0.9630,0.8950,5,0.6935,58.2000,74.5196
+multitarea mezclada,pesos de control compartidos,"C1 v nunca compuesto, 3-4 saltos",0.9660,0.8900,5,0.6935,58.2000,74.5196
+multitarea mezclada,pesos de control compartidos,C2 x nunca compuesto,0.9310,0.8350,5,0.6935,58.2000,74.5196
+multitarea mezclada,pesos de control compartidos,C3 5-8 saltos,1.0000,1.0000,5,0.6935,58.2000,74.5196
+multitarea mezclada,pesos de control compartidos,"C3 5-8 saltos, 16 distractores + 8 ruidos",1.0000,1.0000,5,0.6935,58.2000,74.5196
+multitarea mezclada,pesos de control compartidos,"C3 3 saltos, orden reverso",1.0000,1.0000,5,0.6935,58.2000,74.5196
+multitarea mezclada,pesos de control compartidos,"C3 3 saltos, hecho corregido",1.0000,1.0000,5,0.6935,58.2000,74.5196
+multitarea mezclada,pesos de control compartidos,"C3 3 saltos, distractores que apuntan a la cadena",1.0000,1.0000,5,0.6935,58.2000,74.5197
+multitarea mezclada,pesos de control compartidos,C4 x nunca compuesto,0.8790,0.5600,5,0.6935,58.2000,74.5197
+multitarea mezclada,pesos de control compartidos,"C5 orden de 8, distancia >= 4",0.9010,0.5050,5,0.6935,58.2000,74.5197
+multitarea mezclada,pesos de control compartidos,C6 5 eventos,1.0000,1.0000,5,0.6935,58.2000,74.5197
+multitarea en bloques (olvido),sin fiabilidad en la búsqueda,"C0 f(x), todos los x",1.0000,1.0000,5,0.4807,32.0000,58.4425
+multitarea en bloques (olvido),sin fiabilidad en la búsqueda,"C1 v nunca compuesto, 1-2 saltos",1.0000,1.0000,5,0.4807,32.0000,58.4427
+multitarea en bloques (olvido),sin fiabilidad en la búsqueda,"C1 v nunca compuesto, 3-4 saltos",1.0000,1.0000,5,0.4807,32.0000,58.4427
+multitarea en bloques (olvido),sin fiabilidad en la búsqueda,C2 x nunca compuesto,1.0000,1.0000,5,0.4807,32.0000,58.4427
+multitarea en bloques (olvido),sin fiabilidad en la búsqueda,C3 5-8 saltos,0.8000,0.0000,5,0.4807,32.0000,58.4428
+multitarea en bloques (olvido),sin fiabilidad en la búsqueda,"C3 5-8 saltos, 16 distractores + 8 ruidos",0.8000,0.0000,5,0.4807,32.0000,58.4428
+multitarea en bloques (olvido),sin fiabilidad en la búsqueda,"C3 3 saltos, orden reverso",0.8000,0.0000,5,0.4807,32.0000,58.4428
+multitarea en bloques (olvido),sin fiabilidad en la búsqueda,"C3 3 saltos, hecho corregido",0.8000,0.0000,5,0.4807,32.0000,58.4428
+multitarea en bloques (olvido),sin fiabilidad en la búsqueda,"C3 3 saltos, distractores que apuntan a la cadena",0.8000,0.0000,5,0.4807,32.0000,58.4428
+multitarea en bloques (olvido),sin fiabilidad en la búsqueda,C4 x nunca compuesto,1.0000,1.0000,5,0.4807,32.0000,58.4428
+multitarea en bloques (olvido),sin fiabilidad en la búsqueda,"C5 orden de 8, distancia >= 4",1.0000,1.0000,5,0.4807,32.0000,58.4428
+multitarea en bloques (olvido),sin fiabilidad en la búsqueda,C6 5 eventos,1.0000,1.0000,5,0.4807,32.0000,58.4429
