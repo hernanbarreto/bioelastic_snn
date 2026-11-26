@@ -13,8 +13,25 @@ Profundidad y anchura son elásticas y configurables:
     mismas neuronas de salida, y todas reciben el mismo error/recompensa (el
     neuromodulador es global). Es el análogo local de las conexiones residuales.
 
-No hay backprop: las áreas sensoriales aprenden sin supervisión y las de asociación con
-la regla de tres factores. Agregar un área nueva no borra lo que saben las demás.
+No hay backprop: las áreas sensoriales aprenden sin supervisión (o con un error local
+propio, ver `FeatureArea`) y las de asociación con la regla de tres factores. Agregar un
+área nueva no borra lo que saben las demás.
+
+Decisión: por defecto (v0.2) se suman los potenciales de todos los votantes (áreas de
+asociación, proyección directa y, si las hay, lectores locales de las áreas sensoriales).
+Con `arbiter > 0` cada votante aprende con su propio error y un árbitro pondera sus
+log-probabilidades, V = sum_i beta_i log p_i, con pesos que aprenden online del error
+global: d beta_i = arbiter * (log p_i[objetivo] - E_p[log p_i]). Es un control de ganancia
+por vía: un votante que no aporta pierde voz en vez de arrastrar la decisión.
+
+Homeostasis de las salidas (`homeostasis` > 0, opcional; por defecto apagada): cada vez
+que la red aprende de una decisión (`teach` o `reinforce`), el umbral de la salida elegida
+sube `homeostasis` y el de las demás baja homeostasis/C (suma cero), como el `theta_plus`
+de las capas ocultas. Una salida que acapara decisiones se vuelve más difícil de disparar
+y una que nunca gana termina por ganar alguna. Contra el colapso de símbolos cuando la red
+aprende sólo con recompensa (en la integración con el Thinker, desde cero, la pureza de la
+percepción subió de 0.21 a 0.58 y de 0.62 a 0.85 en la identidad, 3 semillas). No cambia
+cómo se reparte el crédito. Con etiquetas no hace falta y no se usa.
 
 Paralelismo (`workers` > 1): las áreas de asociación que leen la entrada cruda no
 dependen de las áreas sensoriales, así que su pase y su aprendizaje corren en otro hilo
@@ -38,14 +55,22 @@ class Cortex:
     def __init__(self, input_shape, n_outputs: int, *, areas=(), heads=({},), projection=None,
                  replay: float = 0.0, rehearse: float = 0.0, replay_focus: str = "uniform",
                  rehearse_focus: str = "uniform", confusion_p: float = 0.05,
-                 joint: bool = True, temperature: float = 0.25, seed: int = 0, workers: int = 1):
+                 joint: bool = True, temperature: float = 0.25, arbiter: float = 0.0,
+                 seed: int = 0, workers: int = 1, homeostasis: float = 0.0):
         self._config = dict(input_shape=input_shape, n_outputs=int(n_outputs),
                             areas=[dict(a) for a in areas], heads=[],
                             projection=projection, replay=float(replay),
                             rehearse=float(rehearse), replay_focus=str(replay_focus),
                             rehearse_focus=str(rehearse_focus), confusion_p=float(confusion_p),
-                            joint=bool(joint),
-                            temperature=float(temperature), seed=int(seed))
+                            joint=bool(joint), temperature=float(temperature),
+                            arbiter=float(arbiter), seed=int(seed))
+        self.arbiter = float(arbiter)
+        self.beta = None                                      # pesos del árbitro (uno por votante)
+        self._L = None
+        self._zs = []
+        self.homeostasis = float(homeostasis)
+        if self.homeostasis > 0.0:
+            self._config["homeostasis"] = self.homeostasis
         self.is_sheet = not np.isscalar(input_shape)
         self.input_shape = tuple(int(v) for v in input_shape) if self.is_sheet else int(input_shape)
         self.C = int(n_outputs)
@@ -67,7 +92,8 @@ class Cortex:
         if areas and not self.is_sheet:
             raise ValueError("las áreas sensoriales necesitan una lámina (alto, ancho, canales)")
         for i, spec in enumerate(areas):
-            a = FeatureArea(shape, **spec)
+            extra = dict(n_classes=self.C, seed=seed + 100 + i) if spec.get("local") else {}
+            a = FeatureArea(shape, **spec, **extra)
             a.on_reuse = lambda f, i=i: self._on_reuse(i, f)
             self.areas.append(a); shape = a.out_shape
         self._sizes = [int(np.prod(a.out_shape)) for a in self.areas]
@@ -76,13 +102,15 @@ class Cortex:
         for i, spec in enumerate(heads):
             self.add_head(**spec, seed=seed + i)
         # Proyección directa (lámina 5) de las áreas sensoriales a la decisión.
-        self.proj = None; self._proj_src = None
+        self.proj = None; self._proj_src = None; self._balance = False
         if projection is not None and self.areas:
             spec = dict(projection); self._proj_src = spec.pop("source", "top")
+            self._balance = bool(spec.pop("balance", False))
             n_in = sum(self._sizes[i] for i, _ in self._offsets(self._proj_src))
             self.proj = Readout(self.C, capacity=n_in, **{"consolidation": 0.0, "lr": 0.5, **spec})
             self.proj.n = n_in
         self._V = None; self.pred = 0; self._pv = None
+        self.umbral = np.zeros(self.C, dtype=np.float32)          # homeostasis de las salidas
         self.workers = int(workers)    # hilos (no es parte del modelo: no se guarda)
         self._pool = None
 
@@ -139,6 +167,24 @@ class Cortex:
             return idxs[0], vals[0]
         return np.concatenate(idxs), np.concatenate(vals)
 
+    def _proj_input(self, codes):
+        """Volea normalizada que recibe la proyección directa. Con `balance`, cada área se
+        normaliza por separado (misma voz para todas, aunque una tenga muchas más unidades
+        activas que otra); si no, se normaliza la concatenación."""
+        if not self._balance:
+            idx, val = self._volley(self._proj_src, None, codes)
+            return idx, val / np.float32(max(float(np.sqrt(val @ val)), 1e-6))
+        parts = self._offsets(self._proj_src)
+        idxs, vals = [], []
+        for i, off in parts:
+            c = codes[i].ravel(); j = np.flatnonzero(c); v = c[j]
+            nv = float(np.sqrt(v @ v))
+            if nv > 0:
+                idxs.append(j + off); vals.append(v / np.float32(nv * np.sqrt(len(parts))))
+        if not idxs:
+            return np.empty(0, dtype=np.int64), np.empty(0, dtype=np.float32)
+        return np.concatenate(idxs), np.concatenate(vals)
+
     def _parallel(self):
         """Ejecutor y áreas de asociación que leen la entrada cruda, si hay con qué
         superponer trabajo; si no, (None, [])."""
@@ -166,14 +212,31 @@ class Cortex:
                 head.forward(self._volley(src, x, codes))
         if job is not None:
             job.result()
-        V = np.zeros(self.C, dtype=np.float32)
-        for head in self.heads:                               # mismo orden de suma
-            V = V + head._last.V
+        votes = [(head._last.V, head.readout.temperature) for head in self.heads]
         if self.proj is not None:
-            idx, val = self._volley(self._proj_src, x, codes)
-            h = val / np.float32(max(float(np.sqrt(val @ val)), 1e-6))
+            idx, h = self._proj_input(codes)
             self._pv = (idx, h)
-            V = V + self.proj.potentials(idx, h)
+            votes.append((self.proj.potentials(idx, h), self.proj.temperature))
+        self._zs = []
+        for a in self.areas:                                  # lectores locales (si hay error local)
+            z = a.potentials()
+            self._zs.append(z)
+            if z is not None:
+                votes.append((z, a.clf.temperature))
+        if self.arbiter > 0.0 and votes:
+            if self.beta is None or len(self.beta) != len(votes):
+                self.beta = np.ones(len(votes), dtype=np.float32)
+            L = np.stack([z / np.float32(T) for z, T in votes])
+            L = L - L.max(axis=1, keepdims=True)
+            L = L - np.log(np.exp(L).sum(axis=1, keepdims=True))   # log-probabilidades
+            self._L = L.astype(np.float32)
+            V = self.beta @ self._L
+        else:
+            V = np.zeros(self.C, dtype=np.float32)
+            for z, _ in votes:                                # mismo orden de suma
+                V = V + z
+        if self.homeostasis > 0.0:
+            V = V - self.umbral
         self._V = V
         if explore:
             self.pred = int(self.rng.choice(self.C, p=self._p()))
@@ -185,20 +248,33 @@ class Cortex:
 
     # ------------------------------------------------------------------ aprendizaje
     def _p(self):
-        e = np.exp((self._V - self._V.max()) / self.temperature)
+        T = 1.0 if self._arbitrated() else self.temperature     # con árbitro V ya es log-prob
+        e = np.exp((self._V - self._V.max()) / T)
         return e / e.sum()
 
-    def _learn_areas_and(self, fn):
+    def _arbitrated(self) -> bool:
+        return self.arbiter > 0.0 and self._L is not None
+
+    def _learn_areas(self, target=None):
+        """Aprendizaje de las áreas sensoriales. Con `target`, las que tienen error local lo
+        usan (con el error residual de las anteriores, si así se configuró)."""
+        prior = None
+        zs = self._zs if len(self._zs) == len(self.areas) else [None] * len(self.areas)
+        for a, z in zip(self.areas, zs):
+            a.learn(target, prior)
+            if z is not None:
+                prior = z if prior is None else prior + z
+
+    def _learn_areas_and(self, fn, target=None):
         """Aprendizaje de las áreas sensoriales (en otro hilo) mientras en este corre
         `fn(i)` para las áreas de asociación que leen la entrada cruda. Devuelve cuáles ya
         se hicieron; las demás deben esperar, porque el reuso de un rasgo puede cortar sus
         sinapsis (`_on_reuse`)."""
         pool, par = self._parallel()
         if pool is None:
-            for a in self.areas:
-                a.learn()
+            self._learn_areas(target)
             return []
-        job = pool.submit(lambda: [a.learn() for a in self.areas])
+        job = pool.submit(lambda: self._learn_areas(target))
         try:
             for i in par:
                 fn(i)
@@ -206,24 +282,35 @@ class Cortex:
             job.result()
         return par
 
+    def _adapt_thresholds(self):
+        """Homeostasis de las salidas: sube el umbral de la elegida, baja el de las demás."""
+        if self.homeostasis > 0.0:
+            self.umbral -= np.float32(self.homeostasis / self.C)
+            self.umbral[self.pred] += np.float32(self.homeostasis)
+
     def teach(self, target: int):
+        self._adapt_thresholds()
         p = self._p()                                         # no depende del aprendizaje de las áreas
+        arb = self._arbitrated()
+        if arb:                                               # el árbitro aprende del error global
+            g = self._L[:, target] - self._L @ p
+            self.beta = np.maximum(self.beta + np.float32(self.arbiter) * g.astype(np.float32), 0.0)
         conf = None
         if (self.replay_focus == "confusion" and self.replay > 0.0 and self.proj is not None) or \
                 (self.rehearse_focus == "confusion" and self.rehearse > 0.0):
             conf = self._confusion(target, p)                 # antes de que la memoria cambie
 
         def one(i):
-            if self.joint:
+            if self.joint and not arb:
                 self.heads[i].teach(target, pred=self.pred, p=p)
             else:                                             # cada área aprende de su propio error
                 self.heads[i].teach(target)
-        done = self._learn_areas_and(one)
+        done = self._learn_areas_and(one, target)
         for i in range(len(self.heads)):
             if i not in done:
                 one(i)
         if self.proj is not None:
-            self.proj.learn(*self._pv, target, p=p)
+            self.proj.learn(*self._pv, target, p=None if arb else p)
             if self.replay > 0.0:
                 self._replay_debt += self.replay
                 aimed = conf is not None and self.replay_focus == "confusion"
@@ -335,12 +422,13 @@ class Cortex:
             for a in self.areas:
                 X = a.encode(X); codes.append(X)
                 a._cache = None                               # el repaso no entrena los rasgos
-            idx, val = self._volley(self._proj_src, None, codes)
+                a.learn_readout(c, X)                         # pero sí los lectores locales
+            idx, h = self._proj_input(codes)
         else:
             idx = np.flatnonzero(x > 0); val = x[idx]
+            h = val / np.float32(max(float(np.sqrt(val @ val)), 1e-6))
         if len(idx) == 0:
             return
-        h = val / np.float32(max(float(np.sqrt(val @ val)), 1e-6))
         V = self.proj.potentials(idx, h)
         e = np.exp((V - V.max()) / self.temperature)
         self.proj.learn(idx, h, c, p=e / e.sum(), replay=True)
@@ -382,6 +470,7 @@ class Cortex:
         self.rehearsals += 1
 
     def reinforce(self, reward: float):
+        self._adapt_thresholds()
         p = self._p()
         one = lambda i: self.heads[i].reinforce(reward, pred=self.pred, p=p)
         done = self._learn_areas_and(one)
@@ -461,6 +550,10 @@ class Cortex:
         if self.proj is not None:
             out.update(proj_W=self.proj.W, proj_count=self.proj.count,
                        proj_baseline=np.float64(self.proj.baseline))
+        if self.beta is not None:
+            out["beta"] = self.beta
+        if self.homeostasis > 0.0:
+            out["umbral"] = self.umbral
         np.savez_compressed(path, **out)
 
     @classmethod
@@ -482,4 +575,8 @@ class Cortex:
                 net.proj.W[:] = z["proj_W"]; net.proj.count[:] = z["proj_count"]
                 net.proj.baseline = float(z["proj_baseline"])
             net.replays = int(z["meta"][0])
+            if "beta" in z.files:
+                net.beta = z["beta"].copy()
+            if "umbral" in z.files:
+                net.umbral[:] = z["umbral"]
         return net

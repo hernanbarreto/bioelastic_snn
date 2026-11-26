@@ -1,0 +1,35 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+suma,oraculo R=2,1,exacta n=1,1.0000,,símbolos perfectos
+suma,oraculo R=2,1,exacta n=3,0.9820,,símbolos perfectos
+suma,oraculo R=2,1,exacta n=6,0.9640,,símbolos perfectos
+suma,oraculo R=2,1,exacta n=10,0.9460,,símbolos perfectos
+suma,base,1,vista antes (test),0.9696,,depth2
+suma,base,1,segundos entrenamiento,127.5000,,
+suma,base,1,vista después (test),0.9696,0.9696,antes
+suma,base,1,umbral de duda,0.0000,,cuantil 0.2 de la certeza
+suma,base,1,abstenciones,0,,respuestas de las que no aprendió
+suma,base,1,créditos a la percepción,0,,
+suma,base,1,exacta n=1,0.9100,0.9401,cota indep. p^2n*oráculo
+suma,base,1,columna n=1,0.9420,,
+suma,base,1,todas las imágenes bien n=1,0.9420,0.9401,p^2n
+suma,base,1,exacta | todas bien n=1,0.9660,1.0000,oráculo
+suma,base,1,exacta n=3,0.7220,0.8160,cota indep. p^2n*oráculo
+suma,base,1,columna n=3,0.8913,,
+suma,base,1,todas las imágenes bien n=3,0.8380,0.8309,p^2n
+suma,base,1,exacta | todas bien n=3,0.8616,0.9820,oráculo
+romper,base | ruido sigma=0.5,1,exactitud imagen,0.8872,,
+romper,base | ruido sigma=0.5,1,exacta,0.4033,0.4790,cota indep. p^2n*oráculo(n)
+romper,base | ruido sigma=0.5,1,exacta | todas bien,0.8276,0.9820,oráculo(n)
+romper,base | ruido sigma=0.7,1,exactitud imagen,0.7172,,
+romper,base | ruido sigma=0.7,1,exacta,0.1033,0.1337,cota indep. p^2n*oráculo(n)
+romper,base | ruido sigma=0.7,1,exacta | todas bien,0.7000,0.9820,oráculo(n)
+romper,base | estilo no visto (tipográficos),1,exactitud imagen,0.9378,,
+romper,base | estilo no visto (tipográficos),1,exacta,0.5567,0.6679,cota indep. p^2n*oráculo(n)
+romper,base | estilo no visto (tipográficos),1,exacta | todas bien,0.8426,0.9820,oráculo(n)
+romper,base | más columnas n=6,1,exactitud imagen,0.9694,,
+romper,base | más columnas n=6,1,exacta,0.5300,0.6643,cota indep. p^2n*oráculo(n)
+romper,base | más columnas n=6,1,exacta | todas bien,0.7500,0.9640,oráculo(n)
+romper,base | más columnas n=10,1,exactitud imagen,0.9733,,
+romper,base | más columnas n=10,1,exacta,0.2600,0.5510,cota indep. p^2n*oráculo(n)
+romper,base | más columnas n=10,1,exacta | todas bien,0.4556,0.9460,oráculo(n)
+suma,total,1,segundos,249.9000,,

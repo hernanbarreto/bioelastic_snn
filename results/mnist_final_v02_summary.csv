@@ -1,0 +1,3 @@
+model,seed,n_train,preq_acc,val_acc,val_parts,test_acc,test_parts,test_shift3,test_noise,test_occlude,features,assoc_neurons,synapses,train_seconds
+depth2_v02,0,55000,0.9745,0.9892,memory:0.9756 proj:0.9838,0.9857,memory:0.9697 proj:0.9815,0.4308,0.9772,0.8662,256,2038,793025,301.5000
+depth3_v02,0,55000,0.9749,0.9892,memory:0.9756 proj:0.9848,0.9857,memory:0.9697 proj:0.9822,0.4384,0.9776,0.8666,512,2038,1446849,631.0000

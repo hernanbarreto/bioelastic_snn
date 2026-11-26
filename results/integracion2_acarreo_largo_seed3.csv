@@ -1,0 +1,23 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+acarreo,R=1 cero (12000 episodios),3,exacta n=1,0.9560,0.0100,azar
+acarreo,R=1 cero (12000 episodios),3,columna n=1,1.0000,0.1000,azar
+acarreo,R=1 cero (12000 episodios),3,exacta n=3,0.8940,0.0001,azar
+acarreo,R=1 cero (12000 episodios),3,columna n=3,0.9700,0.1000,azar
+acarreo,R=1 cero (12000 episodios),3,exacta n=8,0.7420,0.0000,azar
+acarreo,R=1 cero (12000 episodios),3,columna n=8,0.9653,0.1000,azar
+acarreo,R=1 cero (12000 episodios),3,segundos,26.3000,,
+acarreo,R=1 escrito (12000 episodios),3,exacta n=1,1.0000,0.0100,azar
+acarreo,R=1 escrito (12000 episodios),3,columna n=1,1.0000,0.1000,azar
+acarreo,R=1 escrito (12000 episodios),3,exacta n=3,1.0000,0.0001,azar
+acarreo,R=1 escrito (12000 episodios),3,columna n=3,1.0000,0.1000,azar
+acarreo,R=1 escrito (12000 episodios),3,exacta n=8,1.0000,0.0000,azar
+acarreo,R=1 escrito (12000 episodios),3,columna n=8,1.0000,0.1000,azar
+acarreo,R=1 escrito (12000 episodios),3,segundos,23.0000,,
+acarreo,R=2 cero (12000 episodios),3,exacta n=1,0.9700,0.0100,azar
+acarreo,R=2 cero (12000 episodios),3,columna n=1,0.9880,0.1000,azar
+acarreo,R=2 cero (12000 episodios),3,exacta n=3,0.9460,0.0001,azar
+acarreo,R=2 cero (12000 episodios),3,columna n=3,0.9813,0.1000,azar
+acarreo,R=2 cero (12000 episodios),3,exacta n=8,0.8500,0.0000,azar
+acarreo,R=2 cero (12000 episodios),3,columna n=8,0.9792,0.1000,azar
+acarreo,R=2 cero (12000 episodios),3,segundos,25.1000,,
+acarreo,total,3,segundos,74.5000,,

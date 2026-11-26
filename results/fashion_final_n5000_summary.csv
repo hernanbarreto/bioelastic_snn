@@ -1,0 +1,10 @@
+model,seed,n_train,preq_acc,val_acc,val_parts,test_acc,test_parts,test_shift3,test_noise,test_occlude,features,assoc_neurons,synapses,train_seconds
+depth1,0,5000,0.7438,0.7758,memory:0.7758,0.7708,memory:0.7708,,,,0,1425,368925,6.9000
+depth1,1,5000,0.7488,0.7840,memory:0.7840,0.7770,memory:0.7770,,,,0,1407,364644,6.6000
+depth1,2,5000,0.7436,0.7822,memory:0.7822,0.7710,memory:0.7710,,,,0,1431,370623,6.7000
+depth2,0,5000,0.8310,0.8704,memory:0.7758 proj:0.8676 local1:0.8674,0.8687,memory:0.7708 proj:0.8657 local1:0.8657,,,,256,1425,743965,45.2000
+depth2,1,5000,0.8364,0.8692,memory:0.7840 proj:0.8608 local1:0.8604,0.8633,memory:0.7770 proj:0.8558 local1:0.8556,,,,255,1407,739659,45.9000
+depth2,2,5000,0.8312,0.8592,memory:0.7822 proj:0.8544 local1:0.8548,0.8550,memory:0.7710 proj:0.8472 local1:0.8469,,,,256,1431,745663,45.5000
+depth3,0,5000,0.8286,0.8714,memory:0.7758 proj:0.8596 local1:0.8674 local2:0.8350,0.8688,memory:0.7708 proj:0.8600 local1:0.8657 local2:0.8288,,,,479,1425,1321757,76.9000
+depth3,1,5000,0.8344,0.8682,memory:0.7840 proj:0.8568 local1:0.8604 local2:0.8268,0.8620,memory:0.7770 proj:0.8479 local1:0.8556 local2:0.8210,,,,469,1407,1296715,85.6000
+depth3,2,5000,0.8288,0.8568,memory:0.7822 proj:0.8374 local1:0.8548 local2:0.8054,0.8532,memory:0.7710 proj:0.8324 local1:0.8469 local2:0.8050,,,,475,1431,1314239,86.0000

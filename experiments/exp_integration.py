@@ -26,8 +26,8 @@ tareas y para medir; dónde las recibe la red está dicho en cada prueba.
                       L2 a+b imágenes   dos imágenes -> (a+b) mod 10 (sin acarreo)
                       L3 suma completa  varias columnas con acarreo (subcomando `conjunta`)
                   `escalera_h` y `conjunta_h` repiten R0-L3 con un cambio mínimo de
-                  arquitectura, la homeostasis de las salidas (`CortexHomeostatico`), contra
-                  el colapso de símbolos que aparece en la escalera.
+                  arquitectura, la homeostasis de las salidas (`Cortex(homeostasis=...)`),
+                  contra el colapso de símbolos que aparece en la escalera.
                   La percepción se mide con la mejor biyección símbolo -> dígito (pureza),
                   porque al Thinker le sirve cualquier código consistente.
   ligadura        (2) en cada episodio se ligan 4 pares (imagen de clave, imagen de valor)
@@ -115,51 +115,15 @@ class Digitos:
         return self.X[split][idx[int(rng.integers(len(idx)))]]
 
 
-class CortexHomeostatico(Cortex):
-    """Cambio mínimo de arquitectura que se prueba en 1b (no está en el núcleo): homeostasis
-    de las neuronas de salida. Cada vez que la red aprende de una decisión, el umbral de la
-    salida elegida sube `h` y el de las demás baja h/C (suma cero), como el `theta_plus` de
-    las capas ocultas. Una salida que acapara decisiones se vuelve más difícil de disparar,
-    y una que nunca se usa termina por ganar alguna y recibir su recompensa. Ataca el
-    colapso de símbolos; no cambia cómo se reparte el crédito."""
-
-    def __init__(self, *args, homeostasis: float = 0.02, **kw):
-        super().__init__(*args, **kw)
-        self.h = float(homeostasis)
-        self.umbral = np.zeros(self.C, dtype=np.float32)
-
-    def forward(self, x, explore: bool = False) -> int:
-        super().forward(x)
-        self._V = self._V - self.umbral
-        self.pred = int(self.rng.choice(self.C, p=self._p())) if explore else int(np.argmax(self._V))
-        return self.pred
-
-    predict = forward
-
-    def _adaptar(self):
-        self.umbral -= np.float32(self.h / self.C)
-        self.umbral[self.pred] += np.float32(self.h)
-
-    def reinforce(self, reward: float):
-        self._adaptar()
-        super().reinforce(reward)
-
-    def teach(self, target: int):
-        self._adaptar()
-        super().teach(target)
-
-
 class Vista:
     """Percepción visual: el Cortex de exp_vision (2 niveles: 98.5 % con MNIST completo).
     Su decisión (argmax o muestreo) es el símbolo que recibe el Thinker."""
 
     def __init__(self, seed: int, config: str = "depth2", homeostasis: float = 0.0):
         self.config = config
-        if homeostasis > 0.0:
-            self.net = CortexHomeostatico((28, 28, 1), 10, seed=seed, homeostasis=homeostasis,
-                                          **CONFIGS[config])
-        else:
-            self.net = Cortex((28, 28, 1), 10, seed=seed, **CONFIGS[config])
+        # homeostasis de las salidas: opción de Cortex (en la ronda 1 era la subclase
+        # CortexHomeostatico de este archivo; el comportamiento es el mismo, bit a bit)
+        self.net = Cortex((28, 28, 1), 10, seed=seed, homeostasis=homeostasis, **CONFIGS[config])
         self._E = encoder()
 
     def simbolo(self, img, explore: bool = False) -> int:

@@ -369,3 +369,38 @@ def test_balanced_eviction_without_groups_is_utility_eviction():
             else:
                 L.credit(int(v.winners[0]))
     assert np.array_equal(a.pre[:a.n], b.pre[:b.n]) and a.evicted == b.evicted > 0
+
+
+# ---------------------------------------------------------------- ronda 2: referencias
+def _ermlp():
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "experiments"))
+    from exp_continual import ERMLP
+    return ERMLP
+
+
+def test_erace_incoming_loss_only_competes_among_present_classes():
+    ERMLP = _ermlp()
+    m = ERMLP(0, size=50, batch=4, ace=True)
+    rng = np.random.default_rng(0)
+    X = rng.random((4, 784)).astype(np.float32); Y = np.ones(4, dtype=np.int64)
+    mask = np.zeros((4, 20), dtype=bool); mask[:, 1] = True
+    W0 = m.W2.copy()
+    m._grad_step(X, Y, mask)
+    assert np.array_equal(m.W2[:, 0], W0[:, 0])      # la clase ausente no se toca
+    full = np.ones((4, 20), dtype=bool)
+    m._grad_step(X, Y, full)
+    assert not np.array_equal(m.W2[:, 0], W0[:, 0])  # con la máscara completa (repaso), sí
+
+
+def test_er_reservoir_keeps_a_uniform_sample_of_the_stream_and_matches_bytes():
+    ERMLP = _ermlp()
+    m = ERMLP(0, size=50, batch=5)
+    rng = np.random.default_rng(1)
+    for t in range(400):                             # 200 de la clase 0 y después 200 de la 1
+        m.sup(rng.random((28, 28)).astype(np.float32), 0 if t < 200 else 1)
+    assert m.n == 50 and m.seen_n == 400
+    assert 13 <= int((m.y[:m.n] == 0).sum()) <= 37  # reservorio: ~la mitad de cada una
+    b = ERMLP(0, bytes=3_000_000)
+    assert 2_990_000 < b.stats()["bytes"] <= 3_000_000

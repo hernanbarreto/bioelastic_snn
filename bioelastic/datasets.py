@@ -45,6 +45,22 @@ def load_fashion():
     return _idx_dataset(_FASHION, "fashion")
 
 
+_CIFAR10 = "https://raw.githubusercontent.com/NTU-ALComLab/IWLS2021/main/data/raw_bin/"
+
+
+def load_cifar10():
+    """CIFAR-10 (formato binario oficial, espejo público en GitHub). (Xtr, ytr, Xte, yte) con
+    X en uint8 (N, 32, 32, 3): 50 000 de entrenamiento y 10 000 de test. Se lee como bytes
+    (sin pickle), así que el archivo descargado no puede ejecutar código."""
+    def batch(name):
+        raw = np.fromfile(_fetch(_CIFAR10 + name, DATA / "cifar10" / name), dtype=np.uint8)
+        raw = raw.reshape(-1, 3073)
+        return raw[:, 1:].reshape(-1, 3, 32, 32).transpose(0, 2, 3, 1), raw[:, 0].copy()
+    tr = [batch(f"data_batch_{i}.bin") for i in range(1, 6)]
+    Xte, yte = batch("test_batch.bin")
+    return (np.concatenate([x for x, _ in tr]), np.concatenate([y for _, y in tr]), Xte, yte)
+
+
 def load_text() -> bytes:
     return _fetch(_SHAKESPEARE, DATA / "tinyshakespeare.txt").read_bytes()
 

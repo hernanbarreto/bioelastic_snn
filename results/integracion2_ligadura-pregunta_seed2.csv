@@ -1,0 +1,34 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+ligadura,"cred (crédito sólo a la pregunta, descarte por cualquier camino)",2,vista débil después (test),0.5222,0.8806,antes
+ligadura,"cred (crédito sólo a la pregunta, descarte por cualquier camino)",2,abstenciones,0,,umbral 0.000
+ligadura,"cred (crédito sólo a la pregunta, descarte por cualquier camino)",2,créditos a la percepción,963,,
+ligadura,"cred (crédito sólo a la pregunta, descarte por cualquier camino)",2,precisión del crédito,0.3084,,
+ligadura,"cred (crédito sólo a la pregunta, descarte por cualquier camino)",2,acierto ligadas,0.2400,0.1424,p^3*oráculo (p después)
+ligadura,"cred (crédito sólo a la pregunta, descarte por cualquier camino)",2,acierto ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,"cred (crédito sólo a la pregunta, descarte por cualquier camino)",2,fracción COPIAR ligadas,0.4560,,
+ligadura,"cred (crédito sólo a la pregunta, descarte por cualquier camino)",2,acierto no ligadas,0.4040,0.5222,p^1*oráculo (p después)
+ligadura,"cred (crédito sólo a la pregunta, descarte por cualquier camino)",2,acierto no ligadas | imágenes bien,0.0000,1.0000,oráculo
+ligadura,"cred (crédito sólo a la pregunta, descarte por cualquier camino)",2,fracción COPIAR no ligadas,0.2580,,
+ligadura,"cred (crédito sólo a la pregunta, descarte por cualquier camino)",2,segundos,49.0000,,
+ligadura,"cred2 (crédito sólo a la pregunta, descarte por cualquier camino)",2,vista débil después (test),0.8244,0.8806,antes
+ligadura,"cred2 (crédito sólo a la pregunta, descarte por cualquier camino)",2,abstenciones,0,,umbral 0.000
+ligadura,"cred2 (crédito sólo a la pregunta, descarte por cualquier camino)",2,créditos a la percepción,627,,
+ligadura,"cred2 (crédito sólo a la pregunta, descarte por cualquier camino)",2,precisión del crédito,0.7624,,
+ligadura,"cred2 (crédito sólo a la pregunta, descarte por cualquier camino)",2,acierto ligadas,0.5600,0.5603,p^3*oráculo (p después)
+ligadura,"cred2 (crédito sólo a la pregunta, descarte por cualquier camino)",2,acierto ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,"cred2 (crédito sólo a la pregunta, descarte por cualquier camino)",2,fracción COPIAR ligadas,0.0000,,
+ligadura,"cred2 (crédito sólo a la pregunta, descarte por cualquier camino)",2,acierto no ligadas,0.7660,0.8244,p^1*oráculo (p después)
+ligadura,"cred2 (crédito sólo a la pregunta, descarte por cualquier camino)",2,acierto no ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,"cred2 (crédito sólo a la pregunta, descarte por cualquier camino)",2,fracción COPIAR no ligadas,0.0000,,
+ligadura,"cred2 (crédito sólo a la pregunta, descarte por cualquier camino)",2,segundos,28.2000,,
+ligadura,"confcos+cred2 (crédito sólo a la pregunta, descarte por cualquier camino)",2,vista débil después (test),0.8440,0.8806,antes
+ligadura,"confcos+cred2 (crédito sólo a la pregunta, descarte por cualquier camino)",2,abstenciones,1057,,umbral 0.217
+ligadura,"confcos+cred2 (crédito sólo a la pregunta, descarte por cualquier camino)",2,créditos a la percepción,624,,
+ligadura,"confcos+cred2 (crédito sólo a la pregunta, descarte por cualquier camino)",2,precisión del crédito,0.8077,,
+ligadura,"confcos+cred2 (crédito sólo a la pregunta, descarte por cualquier camino)",2,acierto ligadas,0.6260,0.6012,p^3*oráculo (p después)
+ligadura,"confcos+cred2 (crédito sólo a la pregunta, descarte por cualquier camino)",2,acierto ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,"confcos+cred2 (crédito sólo a la pregunta, descarte por cualquier camino)",2,fracción COPIAR ligadas,0.7600,,
+ligadura,"confcos+cred2 (crédito sólo a la pregunta, descarte por cualquier camino)",2,acierto no ligadas,0.8000,0.8440,p^1*oráculo (p después)
+ligadura,"confcos+cred2 (crédito sólo a la pregunta, descarte por cualquier camino)",2,acierto no ligadas | imágenes bien,1.0000,1.0000,oráculo
+ligadura,"confcos+cred2 (crédito sólo a la pregunta, descarte por cualquier camino)",2,fracción COPIAR no ligadas,0.1260,,
+ligadura,"confcos+cred2 (crédito sólo a la pregunta, descarte por cualquier camino)",2,segundos,21.5000,,

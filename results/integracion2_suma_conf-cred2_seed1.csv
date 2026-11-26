@@ -1,0 +1,36 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+suma,oraculo R=2,1,exacta n=1,1.0000,,símbolos perfectos
+suma,oraculo R=2,1,exacta n=3,0.9820,,símbolos perfectos
+suma,oraculo R=2,1,exacta n=6,0.9640,,símbolos perfectos
+suma,oraculo R=2,1,exacta n=10,0.9460,,símbolos perfectos
+suma,conf+cred2,1,vista antes (test),0.9696,,depth2
+suma,conf+cred2,1,segundos entrenamiento,96.6000,,
+suma,conf+cred2,1,vista después (test),0.9688,0.9696,antes
+suma,conf+cred2,1,umbral de duda,0.9943,,cuantil 0.2 de la certeza
+suma,conf+cred2,1,abstenciones,10426,,respuestas de las que no aprendió
+suma,conf+cred2,1,créditos a la percepción,118,,
+suma,conf+cred2,1,precisión del crédito,0.9492,,símbolo enseñado == dígito real
+suma,conf+cred2,1,exacta n=1,0.9060,0.9386,cota indep. p^2n*oráculo
+suma,conf+cred2,1,columna n=1,0.9480,,
+suma,conf+cred2,1,todas las imágenes bien n=1,0.9480,0.9386,p^2n
+suma,conf+cred2,1,exacta | todas bien n=1,0.9557,1.0000,oráculo
+suma,conf+cred2,1,exacta n=3,0.7200,0.8119,cota indep. p^2n*oráculo
+suma,conf+cred2,1,columna n=3,0.8987,,
+suma,conf+cred2,1,todas las imágenes bien n=3,0.8380,0.8268,p^2n
+suma,conf+cred2,1,exacta | todas bien n=3,0.8592,0.9820,oráculo
+romper,conf+cred2 | ruido sigma=0.5,1,exactitud imagen,0.8839,,
+romper,conf+cred2 | ruido sigma=0.5,1,exacta,0.4133,0.4683,cota indep. p^2n*oráculo(n)
+romper,conf+cred2 | ruido sigma=0.5,1,exacta | todas bien,0.8857,0.9820,oráculo(n)
+romper,conf+cred2 | ruido sigma=0.7,1,exactitud imagen,0.7139,,
+romper,conf+cred2 | ruido sigma=0.7,1,exacta,0.1033,0.1300,cota indep. p^2n*oráculo(n)
+romper,conf+cred2 | ruido sigma=0.7,1,exacta | todas bien,0.7895,0.9820,oráculo(n)
+romper,conf+cred2 | estilo no visto (tipográficos),1,exactitud imagen,0.9083,,
+romper,conf+cred2 | estilo no visto (tipográficos),1,exacta,0.5100,0.5515,cota indep. p^2n*oráculo(n)
+romper,conf+cred2 | estilo no visto (tipográficos),1,exacta | todas bien,0.9107,0.9820,oráculo(n)
+romper,conf+cred2 | más columnas n=6,1,exactitud imagen,0.9683,,
+romper,conf+cred2 | más columnas n=6,1,exacta,0.5333,0.6552,cota indep. p^2n*oráculo(n)
+romper,conf+cred2 | más columnas n=6,1,exacta | todas bien,0.7805,0.9640,oráculo(n)
+romper,conf+cred2 | más columnas n=10,1,exactitud imagen,0.9710,,
+romper,conf+cred2 | más columnas n=10,1,exacta,0.3533,0.5251,cota indep. p^2n*oráculo(n)
+romper,conf+cred2 | más columnas n=10,1,exacta | todas bien,0.6522,0.9460,oráculo(n)
+suma,total,1,segundos,194.6000,,
