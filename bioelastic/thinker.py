@@ -80,8 +80,9 @@ Aprendizaje, todo local:
     certeza menor que `doubt`, el Thinker no aprende de ella (ni conocimiento, ni control,
     ni modelo interno). Ante un error, la búsqueda retrospectiva también pregunta qué
     símbolo en cada ranura de la pregunta (entre los alternativos que propone la
-    percepción, `feedback(alternatives=...)`) o qué valor de cada registro habría llevado
-    al objetivo con el conocimiento actual. Si hay una sola explicación (y, con
+    percepción, `feedback(alternatives=...)`), qué símbolo en cada ranura de lo percibido
+    antes de la pregunta (`observe(alternatives=...)`: lo que la memoria episódica ligó) o
+    qué valor de cada registro habría llevado al objetivo con el conocimiento actual. Si hay una sola explicación (y, con
     `explain="refutadas"`, todas las demás alternativas quedan descartadas por conocimiento
     establecido: con conocimiento incompleto, «única» puede ser sólo «la única que conozco»)
     y es una ranura, el error es de percepción: `input_credit` dice qué símbolo debió
@@ -393,6 +394,7 @@ class Thinker:
         self._js = None                                    # estado de la última respuesta juzgada
         if self.fast is not None:
             self.fast.reset()
+        self._obs = []                                     # lo percibido sin responder: (símbolos, certeza, alternativas)
         self.say.reset_context()
         if self.judge is not None:
             self.judge.reset_context()
@@ -769,11 +771,14 @@ class Thinker:
             self.revised[2] += 1
 
     # ------------------------------------------------------------------ percibir y responder
-    def observe(self, tokens=None, certainty: float = 1.0):
+    def observe(self, tokens=None, certainty: float = 1.0, alternatives=None):
         """Percibe sin responder. `None` es un silencio. `certainty`: con qué certeza se
-        percibió (la guarda la memoria episódica con el evento)."""
+        percibió (la guarda la memoria episódica con el evento). `alternatives`: por ranura,
+        otros símbolos que la percepción consideraba; con ellos, la explicación perceptiva
+        de un error también puede culpar a algo que se percibió antes de la pregunta."""
         if self.fast is not None:
             self.fast.bind(self._tok(tokens), certainty)
+        self._obs.append((self._tok(tokens), float(certainty), alternatives))
 
     def answer(self, tokens, cue: int = 0, explore: bool = False, probe=None,
                certainty: float = 1.0) -> int:
@@ -972,7 +977,7 @@ class Thinker:
                 expl, unknown = self._explain_inputs(target, alternatives)
                 if len(expl) == 1 and (self.explain == "unica" or unknown == 0):
                     slot, sym = expl[0]
-                    if slot >= 0:
+                    if not isinstance(slot, int) or slot >= 0:  # una ranura percibida (no un registro)
                         self.input_credit = [(slot, sym)]
                         self.blamed_inputs += 1
                         self._abstain()
@@ -990,7 +995,8 @@ class Thinker:
         otro de sus símbolos alternativos, o que un registro leído tuviera el otro valor.
         Devuelve ([(ranura, símbolo)], cuántas alternativas quedaron sin descartar: ni
         llevan al objetivo ni el conocimiento establecido dice a qué otra cosa llevarían).
-        Un registro b va como ranura -1 - b."""
+        Un registro b va como ranura -1 - b; la ranura i de la observación t (la t-ésima
+        llamada a `observe` del episodio, silencios incluidos) va como (t, i)."""
         items, cue, reg, given, events = self._episode()
         first = list(items[0])
         found = []; unknown = 0
@@ -1010,12 +1016,31 @@ class Thinker:
                     continue
                 alt = list(first); alt[i] = sym
                 probar(((tuple(alt),) + tuple(items[1:]), cue, reg, given, events), (i, sym))
+        for t, (toks, _, alts_t) in enumerate(self._obs):   # lo percibido antes (memoria episódica)
+            if alts_t is None or self.fast is None:
+                continue
+            for i, alts in enumerate(alts_t):
+                for sym in alts:
+                    sym = int(sym)
+                    if i >= len(toks) or sym in toks:
+                        continue
+                    probar((items, cue, reg, given, self._events_with(t, i, sym)), ((t, i), sym))
         for b in range(self.R):                            # explicación rival: el registro
             if reg[b] < 0:
                 continue
             r2 = reg.copy(); r2[b] = 1 - r2[b]
             probar((items, cue, r2, given, events), (-1 - b, int(r2[b])))
         return found, unknown
+
+    def _events_with(self, t: int, i: int, sym: int) -> tuple:
+        """Los eventos de la memoria episódica si la ranura `i` de la observación `t` se
+        hubiera percibido como `sym` (se vuelven a ligar las observaciones del episodio)."""
+        m = FastMemory(self.N)
+        for u, (toks, c, _) in enumerate(self._obs):
+            if u == t:
+                toks = tuple(sym if j == i else x for j, x in enumerate(toks))
+            m.bind(toks, c)
+        return tuple(m.events)
 
     def _abstain(self):
         """No aprende de la última respuesta: se descartan las trazas (TD no la cierra ni
@@ -1113,9 +1138,11 @@ class Thinker:
         "amplitud": la búsqueda exhaustiva por niveles de la versión anterior.
 
         `start`: un episodio guardado (si no, la última pregunta). `over`: hipótesis sobre
-        el conocimiento que se dan por ciertas (ver `_adjudicate`). `refute`: busca, en
-        cambio, un camino a una respuesta establecida *distinta* del objetivo (para saber
-        si una explicación quedó descartada o sólo no se conoce).
+        el conocimiento que se dan por ciertas (ver `_adjudicate`). `refute`: en cambio,
+        mira qué habría respondido el control siguiendo su camino más probable, y devuelve
+        ese camino sólo si termina en una respuesta establecida distinta del objetivo (la
+        alternativa queda descartada); None si no la descarta (lleva al objetivo o el
+        conocimiento no dice qué daría).
 
         Sólo cuenta conocimiento establecido: un acierto por casualidad no prueba que el
         error fue de estrategia."""
@@ -1138,6 +1165,9 @@ class Thinker:
             cost, _, kind, focus, hold, recall, last, clock, path = heapq.heappop(heap)
             if kind == "s":                                # se sacó una solución: es la más probable
                 return [path]
+            if kind == "r":                                # refutación: el desenlace más probable
+                sure, out = recall
+                return [path] if sure and out != target else None
             n += 1; self.expanded += 1
             if kind == "g":                                # compuerta del ítem `clock`
                 s = self._gate_state(cue, last, focus, hold)
@@ -1168,7 +1198,9 @@ class Thinker:
                         heapq.heappush(heap, (cst, next(tie), "t", f, hold, rec(f), a, clock + 1, step))
                 else:
                     out, sure = self._outcome(a, focus, recall, c, s, over)
-                    if sure and (out != target if refute else out == target):
+                    if refute:
+                        heapq.heappush(heap, (cst, next(tie), "r", focus, hold, (sure, out), a, clock, step))
+                    elif sure and out == target:
                         if self.reliability:
                             ok, n_try = self.rel.get((s[0].tobytes(), a), (0, 0))
                             cst -= self.reliability * float(np.log((ok + 1.0) / (n_try + 2.0)))

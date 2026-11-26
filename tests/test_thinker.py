@@ -518,3 +518,18 @@ def test_one_register_carries_in_decimal_when_its_start_value_is_learned():
         net.reset(); net.plastic = False
         res[reset] = np.mean([_dec_episode(net, rng, False, 6) for _ in range(60)])
     assert res["cero"] < 0.3 and res["escrito"] > 0.9
+
+
+def test_input_credit_can_blame_what_was_bound_before_the_question():
+    """Memoria episódica: la clave 1 se ligó con un valor que se percibió mal (13 en vez de
+    17, con 17 como segunda opción). Al preguntar por 1 el control copia 13; el objetivo es
+    17. Sólo la pregunta como hipótesis no explica nada (ninguna otra clave da 17); con lo
+    ligado antes, la única explicación es la observación del valor."""
+    th = Thinker(20, memory=True, seed=0)
+    th.Wc[COPY, 0] = 5.0                                 # el control copia
+    th.reset()
+    th.observe(1, alternatives=[[2]]); th.observe(13, alternatives=[[17]]); th.observe(None)
+    th.observe(4, alternatives=[[5]]); th.observe(15, alternatives=[[16]]); th.observe(None)
+    assert th.answer(1) == 13
+    th.feedback(target=17, alternatives=[[2]])
+    assert th.input_credit == [((1, 0), 17)] and th.blamed_inputs == 1

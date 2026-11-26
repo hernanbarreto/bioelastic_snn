@@ -433,17 +433,25 @@ VARIANTES_LIG = {"base": dict(), "conf": dict(conf="p"), "confcos": dict(conf="p
 
 def episodio_ligadura(th, per, datos, split, rng, learn, cfg, st, ligada=None, F=None):
     """Como en la ronda 1 (4 pares clave-valor de imágenes y una pregunta con otra imagen),
-    con la certeza de cada imagen en la memoria episódica y el crédito a la pregunta."""
+    con la certeza de cada imagen en la memoria episódica. Con `cred`, las alternativas de
+    las 9 imágenes entran en la explicación del error (la pregunta y lo ligado antes): si
+    sólo se consideraba la pregunta, un valor mal percibido al ligar quedaba «explicado»
+    por la pregunta (el dato permanente que da ese valor) y el crédito era falso (precisión
+    0.41, la vista débil cayó de 0.88 a 0.63; semilla 0)."""
     claves = rng.permutation(10)[:5]
     valores = rng.integers(10, size=4)
-    conf = bool(cfg.get("conf"))
+    conf = bool(cfg.get("conf")); cred = bool(cfg.get("cred"))
     th.reset()
     ok_perc = True
+    vistas = {}                                          # observación -> (imagen, desplazamiento, dígito)
     for k, val in zip(claves[:4], valores):
-        sk, ck, _ = per.ver(datos.una(split, k, rng), k, learn)
-        sv, cv, _ = per.ver(datos.una(split, val, rng), val, learn)
-        th.observe(sk, certainty=ck if conf else 1.0)
-        th.observe(10 + sv, certainty=cv if conf else 1.0)
+        ik, iv = datos.una(split, k, rng), datos.una(split, val, rng)
+        sk, ck, ak = per.ver(ik, k, learn)
+        sv, cv, av = per.ver(iv, val, learn)
+        vistas[len(th._obs)] = (ik, 0, k)
+        th.observe(sk, certainty=ck if conf else 1.0, alternatives=[ak] if cred else None)
+        vistas[len(th._obs)] = (iv, 10, val)
+        th.observe(10 + sv, certainty=cv if conf else 1.0, alternatives=[_desplazar(av, 10)] if cred else None)
         th.observe(None)
         ok_perc &= (sk == k) and (sv == val)
     ligada = rng.random() < 0.5 if ligada is None else ligada
@@ -455,8 +463,14 @@ def episodio_ligadura(th, per, datos, split, rng, learn, cfg, st, ligada=None, F
     ok_perc &= sq == q
     out = th.answer(sq, explore=learn, certainty=cq if conf else 1.0)
     if learn:
-        th.feedback(target=y, alternatives=[aq] if cfg.get("cred") else None)
-        _credito(th, per, (iq,), (0,), (q,), st)
+        th.feedback(target=y, alternatives=[aq] if cred else None)
+        if th.input_credit and isinstance(th.input_credit[0][0], tuple):   # culpa a algo ligado antes
+            (t, _), sym = th.input_credit[0]
+            img, off, dig = vistas[t]
+            th.input_credit = [(0, sym)]
+            _credito(th, per, (img,), (off,), (dig,), st)
+        else:
+            _credito(th, per, (iq,), (0,), (q,), st)
     return out == y, bool(ok_perc)
 
 
