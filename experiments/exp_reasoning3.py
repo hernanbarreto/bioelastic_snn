@@ -13,6 +13,9 @@ Grupos
   f1v  validación de los hiperparámetros de F1 (semillas de validación).
   f2   estructura del mapa (`cogmap`): cierre del anillo y FIN con preguntas de aprendizaje
        mezcladas, ablaciones y control con sólo premisas.
+  f3   `back` sin daño: batería C0-C6 en multitarea (mezclada y en bloques), diagnóstico del
+       atajo posicional en la transitiva y relación inversa en la línea.
+  f4   neuromoduladores: regímenes S/V de Harlow y Harlow congelado; f4v, validación.
 
   Cada condición terminada queda en results/razonamiento3_<grupo>.parts.json y se salta al
   volver a correr (resiste reinicios); al final se escriben el CSV y el JSON del grupo.
@@ -335,7 +338,88 @@ def group_f2():
     st.finish()
 
 
-GROUPS = {"f1": group_f1, "f1v": group_f1v, "f2": group_f2}
+# ---------------------------------------------------------------- F3: back sin daño
+def run_battery(over, seeds=SEEDS, n=3000, plan="mezclada"):
+    """Batería C0-C6 de `exp_thinking_hard` en multitarea (mezclada o en bloques), casos no
+    vistos con todo congelado. Devuelve ({caso: [acc por semilla]}, ms por episodio, costo)."""
+    import exp_thinking_hard as H
+    W = H.World(32)
+    tasks = (0, 1, 2, 3, 4, 5, 6)
+    ev_all = [(f"C{t} {name}", fn) for t in tasks for name, fn in H.evals_for(W, t, t)]
+    sched = H.plan_mixed(tasks, 7 * n // 2, n // 4) if plan == "mezclada" else H.plan_blocks(tasks, n // 2, n // 4)
+    t0 = time.time()
+    out, cost = H.run(W, lambda s: H.make_thinker(W, 7, seed=s, **over), sched, ev_all, seeds, 200)
+    ms_ep = (time.time() - t0) / (len(seeds) * (len(sched) + 200 * len(ev_all))) * 1e3
+    return out, ms_ep, cost
+
+
+def report_battery(log, test, label, res):
+    out, ms_ep, cost = res
+    for name, accs in out.items():
+        log.row(test, label, "congelado, casos no vistos", name, float(np.mean(accs)), float(np.std(accs)), len(accs))
+    log.row(test, label, "costo", "ms por episodio (entrenar + evaluar)", float(ms_ep), 0.0, len(SEEDS))
+    allv = np.array([v for v in out.values()])
+    log.row(test, label, "resumen", "mínimo sobre casos y semillas", float(allv.min()), 0.0, len(SEEDS))
+    return dict(acc=out, ms_per_episode=ms_ep, cost=cost, min=float(allv.min()))
+
+
+def c5_shortcut(log, label, over, seeds=SEEDS, n=3000):
+    """Diagnóstico de F3: la transitiva sola (órdenes de 3-4), evaluada con órdenes de 8 y
+    distancia >= 4. Exactitud en los casos SÍ y NO y fracción de respuestas que juzgan sin
+    recorrer la cadena (el atajo posicional)."""
+    import exp_thinking_hard as H
+    W = H.World(32)
+    res = {"YES": [], "NO": [], "juzga sin recorrer (SÍ)": [], "juzga sin recorrer (NO)": []}
+    for seed in seeds:
+        rng = np.random.default_rng(1000 + seed)
+        net = H.make_thinker(W, 1, seed=seed, **over)
+        for task, cue in H.plan_single(5, n):
+            H.TASKS[task](W, net, rng, True, cue)
+        net.reset(); net.plastic = False
+        ok = {"YES": [], "NO": []}; imm = {"YES": [], "NO": []}
+        for _ in range(400):
+            L = 8; syms = rng.permutation(W.N); order = [int(x) for x in syms[:L]]; rest = syms[L:]
+            pairs = [(order[i], order[i + 1]) for i in range(L - 1)] + [(int(rest[2 * i]), int(rest[2 * i + 1])) for i in range(3)]
+            while True:
+                i, j = (int(t) for t in rng.choice(L, 2, replace=False))
+                if abs(i - j) >= 4:
+                    break
+            y = W.YES if i < j else W.NO
+            net.reset(); H._bind(net, pairs, rng)
+            out = net.answer(order[i], cue=0, probe=order[j], explore=False)
+            k = "YES" if y == W.YES else "NO"
+            ok[k].append(out == y); imm[k].append(len(net._path) == 1 or net._path[0] == 3)   # JUZGAR (o HABLAR) primero
+        for k in ("YES", "NO"):
+            res[k].append(float(np.mean(ok[k])))
+            res[f"juzga sin recorrer ({'SÍ' if k == 'YES' else 'NO'})"].append(float(np.mean(imm[k])))
+    for k, v in res.items():
+        log.row("F3.2 transitiva sola, órdenes de 8 (diagnóstico)", label, "congelado", k, float(np.mean(v)), float(np.std(v)), len(v))
+    return res
+
+
+def group_f3():
+    st = Store("f3")
+    conds = [("Thinker por defecto (sin back)", {}),
+             ("ronda anterior: back con predecesores siempre visibles", dict(back="automatico")),
+             ("back: predecesores al retroceder (+ coincidencia con lo sostenido)", dict(back=True)),
+             ("prev_io + back (nuevo)", dict(prev_io=True, back=True))]
+    for label, over in conds:
+        st.run("F3.1 " + label, lambda log, over=over, label=label: report_battery(
+            log, "F3.1 batería C0-C6, multitarea mezclada", label, run_battery(over)))
+    for label, over in conds[1:3]:
+        st.run("F3.2 " + label, lambda log, over=over, label=label: c5_shortcut(log, label, over))
+    tests = (("L=8 (más largo que lo entrenado)", dict(L=8)), ("R=1 (cada relación observada una vez)", dict(R=1)))
+    for label, over in conds[1:3]:
+        st.run("F3.3 " + label, lambda log, over=over, label=label: M.report_line(
+            log, "F3.3 línea: relación inversa y transitiva", label,
+            M.run_line(make(n_cues=4, **over), 300, struct="linea", perceive=True, tests=tests), 25))
+    for label, over in (conds[0], conds[2]):
+        st.run("F3.4 " + label, lambda log, over=over, label=label: report_battery(
+            log, "F3.4 batería C0-C6, multitarea en bloques (olvido)", label, run_battery(over, plan="bloques")))
+    st.finish()
+
+
+GROUPS = {"f1": group_f1, "f1v": group_f1v, "f2": group_f2, "f3": group_f3}
 
 
 def main():

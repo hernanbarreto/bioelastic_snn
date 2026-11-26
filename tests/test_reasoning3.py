@@ -149,7 +149,7 @@ def test_cogmap_state_layout_and_size_learning_only_with_plasticity():
     a = Thinker(20, memory=True, judge=True, speak=True, back=True, seed=0)
     b = Thinker(20, memory=True, judge=True, speak=True, back=True, cogmap=True, seed=0)
     c = Thinker(20, memory=True, judge=True, speak=True, back=True, cogmap="sin_posicion", seed=0)
-    assert b.D_state == a.D_state + 3 + 27 + 9 * (b._n_act + 1) and c.D_state == a.D_state + 3
+    assert b.D_state == a.D_state + 3 + 36 + 12 * (b._n_act + 1) and c.D_state == a.D_state + 3
     for x in (1, 2, 3, 4):
         b.observe(x); b.observe(x + 1); b.observe(None)
     b.answer(5)
@@ -184,3 +184,48 @@ def test_judge_candidate_learns_a_target_tied_to_a_structural_position():
     episode(FIN); k = episode(FIN)
     out, sure = net.M.predict(k)
     assert out == FIN and sure
+
+
+# ---------------------------------------------------------------- F3: back sin daño
+def test_predecessors_are_seen_only_after_going_back():
+    from bioelastic.thinker import BACK, _recall_back
+    for back, always in ((True, False), ("automatico", True)):
+        net = Thinker(20, memory=True, judge=True, speak=True, back=back, seed=0)
+        for a, b in ((1, 2), (2, 3)):
+            net.observe(a); net.observe(b); net.observe(None)
+        f = (2,); bk = _recall_back(net.fast.events, f)
+        hold = frozenset((1,))
+        s0 = net._state(0, -1, 0, f, net._recall(f), hold, back=bk)[0] % net.D_base
+        s1 = net._state(0, BACK, 1, f, net._recall(f), hold, back=bk)[0] % net.D_base
+        o, k = net.o_back, (5 if back is True else 3)
+        seen0 = [i for i in s0 if o <= i < o + k]; seen1 = [i - o for i in s1 if o <= i < o + k]
+        assert bool(seen0) == always
+        assert 1 in seen1                                                  # un predecesor
+        if back is True:
+            assert 4 in seen1                                              # y es lo sostenido
+
+
+def _c5_long(net, rng, W):
+    import sys
+    sys.path.insert(0, "experiments")
+    import exp_thinking_hard as H
+    L = 8; syms = rng.permutation(W.N); order = [int(x) for x in syms[:L]]
+    pairs = [(order[i], order[i + 1]) for i in range(L - 1)]
+    i, j = 1, 6                                                        # SÍ, X en el medio, distancia 5
+    net.reset(); H._bind(net, pairs, rng)
+    return net.answer(order[i], cue=0, probe=order[j], explore=False) == W.YES
+
+
+def test_transitive_inference_with_back_has_no_positional_shortcut():
+    """Con `back` la transitiva (entrenada con órdenes de 3-4) sigue resolviendo los SÍ de
+    órdenes de 8: no aprende «si X tiene predecesor, NO»."""
+    import sys
+    sys.path.insert(0, "experiments")
+    import exp_thinking_hard as H
+    W = H.World(32)
+    rng = np.random.default_rng(1000)
+    net = H.make_thinker(W, 1, seed=0, back=True)
+    for task, cue in H.plan_single(5, 2000):
+        H.TASKS[task](W, net, rng, True, cue)
+    net.reset(); net.plastic = False
+    assert np.mean([_c5_long(net, rng, W) for _ in range(60)]) > 0.95

@@ -392,6 +392,15 @@ class Thinker:
         if memory:
             acts += ([COPY] if copy else []) + [FOLLOW, EMIT]
         acts += ([SPEAK] if speak else []) + ([JUDGE] if judge else [])
+        # Con `back` lo que precedió al foco se consulta al retroceder: el control lo ve (cuántos
+        # predecesores y si el predecesor es lo sostenido) sólo después de RETROCEDER. El recuerdo
+        # hacia adelante es automático y el inverso no (asimetría hacia adelante del recuerdo:
+        # Kahana, 1996). Con la señal siempre visible, el control aprendía un atajo posicional en
+        # la transitiva («si X no tiene predecesor, SÍ; si no, juzgar NO») que acierta ~96 % con
+        # órdenes de 3-4 y falla los SÍ con órdenes de 8. "automatico": la versión anterior
+        # (señal siempre visible, sin coincidencia con lo sostenido), como ablación.
+        self._back_match = bool(back) and back not in ("sin_senal", "automatico")
+        self._back_auto = back == "automatico"
         self.back = back if back == "sin_senal" else bool(back)
         if memory and self.back:
             acts.append(BACK)
@@ -419,7 +428,7 @@ class Thinker:
         # respuesta y recompensa previas (`prev_io`): 5 para el foco y 5 para el ítem de la compuerta
         self.prev_io = prev_io if prev_io == "separado" else bool(prev_io)
         self.o_prev = o; o += 10 if self.prev_io else 0
-        self.o_back = o; o += 3 if self.back is True else 0  # predecesores: nada / uno / varios (`back`)
+        self.o_back = o; o += (5 if self._back_match else 3) if self.back is True else 0  # predecesores: nada / uno / varios (`back`), ¿sostenido?
         # completitud del mapa (`cogmap`, ver `bioelastic.cogmap`): sin mapa / a medio armar / completo
         # ablaciones: "sin_posicion", "sin_tamano" (sin tamaño esperado), "sin_juicio" (sin
         # crédito al juicio como módulo candidato)
@@ -431,7 +440,7 @@ class Thinker:
         # posición en la estructura (`cogmap`): la completitud del mapa conjugada con la vecindad
         # del foco (cuántos sucesores y predecesores: principio, medio o final de la estructura)
         # y la acción recién hecha (integración del camino) conjugada con esa vecindad
-        self.o_pos = o; o += (27 + (self._n_act + 1) * 9) if self._cm_pos else 0
+        self.o_pos = o; o += (36 + (self._n_act + 1) * 12) if self._cm_pos else 0
         self._mapc = 0
         if self.cogmap:
             from .cogmap import SizePrior
@@ -541,16 +550,19 @@ class Thinker:
             idx.append(self.o_gate + 5 + (0 if not hold else 1 + min(getattr(hold, "origin", 0), 1)))
         if self.prev_io:
             idx += [self.o_prev + i for i in self._prev_code(focus, prev)]
-        if self.back is True and back is not None:
+        seen = self.back is True and back is not None and (self._back_auto or last == BACK)
+        if seen:                                           # (ver `__init__`: se consulta al retroceder)
             idx.append(self.o_back + min(len(back[0]), 2))
+            if self._back_match and hold:                  # ¿el predecesor es lo sostenido?
+                idx.append(self.o_back + 3 + int(self._best(back) in hold))
         if self.cogmap:
             idx.append(self.o_map + (self._mapc if mapc is None else mapc))
         if self._cm_pos:
             ns = min(len(recall[0]), 2)
-            npred = min(len(back[0]), 2) if (self.back is True and back is not None) else 0
+            npred = min(len(back[0]), 2) if seen else 3   # 3: no se consultó
             mc = self._mapc if mapc is None else mapc
-            idx.append(self.o_pos + mc * 9 + ns * 3 + npred)
-            idx.append(self.o_pos + 27 + (last + 1) * 9 + ns * 3 + npred)
+            idx.append(self.o_pos + mc * 12 + ns * 4 + npred)
+            idx.append(self.o_pos + 36 + (last + 1) * 12 + ns * 4 + npred)
         for b in range(self.R):
             if reg[b] >= 0:
                 idx.append(self.o_sreg + 2 * b + int(reg[b]))
