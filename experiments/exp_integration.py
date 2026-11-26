@@ -15,14 +15,16 @@ tareas y para medir; dónde las recibe la red está dicho en cada prueba.
                   Referencias: el mismo Thinker con símbolos perfectos (oráculo) y la cota
                   si los errores de percepción fueran independientes:
                       exacta <= p_img^(2n) * exacta_oráculo(n)
-  conjunta        (1b) percepción y razonamiento aprendiendo a la vez, desde cero, con el
-                  dígito de cada columna como única señal: el Thinker recibe el objetivo y
+  escalera        (1b) percepción y razonamiento aprendiendo a la vez, desde cero, con el
+  conjunta        dígito de cada columna como única señal: el Thinker recibe el objetivo y
                   la percepción el mismo acierto/fallo como recompensa global (R-STDP, el
                   único canal que ofrece la arquitectura). Escalera para ubicar el quiebre:
+                      R0 control        sin Thinker: la percepción premiada si su símbolo
+                                        es la etiqueta (cuánto aprende sólo con recompensa)
                       L0 identidad      una imagen -> su dígito
                       L1 a+b, b símbolo una imagen y un símbolo perfecto -> (a+b) mod 10
                       L2 a+b imágenes   dos imágenes -> (a+b) mod 10 (sin acarreo)
-                      L3 suma completa  varias columnas con acarreo
+                      L3 suma completa  varias columnas con acarreo (subcomando `conjunta`)
                   La percepción se mide con la mejor biyección símbolo -> dígito (pureza),
                   porque al Thinker le sirve cualquier código consistente.
   ligadura        (2) en cada episodio se ligan 4 pares (imagen de clave, imagen de valor)
@@ -35,9 +37,10 @@ tareas y para medir; dónde las recibe la red está dicho en cada prueba.
                   vistos. Controles: memoria perfecta (cota del protocolo), pares sin
                   relación (azar), dos cortezas que se enseñan símbolos entre sí y
                   referencia con etiquetas.
-  interferencia   (4a) ¿el refuerzo que viene del razonamiento degrada una percepción
-                  entrenada con etiquetas? (4b) ¿los símbolos ruidosos de la percepción
-                  degradan lo que el Thinker ya sabía con símbolos perfectos?
+  interf_percepcion    (4a) ¿el refuerzo que viene del razonamiento degrada una percepción
+                       entrenada con etiquetas? Control: la misma corrida con la vista congelada.
+  interf_razonamiento  (4b) ¿los símbolos ruidosos de la percepción degradan lo que el
+                       Thinker ya sabía con símbolos perfectos? Control: sigue con oráculo.
   resumen         junta los CSV por semilla en results/integracion_resumen.csv
 
   python experiments/exp_integration.py <prueba> [--seed S] [--rapida]
@@ -282,19 +285,26 @@ def episodio_escalera(nivel, th, ver, datos, split, rng, learn, reforzar=None):
     return out == y, vistos
 
 
-def prueba_conjunta(seed, tam, out):
-    """1b: percepción desde cero + Thinker desde cero; única señal: el dígito de la columna."""
+def prueba_conjunta(seed, tam, out, niveles=("L3",)):
+    """1b: percepción desde cero + Thinker desde cero; única señal: el dígito de la columna.
+    R0 es el control sin Thinker: la percepción sola, premiada si su símbolo es la
+    etiqueta (mide cuánto aprende el Cortex sólo con recompensa)."""
     rng = np.random.default_rng(2000 + seed)
     datos = Digitos(tam["n_pre"])
     Xt, yt = muestra_test(datos, rng, tam["n_test_pureza"])
-    for nivel in tam["niveles"]:
+    for nivel in niveles:
         v = Vista(seed)
         refuerzo = lambda pares, r: [v.reforzar(img, s, r) for img, s in pares]
         th = Thinker(10 if nivel == "L0" else (20 if nivel in ("L1", "L2") else 21),
                      registers=2 if nivel == "L3" else 0, seed=seed)
         t0 = time.time(); win = []
         for e in range(tam["ep_conjunta"]):
-            if nivel == "L3":
+            if nivel == "R0":
+                d = int(rng.integers(10)); img = datos.una("train", d, rng)
+                s = v.simbolo(img, explore=True)
+                v.reforzar(img, s, 1.0 if s == d else -1.0)
+                win.append(s == d)
+            elif nivel == "L3":
                 r = episodio_suma(th, con_vista(v), datos, "train", rng, int(rng.integers(1, 5)), True, refuerzo)
                 win += r["columnas"]
             else:
@@ -317,7 +327,7 @@ def prueba_conjunta(seed, tam, out):
             out("conjunta", nivel, "columna n=3 (test)", m["columna"], 0.1, "azar")
             out("conjunta", nivel, "exacta n=3: cota con la pureza medida", "",
                 cota_independiente(pz, 6, 1.0), "pureza^6 (Thinker perfecto)")
-        else:
+        elif nivel != "R0":
             acc = float(np.mean([episodio_escalera(nivel, th, con_vista(v), datos, "test", rng, False)[0]
                                  for _ in range(tam["ep_eval"])]))
             k = 1 if nivel in ("L0", "L1") else 2
@@ -463,9 +473,11 @@ def prueba_modal(seed, tam, out):
         out("modal", nombre, "voz -> imagen P@1", p_at_1(rec_i, yAte, Ite, yIte), 0.1, "azar")
         out("modal", nombre, "neuronas", mem.layer.n, "", f"{tam['n_pares']} pares")
 
-    for nombre, relacion in (("memoria asociativa", True), ("control: pares sin relación", False)):
+    variantes = [(f"memoria asociativa theta={th}", True, th) for th in tam["theta_modal"]]
+    variantes.append(("control: pares sin relación", False, tam["theta_modal"][0]))
+    for nombre, relacion, theta in variantes:
         mem = BioElasticNet(D_IMG + Ate.shape[1], 1, seed=seed,
-                            layer=dict(fan_in=D_IMG + Ate.shape[1], theta=tam["theta_modal"]))
+                            layer=dict(fan_in=D_IMG + Ate.shape[1], theta=theta))
         t0 = time.time()
         for img, aud in pares(tam["n_pares"], relacion):
             mem.observe(conjunto(img, aud))
@@ -520,19 +532,16 @@ def _cruce(out, nombre, ci, ca, Ite, yIte, Ate, yAte, SHEET):
 
 
 # ====================================================================== 4. interferencia
-def prueba_interferencia(seed, tam, out):
+def prueba_interferencia_percepcion(seed, tam, out):
+    """4a: la percepción entrenada con etiquetas recibe la recompensa del razonamiento."""
     rng = np.random.default_rng(5000 + seed)
     datos = Digitos(tam["n_pre"])
-    Xt, yt = muestra_test(datos, rng, tam["n_test"])
+    Xt, yt = muestra_test(datos, rng, tam["n_test_interf"])
     base = vista_entrenada(datos, seed, tam["n_pre"])
     p0 = float(np.trace(base.confusion(Xt, yt)) / len(yt))
     out("interferencia", "4a", "vista antes (test)", p0, "", "entrenada con etiquetas")
     th0 = thinker_suma(seed, 2)
     entrenar_suma(th0, oraculo, datos, rng, tam["ep_suma"])
-    T0 = evaluar_suma(th0, oraculo, datos, rng, 3, tam["ep_eval"])["exacta"]
-    out("interferencia", "4b", "Thinker antes: exacta n=3 con oráculo", T0, "", "")
-
-    # 4a. La percepción entrenada recibe la recompensa del razonamiento.
     for name, th_ini in (("Thinker pre-entrenado", th0), ("Thinker desde cero", None)):
         for plastica in (True, False):
             v = copy.deepcopy(base)
@@ -546,32 +555,47 @@ def prueba_interferencia(seed, tam, out):
             m = evaluar_suma(th, con_vista(v), datos, rng, 3, tam["ep_eval"])
             out("interferencia", var, "suma exacta n=3 (test)", m["exacta"], "", "")
 
-    # 4b. El Thinker que sabía sumar con símbolos perfectos aprende sobre lo percibido.
+
+def prueba_interferencia_razonamiento(seed, tam, out):
+    """4b: el Thinker que sabía sumar con símbolos perfectos sigue aprendiendo sobre lo
+    percibido; después se lo vuelve a medir con símbolos perfectos."""
+    rng = np.random.default_rng(6000 + seed)
+    datos = Digitos(tam["n_pre"])
+    Xt, yt = muestra_test(datos, rng, tam["n_test_interf"])
+    fuerte = vista_entrenada(datos, seed, tam["n_pre"])
     debil = vista_entrenada(datos, seed, tam["n_debil"], "depth1")
-    pd = float(np.trace(debil.confusion(Xt, yt)) / len(yt))
-    out("interferencia", "4b", "vista débil (test)", pd, "", "depth1")
-    for name, ver in (("control: sigue con oráculo", oraculo), ("vista fuerte", con_vista(base)),
+    for name, v in (("vista fuerte", fuerte), ("vista débil", debil)):
+        out("interferencia", "4b", f"{name} (test)", float(np.trace(v.confusion(Xt, yt)) / len(yt)), "", v.config)
+    th0 = thinker_suma(seed, 2)
+    entrenar_suma(th0, oraculo, datos, rng, tam["ep_suma"])
+    m0 = evaluar_suma(th0, oraculo, datos, rng, 3, tam["ep_eval"])
+    out("interferencia", "4b", "Thinker antes: exacta n=3 con oráculo", m0["exacta"], "", "")
+    for name, ver in (("control: sigue con oráculo", oraculo), ("vista fuerte", con_vista(fuerte)),
                       ("vista débil", con_vista(debil))):
         th = copy.deepcopy(th0)
         entrenar_suma(th, ver, datos, rng, tam["ep_interf"])
         m = evaluar_suma(th, oraculo, datos, rng, 3, tam["ep_eval"])
-        out("interferencia", f"4b {name}", "Thinker después: exacta n=3 con oráculo", m["exacta"], T0, "antes")
-        out("interferencia", f"4b {name}", "Thinker después: columna n=3 con oráculo", m["columna"], "", "")
+        out("interferencia", f"4b {name}", "Thinker después: exacta n=3 con oráculo", m["exacta"], m0["exacta"], "antes")
+        out("interferencia", f"4b {name}", "Thinker después: columna n=3 con oráculo", m["columna"], m0["columna"], "antes")
 
 
 # ====================================================================== principal
 TAM = dict(
     completa=dict(n_pre=10000, n_debil=1000, n_test=5000, n_test_pureza=2000, ep_suma=6000, ep_eval=500,
-                  ep_conjunta=4000, cada=1000, niveles=("L0", "L1", "L2", "L3"), ep_ligadura=3000,
-                  n_q_img=1000, n_pares=3000, n_pares_mutuos=3000, n_ref=5000, theta_modal=0.7,
-                  ep_interf=3000),
+                  ep_conjunta=4000, cada=1000, escalera=("R0", "L0", "L1", "L2"), ep_ligadura=3000,
+                  n_q_img=1000, n_pares=3000, n_pares_mutuos=3000, n_ref=5000, theta_modal=(0.7, 0.85),
+                  ep_interf=2000, n_test_interf=2000),
     rapida=dict(n_pre=300, n_debil=200, n_test=200, n_test_pureza=100, ep_suma=60, ep_eval=20,
-                ep_conjunta=20, cada=10, niveles=("L0", "L3"), ep_ligadura=40,
-                n_q_img=50, n_pares=60, n_pares_mutuos=20, n_ref=50, theta_modal=0.7,
-                ep_interf=20),
+                ep_conjunta=20, cada=10, escalera=("R0", "L0"), ep_ligadura=40,
+                n_q_img=50, n_pares=60, n_pares_mutuos=20, n_ref=50, theta_modal=(0.7,),
+                ep_interf=20, n_test_interf=100),
 )
-PRUEBAS = dict(suma=prueba_suma, conjunta=prueba_conjunta, ligadura=prueba_ligadura,
-               modal=prueba_modal, interferencia=prueba_interferencia)
+PRUEBAS = dict(suma=prueba_suma,
+               escalera=lambda s, t, o: prueba_conjunta(s, t, o, t["escalera"]),
+               conjunta=lambda s, t, o: prueba_conjunta(s, t, o, ("L3",)),
+               ligadura=prueba_ligadura, modal=prueba_modal,
+               interf_percepcion=prueba_interferencia_percepcion,
+               interf_razonamiento=prueba_interferencia_razonamiento)
 
 
 def resumen():
