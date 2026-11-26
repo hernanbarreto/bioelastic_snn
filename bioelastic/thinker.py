@@ -318,6 +318,7 @@ class Thinker:
                  replacing: bool = True,
                  decay: float = 1e-2, mixed: bool | str = "solo", clock: bool = False,
                  lookahead: bool = False, search: str = "guiada", credit: str = "estricto",
+                 task_sets: bool | dict = False,
                  doubt: float = 0.0, explain: str = "refutadas", reg_credit: str = "simple",
                  reg_reset: str = "cero", prev_io: bool | str = False, back: bool | str = False,
                  seed: int = 0, say: dict | None = None):
@@ -420,7 +421,8 @@ class Thinker:
         self.o_prev = o; o += 10 if self.prev_io else 0
         self.o_back = o; o += 3 if self.back is True else 0  # predecesores: nada / uno / varios (`back`)
         self.D_base = o
-        self.mixed = mixed if (mixed and self.n_cues > 1) else False
+        # con conjuntos de tareas la consigna no se conjuga: el conjunto que rige la reemplaza
+        self.mixed = mixed if (mixed and self.n_cues > 1 and not task_sets) else False
         self._shared = self.mixed != "solo"            # "solo": sólo señales conjugadas con la consigna
         self.D_state = self.D_base * (1 + self.n_cues) if self.mixed else self.D_base
         self.say = BioElasticNet(self.D_content, N, seed=seed, **(say or {}))
@@ -435,6 +437,13 @@ class Thinker:
         self.plastic = True
         self.decisions = np.zeros(self._n_act, dtype=np.int64)
         self._V = None
+        self._ctl_gain = 1.0                               # ganancia de la plasticidad del control
+        # conjuntos de tareas (`task_sets`, ver `bioelastic.tasksets`): el control que rige
+        # se infiere de la estadística de los desenlaces
+        self.task_sets = None
+        if task_sets:
+            from .tasksets import TaskSets
+            self.task_sets = TaskSets(**(task_sets if isinstance(task_sets, dict) else {}))
         self.reset()
 
     # ------------------------------------------------------------------ episodio
@@ -569,7 +578,7 @@ class Thinker:
 
     # ------------------------------------------------------------------ TD(lambda)
     def _update(self, delta: float):
-        step = self.lr * delta
+        step = self.lr * self._ctl_gain * delta          # (ganancia: conjuntos de tareas y moduladores)
         self.Wc += step * self.Ec; self.Wr += step * self.Er; self.wv += step * self.ev
 
     def _softmax(self, logits):
@@ -870,6 +879,8 @@ class Thinker:
         y la red decide qué hacer con él. `certainty`: con qué certeza se percibió la
         pregunta (ver `doubt`). `extra`: más ítems de la pregunta (sólo con compuerta)."""
         used = []                                             # certeza de lo recuperado que se usó
+        if self.task_sets is not None:                        # qué conjunto de tareas rige
+            self._ts_begin(cue)
         if self._start:
             self._start = False
             if self.reg_reset == "escrito" and self.R:
@@ -967,6 +978,9 @@ class Thinker:
         if self.prev_io and (target is not None or reward is not None):   # estado, no plasticidad
             ok = (reward > 0) if reward is not None else (self._out == int(target))
             self._prev = (int(self._out), bool(ok))
+        if self.task_sets is not None and (target is not None or reward is not None):
+            self._ts_evidence(target, reward)              # inferencia: también congelado
+
         if not self.plastic:
             return
         self.input_credit = []
@@ -1370,14 +1384,126 @@ class Thinker:
     def _teach_control(self, paths):
         """Corrige el control hacia las secuencias que habrían funcionado (regla delta local,
         repartida entre los caminos)."""
-        w = self.lr / len(paths)
+        w = self.lr * self._ctl_gain / len(paths)
         for path in paths:
             for (s_idx, s_val), allowed, a in path:
                 p = self._policy(s_idx, s_val, allowed)
                 g = -p; g[list(allowed).index(a)] += 1.0
                 self.Wc[allowed[:, None], s_idx[None, :]] += w * g[:, None] * s_val[None, :]
 
+    # ------------------------------------------------------------------ conjuntos de tareas
+    def _ts_bind(self, k: int):
+        ts = self.task_sets.sets[k]
+        self.Wc, self.wv, self.rel, self._pending = ts.Wc, ts.wv, ts.rel, ts.pending
+
+    def _ts_switch(self, k: int, cue):
+        """Pasa a regir el conjunto `k`. La transición TD en curso se corta sin repartir
+        crédito: lo que hizo un conjunto no se enseña a otro."""
+        T = self.task_sets
+        if k != T.active:
+            self.Ec[:] = 0.0; self.ev[:] = 0.0
+            self._V = None; self._r = 0.0
+            self._ts_bind(k)
+        T.activate(k, cue, self.plastic)
+
+    def _ts_new(self, cue) -> int:
+        from .tasksets import TaskSet
+        Wc, wv = self.task_sets.init_weights(self.Wc, self.wv)
+        return self.task_sets.add(TaskSet(Wc, wv), cue)
+
+    def _ts_begin(self, cue):
+        """Antes de responder: transición de la creencia y el conjunto más probable."""
+        T = self.task_sets
+        if not T.sets:                                     # el control con el que nació
+            from .tasksets import TaskSet
+            T.add(TaskSet(self.Wc, self.wv, self.rel, self._pending), cue)
+            T.active = 0
+        T.predict(cue)
+        k = T.choose(cue, allow_new=self.plastic)
+        if k == len(T.sets):
+            k = self._ts_new(cue)
+        self._ts_switch(k, cue)
+
+    def _ts_rollout(self, k: int, ep) -> tuple:
+        """Simulación sin efectos de la política más probable del conjunto `k` en el ensayo
+        `ep` (con el modelo interno, como la búsqueda). Devuelve (respuesta, confianza): la
+        confianza es la probabilidad del paso más dudoso; respuesta -1 si el camino no lleva
+        a nada establecido."""
+        T = self.task_sets
+        T.simulated += 1
+        W = self.Wc
+        self.Wc = T.sets[k].Wc
+        try:
+            items, cue, reg, given, events = ep
+            prev = getattr(items, "prev", None)
+            rec = (lambda f: _recall_events(events, f)) if self.fast is not None else (lambda f: _NONE)
+            rbk = (lambda f: _recall_back(events, f)) if (self.back and self.fast is not None) else (lambda f: None)
+            conf = 1.0; last = -1
+            if self.gate:
+                focus, hold = (), frozenset()
+                for i, it in enumerate(items):
+                    s = self._gate_state(cue, last, focus, hold, it, prev)
+                    p = self._policy(*s, _GATE)
+                    j = int(np.argmax(p)); conf = min(conf, float(p[j]))
+                    a = int(_GATE[j])
+                    focus, hold = self._gated(a, it, focus, hold, i)
+                    last = a
+            else:
+                focus, hold = items[0], given
+            recall = rec(focus); clock = 0
+            while True:
+                bk = rbk(focus)
+                s = self._state(cue, last, clock, focus, recall, hold, reg, None, prev, bk)
+                allowed = self._allowed(clock)
+                p = self._policy(*s, allowed)
+                j = int(np.argmax(p)); conf = min(conf, float(p[j]))
+                a = int(allowed[j])
+                c = self._content(focus, reg=reg)
+                if a in _INTERNAL:
+                    succ = self._successors(a, focus, recall, c, None, bk)
+                    if not succ:
+                        return -1, 0.0
+                    focus = succ[0]; recall = rec(focus); clock += 1; last = a
+                    continue
+                out, sure = self._outcome(a, focus, recall, c, s)
+                return (int(out), conf) if sure else (-1, 0.0)
+        finally:
+            self.Wc = W
+
+    def _ts_evidence(self, target, reward):
+        """Tras el desenlace: verosimilitud de cada conjunto (simulación interna), creencia
+        y, si cambió el más probable, cambio de conjunto (o uno nuevo) antes de aprender."""
+        T = self.task_sets
+        if target is None:                                 # sólo recompensa: el objetivo es lo
+            target = self._out if (reward or 0.0) > 0 else None   # respondido, si fue premiado
+        ep = self._episode()
+        cue = self._q[1]
+        K = len(T.sets)
+        lik = np.full(K + 1, 0.5)
+        act = T.active
+        out, conf = self._ts_rollout(act, ep)
+        lik[act] = T.likelihood(act, out, conf, target)
+        if lik[act] < T.explained:                         # no lo explicó: se vigila al resto
+            for k in range(K):
+                if k != act:
+                    o, c = self._ts_rollout(k, ep)
+                    lik[k] = T.likelihood(k, o, c, target)
+        if self.plastic:
+            T.learn_rho(act, out, conf, target)
+            T.sets[act].trials += 1
+        T.update(cue, lik)
+        k = T.choose(cue, allow_new=self.plastic)
+        if k == K:
+            k = self._ts_new(cue)
+        self._ts_switch(k, cue)
+        self._ctl_gain = T.gain(cue)
+
     def stats(self) -> dict:
+        if self.task_sets is not None:
+            return dict(self._stats(), **self.task_sets.stats())
+        return self._stats()
+
+    def _stats(self) -> dict:
         return dict(neurons=self.say.layer.n, expanded=int(self.expanded), replayed=int(self.replayed),
                     judge_neurons=self.judge.layer.n if self.judge is not None else 0,
                     revised=self.revised.tolist(), abstained=int(self.abstained),
