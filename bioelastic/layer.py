@@ -13,7 +13,13 @@ Plasticidad estructural a dos niveles:
   * Neuronas: `recruit` imprime la volea actual en una neurona nueva (quién decide
     cuándo es la red: novedad o error). Una neurona nueva que no vuelve a ser útil
     antes de `probation` pasos muere (`maintain`). La tasa de STDP de cada neurona
-    decae con su uso (consolidación). Con `max_neurons`, reclutar exige liberar lugar:
+    decae con su uso (consolidación). Con `max_neurons`, reclutar exige liberar lugar, así
+    la red siempre puede aprender algo nuevo aunque haya llegado a su presupuesto:
+      evict="balanced" (por defecto) desaloja a la de menor utilidad dentro del grupo
+                       (clase preferida) con más neuronas: cupo parejo entre clases, como el
+                       muestreador de GDumb (Prabhu et al. 2020). Una clase ausente no se
+                       vacía sólo por estar ausente; paga la clase que más ocupa. Sin grupos
+                       (`group_of` sin definir) es igual a "utility".
       evict="utility"  desaloja a la de menor utilidad reciente (la que menos se usó
                        últimamente: las clases ausentes pierden primero).
       evict="merge"    funde las dos neuronas más parecidas del grupo (clase preferida)
@@ -66,7 +72,7 @@ class ElasticLayer:
                  max_neurons: int | None = None, probation: int = 20000,
                  survival_hits: int = 1, util_tau: float = 20000.0,
                  max_candidates: int = 64, capacity: int = 256, neurogenesis: bool = True,
-                 evict: str = "utility", merge_candidates: int = 48):
+                 evict: str = "balanced", merge_candidates: int = 48):
         self.D = int(n_inputs)
         self.K = int(min(fan_in or 256, self.D))       # sinapsis por neurona
         self.k = int(k)
@@ -81,9 +87,13 @@ class ElasticLayer:
         self.util_tau = float(util_tau)
         self.max_candidates = int(max_candidates)
         self.neurogenesis = bool(neurogenesis)     # False: no nacen neuronas (sólo plasticidad sináptica)
-        if evict not in ("utility", "merge"):
+        if evict not in ("utility", "merge", "balanced"):
             raise ValueError(f"evict desconocido: {evict}")
         self.evict = evict
+        # Umbral propio fijo (vigilancia) por encima de theta: lo fija quien recluta (ver
+        # BioElasticNet, `separation`). No está en _STATS: se reserva sólo si se usa.
+        self.vig = None
+        self._has_vig = False           # ¿alguna neurona con umbral propio?
         self.merge_candidates = int(merge_candidates)
         self.merged = 0
         self._rng = np.random.default_rng(0)
@@ -130,6 +140,9 @@ class ElasticLayer:
         self._alloc_stats(new_cap)
         for name, arr in old.items():
             getattr(self, name)[:self.n] = arr[:self.n]
+        if self.vig is not None:
+            vig = np.zeros(new_cap, dtype=np.float32); vig[:self.n] = self.vig[:self.n]
+            self.vig = vig
         dirty = np.zeros(new_cap, dtype=bool); dirty[:self.cap] = self._dirty
         self._dirty = dirty
         self.cap = new_cap
@@ -150,6 +163,8 @@ class ElasticLayer:
         """
         per_row = self.K * (self.pre.itemsize + self.w.itemsize)
         stats = sum(getattr(self, name).itemsize for name in self._STATS) + self._dirty.itemsize
+        if self.vig is not None:
+            stats += self.vig.itemsize
         index = 0
         if self._ix is not None:
             index = sum(a.nbytes for a in self._ix)
@@ -212,16 +227,33 @@ class ElasticLayer:
     def thresholds(self) -> np.ndarray:
         n = self.n
         if self.theta_plus <= 0.0:
-            return np.full(n, self.theta, dtype=np.float32)
-        decay = np.exp(-(self.t - self.hoff_t[:n]) / self.theta_tau)
-        return (self.theta + self.hoff[:n] * decay).astype(np.float32)
+            th = np.full(n, self.theta, dtype=np.float32)
+        else:
+            decay = np.exp(-(self.t - self.hoff_t[:n]) / self.theta_tau)
+            th = (self.theta + self.hoff[:n] * decay).astype(np.float32)
+        if self._has_vig:
+            th += self.vig[:n]
+        return th
 
     def _thresholds_at(self, rows: np.ndarray) -> np.ndarray:
         """`thresholds()[rows]` sin evaluar las demás neuronas (mismas operaciones)."""
         if self.theta_plus <= 0.0:
-            return np.full(len(rows), self.theta, dtype=np.float32)
-        decay = np.exp(-(self.t - self.hoff_t[rows]) / self.theta_tau)
-        return (self.theta + self.hoff[rows] * decay).astype(np.float32)
+            th = np.full(len(rows), self.theta, dtype=np.float32)
+        else:
+            decay = np.exp(-(self.t - self.hoff_t[rows]) / self.theta_tau)
+            th = (self.theta + self.hoff[rows] * decay).astype(np.float32)
+        if self._has_vig:
+            th += self.vig[rows]
+        return th
+
+    def set_threshold(self, j: int, theta_j: float):
+        """Umbral propio de la neurona j (nunca por debajo de theta). Los umbrales sólo
+        suben: la cota inferior del pase disperso (theta) sigue valiendo."""
+        if self.vig is None:
+            self.vig = np.zeros(self.cap, dtype=np.float32)
+        self.vig[j] = np.float32(max(0.0, float(theta_j) - self.theta))
+        if self.vig[j] > 0.0:
+            self._has_vig = True
 
     def _cos_at(self, rows: np.ndarray, idx, val, norm: float, kf: int) -> np.ndarray:
         """Potencial final normalizado de las neuronas `rows`, con la misma operación (y por
@@ -466,6 +498,8 @@ class ElasticLayer:
         self.wins[j] = 0; self.hits[j] = 0; self.born[j] = self.t
         self.util[j] = 1.0; self.util_t[j] = self.t
         self.hoff[j] = 0.0; self.hoff_t[j] = self.t
+        if self.vig is not None:
+            self.vig[j] = 0.0
         self.n += 1; self.created += 1
         self._touch(j)
         if self._kf >= 0:
@@ -486,7 +520,16 @@ class ElasticLayer:
         if self.evict == "merge" and self.n >= 2 and self._merge_most_redundant():
             self.evicted += 1
             return True
-        self.remove(int(np.argmin(self.utility())))
+        u = self.utility()
+        if self.evict == "balanced" and self.group_of is not None:
+            g = self.group_of()
+            vals, cnt = np.unique(g, return_counts=True)
+            cnt = np.where(vals < 0, cnt * 2, cnt)            # las no comprometidas primero
+            cand = np.flatnonzero(g == vals[int(np.argmax(cnt))])
+            self.remove(int(cand[int(np.argmin(u[cand]))]))
+            self.evicted += 1
+            return True
+        self.remove(int(np.argmin(u)))
         self.evicted += 1
         return True
 
@@ -540,6 +583,8 @@ class ElasticLayer:
             for name in self._STATS:
                 arr = getattr(self, name)
                 arr[j] = arr[last]
+            if self.vig is not None:
+                self.vig[j] = self.vig[last]
         self.n -= 1; self.pruned += 1
         self._touch(j)
         self._kf = -1

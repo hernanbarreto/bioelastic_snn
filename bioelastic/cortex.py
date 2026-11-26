@@ -54,12 +54,14 @@ from .readout import Readout
 class Cortex:
     def __init__(self, input_shape, n_outputs: int, *, areas=(), heads=({},), projection=None,
                  replay: float = 0.0, rehearse: float = 0.0, replay_focus: str = "uniform",
+                 rehearse_focus: str = "uniform", confusion_p: float = 0.05,
                  joint: bool = True, temperature: float = 0.25, arbiter: float = 0.0,
                  seed: int = 0, workers: int = 1, homeostasis: float = 0.0):
         self._config = dict(input_shape=input_shape, n_outputs=int(n_outputs),
                             areas=[dict(a) for a in areas], heads=[],
                             projection=projection, replay=float(replay),
                             rehearse=float(rehearse), replay_focus=str(replay_focus),
+                            rehearse_focus=str(rehearse_focus), confusion_p=float(confusion_p),
                             joint=bool(joint), temperature=float(temperature),
                             arbiter=float(arbiter), seed=int(seed))
         self.arbiter = float(arbiter)
@@ -75,9 +77,14 @@ class Cortex:
         self.temperature = float(temperature)
         self.replay = float(replay); self._replay_debt = 0.0; self.replays = 0
         self.rehearse = float(rehearse); self._rehearse_debt = 0.0; self.rehearsals = 0
-        if replay_focus not in ("uniform", "absent"):
+        if replay_focus not in ("uniform", "absent", "confusion"):
             raise ValueError(f"replay_focus desconocido: {replay_focus}")
+        if rehearse_focus not in ("uniform", "confusion"):
+            raise ValueError(f"rehearse_focus desconocido: {rehearse_focus}")
         self.replay_focus = replay_focus
+        self.rehearse_focus = rehearse_focus
+        self.confusion_p = float(confusion_p)
+        self.directed = 0                                     # repasos y ensayos dirigidos a la confusión
         self.joint = bool(joint)
         self.rng = np.random.default_rng(seed)
         self.areas: list[FeatureArea] = []
@@ -288,6 +295,10 @@ class Cortex:
         if arb:                                               # el árbitro aprende del error global
             g = self._L[:, target] - self._L @ p
             self.beta = np.maximum(self.beta + np.float32(self.arbiter) * g.astype(np.float32), 0.0)
+        conf = None
+        if (self.replay_focus == "confusion" and self.replay > 0.0 and self.proj is not None) or \
+                (self.rehearse_focus == "confusion" and self.rehearse > 0.0):
+            conf = self._confusion(target, p)                 # antes de que la memoria cambie
 
         def one(i):
             if self.joint and not arb:
@@ -302,14 +313,64 @@ class Cortex:
             self.proj.learn(*self._pv, target, p=None if arb else p)
             if self.replay > 0.0:
                 self._replay_debt += self.replay
+                aimed = conf is not None and self.replay_focus == "confusion"
                 while self._replay_debt >= 1.0:
                     self._replay_debt -= 1.0
-                    self._replay_one()
+                    if aimed:                                 # un repaso por paso va a la confusión
+                        self._replay_pattern(conf[0], conf[1], conf[3]); aimed = False
+                        self.directed += 1
+                    else:
+                        self._replay_one()
         if self.rehearse > 0.0:
             self._rehearse_debt += self.rehearse
+            aimed = conf is not None and self.rehearse_focus == "confusion"
             while self._rehearse_debt >= 1.0:
                 self._rehearse_debt -= 1.0
-                self._rehearse_one()
+                if aimed:
+                    self._rehearse_one(conf); aimed = False
+                    self.directed += 1
+                else:
+                    self._rehearse_one()
+        if conf is not None:
+            conf[2].watch = -1
+
+    def _confusion(self, target: int, p):
+        """Repaso dirigido a la confusión (cf. MIR, Aljundi et al. 2019; ASER, Shim et al.
+        2021): la clase que más compite con el objetivo en esta entrada (la de mayor
+        probabilidad después de él, si pasa de `confusion_p`) y, de esa clase, el recuerdo
+        de la memoria más parecido a lo que entra: la ganadora de esa clase si disparó, si
+        no la de mayor coincidencia entre sus neuronas. Es el ejemplo viejo que el
+        aprendizaje de ahora más va a perturbar, justo en la frontera.
+
+        Devuelve (recuerdo denso, clase, memoria, espacio) o None. El recuerdo se copia
+        antes de que la memoria aprenda (puede desalojar o mover neuronas); la neurona
+        queda marcada en `memoria.watch` para excluirla del ensayo."""
+        mem, space = self._replay_source()
+        if mem is None or mem._last is None:
+            return None
+        q = np.asarray(p, dtype=np.float64).copy()
+        q[target] = -1.0
+        c2 = int(np.argmax(q))
+        if q[c2] < self.confusion_p:
+            return None
+        L = mem.layer
+        v = mem._last.v
+        if len(v.winners) and int(v.winners.max()) >= L.n:
+            return None
+        pw = mem.readout.preferred(v.winners)
+        hit = np.flatnonzero(pw == c2)
+        if len(hit):
+            j = int(v.winners[hit[0]])
+        else:
+            if v.norm == 0.0:
+                return None
+            rows = np.flatnonzero(mem.readout.preferred(np.arange(L.n)) == c2)
+            if len(rows) == 0:
+                return None
+            cos = L._cos_at(rows, v.idx, v.val, v.norm, L._fan_max())
+            j = int(rows[int(np.argmax(cos))])
+        mem.watch = j
+        return mem.episode(j).copy(), c2, mem, space
 
     def _replay_source(self):
         """Área de asociación de la que se puede repasar y en qué espacio guarda sus recuerdos.
@@ -350,7 +411,11 @@ class Cortex:
             return
         c = int(self.rng.choice(classes))
         j = int(self.rng.choice(np.flatnonzero(pref == c)))
-        x = L.dense(j)
+        self._replay_pattern(mem.episode(j), c, space)
+
+    def _replay_pattern(self, x, c: int, space: str):
+        """Reactiva el recuerdo denso `x` (espacio de la memoria) y entrena la proyección
+        directa con la clase c, con el error completo."""
         if space == "input":
             X = (x / max(float(x.max()), 1e-8)).reshape(self.input_shape)
             codes = []
@@ -369,24 +434,30 @@ class Cortex:
         self.proj.learn(idx, h, c, p=e / e.sum(), replay=True)
         self.replays += 1
 
-    def _rehearse_one(self):
+    def _rehearse_one(self, conf=None):
         """Ensayo en la propia memoria: el recuerdo de una neurona (clase elegida de forma
         pareja) vuelve a entrar como si fuera un ejemplo, sin la neurona que lo guarda, y
         las demás ganadoras corrigen su lectura con el error completo. Mantiene la frontera
         con clases ausentes: las neuronas nuevas que invaden el territorio de una clase
-        vieja aprenden que ahí también vive esa clase. No crea ni mueve neuronas."""
-        mem = next((h for h, src in zip(self.heads, self._src)
-                    if not self._offsets(src) and h.context == 1 and h.tau <= 0 and h.layer.n), None)
-        if mem is None:
-            return
+        vieja aprenden que ahí también vive esa clase. No crea ni mueve neuronas.
+        Con `conf` (ver `_confusion`) el recuerdo es el de la clase que compite con lo que
+        acaba de entrar, el más cercano a la entrada."""
+        if conf is not None:
+            x, c, mem, _ = conf
+            j = mem.watch
+        else:
+            mem = next((h for h, src in zip(self.heads, self._src)
+                        if not self._offsets(src) and h.context == 1 and h.tau <= 0 and h.layer.n), None)
+            if mem is None:
+                return
+            pref = mem.readout.preferred(np.arange(mem.layer.n))
+            classes = np.unique(pref[pref >= 0])
+            if len(classes) == 0:
+                return
+            c = int(self.rng.choice(classes))
+            j = int(self.rng.choice(np.flatnonzero(pref == c)))
+            x = mem.episode(j)
         L, R = mem.layer, mem.readout
-        pref = R.preferred(np.arange(L.n))
-        classes = np.unique(pref[pref >= 0])
-        if len(classes) == 0:
-            return
-        c = int(self.rng.choice(classes))
-        j = int(self.rng.choice(np.flatnonzero(pref == c)))
-        x = L.dense(j)
         idx = np.flatnonzero(x > 0); val = x[idx] / max(float(x.max()), 1e-8)
         v = L.forward(idx, val)
         keep = v.winners != j

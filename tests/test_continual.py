@@ -214,3 +214,193 @@ def test_plasticity_floor_keeps_mature_inputs_learnable():
         r.learn(idx, h, 1)
         r.dw = r.W[1, 0] - w
     assert floored.dw > 20 * plain.dw
+
+
+# ---------------------------------------------------------------- ronda 2: clases parecidas
+def test_episodic_trace_follows_neurons_through_remove_and_growth():
+    rng = np.random.default_rng(0)
+    D = 40
+    net = BioElasticNet(D, 3, episodic=True, layer=dict(theta=0.99, fan_in=8))
+    X = []
+    for i in range(300):                               # casi todas novedosas: > 256 neuronas
+        x = np.zeros(D, dtype=np.float32)
+        x[rng.choice(D, 12, replace=False)] = rng.uniform(0.2, 1.0, 12)
+        X.append(x); net.step(x, i % 3)
+    L = net.layer
+    assert L.n > 256 and len(net.episodes) >= L.n
+    for j in range(L.n):                               # la huella es la volea completa (sin recorte)
+        ep = net.episode(j)
+        assert (ep > 0).sum() == 12 and L.fill[j] <= 8
+        w = L.dense(j); top = np.flatnonzero(w > 0)
+        assert np.all(ep[top] > 0)                     # las sinapsis salen de su huella
+    keep = net.episode(L.n - 1).copy()
+    net.watch = L.n - 1
+    L.remove(3)                                        # swap-remove: la última pasa a la 3
+    assert np.array_equal(net.episode(3), keep) and net.watch == 3
+    L.remove(3)
+    assert net.watch == -1
+    st = net.state()
+    back = BioElasticNet.from_state(st)
+    assert np.array_equal(back.episodes[:L.n], net.episodes[:L.n])
+
+
+def test_episode_falls_back_to_weights_without_trace():
+    net = BioElasticNet(10, 2)
+    x = np.zeros(10, dtype=np.float32); x[[1, 4]] = [1.0, 0.5]
+    net.step(x, 0)
+    assert net.episodes is None and np.array_equal(net.episode(0), net.layer.dense(0))
+
+
+def _sim_pair(D=60, seed=0):
+    """Dos prototipos con coseno ~0.8 (clases parecidas)."""
+    rng = np.random.default_rng(seed)
+    a = np.zeros(D, dtype=np.float32); a[:20] = 1.0
+    b = a.copy(); b[14:20] = 0.0; b[20:26] = 1.0
+    return a, b, rng
+
+
+def test_separation_keeps_new_neurons_out_of_old_territory():
+    def run(sep):
+        a, b, rng = _sim_pair()
+        net = BioElasticNet(60, 2, separation=sep, layer=dict(theta=0.6))
+        for _ in range(30):
+            net.step(np.clip(a + 0.05 * rng.random(60), 0, 1).astype(np.float32), 0)
+        n0 = net.layer.n
+        for _ in range(30):                            # la clase 1 llega después y se parece
+            net.step(np.clip(b + 0.05 * rng.random(60), 0, 1).astype(np.float32), 1)
+        new = np.arange(n0, net.layer.n)
+        net.forward(a)                                 # un ejemplo típico de la clase vieja
+        fired_new = np.isin(net._last.v.winners, new).sum()
+        return net, n0, new, fired_new
+    net0, _, new0, f0 = run(0.0)
+    net1, n0, new1, f1 = run(0.02)
+    assert len(new0) and f0 > 0                        # sin separación las nuevas invaden
+    assert f1 == 0                                     # con separación no responden a lo viejo
+    L = net1.layer
+    assert (L.vig[n0:L.n] > 0).any() and not (L.vig[:n0] > 0).any()   # las viejas no cambian
+    a, b, rng = _sim_pair()
+    assert net1.predict(b) == 1 and net1.predict(a) == 0
+    back = BioElasticNet.from_state(net1.state())      # el umbral propio se guarda
+    assert np.array_equal(back.layer.vig[:L.n], L.vig[:L.n])
+    assert np.array_equal(back.layer.thresholds(), L.thresholds())
+
+
+def test_vigilance_moves_with_swap_remove_and_only_raises_thresholds():
+    L = ElasticLayer(10, theta=0.5)
+    for i in range(4):
+        x = np.zeros(10, dtype=np.float32); x[i * 2:i * 2 + 3] = 1.0
+        L.recruit(L.forward(np.flatnonzero(x), x[x > 0]))
+    L.set_threshold(3, 0.9); L.set_threshold(1, 0.2)
+    assert L.vig[1] == 0.0 and np.isclose(L.thresholds()[3], 0.9)
+    L.remove(0)                                        # la 3 pasa a la 0
+    assert np.isclose(L.thresholds()[0], 0.9) and np.isclose(L.thresholds()[2], 0.5)
+
+
+def test_confusion_picks_competing_class_and_its_nearest_memory():
+    from bioelastic import Cortex
+    rng = np.random.default_rng(3)
+    net = Cortex((8, 8, 1), 4, areas=[dict(rf=3, pool=2, max_features=16, theta=0.8)],
+                 heads=[dict(source="input", episodic=True)], projection=dict(source="all"),
+                 replay=1.0, replay_focus="confusion", confusion_p=0.0, joint=False)
+    for _ in range(300):
+        c = int(rng.integers(4)); net.step(_blob(rng, c), c)
+    x = np.clip(0.6 * _blob(rng, 0) + 0.6 * _blob(rng, 1), 0, 1)   # entre la 0 y la 1
+    net.forward(x)
+    p = net._p()
+    x_rep, c2, mem, space = net._confusion(0, p)
+    q = p.copy(); q[0] = -1
+    assert c2 == int(np.argmax(q)) and space == "input"
+    L = mem.layer
+    pref = mem.readout.preferred(np.arange(L.n))
+    j = mem.watch
+    assert pref[j] == c2 and np.array_equal(x_rep, mem.episode(j))
+    v = mem._last.v
+    rows = np.flatnonzero(pref == c2)
+    win = [w for w in v.winners if pref[w] == c2]
+    if win:
+        assert j == win[0]
+    else:
+        cos = L._cos_at(rows, v.idx, v.val, v.norm, L._fan_max())
+        assert j == rows[int(np.argmax(cos))]
+    d0 = net.directed
+    net.teach(0)
+    assert net.directed == d0 + 1 and mem.watch == -1
+    strict = Cortex((8, 8, 1), 4, areas=[dict(rf=3, pool=2, max_features=16, theta=0.8)],
+                    heads=[dict(source="input")], projection=dict(source="all"),
+                    replay=1.0, replay_focus="confusion", confusion_p=1.01, joint=False)
+    for _ in range(50):
+        c = int(rng.integers(4)); strict.step(_blob(rng, c), c)
+    assert strict.directed == 0 and strict.replays > 0   # sin confusión, repaso parejo
+
+
+# ---------------------------------------------------------------- ronda 2: presupuesto
+def test_at_budget_the_network_still_learns_new_classes_and_keeps_old_ones():
+    def run(evict):
+        rng = np.random.default_rng(2)
+        P = _protos(6, seed=2)
+        net = BioElasticNet(60, 6, layer=dict(max_neurons=24, theta=0.98, evict=evict))
+        for _ in range(400):                           # 0-2 llenan el presupuesto
+            c = int(rng.integers(3)); net.step(_sample(P, c, rng, noise=0.4), c)
+        assert net.layer.n == 24
+        for _ in range(400):                           # después sólo clases nuevas
+            c = 3 + int(rng.integers(3)); net.step(_sample(P, c, rng, noise=0.4), c)
+            assert net.layer.n <= 24 and net.readout.n == net.layer.n
+        pref = net.readout.preferred(np.arange(net.layer.n))
+        acc = lambda cs: np.mean([net.predict(_sample(P, c, rng, noise=0.4)) == c for c in cs for _ in range(40)])
+        return set(pref.tolist()), acc(range(3)), acc(range(3, 6))
+    kinds_u, old_u, new_u = run("utility")
+    kinds_b, old_b, new_b = run("balanced")
+    assert new_b > 0.9 and new_u > 0.9                 # con el presupuesto lleno, aprende lo nuevo
+    assert set(range(6)) <= kinds_b                    # balanceado: ninguna clase se vacía
+    assert not set(range(3)) & kinds_u                 # por utilidad global, las ausentes sí
+    assert old_b > 0.9 and old_u < 0.5
+
+
+def test_balanced_eviction_without_groups_is_utility_eviction():
+    a = ElasticLayer(20, theta=0.8, max_neurons=5, evict="balanced")
+    b = ElasticLayer(20, theta=0.8, max_neurons=5, evict="utility")
+    rng = np.random.default_rng(0)
+    for _ in range(40):
+        x = (rng.random(20) < 0.3).astype(np.float32)
+        for L in (a, b):
+            L.tick(); v = L.forward(np.flatnonzero(x), x[x > 0])
+            if v.novel:
+                L.recruit(v)
+            else:
+                L.credit(int(v.winners[0]))
+    assert np.array_equal(a.pre[:a.n], b.pre[:b.n]) and a.evicted == b.evicted > 0
+
+
+# ---------------------------------------------------------------- ronda 2: referencias
+def _ermlp():
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "experiments"))
+    from exp_continual import ERMLP
+    return ERMLP
+
+
+def test_erace_incoming_loss_only_competes_among_present_classes():
+    ERMLP = _ermlp()
+    m = ERMLP(0, size=50, batch=4, ace=True)
+    rng = np.random.default_rng(0)
+    X = rng.random((4, 784)).astype(np.float32); Y = np.ones(4, dtype=np.int64)
+    mask = np.zeros((4, 20), dtype=bool); mask[:, 1] = True
+    W0 = m.W2.copy()
+    m._grad_step(X, Y, mask)
+    assert np.array_equal(m.W2[:, 0], W0[:, 0])      # la clase ausente no se toca
+    full = np.ones((4, 20), dtype=bool)
+    m._grad_step(X, Y, full)
+    assert not np.array_equal(m.W2[:, 0], W0[:, 0])  # con la máscara completa (repaso), sí
+
+
+def test_er_reservoir_keeps_a_uniform_sample_of_the_stream_and_matches_bytes():
+    ERMLP = _ermlp()
+    m = ERMLP(0, size=50, batch=5)
+    rng = np.random.default_rng(1)
+    for t in range(400):                             # 200 de la clase 0 y después 200 de la 1
+        m.sup(rng.random((28, 28)).astype(np.float32), 0 if t < 200 else 1)
+    assert m.n == 50 and m.seen_n == 400
+    assert 13 <= int((m.y[:m.n] == 0).sum()) <= 37  # reservorio: ~la mitad de cada una
+    b = ERMLP(0, bytes=3_000_000)
+    assert 2_990_000 < b.stats()["bytes"] <= 3_000_000

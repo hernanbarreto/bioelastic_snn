@@ -44,13 +44,15 @@ class BioElasticNet:
     def __init__(self, n_inputs: int, n_outputs: int, *, context: int = 1, delay: float = 0.15,
                  tau: float = 0.0, grow_on_error: bool = True, rho_sup: float = 0.98,
                  anti: float = 0.3, grow_per_error: int = 4, maintain_every: int = 500,
-                 protect: bool = False, vote_tau: float = 0.0, layer: dict | None = None,
-                 readout: dict | None = None, seed: int = 0):
+                 protect: bool = False, vote_tau: float = 0.0, episodic: bool = False,
+                 separation: float = 0.0,
+                 layer: dict | None = None, readout: dict | None = None, seed: int = 0):
         self._config = dict(n_inputs=int(n_inputs), n_outputs=int(n_outputs), context=int(context),
                             delay=float(delay), tau=float(tau), grow_on_error=bool(grow_on_error),
                             rho_sup=float(rho_sup), anti=float(anti),
                             grow_per_error=int(grow_per_error), maintain_every=int(maintain_every),
-                            protect=bool(protect), vote_tau=float(vote_tau), layer=dict(layer or {}), readout=dict(readout or {}), seed=int(seed))
+                            protect=bool(protect), vote_tau=float(vote_tau), episodic=bool(episodic),
+                            separation=float(separation), layer=dict(layer or {}), readout=dict(readout or {}), seed=int(seed))
         self.N = int(n_inputs)
         self.tau = float(tau)
         self.context = 1 if self.tau > 0 else int(context)
@@ -62,6 +64,7 @@ class BioElasticNet:
         self.maintain_every = int(maintain_every)
         self.protect = bool(protect)        # no tocar neuronas de clases ausentes (ver `teach`)
         self.vote_tau = float(vote_tau)     # > 0: voto por orden de llegada (ver `_votes`)
+        self.separation = float(separation) # > 0: separación de patrones al reclutar (ver `_separate`)
         self.rng = np.random.default_rng(seed)
         self.layer = ElasticLayer(self.N * self.context, **(layer or {}))
         self.readout = Readout(n_outputs, **(readout or {}))
@@ -70,6 +73,12 @@ class BioElasticNet:
         self.layer.group_of = lambda: self.readout.preferred(np.arange(self.layer.n))
         self.layer.on_merge = self.readout.merge_inputs
         self._pending_cls: int | None = None
+        self._pending_v: Volley | None = None
+        # Huella episódica: cada neurona guarda la volea completa que la creó (uint8, sin el
+        # recorte del fan-in). Es lo que se reactiva en el repaso (ver Cortex._replay_one).
+        self.episodic = bool(episodic)
+        self.episodes = np.zeros((0, self.layer.D), dtype=np.uint8) if self.episodic else None
+        self.watch = -1                     # índice de una neurona que alguien sigue (swap-remove)
         self._acc: dict | None = None
         self._buf: deque = deque(maxlen=self.context)
         self._trace = np.zeros(self.N, dtype=np.float32) if self.tau > 0 else None
@@ -79,19 +88,41 @@ class BioElasticNet:
     # ------------------------------------------------------------------ hooks estructurales
     def _on_add(self, j: int):
         self.readout.add_input(self._pending_cls)
+        if self.episodes is not None:
+            if j >= len(self.episodes):
+                ep = np.zeros((max(256, 2 * len(self.episodes)), self.layer.D), dtype=np.uint8)
+                ep[:len(self.episodes)] = self.episodes
+                self.episodes = ep
+            self.episodes[j] = 0
+            v = self._pending_v
+            if v is not None and len(v.idx):
+                self.episodes[j, v.idx] = np.round(np.clip(v.val, 0.0, 1.0) * 255.0).astype(np.uint8)
 
     def _on_remove(self, j: int, last: int):
         self.readout.remove_input(j, last)
+        if self.episodes is not None and j != last:
+            self.episodes[j] = self.episodes[last]
+        if self.watch == j:
+            self.watch = -1
+        elif self.watch == last:
+            self.watch = j
         if self._acc is not None:
             self._acc.pop(j, None)
             if last != j and last in self._acc:
                 self._acc[j] = self._acc.pop(last)
 
     def _recruit(self, v: Volley, cls: int | None) -> int:
-        self._pending_cls = cls
+        self._pending_cls = cls; self._pending_v = v
         j = self.layer.recruit(v)
-        self._pending_cls = None
+        self._pending_cls = None; self._pending_v = None
         return j
+
+    def episode(self, j: int) -> np.ndarray:
+        """Recuerdo de la neurona j como volea densa sobre las D aferentes: la huella
+        episódica si existe, si no sus pesos (recortados al fan-in)."""
+        if self.episodes is not None:
+            return self.episodes[j].astype(np.float32) / np.float32(255.0)
+        return self.layer.dense(j)
 
     # ------------------------------------------------------------------ entrada
     @staticmethod
@@ -211,7 +242,8 @@ class BioElasticNet:
         best_agree = float(v.cos[agree[0]]) if len(agree) and not v.novel else 0.0
         grow = v.novel or (self.grow_on_error and pred != target and best_agree < self.rho_sup)
         if grow and self._recruit(v, target) >= 0:
-            pass
+            if self.separation > 0.0 and not v.novel:
+                self._separate(L.n - 1, v, pref, target)
         elif len(wn):
             if len(agree):                                    # la más temprana que acierta: LTP
                 j = int(wn[agree[0]])
@@ -237,6 +269,25 @@ class BioElasticNet:
             elif self.grow_on_error and p_act > 0.5 and v.cos[0] < self.rho_sup:
                 self._recruit(v, None)                        # seguro y equivocado: dividir
         self._after_learning()
+
+    def _separate(self, j: int, v: Volley, pref: np.ndarray, target: int):
+        """Separación de patrones al reclutar (radio de influencia de las redes RCE,
+        Reilly, Cooper y Elbaum 1982; «match tracking» de ARTMAP, Carpenter, Grossberg y
+        Reynolds 1991). La neurona nueva j nace en la entrada que otra clase reclamaba: su
+        umbral propio queda justo por encima de la coincidencia de esa entrada con la
+        ganadora de otra clase más parecida, así la recién llegada sólo responde a lo que
+        está más cerca de ella que de los recuerdos ajenos y no invade su territorio.
+        Las neuronas viejas no cambian. El umbral nunca supera la coincidencia de la
+        neurona con la entrada que la creó (si no, no respondería ni a su propio ejemplo)."""
+        other = (pref >= 0) & (pref != target)
+        if not other.any():
+            return
+        L = self.layer
+        c_other = float(np.max(v.cos[other]))
+        own = float(L._cos_at(np.array([j]), v.idx, v.val, v.norm, L._fan_max())[0])
+        th = min(c_other + self.separation, own - self.separation)
+        if th > L.theta:
+            L.set_threshold(j, th)
 
     def observe(self, frame=None):
         """No supervisado: sólo aprende representación. Sin `frame` usa el último forward."""
@@ -324,6 +375,10 @@ class BioElasticNet:
         out.update(config=np.array(json.dumps(self._config)), L_pre=L.pre[:n], L_w=L.w[:n],
                    L_meta=np.array([L.t, L.created, L.pruned, L.evicted], dtype=np.int64),
                    R_W=R.W[:, :n], R_count=R.count[:n], R_baseline=np.float64(R.baseline))
+        if self.episodes is not None:
+            out["episodes"] = self.episodes[:n]
+        if self.separation > 0.0:
+            out["L_vig"] = L.vig[:n] if L.vig is not None else np.zeros(n, dtype=np.float32)
         return out
 
     @classmethod
@@ -342,6 +397,12 @@ class BioElasticNet:
         L.reindex()
         R.W[:, :n] = z["R_W"]; R.count[:n] = z["R_count"]; R.n = n
         R.baseline = float(z["R_baseline"])
+        if "L_vig" in z and np.any(z["L_vig"] > 0):
+            L.vig = np.zeros(L.cap, dtype=np.float32)
+            L.vig[:n] = z["L_vig"]; L._has_vig = True
+        if net.episodes is not None and "episodes" in z:
+            net.episodes = np.zeros((cap, L.D), dtype=np.uint8)
+            net.episodes[:n] = z["episodes"]
         return net
 
     def save(self, path):
