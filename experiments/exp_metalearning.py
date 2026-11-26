@@ -32,8 +32,20 @@ Tareas
             pero f lleva fuera del bloque: no hay cadenas) y "azar" (control: objetivos
             sorteados en cada pregunta).
 
+Grupos
+  f0   tareas y línea base (Thinker actual, B0 y B1, controles sin estructura).
+  f1   meta-parámetros aprendidos (`bioelastic.metalearning`): Harlow con regímenes
+       estable-ruidoso y volátil alternados; control congelado (F1a) o todo junto (F1b).
+  f2   lo rápido en el estado (`prev_io`): Harlow por la compuerta, reversión, 3 objetos,
+       línea sin memoria del resultado.
+  f2b  la regla rápida no viene dada: curvas de adquisición con instantáneas congeladas y
+       dos familias de criterios opuestos (W: quedarse si ganó; A: cambiar si ganó).
+  f3   mapa recorrible al revés (`back`): relación inversa y cierre del anillo.
+  f4   adversarial: cambio de criterio y de estructura a mitad, interferencia sobre la
+       batería C0-C6 en multitarea, latencia.
+
   python experiments/exp_metalearning.py <grupo> [<grupo> ...]   (OMP_NUM_THREADS=1)
-  grupos: f0 f1 f2 f2b f3
+  grupos: f0 f1 f2 f2b f3 f4
   (resultados en results/metaaprendizaje_<grupo>.csv y .json)
 """
 from __future__ import annotations
@@ -729,7 +741,119 @@ def group_f3():
     dump("f3", summary)
 
 
-GROUPS = {"f0": group_f0, "f1": group_f1, "f2": group_f2, "f2b": group_f2b, "f3": group_f3}
+# ---------------------------------------------------------------- F4
+def group_f4():
+    """Adversarial: (1) el criterio cambia a mitad del flujo (¿lo aprendido se vuelve un
+    sesgo? ¿cuánto tarda en reajustarse?); (2) la estructura cambia (anillo -> línea);
+    (3) interferencia sobre lo que el Thinker ya resolvía (batería C0-C6 en multitarea);
+    (4) latencia por respuesta."""
+    import exp_thinking_hard as H
+    from bioelastic.metalearning import MetaThinker
+    log = CsvLog("metaaprendizaje_f4", HEADER)
+    summary = {}
+    # F4.1 Harlow: familia W (premia un objeto) 300 problemas y después A (el premio alterna)
+    cps = [0, 50, 300, 305, 310, 325, 350, 400, 450, 600]
+    W, A = ("W (premia un objeto)", "objeto"), ("A (el premio alterna)", "alterna")
+    for label, over, perceive in (("episódica: B1 resultado percibido", dict(gate=True), True),
+                                  ("episódica + estado (B1 + prev_io)", dict(gate=True, prev_io=True), True)):
+        for sched_name, sched in (("W -> A", lambda i: ("objeto" if i < 300 else "alterna", 0)),
+                                  ("sólo A", lambda i: ("alterna", 0))):
+            cur, rest, on = run_curve(make_base(**over), sched, 600, cps, [(W[0], W[1], 0), (A[0], A[1], 0)],
+                                      perceive=perceive)
+            sm = {}
+            for name, arr in cur.items():
+                m, sd = ms(arr)
+                for j, c in enumerate(cps):
+                    log.row(f"F4.1 cambio de criterio ({sched_name})", label, f"instantánea tras {c} problemas",
+                            f"{name}: ensayo 2", float(m[j]), float(sd[j]), len(arr))
+                sm[name] = dict(checkpoints=cps, trial2_mean=m, trial2_sd=sd, trial2_per_seed=arr)
+            sm["online_trial2_by25"] = np.array([bins(o, 25) for o in on])
+            summary[f"F4.1 {sched_name} | {label}"] = sm
+    # F4.2 estructura: anillo (cierre: volver al principio) <-> línea (después del último
+    # viene FIN). Las observaciones de los dos son idénticas (L-1 aristas): la estructura
+    # no se puede inferir del bloque, sólo de la historia. Con las aristas sólo como
+    # percepción (premisas; con preguntas de aprendizaje el cierre no se aprende, ver F3) y
+    # una condición con preguntas de aprendizaje como referencia.
+    B = 400
+    for sched_name, sched, prem in (("anillo -> línea", lambda b: "anillo" if b < 200 else "linea", True),
+                                    ("línea -> anillo", lambda b: "linea" if b < 200 else "anillo", True),
+                                    ("sólo línea", lambda b: "linea", True),
+                                    ("sólo línea, con preguntas de aprendizaje", lambda b: "linea", False)):
+        res = run_line(make_base(n_cues=4, back=True), B, struct="linea", perceive=True, schedule=sched,
+                       use_end=True, queries=(2, 3), premises=prem)
+        on = np.array([np.asarray(a, dtype=float) for a in res["online_closure"]])
+        b10 = np.array([np.nanmean(o.reshape(-1, 10), 1) for o in on])
+        m, sd = ms(b10)
+        for j in range(len(m)):
+            log.row(f"F4.2 estructura ({sched_name})", "B1 + back", f"bloques {10 * j}-{10 * j + 9}",
+                    "¿qué sigue al último? (cierre o FIN)", float(m[j]), float(sd[j]), len(b10))
+        fz = res["frozen_closure"]
+        final = "línea" if sched(B - 1) == "linea" else "anillo"
+        log.row(f"F4.2 estructura ({sched_name})", "B1 + back", f"congelado al final, bloques de {final} nuevos",
+                "¿qué sigue al último?", float(np.mean(fz)), float(np.std(fz)), len(fz))
+        summary[f"F4.2 {sched_name}"] = dict(closure_by10_mean=m, closure_by10_sd=sd, frozen_last=fz,
+                                             frozen=dict((k, res[k]) for k in res if k.startswith("frozen_")))
+    # F4.3 interferencia: batería del Thinker (C0-C6) en multitarea, con las opciones nuevas
+    Wd = H.World(32)
+    tasks = (0, 1, 2, 3, 4, 5, 6)
+    ev_all = [(f"C{t} {name}", fn) for t in tasks for name, fn in H.evals_for(Wd, t, t)]
+    n = 3000
+
+    def mk(**kw):
+        return lambda s: H.make_thinker(Wd, 7, seed=s, **kw)
+
+    def mk_meta(**kw):
+        def make(s):
+            base = dict(memory=True, speak=True, judge=True, max_steps=10)
+            base.update(kw)
+            return MetaThinker(Wd.S, n_cues=7, seed=s, **base)
+        return make
+    conds = [("Thinker por defecto", mk()), ("prev_io", mk(prev_io=True)), ("back", mk(back=True)),
+             ("prev_io + back", mk(prev_io=True, back=True)),
+             ("MetaThinker: tasa de ligadura aprendida (+ persistencia)",
+              mk_meta(meta=("rate",), signals=("exito", "sorpresa", "td", "novedad", "persistencia")))]
+    for plan_name, plan in (("multitarea mezclada", H.plan_mixed(tasks, 7 * n // 2, n // 4)),
+                            ("multitarea en bloques (olvido)", H.plan_blocks(tasks, n // 2, n // 4))):
+        for label, make in conds:
+            if plan_name.endswith("(olvido)") and label not in ("Thinker por defecto", "prev_io + back"):
+                continue
+            t0 = time.time()
+            out, cost = H.run(Wd, make, plan, ev_all, SEEDS, 200)
+            dt = time.time() - t0
+            sm = {}
+            for name, accs in out.items():
+                log.row(f"F4.3 interferencia, {plan_name}", label, "congelado, casos no vistos", name,
+                        float(np.mean(accs)), float(np.std(accs)), len(accs))
+                sm[name] = accs
+            per_ep = dt / (len(SEEDS) * (len(plan) + 200 * len(ev_all))) * 1e3
+            log.row(f"F4.3 interferencia, {plan_name}", label, "costo", "ms por episodio (entrenar + evaluar)",
+                    per_ep, 0.0, len(SEEDS))
+            sm["ms_per_episode"] = per_ep; sm["nodes_per_episode"] = cost["nodos_busqueda"]
+            summary[f"F4.3 {plan_name} | {label}"] = sm
+    # F4.4 latencia por respuesta (configuraciones intercaladas, 3 repeticiones, mediana)
+    lat = {}
+    configs = [("Thinker por defecto", lambda s, n: Thinker(n, seed=s, **BASE)),
+               ("prev_io", lambda s, n: Thinker(n, seed=s, prev_io=True, **BASE)),
+               ("back", lambda s, n: Thinker(n, seed=s, back=True, **BASE)),
+               ("MetaThinker (tasa aprendida)", lambda s, n: MetaThinker(n, seed=s, meta=("rate",), **BASE))]
+    for rep in range(3):
+        for label, make in configs:
+            rng = np.random.default_rng(rep)
+            net = make(rep, 2 * 400 + 2)
+            sup = Supply(800, rng)
+            t0 = time.perf_counter()
+            for _ in range(200):
+                harlow_problem(net, rng, sup.take(2), 6, "objeto", True)
+            lat.setdefault(label, []).append((time.perf_counter() - t0) / 1200 * 1e6)
+    for label, v in lat.items():
+        log.row("F4.4 latencia (harlow B1, aprendiendo)", label, "mediana de 3", "µs por respuesta",
+                float(np.median(v)), float(np.std(v)), len(v))
+    summary["F4.4 latency_us_per_answer"] = lat
+    log.close()
+    dump("f4", summary)
+
+
+GROUPS = {"f0": group_f0, "f1": group_f1, "f2": group_f2, "f2b": group_f2b, "f3": group_f3, "f4": group_f4}
 
 
 def main():
