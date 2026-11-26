@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from bioelastic import BioElasticNet, Cortex, ElasticLayer, FeatureArea
+from bioelastic import BioElasticNet, Cortex, ElasticLayer, FeatureArea, Readout
 from bioelastic.blueprint import BRAIN_SIM_REFERENCE, HUMAN, plan
 
 
@@ -225,3 +225,108 @@ def test_blueprint_numbers_are_consistent():
     assert plan(1e-6)["neurons"] == pytest.approx(16e3)
     assert HUMAN["neurons_cortex"] + HUMAN["neurons_cerebellum"] <= HUMAN["neurons_total"]
     assert BRAIN_SIM_REFERENCE["neurons"] / HUMAN["neurons_total"] == pytest.approx(0.02, abs=0.001)
+
+
+# ---------------------------------------------------------------- error local por área
+def _cue(rng, c):
+    """Tres barras fuertes al azar (distractores) y una pista tenue de clase: una L o su espejo."""
+    img = np.zeros((10, 10, 1), dtype=np.float32)
+    for _ in range(3):
+        y, x = (int(v) for v in rng.integers(0, 8, 2))
+        if rng.random() < 0.5:
+            img[y, x:x + 3, 0] = 1.0
+        else:
+            img[y:y + 3, x, 0] = 1.0
+    y, x = (int(v) for v in rng.integers(0, 8, 2))
+    cells = ((0, 0), (1, 0), (1, 1)) if c == 0 else ((0, 1), (1, 1), (1, 0))
+    for dy, dx in cells:
+        img[y + dy, x + dx, 0] = 0.6
+    return img
+
+
+def _decodability(area, rng, n_fit=2000, n_test=1000):
+    """Exactitud de una lectura de 3 factores entrenada sobre el código congelado del área."""
+    area.plastic = False
+    R = Readout(2, capacity=int(np.prod(area.out_shape)), consolidation=0.0); R.n = R.cap
+
+    def code(c):
+        z = area.encode(_cue(rng, c)).ravel(); i = np.flatnonzero(z)
+        return i, z[i] / max(float(np.linalg.norm(z[i])), 1e-9)
+    for c in rng.integers(2, size=n_fit):
+        R.learn(*code(int(c)), int(c))
+    hits = [int(np.argmax(R.potentials(*code(int(c))))) == c for c in rng.integers(2, size=n_test)]
+    return float(np.mean(hits))
+
+
+def test_local_error_turns_area_features_toward_the_task():
+    def run(local):
+        rng = np.random.default_rng(0)
+        a = FeatureArea((10, 10, 1), rf=3, pool=4, max_features=8, theta=0.9, k=2,
+                        local=local, n_classes=2)
+        for _ in range(3000):
+            c = int(rng.integers(2)); a.encode(_cue(rng, c)); a.learn(c)
+        return _decodability(a, rng), a
+    unsup, _ = run(None)
+    sup, a = run(dict(lr=0.05))
+    assert unsup < 0.65                                  # sin error: el diccionario mira los distractores
+    assert sup > unsup + 0.1
+    assert a.local_seen >= 2990 and a.local_hits / a.local_seen > 0.6   # salvo antes del primer rasgo
+
+
+def test_area_without_target_learns_exactly_as_unsupervised():
+    rng = np.random.default_rng(1)
+    imgs = [_cue(rng, int(c)) for c in rng.integers(2, size=200)]
+    a = FeatureArea((10, 10, 1), rf=3, pool=2, max_features=8, theta=0.9)
+    b = FeatureArea((10, 10, 1), rf=3, pool=2, max_features=8, theta=0.9, local=dict(lr=0.1),
+                    n_classes=2)
+    for x in imgs:
+        assert np.allclose(a.encode(x), b.encode(x))
+        a.learn(); b.learn()                             # sin objetivo: el error local no actúa
+    assert np.array_equal(a.W, b.W)
+
+
+def test_segment_sum_matches_add_at():
+    from bioelastic.area import _segment_sum
+    rng = np.random.default_rng(2)
+    keys = rng.integers(0, 7, size=50); rows = rng.random((50, 4)).astype(np.float32)
+    w = rng.random(50).astype(np.float32)
+    ref = np.zeros((7, 4), dtype=np.float32); np.add.at(ref, keys, rows * w[:, None])
+    u, s = _segment_sum(keys, rows, w)
+    assert np.allclose(ref[u], s, atol=1e-5) and np.all(ref[np.setdiff1d(np.arange(7), u)] == 0)
+
+
+def test_balanced_projection_gives_each_area_the_same_voice():
+    net = Cortex((12, 12, 1), 2, areas=[dict(rf=3, pool=2, max_features=16, theta=0.8),
+                                        dict(rf=3, pool=1, max_features=16, theta=0.5, floor=0.2)],
+                 heads=[], projection=dict(source="all", balance=True))
+    rng = np.random.default_rng(3)
+    for _ in range(50):
+        c = int(rng.integers(2)); net.step(_bar(rng, bool(c), 0, 7), c)
+    net.forward(_bar(rng, True, 2, 5))
+    idx, h = net._pv
+    n1 = int(np.prod(net.areas[0].out_shape))
+    for part in (idx < n1, idx >= n1):
+        assert float(np.sqrt(h[part] @ h[part])) == pytest.approx(np.sqrt(0.5), rel=1e-5)
+
+
+def test_deep_cortex_with_local_errors_learns_and_roundtrips(tmp_path):
+    rng = np.random.default_rng(6)
+    net = Cortex((8, 8, 1), 4, areas=[dict(rf=3, pool=2, max_features=16, theta=0.8,
+                                           local=dict(lr=0.05)),
+                                      dict(rf=2, pool=1, max_features=16, theta=0.5, floor=0.2,
+                                           local=dict(lr=0.05))],
+                 heads=[dict(source="input")], projection=dict(source="all", balance=True),
+                 replay=0.5, joint=False)
+    hits = []
+    for _ in range(600):
+        c = int(rng.integers(4)); hits.append(net.step(_blob(rng, c), c) == c)
+    assert np.mean(hits[-200:]) > 0.9
+    assert all(a.local_seen >= 590 for a in net.areas) and net.replays > 0
+    path = tmp_path / "local.npz"
+    net.save(path)
+    twin = Cortex.load(path)
+    assert np.array_equal(twin.areas[1].clf.W, net.areas[1].clf.W)
+    X = [_blob(rng, int(c)) for c in rng.integers(4, size=50)]
+    for x in X:
+        assert twin.predict(x) == net.predict(x)
+        assert np.allclose(twin.areas[1].potentials(), net.areas[1].potentials())

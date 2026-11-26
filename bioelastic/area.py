@@ -20,14 +20,36 @@ período crítico muere y su lugar queda libre.
 A diferencia de `ElasticLayer`, aquí la latencia de salida se calcula desde el
 potencial final (no desde el cruce exacto del umbral): es lo que permite resolver
 toda la lámina con un producto de matrices.
+
+Error local (opcional, `local=dict(...)` y `n_classes`): el área tiene su propio lector
+de clase (lámina 5/6 local) que aprende con la regla de 3 factores sobre su propio
+código, y le devuelve a cada célula compleja activa un error dendrítico
+g = U^T (objetivo - p). Cada rasgo se mueve hacia (g > 0) o se aleja de (g < 0) el parche
+que lo hizo ganar en su vecindario: tres factores (presináptico = parche, postsináptico =
+ganadora del pooling, modulador = error local). El error nunca cruza de un área a otra
+(no hay backprop entre áreas; es el esquema de clasificadores locales de Nøkland y
+Eidnes 2019 y Mostafa et al. 2018). Con `feedback="random"` el lector local es fijo y
+aleatorio y no aprende.
 """
 from __future__ import annotations
 
 import numpy as np
+from scipy import sparse
+
+from .readout import Readout
 
 
 def _pair(x):
     return (int(x), int(x)) if np.isscalar(x) else (int(x[0]), int(x[1]))
+
+
+def _segment_sum(keys: np.ndarray, rows: np.ndarray, weights: np.ndarray | None = None):
+    """Suma (ponderada) de filas por clave: (claves únicas, sumas). Equivale a `np.add.at`
+    sobre un arreglo de ceros, pero como producto disperso (mucho más rápido)."""
+    u, inv = np.unique(keys, return_inverse=True)
+    w = np.ones(len(keys), dtype=np.float32) if weights is None else weights.astype(np.float32)
+    S = sparse.csr_matrix((w, (inv, np.arange(len(keys)))), shape=(len(u), len(keys)))
+    return u, np.asarray(S @ rows, dtype=np.float32)
 
 
 class FeatureArea:
@@ -35,7 +57,8 @@ class FeatureArea:
                  theta: float = 0.8, floor: float = 0.5, k: int = 2, lr: float = 0.2,
                  lr_min: float = 0.002, lr_half: float = 20.0, min_energy: float = 0.2,
                  recruit_per_step: int = 2, probation: int = 2000, survival_hits: int = 5,
-                 maintain_every: int = 500):
+                 maintain_every: int = 500, local: dict | None = None, n_classes: int = 0,
+                 seed: int = 0):
         H, W, C = (int(v) for v in in_shape)
         self.in_shape = (H, W, C)
         self.rf = _pair(rf); self.stride = _pair(stride); self.pool = _pair(pool)
@@ -70,6 +93,28 @@ class FeatureArea:
         off = (np.arange(self.rf[0])[:, None] * W + np.arange(self.rf[1])[None, :]).ravel()
         self._gather = base[:, None] + off[None, :]               # (P, rf_h*rf_w)
         self._cache = None
+        # posición (en la lámina de células simples) de cada desplazamiento dentro del pooling
+        a, b = self.pool
+        qy, qx = np.meshgrid(np.arange(self.ph) * a, np.arange(self.pw) * b, indexing="ij")
+        my, mx = np.divmod(np.arange(a * b), b)
+        self._pool_pos = ((qy[:, :, None] + my) * self.ow + (qx[:, :, None] + mx)).reshape(-1, a * b)
+
+        # error local: lector de clase propio del área
+        self.local = None
+        if local and n_classes:
+            spec = dict(lr=0.02, lr_readout=0.5, temperature=0.25, feedback="sym", residual=False)
+            spec.update(local)
+            self.local = spec
+            n_out = self.ph * self.pw * self.F
+            self.clf = Readout(int(n_classes), capacity=n_out, consolidation=0.0,
+                               lr=float(spec["lr_readout"]), temperature=float(spec["temperature"]))
+            self.clf.n = n_out
+            if spec["feedback"] == "random":
+                rng = np.random.default_rng(seed)
+                self.clf.W[:] = rng.standard_normal(self.clf.W.shape).astype(np.float32)
+            elif spec["feedback"] != "sym":
+                raise ValueError(f"feedback desconocido: {spec['feedback']}")
+        self.local_hits = 0; self.local_seen = 0
 
     # ------------------------------------------------------------------ pase
     def encode(self, X: np.ndarray) -> np.ndarray:
@@ -81,7 +126,7 @@ class FeatureArea:
         mx = float(norms.max())
         valid = norms >= max(self.min_energy * mx, 1e-6)
         n = self.n
-        act = None
+        act = None; arg = None
         code = np.zeros(self.out_shape, dtype=np.float32)
         if n and mx > 0:
             act = (Pm @ self.W[:n].T) / np.maximum(norms, 1e-6)[:, None]
@@ -93,18 +138,84 @@ class FeatureArea:
             out = np.maximum(out - self.floor, 0.0) * np.float32(1.0 / (1.0 - self.floor))
             ph, pw = self.ph, self.pw; a, b = self.pool
             out = out.reshape(self.oh, self.ow, n)[:ph * a, :pw * b]
-            code[:, :, :n] = out.reshape(ph, a, pw, b, n).max(axis=(1, 3))   # células complejas
-        self._cache = (Pm, norms, valid, act)
+            if self.local is None:
+                code[:, :, :n] = out.reshape(ph, a, pw, b, n).max(axis=(1, 3))   # células complejas
+            else:                                                 # se recuerda qué célula simple ganó
+                o = out.reshape(ph, a, pw, b, n).transpose(0, 2, 1, 3, 4).reshape(ph * pw, a * b, n)
+                arg = o.argmax(axis=1)                            # (ph*pw, n)
+                code[:, :, :n] = np.take_along_axis(o, arg[:, None, :], axis=1).reshape(ph, pw, n)
+        self._cache = (Pm, norms, valid, act, arg, code)
         return code
 
     # ------------------------------------------------------------------ plasticidad
-    def learn(self):
-        """Actualiza el diccionario con la última lámina vista (no supervisado)."""
+    def potentials(self, code: np.ndarray | None = None) -> np.ndarray | None:
+        """Potenciales del lector local sobre el último código (None si no hay error local)."""
+        if self.local is None:
+            return None
+        if code is None:
+            if self._cache is None:
+                return None
+            code = self._cache[5]
+        c = code.ravel(); idx = np.flatnonzero(c)
+        if len(idx) == 0:
+            return np.zeros(self.clf.C, dtype=np.float32)
+        h = c[idx]
+        return self.clf.potentials(idx, h / np.float32(np.sqrt(h @ h)))
+
+    def learn_readout(self, target: int, code: np.ndarray):
+        """Sólo el lector local aprende (el diccionario no cambia): lo usa el repaso."""
+        if self.local is None or self.local["feedback"] != "sym":
+            return
+        c = code.ravel(); idx = np.flatnonzero(c)
+        if len(idx):
+            h = c[idx]
+            self.clf.learn(idx, h / np.float32(np.sqrt(h @ h)), int(target))
+
+    def _learn_local(self, target: int, Pm, norms, act, arg, code, prior=None):
+        """Error local de 3 factores: lector propio + rasgos ganadores (ver docstring del módulo).
+        `prior`: potenciales de los lectores de las áreas anteriores (error residual)."""
+        n = self.n
+        c = code[:, :, :n].reshape(-1)                            # (ph*pw*n) sobre rasgos usados
+        act_i = np.flatnonzero(c)
+        if len(act_i) == 0:
+            return
+        q, f = np.divmod(act_i, n)
+        cols = q * self.F + f                                     # índice en el código completo
+        h = c[act_i]; nrm = np.float32(np.sqrt(h @ h)); hn = h / nrm
+        R = self.clf
+        V = R.potentials(cols, hn)
+        if prior is not None:                                     # residual: lo que abajo aún falla
+            V = V + prior
+        p = R.probs(V)
+        self.local_seen += 1; self.local_hits += int(np.argmax(V) == target)
+        err = -p; err[target] += 1.0
+        err = err.astype(np.float32)
+        g = R.W[:, cols].T @ err                                  # error dendrítico de cada célula compleja
+        g = (g - hn * float(hn @ g)) / nrm                        # derivada de la normalización del código
+        if self.local["feedback"] == "sym":
+            R.W[:, cols] += (R.lr * err)[:, None] * hn[None, :]
+        # célula simple que ganó el pooling: posición y potencial
+        pos = self._pool_pos[q, arg[q, f]]
+        s = act[pos, f]
+        gi = (g / np.float32(1.0 - self.floor)).astype(np.float32)
+        # dW_f = sum_q g (x_q - s_q W_f) = sum_q g x_q - (sum_q g s_q) W_f,  x_q = parche normalizado
+        u, gx = _segment_sum(f, Pm[pos], gi / np.maximum(norms[pos], 1e-6))
+        gs = np.bincount(np.searchsorted(u, f), weights=gi * s, minlength=len(u)).astype(np.float32)
+        Wn = self.W[u] + np.float32(self.local["lr"]) * (gx - gs[:, None] * self.W[u])
+        self.W[u] = Wn / np.maximum(np.linalg.norm(Wn, axis=1, keepdims=True), 1e-8)
+
+    def learn(self, target: int | None = None, prior: np.ndarray | None = None):
+        """Actualiza el diccionario con la última lámina vista. Sin `target` (o sin error
+        local configurado) el aprendizaje es puramente no supervisado. Con `prior` (sólo si
+        `local["residual"]`), el error local es el de la suma de los lectores hasta esta área."""
         if not self.plastic or self._cache is None:
             return
-        Pm, norms, valid, act = self._cache
+        Pm, norms, valid, act, arg, code = self._cache
         self._cache = None
         self.t += 1
+        if target is not None and self.local is not None and act is not None:
+            self._learn_local(int(target), Pm, norms, act, arg, code,
+                              prior if self.local.get("residual") else None)
         n = self.n
         if act is not None:
             best = act.argmax(axis=1)
@@ -114,12 +225,10 @@ class FeatureArea:
         sel = valid & (bc >= self.theta)
         if sel.any():                                             # STDP promediado sobre la lámina
             b = best[sel]
-            M = np.zeros((n, self.D), dtype=np.float32)
-            np.add.at(M, b, Pm[sel] / norms[sel, None])
+            u, M = _segment_sum(b, Pm[sel], 1.0 / norms[sel])
             cnt = np.bincount(b, minlength=n)
-            u = np.flatnonzero(cnt)
             eta = np.maximum(self.lr_min, self.lr / (1.0 + self.wins[u] / self.lr_half)).astype(np.float32)
-            Wn = (1.0 - eta)[:, None] * self.W[u] + eta[:, None] * (M[u] / cnt[u, None])
+            Wn = (1.0 - eta)[:, None] * self.W[u] + eta[:, None] * (M / cnt[u, None])
             self.W[u] = Wn / np.maximum(np.linalg.norm(Wn, axis=1, keepdims=True), 1e-8)
             self.wins[u] += 1
         nov = np.flatnonzero(valid & (bc < self.theta))
@@ -145,6 +254,8 @@ class FeatureArea:
     def _new_slot(self) -> int:
         if self.free:
             f = self.free.pop()
+            if self.local is not None and self.local["feedback"] == "sym":
+                self.clf.W[:, f::self.F] = 0.0                    # el lector local olvida ese rasgo
             if self.on_reuse is not None:
                 self.on_reuse(f)
             return f
@@ -177,12 +288,17 @@ class FeatureArea:
                     synapses=feats * self.D)
 
     def state(self) -> dict:
-        return dict(W=self.W, alive=self.alive, wins=self.wins, born=self.born,
-                    free=np.array(self.free, dtype=np.int64),
-                    meta=np.array([self.n, self.t, self.created, self.pruned], dtype=np.int64))
+        out = dict(W=self.W, alive=self.alive, wins=self.wins, born=self.born,
+                   free=np.array(self.free, dtype=np.int64),
+                   meta=np.array([self.n, self.t, self.created, self.pruned], dtype=np.int64))
+        if self.local is not None:
+            out["clf"] = self.clf.W
+        return out
 
     def restore(self, z, prefix: str = ""):
         self.W[:] = z[prefix + "W"]; self.alive[:] = z[prefix + "alive"]
         self.wins[:] = z[prefix + "wins"]; self.born[:] = z[prefix + "born"]
         self.free = [int(v) for v in z[prefix + "free"]]
         self.n, self.t, self.created, self.pruned = (int(v) for v in z[prefix + "meta"])
+        if self.local is not None and prefix + "clf" in z:
+            self.clf.W[:] = z[prefix + "clf"]

@@ -1,0 +1,16 @@
+variant,seed,preq_acc,val_acc,val_parts,features,secs
+d2_v02,0,0.8376,0.8552,memory:0.7950 proj:0.8326,256,76.8000
+d3_v02,0,0.8376,0.8564,memory:0.7950 proj:0.8306,500,141.4000
+d3_bal,0,0.8322,0.8566,memory:0.7950 proj:0.8228,500,130.4000
+d2_loc,0,0.8382,0.8566,memory:0.7950 proj:0.8278 local1:0.8662,256,98.2000
+d3_loc,0,0.8324,0.8556,memory:0.7950 proj:0.8262 local1:0.8662 local2:0.8488,501,194.6000
+d3_loc05,0,0.8337,0.8556,memory:0.7950 proj:0.8318 local1:0.8660 local2:0.8448 memory+local1:0.8612 memory+local1+local2:0.8658 local1+local2:0.8618 memory+proj+local1+local2:0.8638,500,139.1000
+d3_loc05_v2k16,0,0.8323,0.8516,memory:0.7950 proj:0.8028 local1:0.8660 local2:0.8358 memory+local1:0.8612 memory+local1+local2:0.8622 local1+local2:0.8568 memory+proj+local1+local2:0.8582,504,174.1000
+d3_loc05_v2f512,0,0.8351,0.8570,memory:0.7950 proj:0.8312 local1:0.8660 local2:0.8484 memory+local1:0.8612 memory+local1+local2:0.8638 local1+local2:0.8634 memory+proj+local1+local2:0.8648,682,247.3000
+d3_loc_v1t90,0,0.8306,0.8510,memory:0.7950 proj:0.8196 local1:0.8624 local2:0.8438 memory+local1:0.8586 memory+local1+local2:0.8632 local1+local2:0.8608 memory+proj+local1+local2:0.8624,508,197.1000
+d2_arb,0,0.8571,0.8762,memory:0.7950 proj:0.8760 local1:0.8754 memory+proj+local1:0.8748 memory+local1:0.8690,256,78.6000
+d3_arb,0,0.8552,0.8768,memory:0.7950 proj:0.8726 local1:0.8754 local2:0.8562 memory+proj+local1+local2:0.8762 memory+local1:0.8690 memory+local1+local2:0.8764 local1+local2:0.8738,503,139.8000
+d2_sum,0,0.8485,0.8704,memory:0.7950 proj:0.8110 local1:0.8754 memory+proj+local1:0.8704 memory+local1:0.8690,256,111.0000
+d3_sum,0,0.8450,0.8722,memory:0.7950 proj:0.7022 local1:0.8754 local2:0.8562 memory+proj+local1+local2:0.8722 memory+local1:0.8690 memory+local1+local2:0.8764 local1+local2:0.8738,503,178.4000
+d2_arb_lr0,0,0.8534,0.8702,memory:0.7950 proj:0.8656 local1:0.8658 memory+proj+local1:0.8704 memory+local1:0.8636,256,97.9000
+d3_arb_lr0,0,0.8517,0.8676,memory:0.7950 proj:0.8576 local1:0.8658 local2:0.8362 memory+proj+local1+local2:0.8638 memory+local1:0.8636 memory+local1+local2:0.8640 local1+local2:0.8554,505,187.3000

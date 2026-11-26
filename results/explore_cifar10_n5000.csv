@@ -1,0 +1,5 @@
+variant,seed,preq_acc,val_acc,val_parts,features,secs
+d2_v02,0,0.3058,0.3710,memory:0.2670 proj:0.3955 memory+proj:0.3710,256,56.3000
+d3_v02,0,0.3048,0.3700,memory:0.2670 proj:0.3965 memory+proj:0.3700,506,103.9000
+d2_loc,0,0.3034,0.3755,memory:0.2670 proj:0.4015 local1:0.4675 memory+local1:0.6600 memory+proj+local1:0.4320,256,67.4000
+d3_loc,0,0.3052,0.3710,memory:0.2670 proj:0.3940 local1:0.4675 local2:0.4515 memory+local1:0.3300 memory+local1+local2:0.4285 local1+local2:0.4645 memory+proj+local1+local2:0.4590,506,150.2000
