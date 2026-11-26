@@ -115,3 +115,72 @@ def test_task_sets_off_is_the_previous_thinker():
         res = [_harlow(net, rng, [int(objs[2 * (i % 20)]), int(objs[2 * (i % 20) + 1])], "W") for i in range(60)]
         outs.append((res, net.Wc.copy()))
     assert outs[0][0] == outs[1][0] and np.array_equal(outs[0][1], outs[1][1])
+
+
+# ---------------------------------------------------------------- F2: estructura del mapa
+def _events(pairs):
+    return [(frozenset([a]), (b,), t) for t, (a, b) in enumerate(pairs)]
+
+
+def test_map_code_tells_partial_from_complete_maps():
+    from bioelastic.cogmap import COMPLETE, NONE, PARTIAL, map_code
+    assert map_code([]) == NONE
+    assert map_code([(frozenset([1, 2]), (3,), 0)]) == NONE          # sólo relaciones de a un símbolo
+    assert map_code(_events([(1, 2), (3, 4)])) == PARTIAL              # dos fragmentos
+    assert map_code(_events([(1, 2), (2, 3), (3, 4)])) == COMPLETE     # una cadena
+    assert map_code(_events([(1, 2), (2, 3), (3, 1)])) == COMPLETE     # un ciclo
+    assert map_code(_events([(1, 2), (1, 3)])) == PARTIAL              # una rama
+    assert map_code(_events([(1, 2), (2, 3), (1, 2)])) == COMPLETE     # repetir una relación no ramifica
+
+
+def test_expected_size_makes_a_short_chain_partial():
+    from bioelastic.cogmap import COMPLETE, PARTIAL, SizePrior, map_code
+    sp = SizePrior()
+    sp.learn(_events([(1, 2), (2, 3), (3, 4), (4, 5)]))
+    assert sp.expected() == 5
+    sp.learn(_events([(1, 2), (3, 4)]))                                 # un mapa a medio armar no enseña
+    assert sp.expected() == 5
+    short = _events([(1, 2), (2, 3), (3, 4)])
+    assert map_code(short, sp.expected()) == PARTIAL
+    assert map_code(_events([(i, i + 1) for i in range(7)]), sp.expected()) == COMPLETE   # más largo: completo
+
+
+def test_cogmap_state_layout_and_size_learning_only_with_plasticity():
+    a = Thinker(20, memory=True, judge=True, speak=True, back=True, seed=0)
+    b = Thinker(20, memory=True, judge=True, speak=True, back=True, cogmap=True, seed=0)
+    c = Thinker(20, memory=True, judge=True, speak=True, back=True, cogmap="sin_posicion", seed=0)
+    assert b.D_state == a.D_state + 3 + 27 + 9 * (b._n_act + 1) and c.D_state == a.D_state + 3
+    for x in (1, 2, 3, 4):
+        b.observe(x); b.observe(x + 1); b.observe(None)
+    b.answer(5)
+    assert b._mapc == 2
+    b.plastic = False; b.reset()
+    assert b._map_size.expected() == 0                                  # congelado no aprende el tamaño
+    b.plastic = True
+    for x in (1, 2, 3, 4):
+        b.observe(x); b.observe(x + 1); b.observe(None)
+    b.reset()
+    assert b._map_size.expected() == 5
+
+
+def test_judge_candidate_learns_a_target_tied_to_a_structural_position():
+    """Si respondió la memoria episódica y no había camino, el juicio aprende el objetivo
+    para ese estado con marca y captura: FIN (siempre el mismo al final de la cadena) se
+    consolida y el modelo interno lo da por fiable; un objetivo que cambia cada vez, no."""
+    from bioelastic.thinker import COPY, _key
+    net = Thinker(30, memory=True, judge=True, speak=True, back=True, cogmap=True, seed=0)
+    FIN = 29
+
+    def episode(target):
+        net.reset()
+        for x in (1, 2, 3):
+            net.observe(x); net.observe(x + 1); net.observe(None)
+        net.answer(4, explore=False)
+        net._path[-1] = COPY                                            # respondió la memoria
+        net.feedback(target=target)
+        return ("judge", _key(net._base(net._fs)))
+    k = episode(10); episode(11); episode(12)
+    assert not net.M.predict(k)[1]
+    episode(FIN); k = episode(FIN)
+    out, sure = net.M.predict(k)
+    assert out == FIN and sure

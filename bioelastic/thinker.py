@@ -318,7 +318,7 @@ class Thinker:
                  replacing: bool = True,
                  decay: float = 1e-2, mixed: bool | str = "solo", clock: bool = False,
                  lookahead: bool = False, search: str = "guiada", credit: str = "estricto",
-                 task_sets: bool | dict = False,
+                 task_sets: bool | dict = False, cogmap: bool | str = False,
                  doubt: float = 0.0, explain: str = "refutadas", reg_credit: str = "simple",
                  reg_reset: str = "cero", prev_io: bool | str = False, back: bool | str = False,
                  seed: int = 0, say: dict | None = None):
@@ -420,6 +420,22 @@ class Thinker:
         self.prev_io = prev_io if prev_io == "separado" else bool(prev_io)
         self.o_prev = o; o += 10 if self.prev_io else 0
         self.o_back = o; o += 3 if self.back is True else 0  # predecesores: nada / uno / varios (`back`)
+        # completitud del mapa (`cogmap`, ver `bioelastic.cogmap`): sin mapa / a medio armar / completo
+        # ablaciones: "sin_posicion", "sin_tamano" (sin tamaño esperado), "sin_juicio" (sin
+        # crédito al juicio como módulo candidato)
+        self.cogmap = bool(cogmap)
+        self._cm_pos = self.cogmap and cogmap != "sin_posicion"
+        self._cm_size = self.cogmap and cogmap != "sin_tamano"
+        self._cm_judge = self.cogmap and cogmap != "sin_juicio"
+        self.o_map = o; o += 3 if self.cogmap else 0
+        # posición en la estructura (`cogmap`): la completitud del mapa conjugada con la vecindad
+        # del foco (cuántos sucesores y predecesores: principio, medio o final de la estructura)
+        # y la acción recién hecha (integración del camino) conjugada con esa vecindad
+        self.o_pos = o; o += (27 + (self._n_act + 1) * 9) if self._cm_pos else 0
+        self._mapc = 0
+        if self.cogmap:
+            from .cogmap import SizePrior
+            self._map_size = SizePrior()               # tamaño típico de un mapa completo
         self.D_base = o
         # con conjuntos de tareas la consigna no se conjuga: el conjunto que rige la reemplaza
         self.mixed = mixed if (mixed and self.n_cues > 1 and not task_sets) else False
@@ -463,6 +479,8 @@ class Thinker:
         self._cf = None                                    # contenido de la última respuesta dicha
         self._js = None                                    # estado de la última respuesta juzgada
         if self.fast is not None:
+            if self.cogmap and self.plastic:               # conocimiento estructural entre episodios
+                self._map_size.learn(self.fast.events)
             self.fast.reset()
         self._obs = []                                     # lo percibido sin responder: (símbolos, certeza, alternativas)
         self._prev = None                                  # (respuesta, ¿premiada?) del último ensayo (`prev_io`)
@@ -510,7 +528,8 @@ class Thinker:
             return [1 + int(prev[0] not in toks), 3 + int(not prev[1])]
         return [1 + 2 * int(prev[0] not in toks) + int(not prev[1])]
 
-    def _state(self, cue, last, clock, focus, recall, hold, reg=None, over=None, prev=None, back=None):
+    def _state(self, cue, last, clock, focus, recall, hold, reg=None, over=None, prev=None, back=None,
+               mapc=None):
         reg = self.reg if reg is None else reg
         best = self._best(recall)
         idx = [0, self.o_cue + cue, self.o_last + last + 1,
@@ -524,6 +543,14 @@ class Thinker:
             idx += [self.o_prev + i for i in self._prev_code(focus, prev)]
         if self.back is True and back is not None:
             idx.append(self.o_back + min(len(back[0]), 2))
+        if self.cogmap:
+            idx.append(self.o_map + (self._mapc if mapc is None else mapc))
+        if self._cm_pos:
+            ns = min(len(recall[0]), 2)
+            npred = min(len(back[0]), 2) if (self.back is True and back is not None) else 0
+            mc = self._mapc if mapc is None else mapc
+            idx.append(self.o_pos + mc * 9 + ns * 3 + npred)
+            idx.append(self.o_pos + 27 + (last + 1) * 9 + ns * 3 + npred)
         for b in range(self.R):
             if reg[b] >= 0:
                 idx.append(self.o_sreg + 2 * b + int(reg[b]))
@@ -909,9 +936,13 @@ class Thinker:
             focus, hold = items[0], given
         recall = self._recall(focus)
         bk = self._recall_back(focus) if self.back else None
+        if self.cogmap:                                       # completitud del mapa (no cambia al pensar)
+            self._mapc = self._map_of(self.fast.events if self.fast is not None else ())
         clock = 0
         while True:
             s_idx, s_val = self._state(cue, last, clock, focus, recall, hold, prev=prev, back=bk)
+            if clock == 0:
+                self._fs = (s_idx, s_val)                     # la situación tal como se planteó
             a = self._decide(s_idx, s_val, self._allowed(clock), explore)
             self.decisions[a] += 1
             self._path.append(a)
@@ -956,6 +987,7 @@ class Thinker:
         self._write_registers(c_idx, c_val, s_idx, s_val, explore)
         self._reg_cert = seen
         self._key = (s_idx.tobytes(), a)
+        self._ls = (s_idx, s_val)                          # estado de la última decisión
         self._out = out
         return out
 
@@ -1057,6 +1089,9 @@ class Thinker:
                         self.judge.teach(target)
                         self.kver += 1
                         self._confirm("judge", self._js, target, cue, ep)
+                elif (wrong and self._cm_judge and self.judge is not None and not reg_only
+                      and self._path and self._path[-1] in (COPY, EMIT)):
+                    self._judge_candidate(target, cue, ep)
                 if wrong and not reg_only:                  # error sin explicar: queda para repetir
                     self._remember(ep, target)
             if not wrong:                                   # la cadena acertó: sus eslabones también
@@ -1267,8 +1302,9 @@ class Thinker:
             rbk = lambda f: _recall_back(events, f)  # noqa: E731
         else:
             rbk = lambda f: None  # noqa: E731
+        mapc = self._map_of(events)
         if self.search == "amplitud":
-            return self._search_bfs(target, items, cue, reg, given, rec, over, refute, prev, rbk)
+            return self._search_bfs(target, items, cue, reg, given, rec, over, refute, prev, rbk, mapc)
         tie = itertools.count()
         # nodo: (costo, desempate, tipo, foco, sostén, recuerdo, última, reloj/ítem, camino)
         if self.gate:
@@ -1299,7 +1335,7 @@ class Thinker:
                         heapq.heappush(heap, (cst, next(tie), "t", f, h, rec(f), a, 0, step))
                 continue
             bk = rbk(focus)
-            s = self._state(cue, last, clock, focus, recall, hold, reg, over, prev, bk)
+            s = self._state(cue, last, clock, focus, recall, hold, reg, over, prev, bk, mapc)
             allowed = self._allowed(clock)
             q = (1.0 - self.epsilon) * self._policy(*s, allowed) + self.epsilon / len(allowed)
             c = self._content(focus, reg=reg)
@@ -1339,7 +1375,7 @@ class Thinker:
         return None
 
     def _search_bfs(self, target, items, cue, reg, given, rec, over, refute=False, prev=None,
-                    rbk=lambda f: None):
+                    rbk=lambda f: None, mapc=None):
         if self.gate:                                       # la compuerta, enumerada
             roots = [((), frozenset(), -1, [])]
             for i, it in enumerate(items):
@@ -1358,7 +1394,7 @@ class Thinker:
             for focus, hold, recall, last, path in frontier:
                 self.expanded += 1
                 bk = rbk(focus)
-                s = self._state(cue, last, clock, focus, recall, hold, reg, over, prev, bk)
+                s = self._state(cue, last, clock, focus, recall, hold, reg, over, prev, bk, mapc)
                 allowed = self._allowed(clock)
                 c = self._content(focus, reg=reg)
                 forced = self._forced(s, path)
@@ -1390,6 +1426,30 @@ class Thinker:
                 p = self._policy(s_idx, s_val, allowed)
                 g = -p; g[list(allowed).index(a)] += 1.0
                 self.Wc[allowed[:, None], s_idx[None, :]] += w * g[:, None] * s_val[None, :]
+
+    # ------------------------------------------------------------------ mapa cognitivo
+    def _judge_candidate(self, target, cue, ep):
+        """`cogmap`: respondió la memoria episódica, no había camino al objetivo y no hay
+        conocimiento que culpar. El juicio sobre el estado es el módulo candidato: aprende el
+        objetivo para el estado con que empezó a pensar (la situación tal como se planteó,
+        donde JUZGAR habría respondido) con la misma marca y captura (un objetivo episódico, que
+        cambia cada vez, nunca se consolida; uno ligado a una posición de la estructura, como
+        FIN al final de la cadena, sí). Al consolidarse, el modelo interno ve la respuesta
+        nueva del juicio y la da por confirmada (las repeticiones consistentes son la
+        evidencia), así la búsqueda retrospectiva ya puede usar JUZGAR en ese estado."""
+        js = self._base(self._fs)
+        self._correct("judge", js, target, cue, ep, False)
+        out, _ = self._know(js, self.judge)
+        k = ("judge", _key(js))
+        if out == target and not self.M.predict(k)[1]:
+            self.M.observe(k, out)
+            self.M.outcome(k, out, True)
+
+    def _map_of(self, events):
+        if not self.cogmap:
+            return None
+        from .cogmap import map_code
+        return map_code(events, self._map_size.expected() if self._cm_size else 0)
 
     # ------------------------------------------------------------------ conjuntos de tareas
     def _ts_bind(self, k: int):
@@ -1429,15 +1489,19 @@ class Thinker:
         `ep` (con el modelo interno, como la búsqueda). Devuelve (respuesta, confianza): la
         confianza es la probabilidad del paso más dudoso; respuesta -1 si el camino no lleva
         a nada establecido."""
-        T = self.task_sets
-        T.simulated += 1
-        W = self.Wc
-        self.Wc = T.sets[k].Wc
+        self.task_sets.simulated += 1
+        return self._rollout(self.task_sets.sets[k].Wc, ep)
+
+    def _rollout(self, Wc, ep) -> tuple:
+        # la confianza de una predicción no depende de cuánto se esté explorando: temperatura 1
+        W, temp = self.Wc, self.temperature
+        self.Wc = Wc; self.temperature = 1.0
         try:
             items, cue, reg, given, events = ep
             prev = getattr(items, "prev", None)
             rec = (lambda f: _recall_events(events, f)) if self.fast is not None else (lambda f: _NONE)
             rbk = (lambda f: _recall_back(events, f)) if (self.back and self.fast is not None) else (lambda f: None)
+            mapc = self._map_of(events)
             conf = 1.0; last = -1
             if self.gate:
                 focus, hold = (), frozenset()
@@ -1453,7 +1517,7 @@ class Thinker:
             recall = rec(focus); clock = 0
             while True:
                 bk = rbk(focus)
-                s = self._state(cue, last, clock, focus, recall, hold, reg, None, prev, bk)
+                s = self._state(cue, last, clock, focus, recall, hold, reg, None, prev, bk, mapc)
                 allowed = self._allowed(clock)
                 p = self._policy(*s, allowed)
                 j = int(np.argmax(p)); conf = min(conf, float(p[j]))
@@ -1468,7 +1532,7 @@ class Thinker:
                 out, sure = self._outcome(a, focus, recall, c, s)
                 return (int(out), conf) if sure else (-1, 0.0)
         finally:
-            self.Wc = W
+            self.Wc = W; self.temperature = temp
 
     def _ts_evidence(self, target, reward):
         """Tras el desenlace: verosimilitud de cada conjunto (simulación interna), creencia

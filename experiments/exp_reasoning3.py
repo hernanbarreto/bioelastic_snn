@@ -11,6 +11,11 @@ Grupos
        sin consigna (W -> A -> W), recuperación al volver, y con consigna transferencia a
        familias nuevas que comparten estructura (C-TS).
   f1v  validación de los hiperparámetros de F1 (semillas de validación).
+  f2   estructura del mapa (`cogmap`): cierre del anillo y FIN con preguntas de aprendizaje
+       mezcladas, ablaciones y control con sólo premisas.
+
+  Cada condición terminada queda en results/razonamiento3_<grupo>.parts.json y se salta al
+  volver a correr (resiste reinicios); al final se escriben el CSV y el JSON del grupo.
 
   python experiments/exp_reasoning3.py <grupo> [<grupo> ...]   (OMP_NUM_THREADS=1)
   (resultados en results/razonamiento3_<grupo>.csv y .json)
@@ -37,6 +42,60 @@ def dump(name, obj):
     RESULTS.mkdir(exist_ok=True)
     with open(RESULTS / f"razonamiento3_{name}.json", "w") as f:
         json.dump(obj, f, indent=1, ensure_ascii=False, default=M._jsonable)
+
+
+class RowLog:
+    """Como `CsvLog`, pero junta las filas en memoria (para guardarlas por condición)."""
+
+    def __init__(self):
+        self.rows = []
+
+    def row(self, *vals):
+        out = [round(v, 4) if isinstance(v, float) else v for v in vals]
+        self.rows.append(out)
+        print("  ".join(f"{h}={v}" for h, v in zip(HEADER, out)), flush=True)
+
+
+class Store:
+    """Resultados por condición que sobreviven a un reinicio: cada condición terminada se
+    guarda en results/razonamiento3_<grupo>.parts.json (filas del CSV y resumen) y al volver
+    a correr el grupo se salta. Al final se escriben el CSV y el JSON completos."""
+
+    def __init__(self, group: str):
+        self.group = group
+        self.path = RESULTS / f"razonamiento3_{group}.parts.json"
+        self.parts = json.load(open(self.path)) if self.path.exists() else {}
+
+    def done(self, key) -> bool:
+        return key in self.parts
+
+    def get(self, key):
+        return self.parts[key]["summary"]
+
+    def put(self, key, log: RowLog, summary):
+        self.parts[key] = dict(rows=log.rows, summary=json.loads(json.dumps(summary, default=M._jsonable)))
+        tmp = self.path.with_suffix(".tmp")
+        with open(tmp, "w") as f:
+            json.dump(self.parts, f, ensure_ascii=False, default=M._jsonable)
+        tmp.replace(self.path)
+
+    def run(self, key, fn):
+        """Corre `fn(log)` (que devuelve el resumen) si la condición no estaba hecha."""
+        if self.done(key):
+            print(f"[{self.group}] ya hecho: {key}", flush=True)
+            return self.get(key)
+        log = RowLog()
+        summary = fn(log)
+        self.put(key, log, summary)
+        return self.get(key)
+
+    def finish(self, summary=None):
+        log = CsvLog(f"razonamiento3_{self.group}", HEADER)
+        for part in self.parts.values():
+            for r in part["rows"]:
+                log._w.writerow([f"{v:.4f}" if isinstance(v, float) else v for v in r])
+        log.close()
+        dump(self.group, summary if summary is not None else {k: v["summary"] for k, v in self.parts.items()})
 
 
 def make(**over):
@@ -241,7 +300,42 @@ def group_f1v():
     dump("f1v", summary)
 
 
-GROUPS = {"f1": group_f1, "f1v": group_f1v}
+# ---------------------------------------------------------------- F2: mapa con estructura
+F2_B = 800
+
+
+def group_f2():
+    """Cierre del anillo y FIN con preguntas de aprendizaje mezcladas (la condición en que la
+    ronda anterior quedó en 0), con la estructura del mapa (`cogmap`): completitud, tamaño
+    esperado aprendido, posición estructural y el juicio como módulo candidato."""
+    st = Store("f2")
+    WB = 50
+    tests = (("L=8 (más largo que lo entrenado)", dict(L=8)), ("R=1 (cada relación observada una vez)", dict(R=1)))
+    conds = [("B1 + back (ronda anterior)", dict(back=True)),
+             ("B1 + back + estructura del mapa (cogmap)", dict(back=True, cogmap=True)),
+             ("ablación: sin posición estructural", dict(back=True, cogmap="sin_posicion")),
+             ("ablación: sin tamaño esperado", dict(back=True, cogmap="sin_tamano")),
+             ("ablación: sin el juicio como candidato", dict(back=True, cogmap="sin_juicio")),
+             ("ablación: cogmap sin back", dict(cogmap=True))]
+    for label, over in conds:
+        key = f"F2.1 anillo | {label}"
+        st.run(key, lambda log, over=over, label=label: M.report_line(
+            log, "F2.1 anillo con preguntas de aprendizaje", label,
+            M.run_line(make(n_cues=4, **over), F2_B, struct="anillo", perceive=True, tests=tests), WB))
+    for label, over in conds:
+        key = f"F2.2 línea FIN | {label}"
+        st.run(key, lambda log, over=over, label=label: M.report_line(
+            log, "F2.2 línea con FIN y preguntas de aprendizaje", label,
+            M.run_line(make(n_cues=4, **over), F2_B, struct="linea", perceive=True, use_end=True, queries=(2, 3),
+                       tests=(tests[0],)), WB))
+    st.run("F2.3 anillo sólo premisas | cogmap", lambda log: M.report_line(
+        log, "F2.3 anillo, sólo premisas (control)", "B1 + back + cogmap",
+        M.run_line(make(n_cues=4, back=True, cogmap=True), 300, struct="anillo", perceive=True, premises=True,
+                   tests=(tests[0],)), 25))
+    st.finish()
+
+
+GROUPS = {"f1": group_f1, "f1v": group_f1v, "f2": group_f2}
 
 
 def main():
