@@ -1,6 +1,6 @@
 import numpy as np
 
-from bioelastic.thinker import COPY, FOLLOW, FastMemory, Thinker
+from bioelastic.thinker import COPY, EMIT, FOLLOW, JUDGE, FastMemory, Thinker
 
 
 def test_fast_memory_binds_successors_and_silence_breaks_adjacency():
@@ -123,3 +123,128 @@ def test_hindsight_blames_strategy_and_protects_knowledge():
     assert net.blame[0] == before[0] + 1                   # error atribuido a la estrategia
     x = (np.array([2]), np.ones(1, dtype=np.float32))
     assert net.say.peek(x) == int(f[2])                    # el conocimiento no se pisó
+
+
+# ---------------------------------------------------------------- mecanismos nuevos
+def test_fast_memory_recall_is_conjunctive():
+    m = FastMemory(20)
+    for e, r, x in ((0, 2, 10), (0, 3, 11), (1, 2, 12), (1, 3, 10)):
+        m.bind((e, r)); m.bind((x,)); m.bind(())
+    # 10 quedó ligado a 0 (evento 1) y a 3 (evento 4) pero nunca a la conjunción (0, 3):
+    # sumando ligaduras sueltas empataría con 11 y ganaría por ser más reciente.
+    assert list(m.recall((0, 3))[0]) == [11]
+    assert list(m.recall((0, 2))[0]) == [10]
+    assert list(m.recall((1, 2))[0]) == [12]
+
+
+def _ti_episode(net, rng, learn, L, min_gap=1):
+    YES, NO = 32, 33
+    syms = rng.permutation(32)
+    order = [int(s) for s in syms[:L]]
+    pairs = [(order[i], order[i + 1]) for i in range(L - 1)]
+    pairs += [(int(syms[L + 2 * i]), int(syms[L + 2 * i + 1])) for i in range(3)]
+    while True:
+        i, j = (int(t) for t in rng.choice(L, 2, replace=False))
+        if abs(i - j) >= min_gap:
+            break
+    net.reset()
+    for k in rng.permutation(len(pairs)):
+        net.observe(pairs[k][0]); net.observe(pairs[k][1]); net.observe(None)
+    y = YES if i < j else NO
+    out = net.answer(order[i], probe=order[j], explore=learn)
+    net.feedback(target=y)
+    return out == y
+
+
+def test_transitive_inference_on_unseen_distances():
+    """Premisas X>Y de un orden nuevo en cada episodio; entrena órdenes de 3-4, evalúa
+    órdenes de 8 con distancias >= 4. El juicio sale del estado (¿lo recordado es lo
+    sostenido?), no de los símbolos."""
+    for seed in (0, 1, 2):
+        rng = np.random.default_rng(seed)
+        net = Thinker(34, memory=True, judge=True, max_steps=10, seed=seed)
+        for _ in range(1500):
+            _ti_episode(net, rng, True, int(rng.integers(3, 5)))
+        net.reset(); net.plastic = False
+        assert np.mean([_ti_episode(net, rng, False, 8, 4) for _ in range(200)]) > 0.97
+        assert net.decisions[JUDGE] > 0
+
+
+def test_chains_generalize_without_clock_or_lookahead():
+    """Sin reloj absoluto ni «¿el recuerdo sigue?»: seguir hasta que la memoria no
+    devuelva nada y emitir el foco. Entrena 1-2 saltos y evalúa 6."""
+    rng = np.random.default_rng(5)
+    net = Thinker(32, memory=True, max_steps=8, seed=5)
+    assert not net.clock and not net.lookahead
+    for _ in range(3000):
+        _chain_episode(net, rng, True, int(rng.integers(1, 3)))
+    net.reset(); net.plastic = False
+    assert np.mean([_chain_episode(net, rng, False, 6) for _ in range(300)]) > 0.97
+    assert net.decisions[EMIT] > 0
+
+
+def test_search_is_bounded_by_budget():
+    rng = np.random.default_rng(6)
+    net = Thinker(32, memory=True, speak=True, max_steps=10, budget=8, seed=6)
+    for _ in range(200):
+        before = net.expanded
+        _chain_episode(net, rng, True, int(rng.integers(1, 4)))
+        assert net.expanded - before <= 8
+
+
+def test_consistent_knowledge_survives_one_contradiction():
+    net = Thinker(16, seed=7)
+    for _ in range(6):
+        for x in range(4):
+            net.reset(); net.answer(x); net.feedback(target=x + 8)
+    net.reset(); assert net.answer(2) == 10
+    net.feedback(target=3)                                 # una contradicción suelta
+    x = (np.array([2]), np.ones(1, dtype=np.float32))
+    assert net.say.peek(x) == 10
+
+
+def test_one_thinker_learns_tasks_in_sequence_without_forgetting():
+    """Un solo Thinker, tres consignas entrenadas en bloques (conocimiento, cadenas,
+    transitiva). Al final se evalúan las tres en casos no vistos."""
+    rng = np.random.default_rng(8)
+    f = np.roll(np.arange(32), 7)
+    net = Thinker(34, n_cues=3, memory=True, speak=True, judge=True, max_steps=10, seed=8)
+
+    def know(learn):
+        x = int(rng.integers(32)); net.reset()
+        out = net.answer(x, cue=0, explore=learn); net.feedback(target=int(f[x]))
+        return out == f[x]
+
+    def chain(learn, hops):
+        syms = rng.permutation(32); c = [int(s) for s in syms[:hops + 1]]
+        pairs = [(c[i], c[i + 1]) for i in range(hops)] + [(int(syms[-1 - 2 * i]), int(syms[-2 - 2 * i])) for i in range(3)]
+        net.reset()
+        for k in rng.permutation(len(pairs)):
+            net.observe(pairs[k][0]); net.observe(pairs[k][1]); net.observe(None)
+        out = net.answer(c[0], cue=1, explore=learn); net.feedback(target=c[-1])
+        return out == c[-1]
+
+    def ti(learn, L, gap):
+        YES, NO = 32, 33
+        syms = rng.permutation(32); o = [int(s) for s in syms[:L]]
+        while True:
+            i, j = (int(t) for t in rng.choice(L, 2, replace=False))
+            if abs(i - j) >= gap:
+                break
+        net.reset()
+        for k in rng.permutation(L - 1):
+            net.observe(o[k]); net.observe(o[k + 1]); net.observe(None)
+        y = YES if i < j else NO
+        out = net.answer(o[i], cue=2, probe=o[j], explore=learn); net.feedback(target=y)
+        return out == y
+
+    for _ in range(800):
+        know(True)
+    for _ in range(1500):
+        chain(True, int(rng.integers(1, 4)))
+    for _ in range(1500):
+        ti(True, int(rng.integers(3, 5)), 1)
+    net.reset(); net.plastic = False
+    assert np.mean([know(False) for _ in range(200)]) > 0.97
+    assert np.mean([chain(False, 6) for _ in range(200)]) > 0.97
+    assert np.mean([ti(False, 8, 4) for _ in range(200)]) > 0.97
