@@ -1,0 +1,57 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+f0,b_cred2,4,segundos entrenamiento,269.9000,,4000 episodios
+f0,b_cred2,4,curva columna ep=500,0.2243,,
+f0,b_cred2,4,curva pureza ep=500,0.3140,,
+f0,b_cred2,4,curva identidad ep=500,0.1000,,
+f0,b_cred2,4,curva usados ep=500,10,,
+f0,b_cred2,4,curva columna ep=1000,0.2252,,
+f0,b_cred2,4,curva pureza ep=1000,0.3700,,
+f0,b_cred2,4,curva identidad ep=1000,0.0880,,
+f0,b_cred2,4,curva usados ep=1000,10,,
+f0,b_cred2,4,curva columna ep=1500,0.2217,,
+f0,b_cred2,4,curva pureza ep=1500,0.3880,,
+f0,b_cred2,4,curva identidad ep=1500,0.1440,,
+f0,b_cred2,4,curva usados ep=1500,10,,
+f0,b_cred2,4,curva columna ep=2000,0.2500,,
+f0,b_cred2,4,curva pureza ep=2000,0.3600,,
+f0,b_cred2,4,curva identidad ep=2000,0.0580,,
+f0,b_cred2,4,curva usados ep=2000,10,,
+f0,b_cred2,4,curva columna ep=2500,0.2168,,
+f0,b_cred2,4,curva pureza ep=2500,0.4080,,
+f0,b_cred2,4,curva identidad ep=2500,0.0820,,
+f0,b_cred2,4,curva usados ep=2500,10,,
+f0,b_cred2,4,curva columna ep=3000,0.2370,,
+f0,b_cred2,4,curva pureza ep=3000,0.5100,,
+f0,b_cred2,4,curva identidad ep=3000,0.0540,,
+f0,b_cred2,4,curva usados ep=3000,10,,
+f0,b_cred2,4,curva columna ep=3500,0.2418,,
+f0,b_cred2,4,curva pureza ep=3500,0.4660,,
+f0,b_cred2,4,curva identidad ep=3500,0.0160,,
+f0,b_cred2,4,curva usados ep=3500,10,,
+f0,b_cred2,4,curva columna ep=4000,0.2487,,
+f0,b_cred2,4,curva pureza ep=4000,0.4760,,
+f0,b_cred2,4,curva identidad ep=4000,0.0380,,
+f0,b_cred2,4,curva usados ep=4000,10,,
+f0,b_cred2,4,pureza percepción (test),0.5000,0.1000,mejor biyección
+f0,b_cred2,4,identidad percepción (test),0.0200,0.1000,símbolo == dígito
+f0,b_cred2,4,símbolos usados,10,10,
+f0,b_cred2,4,código es identidad (dígitos),0,10,dígitos cuyo símbolo en la mejor biyección es el propio dígito
+f0,b_cred2,4,créditos a la percepción,1797,,
+f0,b_cred2,4,precisión del crédito (código final),0.3434,0.1000,
+f0,b_cred2,4,precisión del crédito (identidad),0.0568,0.1000,
+f0,b_cred2,4,"precisión del crédito, 2.a mitad (código final)",0.4316,0.1000,
+f0,b_cred2,4,abstenciones Thinker,0,,
+f0,b_cred2,4,exacta n=3 (test),0.0100,0.0005,azar
+f0,b_cred2,4,columna n=3 (test),0.2053,0.1000,azar
+f0,b_cred2,4,fin (acarreo) n=3 (test),0.5060,0.5005,mejor constante
+f0,b_cred2,4,exacta n=1 (test),0.2260,0.0550,azar
+f0,b_cred2,4,cota pureza^6 (Thinker perfecto),0.0156,,
+f0,b_cred2,4,exacta n=3 | imágenes bien (código),0.1250,,
+f0,b_cred2,4,fracción episodios con las 6 imágenes bien (código),0.0160,0.0156,pureza^6
+f0,b_cred2,4,clases fundidas (símbolo mayoritario de >=2 dígitos),3,0,
+f0,b_cred2,4,masa en s = d (identidad),0.0200,0.1000,fracción de imágenes
+f0,b_cred2,4,masa en s = d +- 1 (vecinos),0.0315,0.2000,
+f0,b_cred2,4,masa en s = d + 5,0.0525,0.1000,invisible para el dígito módulo 10
+f0,b_cred2,4,converge a una permutación (pureza - identidad),0.4800,,alto: código consistente pero permutado
+f0,b_cred2,4,segundos,329.2000,,
+f0,total,4,segundos,329.4000,,

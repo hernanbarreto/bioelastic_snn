@@ -239,10 +239,12 @@ class CreditoPosterior:
     columna a la percepción (como la ronda 2). `peso(sym, percibido, q)` (F2): cuántas
     veces repetir cada enseñanza (plasticidad ponderada)."""
 
-    def __init__(self, refuerzo=False, **kw):
+    def __init__(self, refuerzo=False, fin=False, **kw):
         from bioelastic.posterior import PosteriorCredit
         self.pc = PosteriorCredit(**kw)
         self.refuerzo = bool(refuerzo)
+        self.fin_ = bool(fin)              # sólo con el Thinker oráculo: la última columna también
+        self.ultima = None                 # se explica con el acarreo final observado
         self.peso = None
 
     @property
@@ -254,6 +256,8 @@ class CreditoPosterior:
 
     def columna(self, th, per, imgs, syms, priors, y, alts, st, digitos):
         out = th._out
+        if self.fin_ and isinstance(th, ThinkerOraculo):
+            self.ultima = (imgs, syms, priors, y, th._q[1], digitos)
         res = self.pc.step(th, syms, priors, y)
         for img, t, s, dg in zip(imgs, res["teach"], syms, digitos):
             if t is None:
@@ -272,8 +276,26 @@ class CreditoPosterior:
             for img, s in zip(imgs, syms):
                 per.reforzar(img, s, r)
 
-    def fin(self, th, y):
+    def fin(self, th, y, st=None):
         th.feedback(target=y)
+        if not (self.fin_ and self.ultima is not None):
+            return
+        from bioelastic.posterior import joint_posterior
+        imgs, syms, priors, d, c, digitos = self.ultima
+        self.ultima = None
+        A = np.arange(10)
+        L = (((A[:, None] + A[None, :] + c) % 10 == d) & ((A[:, None] + A[None, :] + c >= 10) == bool(y))).astype(float)
+        q, margs = joint_posterior(list(priors), L, self.pc.gamma)
+        for img, qm, s, dg in zip(imgs, margs, syms, digitos):
+            j = int(self.pc.rng.choice(10, p=qm / qm.sum())) if self.pc.mode == "sample" else int(np.argmax(qm))
+            if self.pc.mode == "map" and qm[j] < self.pc.tau:
+                continue
+            per_ = self._per
+            per_.ensenar(img, j)
+            if st is not None:
+                st["creditos"] = st.get("creditos", 0) + 1
+                st["creditos_bien"] = st.get("creditos_bien", 0) + int(j == int(dg))
+                st.setdefault("pares", []).append((int(dg), j))
 
 
 # ====================================================================== episodio L3
@@ -335,7 +357,8 @@ def episodio(th, per, datos, split, rng, n, learn, cfg, st, objetivo=None, regis
                         r = 1.0 if out == y else -1.0
                         per.reforzar(ia, sa, r); per.reforzar(ib, sb, r)
             if post is not None and i == n:
-                post.fin(th, y)
+                post._per = per
+                post.fin(th, y, st)
         cols.append(out == d)
     return dict(exacta=all(cols), columnas=cols, vistos=vistos)
 
@@ -635,7 +658,8 @@ def construir(var_cfg, seed, tam):
     th = ThinkerOraculo() if var_cfg.get("thinker") == "oraculo" else thinker_l3(seed, **var_cfg.get("thinker_kw", {}))
     cfg = dict(refuerzo=var_cfg.get("refuerzo", False), cred=var_cfg.get("cred2", False))
     if var_cfg.get("posterior") is not None:
-        cp = CreditoPosterior(refuerzo=var_cfg.get("refuerzo", False), seed=seed, **var_cfg["posterior"])
+        kw = dict(var_cfg["posterior"])
+        cp = CreditoPosterior(refuerzo=var_cfg.get("refuerzo", False), fin=kw.pop("fin", False), seed=seed, **kw)
         cfg = dict(posterior=cp)
     return v, per, th, cfg
 
@@ -655,6 +679,9 @@ VARIANTES_F1 = {
     # Thinker oráculo: el crédito posterior con la verosimilitud exacta
     "b_post+R": dict(thinker="oraculo", posterior=dict(k=10), refuerzo=True),
     "b_post_muestreo": dict(thinker="oraculo", posterior=dict(k=10, mode="sample")),
+    # ídem, con la última columna explicada también por el acarreo final (prueba de que
+    # el código s = d + 5 sobrevive porque el acarreo no le da crédito a la percepción)
+    "b_post_muestreo+fin": dict(thinker="oraculo", posterior=dict(k=10, mode="sample", fin=True)),
 }
 
 
@@ -690,6 +717,9 @@ def tabular(regla: str, curriculo: str, seed: int, columnas: int = 10000, lr: fl
     regla: "refuerzo"  REINFORCE por ranura con la recompensa +-1 de la columna (R-STDP)
            "map"       crédito posterior exacto, se enseña el máximo de la marginal si >= tau
            "muestreo"  crédito posterior exacto, se enseña una muestra de la marginal
+           "muestreo+fin"  ídem, y la última columna también se explica con el acarreo
+                       final observado (la columna END): el único dato que distingue la
+                       identidad del código s = d + 5
     curriculo: "aleatorio" o "mas0" (ver `bioelastic.curriculum`)."""
     from bioelastic.curriculum import Curriculum, sample_sum, sum_stages
     rng = np.random.default_rng(seed)
@@ -703,7 +733,7 @@ def tabular(regla: str, curriculo: str, seed: int, columnas: int = 10000, lr: fl
     while usado < columnas:
         A, B = sample_sum(cu.params(usado), rng)
         c_true = 0; c_perc = 0
-        for a, b in zip(A, B):
+        for i, (a, b) in enumerate(zip(A, B)):
             pa, pb = P(a), P(b)
             sa, sb = int(rng.choice(10, p=pa)), int(rng.choice(10, p=pb))
             y = (a + b + c_true) % 10; c_true = (a + b + c_true) // 10
@@ -717,6 +747,9 @@ def tabular(regla: str, curriculo: str, seed: int, columnas: int = 10000, lr: fl
                 base += 0.02 * (r - base)
             else:
                 L = np.array([[(x + z + c_perc) % 10 == y for z in range(10)] for x in range(10)], dtype=float)
+                if regla == "muestreo+fin" and i == len(A) - 1:   # el acarreo final se observa
+                    L *= np.array([[(x + z + c_perc >= 10) == bool(c_true) for z in range(10)]
+                                   for x in range(10)], dtype=float)
                 q = pa[:, None] * pb[None, :] * L
                 q = q / q.sum() if q.sum() > 0 else pa[:, None] * pb[None, :]
                 for d, qm in ((a, q.sum(1)), (b, q.sum(0))):
@@ -779,7 +812,8 @@ def fase_f0s(seed, tam, out, variante, extra):
     """F0s: el modelo tabular de `tabular`, 20 semillas por condición (por cada semilla
     pedida se corren 20 sub-semillas; se reporta la media y la fracción que termina en la
     identidad, en +5 o en un código de desplazamientos que se compensan). Con
-    `variante="conjunto"`, el modelo de co-adaptación `tabular_conjunto`."""
+    `variante="conjunto"`, el modelo de co-adaptación `tabular_conjunto`; con "fin", el
+    posterior que también usa el acarreo final."""
     if variante == "conjunto":
         for modo in ("muestreo", "map"):
             for cur in ("aleatorio", "mas0"):
@@ -790,7 +824,8 @@ def fase_f0s(seed, tam, out, variante, extra):
                     out("f0s", var, f"{m} (media de 20)", float(v.mean()), float(v.std()), "desvío en referencia")
                 out("f0s", var, "fracción con pureza >= 0.9", float(np.mean([r["pureza"] >= 0.9 for r in R])), "", "")
         return
-    for regla in ("refuerzo", "map", "muestreo"):
+    reglas = ("muestreo+fin",) if variante == "fin" else ("refuerzo", "map", "muestreo")
+    for regla in reglas:
         for cur in ("aleatorio", "mas0"):
             var = f"{regla} | {cur}"
             R = [tabular(regla, cur, 100 * seed + k, tam["col_tabular"]) for k in range(20)]
@@ -807,6 +842,7 @@ SISTEMAS = {
     "rep": dict(cred2=True, refuerzo=True),                      # cred2+H de la ronda 2
     "oraculoR": dict(thinker="oraculo", refuerzo=True),          # Thinker oráculo + R-STDP (control b de F0)
     **{k: v for k, v in VARIANTES_F1.items() if not k.startswith("b_")},
+    "oraculo_post_fin": VARIANTES_F1["b_post_muestreo+fin"],      # Thinker oráculo + posterior con acarreo final
 }
 SISTEMA = ["rep"]                    # el que usan F2, F4 y F5 (--sistema)
 CURRICULO = ["aleatorio"]            # con qué currículo se entrena en F2 y F5 (--curriculo)

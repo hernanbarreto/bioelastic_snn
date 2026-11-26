@@ -4,69 +4,79 @@
   "a_congelada": {
    "Thinker con código-oráculo: exacta n=3": {
     "media": 0.004,
-    "desvio": 0.00565685424949238,
+    "desvio": 0.004,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.0,
+     0.004,
      0.008
     ],
     "referencia": "",
     "nota": ""
    },
    "columna n=3 (test)": {
-    "media": 0.15134999999999998,
-    "desvio": 0.007566042558696069,
+    "media": 0.1558,
+    "desvio": 0.009382430388763895,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.146,
+     0.1647,
      0.1567
     ],
     "referencia": "0.1000",
     "nota": "azar"
    },
    "exacta n=3 (test)": {
-    "media": 0.002,
-    "desvio": 0.0,
+    "media": 0.0013333333333333333,
+    "desvio": 0.0011547005383792516,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.002,
+     0.0,
      0.002
     ],
     "referencia": "0.0031",
     "nota": "pureza^6"
    },
    "pureza percepción (test)": {
-    "media": 0.4135,
-    "desvio": 0.04384062043356595,
+    "media": 0.41900000000000004,
+    "desvio": 0.032430695336363044,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.3825,
+     0.43,
      0.4445
     ],
     "referencia": "0.1000",
     "nota": "la de rep, congelada"
    },
    "segundos entrenamiento": {
-    "media": 227.85,
-    "desvio": 74.74118677141807,
+    "media": 247.69999999999996,
+    "desvio": 63.04910784459998,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      280.7,
+     287.4,
      175.0
     ],
     "referencia": "",
@@ -75,14 +85,16 @@
   },
   "a_oraculo": {
    "Thinker con oráculo: exacta n=3": {
-    "media": 0.837,
-    "desvio": 0.052325901807804484,
+    "media": 0.8340000000000001,
+    "desvio": 0.037363083384538795,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.8,
+     0.828,
      0.874
     ],
     "referencia": "",
@@ -93,9 +105,11 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     0.0,
      0.0,
      0.0
     ],
@@ -103,140 +117,160 @@
     "nota": ""
    },
    "columna n=3 (test)": {
-    "media": 0.963,
-    "desvio": 0.01555634918610406,
+    "media": 0.9604333333333334,
+    "desvio": 0.011864372437399847,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.952,
+     0.9553,
      0.974
     ],
     "referencia": "0.1000",
     "nota": "azar"
    },
    "curva columna ep=1000": {
-    "media": 0.74195,
-    "desvio": 0.012374368670764632,
+    "media": 0.7315333333333333,
+    "desvio": 0.020052015692526622,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.7507,
+     0.7107,
      0.7332
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=1500": {
-    "media": 0.8562000000000001,
-    "desvio": 0.026021529547664988,
+    "media": 0.8447333333333334,
+    "desvio": 0.027074218979193754,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.8746,
+     0.8218,
      0.8378
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=2000": {
-    "media": 0.88585,
-    "desvio": 0.01689985207035851,
+    "media": 0.8813666666666666,
+    "desvio": 0.014251432676518329,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.8978,
+     0.8724,
      0.8739
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=2500": {
-    "media": 0.9226,
-    "desvio": 0.00820243866176399,
+    "media": 0.9172666666666666,
+    "desvio": 0.010907489781491147,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.9168,
+     0.9066,
      0.9284
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=3000": {
-    "media": 0.92545,
-    "desvio": 0.0004949747468305288,
+    "media": 0.9270333333333333,
+    "desvio": 0.0027646579052992082,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.9258,
+     0.9302,
      0.9251
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=3500": {
-    "media": 0.9335,
-    "desvio": 0.004666904755831171,
+    "media": 0.9263333333333333,
+    "desvio": 0.01284419453813016,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.9368,
+     0.912,
      0.9302
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=4000": {
-    "media": 0.9410000000000001,
-    "desvio": 0.004101219330881916,
+    "media": 0.9394,
+    "desvio": 0.004011234224026274,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.9381,
+     0.9362,
      0.9439
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=500": {
-    "media": 0.47635,
-    "desvio": 0.0071417784899841285,
+    "media": 0.47813333333333335,
+    "desvio": 0.0059197409853247295,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.4814,
+     0.4817,
      0.4713
     ],
     "referencia": "",
     "nota": ""
    },
    "exacta n=1 (test)": {
-    "media": 0.94,
-    "desvio": 0.02262741699796946,
+    "media": 0.9393333333333334,
+    "desvio": 0.016041612554021246,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.924,
+     0.938,
      0.956
     ],
     "referencia": "0.0550",
@@ -244,55 +278,63 @@
    },
    "exacta n=3 (test)": {
     "media": 0.85,
-    "desvio": 0.05091168824543146,
+    "desvio": 0.03600000000000003,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.814,
+     0.85,
      0.886
     ],
     "referencia": "0.0005",
     "nota": "azar"
    },
    "fin (acarreo) n=3 (test)": {
-    "media": 0.9430000000000001,
-    "desvio": 0.021213203435596368,
+    "media": 0.9506666666666668,
+    "desvio": 0.02003330560175558,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.928,
+     0.966,
      0.958
     ],
     "referencia": "0.5005",
     "nota": "mejor constante"
    },
    "segundos": {
-    "media": 17.95,
-    "desvio": 8.838834764831844,
+    "media": 20.233333333333334,
+    "desvio": 7.396170180122503,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      24.2,
+     24.8,
      11.7
     ],
     "referencia": "",
     "nota": ""
    },
    "segundos entrenamiento": {
-    "media": 15.600000000000001,
-    "desvio": 8.485281374238571,
+    "media": 17.533333333333335,
+    "desvio": 6.871195917257296,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      21.6,
+     21.4,
      9.6
     ],
     "referencia": "",
@@ -301,14 +343,16 @@
   },
   "a_ruido_0.65": {
    "Thinker con oráculo: exacta n=3": {
-    "media": 0.16,
-    "desvio": 0.06222539674441617,
+    "media": 0.14133333333333334,
+    "desvio": 0.05460158727851538,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.116,
+     0.104,
      0.204
     ],
     "referencia": "",
@@ -319,9 +363,11 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     0.0,
      0.0,
      0.0
     ],
@@ -329,196 +375,224 @@
     "nota": ""
    },
    "columna n=3 (test)": {
-    "media": 0.31035,
-    "desvio": 0.00799030662740797,
+    "media": 0.29846666666666666,
+    "desvio": 0.021343929660054016,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.3047,
+     0.2747,
      0.316
     ],
     "referencia": "0.1000",
     "nota": "azar"
    },
    "curva columna ep=1000": {
-    "media": 0.30865,
-    "desvio": 0.01647558800164655,
+    "media": 0.3023666666666667,
+    "desvio": 0.015942500849406686,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.297,
+     0.2898,
      0.3203
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=1500": {
-    "media": 0.3126,
-    "desvio": 0.01753624817342637,
+    "media": 0.30833333333333335,
+    "desvio": 0.014435142303882329,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.3002,
+     0.2998,
      0.325
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=2000": {
-    "media": 0.32789999999999997,
-    "desvio": 0.018384776310850212,
+    "media": 0.32526666666666665,
+    "desvio": 0.013776913055301352,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.3409,
+     0.32,
      0.3149
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=2500": {
-    "media": 0.34715,
-    "desvio": 0.026233661582020926,
+    "media": 0.3363666666666667,
+    "desvio": 0.02632381684584007,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.3657,
+     0.3148,
      0.3286
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=3000": {
-    "media": 0.36465000000000003,
-    "desvio": 0.01491995308303612,
+    "media": 0.35769999999999996,
+    "desvio": 0.01600656115472651,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.3752,
+     0.3438,
      0.3541
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=3500": {
-    "media": 0.387,
-    "desvio": 0.0014142135623730963,
+    "media": 0.38020000000000004,
+    "desvio": 0.01182032148462978,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.388,
+     0.3666,
      0.386
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=4000": {
-    "media": 0.36515,
-    "desvio": 0.0036062445840514268,
+    "media": 0.3633,
+    "desvio": 0.004095119045888682,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.3626,
+     0.3596,
      0.3677
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=500": {
-    "media": 0.25295,
-    "desvio": 0.0006363961030679012,
+    "media": 0.24986666666666668,
+    "desvio": 0.005359415391004264,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.2525,
+     0.2437,
      0.2534
     ],
     "referencia": "",
     "nota": ""
    },
    "exacta n=1 (test)": {
-    "media": 0.209,
-    "desvio": 0.03818376618407356,
+    "media": 0.244,
+    "desvio": 0.06636264009214823,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.182,
+     0.314,
      0.236
     ],
     "referencia": "0.0550",
     "nota": "azar"
    },
    "exacta n=3 (test)": {
-    "media": 0.022,
-    "desvio": 0.00565685424949238,
+    "media": 0.018,
+    "desvio": 0.007999999999999998,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.018,
+     0.01,
      0.026
     ],
     "referencia": "0.0005",
     "nota": "azar"
    },
    "fin (acarreo) n=3 (test)": {
-    "media": 0.524,
-    "desvio": 0.039597979746446695,
+    "media": 0.5426666666666667,
+    "desvio": 0.0427707064862545,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.496,
+     0.58,
      0.552
     ],
     "referencia": "0.5005",
     "nota": "mejor constante"
    },
    "segundos": {
-    "media": 16.55,
-    "desvio": 1.3435028842544405,
+    "media": 19.666666666666668,
+    "desvio": 5.481179921634878,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      17.5,
+     25.9,
      15.6
     ],
     "referencia": "",
     "nota": ""
    },
    "segundos entrenamiento": {
-    "media": 13.600000000000001,
-    "desvio": 1.1313708498984758,
+    "media": 16.46666666666667,
+    "desvio": 5.029247790011278,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      14.4,
+     22.2,
      12.8
     ],
     "referencia": "",
@@ -527,14 +601,16 @@
   },
   "a_ruido_0.8": {
    "Thinker con oráculo: exacta n=3": {
-    "media": 0.5389999999999999,
-    "desvio": 0.04949747468305829,
+    "media": 0.516,
+    "desvio": 0.053028294334251394,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.574,
+     0.47,
      0.504
     ],
     "referencia": "",
@@ -545,9 +621,11 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     0.0,
      0.0,
      0.0
     ],
@@ -555,140 +633,160 @@
     "nota": ""
    },
    "columna n=3 (test)": {
-    "media": 0.511,
-    "desvio": 0.012727922061357866,
+    "media": 0.5069,
+    "desvio": 0.011464292389851211,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.52,
+     0.4987,
      0.502
     ],
     "referencia": "0.1000",
     "nota": "azar"
    },
    "curva columna ep=1000": {
-    "media": 0.42995,
-    "desvio": 0.04193143212436228,
+    "media": 0.42923333333333336,
+    "desvio": 0.029675972323301117,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.4003,
+     0.4278,
      0.4596
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=1500": {
-    "media": 0.48260000000000003,
-    "desvio": 0.06448813844421314,
+    "media": 0.4765,
+    "desvio": 0.046808012134676266,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.437,
+     0.4643,
      0.5282
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=2000": {
-    "media": 0.51475,
-    "desvio": 0.017182694782833095,
+    "media": 0.5053333333333333,
+    "desvio": 0.020338223455683983,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.5026,
+     0.4865,
      0.5269
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=2500": {
-    "media": 0.5155000000000001,
-    "desvio": 0.010606601717798222,
+    "media": 0.5090333333333333,
+    "desvio": 0.013479737880735435,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.508,
+     0.4961,
      0.523
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=3000": {
-    "media": 0.528,
-    "desvio": 0.010182337649086262,
+    "media": 0.5314333333333333,
+    "desvio": 0.009338272502627719,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.5208,
+     0.5383,
      0.5352
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=3500": {
-    "media": 0.56995,
-    "desvio": 0.002616295090390173,
+    "media": 0.5598333333333333,
+    "desvio": 0.017619969731339894,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.5681,
+     0.5396,
      0.5718
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=4000": {
-    "media": 0.5663,
-    "desvio": 0.00735391052434007,
+    "media": 0.5634333333333333,
+    "desvio": 0.0071898076005782975,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.5715,
+     0.5577,
      0.5611
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=500": {
-    "media": 0.30984999999999996,
-    "desvio": 0.004737615433949857,
+    "media": 0.31516666666666665,
+    "desvio": 0.009799149622968985,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.3065,
+     0.3258,
      0.3132
     ],
     "referencia": "",
     "nota": ""
    },
    "exacta n=1 (test)": {
-    "media": 0.578,
-    "desvio": 0.008485281374238578,
+    "media": 0.5533333333333333,
+    "desvio": 0.043143172499635805,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.572,
+     0.504,
      0.584
     ],
     "referencia": "0.0550",
@@ -696,55 +794,63 @@
    },
    "exacta n=3 (test)": {
     "media": 0.132,
-    "desvio": 0.016970562748477136,
+    "desvio": 0.011999999999999997,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.144,
+     0.132,
      0.12
     ],
     "referencia": "0.0005",
     "nota": "azar"
    },
    "fin (acarreo) n=3 (test)": {
-    "media": 0.769,
-    "desvio": 0.03252691193458122,
+    "media": 0.7673333333333333,
+    "desvio": 0.023180451534284968,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.792,
+     0.764,
      0.746
     ],
     "referencia": "0.5005",
     "nota": "mejor constante"
    },
    "segundos": {
-    "media": 19.25,
-    "desvio": 7.2831998462214385,
+    "media": 20.933333333333334,
+    "desvio": 5.9180514811323945,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      24.4,
+     24.3,
      14.1
     ],
     "referencia": "",
     "nota": ""
    },
    "segundos entrenamiento": {
-    "media": 16.15,
-    "desvio": 6.010407640085653,
+    "media": 17.499999999999996,
+    "desvio": 4.850773134253961,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      20.4,
+     20.2,
      11.9
     ],
     "referencia": "",
@@ -753,14 +859,16 @@
   },
   "a_ruido_0.9": {
    "Thinker con oráculo: exacta n=3": {
-    "media": 0.634,
-    "desvio": 0.15273506473629425,
+    "media": 0.5993333333333334,
+    "desvio": 0.1235691439370417,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.742,
+     0.53,
      0.526
     ],
     "referencia": "",
@@ -771,9 +879,11 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     0.0,
      0.0,
      0.0
     ],
@@ -781,196 +891,224 @@
     "nota": ""
    },
    "columna n=3 (test)": {
-    "media": 0.70765,
-    "desvio": 0.03910300499961601,
+    "media": 0.7002,
+    "desvio": 0.03051278420596844,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.7353,
+     0.6853,
      0.68
     ],
     "referencia": "0.1000",
     "nota": "azar"
    },
    "curva columna ep=1000": {
-    "media": 0.5494,
-    "desvio": 0.025597265478953028,
+    "media": 0.5662333333333334,
+    "desvio": 0.03431753681914442,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.5675,
+     0.5999,
      0.5313
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=1500": {
-    "media": 0.6251500000000001,
-    "desvio": 0.040517218561989185,
+    "media": 0.6345333333333334,
+    "desvio": 0.03293878160061985,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.6538,
+     0.6533,
      0.5965
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=2000": {
-    "media": 0.6587000000000001,
-    "desvio": 0.041719300090006343,
+    "media": 0.6698,
+    "desvio": 0.03521192979659025,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.6882,
+     0.692,
      0.6292
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=2500": {
-    "media": 0.68645,
-    "desvio": 0.018031222920257016,
+    "media": 0.6858333333333334,
+    "desvio": 0.012794660344586501,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.6992,
+     0.6846,
      0.6737
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=3000": {
-    "media": 0.6878,
-    "desvio": 0.03125411972844541,
+    "media": 0.7045333333333333,
+    "desvio": 0.036447542212518724,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.7099,
+     0.738,
      0.6657
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=3500": {
-    "media": 0.7054,
-    "desvio": 0.038749451609022774,
+    "media": 0.7101666666666667,
+    "desvio": 0.028616836536090637,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.7328,
+     0.7197,
      0.678
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=4000": {
-    "media": 0.7242,
-    "desvio": 0.0007071067811865482,
+    "media": 0.7223333333333333,
+    "desvio": 0.003271594921950655,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.7247,
+     0.7186,
      0.7237
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=500": {
-    "media": 0.37205,
-    "desvio": 0.0036062445840513878,
+    "media": 0.38423333333333337,
+    "desvio": 0.021255665911312543,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.3746,
+     0.4086,
      0.3695
     ],
     "referencia": "",
     "nota": ""
    },
    "exacta n=1 (test)": {
-    "media": 0.711,
-    "desvio": 0.0014142135623730963,
+    "media": 0.706,
+    "desvio": 0.008717797887081356,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.71,
+     0.696,
      0.712
     ],
     "referencia": "0.0550",
     "nota": "azar"
    },
    "exacta n=3 (test)": {
-    "media": 0.345,
-    "desvio": 0.07495331880577406,
+    "media": 0.3253333333333333,
+    "desvio": 0.06300264544710275,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.398,
+     0.286,
      0.292
     ],
     "referencia": "0.0005",
     "nota": "azar"
    },
    "fin (acarreo) n=3 (test)": {
-    "media": 0.831,
-    "desvio": 0.029698484809834943,
+    "media": 0.8193333333333334,
+    "desvio": 0.02914332399252582,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.852,
+     0.796,
      0.81
     ],
     "referencia": "0.5005",
     "nota": "mejor constante"
    },
    "segundos": {
-    "media": 21.0,
-    "desvio": 0.0,
+    "media": 21.066666666666666,
+    "desvio": 0.11547005383792475,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      21.0,
+     21.2,
      21.0
     ],
     "referencia": "",
     "nota": ""
    },
    "segundos entrenamiento": {
-    "media": 16.9,
-    "desvio": 0.141421356237309,
+    "media": 17.433333333333334,
+    "desvio": 0.9291573243177568,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      16.8,
+     18.5,
      17.0
     ],
     "referencia": "",
@@ -983,9 +1121,15 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
+     0.0,
+     0.0,
+     0.0,
      0.0,
      0.0
     ],
@@ -993,402 +1137,576 @@
     "nota": ""
    },
    "clases fundidas (símbolo mayoritario de >=2 dígitos)": {
-    "media": 0.0,
-    "desvio": 0.0,
+    "media": 1.75,
+    "desvio": 1.5,
     "semillas": [
-     1
+     1,
+     2,
+     3,
+     4
     ],
     "valores": [
-     0.0
+     0.0,
+     1.0,
+     3.0,
+     3.0
     ],
     "referencia": "0",
     "nota": ""
    },
    "columna n=3 (test)": {
-    "media": 0.41664999999999996,
-    "desvio": 0.2790950465343303,
+    "media": 0.26344,
+    "desvio": 0.19972130081691333,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.614,
+     0.1553,
+     0.1233,
+     0.2053,
      0.2193
     ],
     "referencia": "0.1000",
     "nota": "azar"
    },
    "converge a una permutación (pureza - identidad)": {
-    "media": 0.942,
-    "desvio": 0.0,
+    "media": 0.456125,
+    "desvio": 0.37238966486732683,
     "semillas": [
-     1
+     1,
+     2,
+     3,
+     4
     ],
     "valores": [
-     0.942
+     0.942,
+     0.044,
+     0.3585,
+     0.48
     ],
     "referencia": "",
     "nota": "alto: código consistente pero permutado"
    },
    "cota pureza^6 (Thinker perfecto)": {
-    "media": 0.3788,
-    "desvio": 0.520430590953299,
+    "media": 0.15626,
+    "desvio": 0.33016001877877343,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.7468,
+     0.0057,
+     0.0024,
+     0.0156,
      0.0108
     ],
     "referencia": "",
     "nota": ""
    },
    "créditos a la percepción": {
-    "media": 1684.5,
-    "desvio": 463.1549416771886,
+    "media": 1737.2,
+    "desvio": 237.0890128200799,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      1357.0,
+     1769.0,
+     1751.0,
+     1797.0,
      2012.0
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=1000": {
-    "media": 0.2198,
-    "desvio": 0.011596551211459378,
+    "media": 0.22290000000000001,
+    "desvio": 0.01262774722585149,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.228,
+     0.2402,
+     0.2095,
+     0.2252,
      0.2116
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=1500": {
-    "media": 0.2475,
-    "desvio": 0.03450681092190351,
+    "media": 0.22772,
+    "desvio": 0.028581322572617234,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.2719,
+     0.2296,
+     0.1923,
+     0.2217,
      0.2231
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=2000": {
-    "media": 0.31575,
-    "desvio": 0.11801612178003477,
+    "media": 0.26539999999999997,
+    "desvio": 0.07684741374958562,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.3992,
+     0.2421,
+     0.2034,
+     0.25,
      0.2323
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=2500": {
-    "media": 0.36760000000000004,
-    "desvio": 0.16857425663487294,
+    "media": 0.27964,
+    "desvio": 0.11765042711354685,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.4868,
+     0.2469,
+     0.1993,
+     0.2168,
      0.2484
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=3000": {
-    "media": 0.40454999999999997,
-    "desvio": 0.15634130932034568,
+    "media": 0.30218,
+    "desvio": 0.12240636012887565,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.5151,
+     0.2489,
+     0.2159,
+     0.237,
      0.294
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=3500": {
-    "media": 0.384,
-    "desvio": 0.1716855264720937,
+    "media": 0.29866,
+    "desvio": 0.117153224454131,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.5054,
+     0.2657,
+     0.2178,
+     0.2418,
      0.2626
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=4000": {
-    "media": 0.40790000000000004,
-    "desvio": 0.17012989155348332,
+    "media": 0.30782,
+    "desvio": 0.12571546046529042,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.5282,
+     0.2573,
+     0.2173,
+     0.2487,
      0.2876
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=500": {
-    "media": 0.2202,
-    "desvio": 0.013152186130069788,
+    "media": 0.2173,
+    "desvio": 0.011542313459614586,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.2295,
+     0.2212,
+     0.2006,
+     0.2243,
      0.2109
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=1000": {
-    "media": 0.035,
-    "desvio": 0.0014142135623730913,
+    "media": 0.0664,
+    "desvio": 0.06153698075141484,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.034,
+     0.164,
+     0.01,
+     0.088,
      0.036
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=1500": {
-    "media": 0.028,
-    "desvio": 0.01697056274847714,
+    "media": 0.08280000000000001,
+    "desvio": 0.08664409962599877,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.04,
+     0.204,
+     0.01,
+     0.144,
      0.016
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=2000": {
-    "media": 0.013000000000000001,
-    "desvio": 0.015556349186104046,
+    "media": 0.055600000000000004,
+    "desvio": 0.07607101944893338,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.024,
+     0.186,
+     0.008,
+     0.058,
      0.002
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=2500": {
-    "media": 0.009000000000000001,
-    "desvio": 0.004242640687119285,
+    "media": 0.066,
+    "desvio": 0.09054280755532158,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.012,
+     0.218,
+     0.012,
+     0.082,
      0.006
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=3000": {
-    "media": 0.008,
-    "desvio": 0.00282842712474619,
+    "media": 0.068,
+    "desvio": 0.11027239001672177,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.01,
+     0.262,
+     0.008,
+     0.054,
      0.006
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=3500": {
-    "media": 0.014,
-    "desvio": 0.00848528137423857,
+    "media": 0.07520000000000002,
+    "desvio": 0.13468184732917796,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.008,
+     0.316,
+     0.016,
+     0.016,
      0.02
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=4000": {
-    "media": 0.013999999999999999,
-    "desvio": 0.005656854249492379,
+    "media": 0.09240000000000001,
+    "desvio": 0.16567075783010107,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.01,
+     0.388,
+     0.008,
+     0.038,
      0.018
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=500": {
-    "media": 0.055999999999999994,
-    "desvio": 0.005656854249492381,
+    "media": 0.09,
+    "desvio": 0.07701947805587882,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.06,
+     0.218,
+     0.02,
+     0.1,
      0.052
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=1000": {
-    "media": 0.438,
-    "desvio": 0.014142135623730963,
+    "media": 0.38920000000000005,
+    "desvio": 0.060573921781571984,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.448,
+     0.294,
+     0.406,
+     0.37,
      0.428
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=1500": {
-    "media": 0.5509999999999999,
-    "desvio": 0.20506096654409872,
+    "media": 0.44000000000000006,
+    "desvio": 0.1464308710620817,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.696,
+     0.324,
+     0.386,
+     0.388,
      0.406
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=2000": {
-    "media": 0.6859999999999999,
-    "desvio": 0.2913279938488576,
+    "media": 0.4992,
+    "desvio": 0.22605132160639985,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.892,
+     0.344,
+     0.42,
+     0.36,
      0.48
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=2500": {
-    "media": 0.752,
-    "desvio": 0.2573868683519034,
+    "media": 0.5311999999999999,
+    "desvio": 0.23979824853405415,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.934,
+     0.386,
+     0.358,
+     0.408,
      0.57
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=3000": {
-    "media": 0.71,
-    "desvio": 0.33941125496954283,
+    "media": 0.5424,
+    "desvio": 0.23449690829518413,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.95,
+     0.362,
+     0.42,
+     0.51,
      0.47
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=3500": {
-    "media": 0.722,
-    "desvio": 0.31961226509631946,
+    "media": 0.5208,
+    "desvio": 0.24842946685125739,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.948,
+     0.36,
+     0.334,
+     0.466,
      0.496
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=4000": {
-    "media": 0.709,
-    "desvio": 0.3351686142824235,
+    "media": 0.5404,
+    "desvio": 0.22995390842514501,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.946,
+     0.426,
+     0.382,
+     0.476,
      0.472
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=500": {
-    "media": 0.309,
-    "desvio": 0.05515432893255068,
+    "media": 0.32720000000000005,
+    "desvio": 0.040855844135202976,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.348,
+     0.324,
+     0.38,
+     0.314,
      0.27
     ],
     "referencia": "",
@@ -1399,9 +1717,15 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
+     10.0,
+     10.0,
+     10.0,
      10.0,
      10.0
     ],
@@ -1413,9 +1737,15 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
+     10.0,
+     10.0,
+     10.0,
      10.0,
      10.0
     ],
@@ -1427,9 +1757,15 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
+     10.0,
+     10.0,
+     10.0,
      10.0,
      10.0
     ],
@@ -1441,9 +1777,15 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
+     10.0,
+     10.0,
+     10.0,
      10.0,
      10.0
     ],
@@ -1455,9 +1797,15 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
+     10.0,
+     10.0,
+     10.0,
      10.0,
      10.0
     ],
@@ -1469,9 +1817,15 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
+     10.0,
+     10.0,
+     10.0,
      10.0,
      10.0
     ],
@@ -1483,9 +1837,15 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
+     10.0,
+     10.0,
+     10.0,
      10.0,
      10.0
     ],
@@ -1497,9 +1857,15 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
+     10.0,
+     10.0,
+     10.0,
      10.0,
      10.0
     ],
@@ -1507,13 +1873,19 @@
     "nota": ""
    },
    "código es identidad (dígitos)": {
-    "media": 0.0,
-    "desvio": 0.0,
+    "media": 1.2,
+    "desvio": 2.6832815729997477,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
+     0.0,
+     6.0,
+     0.0,
      0.0,
      0.0
     ],
@@ -1521,202 +1893,292 @@
     "nota": "dígitos cuyo símbolo en la mejor biyección es el propio dígito"
    },
    "exacta n=1 (test)": {
-    "media": 0.319,
-    "desvio": 0.19091883092036785,
+    "media": 0.22599999999999998,
+    "desvio": 0.13669674465765455,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.454,
+     0.176,
+     0.09,
+     0.226,
      0.184
     ],
     "referencia": "0.0550",
     "nota": "azar"
    },
    "exacta n=3 (test)": {
-    "media": 0.059000000000000004,
-    "desvio": 0.07495331880577404,
+    "media": 0.0268,
+    "desvio": 0.0477619095095663,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.112,
+     0.006,
+     0.0,
+     0.01,
      0.006
     ],
     "referencia": "0.0005",
     "nota": "azar"
    },
    "exacta n=3 | imágenes bien (código)": {
-    "media": 0.06215,
-    "desvio": 0.08789337290148785,
+    "media": 0.11652,
+    "desvio": 0.1362716294758377,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.1243,
+     0.3333,
+     0.0,
+     0.125,
      0.0
     ],
     "referencia": "",
     "nota": ""
    },
    "fin (acarreo) n=3 (test)": {
-    "media": 0.44,
-    "desvio": 0.02262741699796954,
+    "media": 0.49040000000000006,
+    "desvio": 0.10966676798374247,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.424,
+     0.672,
+     0.394,
+     0.506,
      0.456
     ],
     "referencia": "0.5005",
     "nota": "mejor constante"
    },
    "fracción episodios con las 6 imágenes bien (código)": {
-    "media": 0.375,
-    "desvio": 0.5161879502661797,
+    "media": 0.1548,
+    "desvio": 0.32717762759699814,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.74,
+     0.006,
+     0.002,
+     0.016,
      0.01
     ],
     "referencia": "0.7468",
     "nota": "pureza^6"
    },
    "identidad percepción (test)": {
-    "media": 0.01975,
-    "desvio": 0.01308147545195113,
+    "media": 0.08900000000000001,
+    "desvio": 0.16206287360157476,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.0105,
+     0.3785,
+     0.007,
+     0.02,
      0.029
     ],
     "referencia": "0.1000",
     "nota": "símbolo == dígito"
    },
    "masa en s = d (identidad)": {
-    "media": 0.0105,
-    "desvio": 0.0,
+    "media": 0.10400000000000001,
+    "desvio": 0.18308240403344792,
     "semillas": [
-     1
+     1,
+     2,
+     3,
+     4
     ],
     "valores": [
-     0.0105
+     0.0105,
+     0.3785,
+     0.007,
+     0.02
     ],
     "referencia": "0.1000",
     "nota": "fracción de imágenes"
    },
    "masa en s = d + 5": {
-    "media": 0.9525,
-    "desvio": 0.0,
+    "media": 0.275,
+    "desvio": 0.4517394160353953,
     "semillas": [
-     1
+     1,
+     2,
+     3,
+     4
     ],
     "valores": [
-     0.9525
+     0.9525,
+     0.057,
+     0.038,
+     0.0525
     ],
     "referencia": "0.1000",
     "nota": "invisible para el dígito módulo 10"
    },
    "masa en s = d +- 1 (vecinos)": {
-    "media": 0.012,
-    "desvio": 0.0,
+    "media": 0.06762499999999999,
+    "desvio": 0.056120963106489896,
     "semillas": [
-     1
+     1,
+     2,
+     3,
+     4
     ],
     "valores": [
-     0.012
+     0.012,
+     0.093,
+     0.134,
+     0.0315
     ],
     "referencia": "0.2000",
     "nota": ""
    },
    "precisión del crédito (código final)": {
-    "media": 0.5201,
-    "desvio": 0.19926269093836912,
+    "media": 0.38426,
+    "desvio": 0.1622068370938784,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.661,
+     0.2561,
+     0.2816,
+     0.3434,
      0.3792
     ],
     "referencia": "0.1000",
     "nota": ""
    },
    "precisión del crédito (identidad)": {
-    "media": 0.0307,
-    "desvio": 0.015980613254815975,
+    "media": 0.07510000000000001,
+    "desvio": 0.09476196494374733,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.042,
+     0.2419,
+     0.0154,
+     0.0568,
      0.0194
     ],
     "referencia": "0.1000",
     "nota": ""
    },
    "precisión del crédito, 2.a mitad (código final)": {
-    "media": 0.8822,
-    "desvio": 0.0,
+    "media": 0.4872,
+    "desvio": 0.26903823767883506,
     "semillas": [
-     1
+     1,
+     2,
+     3,
+     4
     ],
     "valores": [
-     0.8822
+     0.8822,
+     0.3028,
+     0.3322,
+     0.4316
     ],
     "referencia": "0.1000",
     "nota": ""
    },
    "pureza percepción (test)": {
-    "media": 0.7112499999999999,
-    "desvio": 0.3411790219225092,
+    "media": 0.5420999999999999,
+    "desvio": 0.2349950531394225,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.9525,
+     0.4225,
+     0.3655,
+     0.5,
      0.47
     ],
     "referencia": "0.1000",
     "nota": "mejor biyección"
    },
    "segundos": {
-    "media": 533.75,
-    "desvio": 105.71246378738886,
+    "media": 496.96000000000004,
+    "desvio": 108.04120973036167,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      608.5,
+     554.8,
+     533.3,
+     329.2,
      459.0
     ],
     "referencia": "",
     "nota": ""
    },
    "segundos entrenamiento": {
-    "media": 445.0,
-    "desvio": 80.89301576774102,
+    "media": 401.82000000000005,
+    "desvio": 85.30159435790166,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      502.2,
+     438.6,
+     410.6,
+     269.9,
      387.8
     ],
     "referencia": "",
@@ -1727,9 +2189,15 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
+     10.0,
+     10.0,
+     10.0,
      10.0,
      10.0
     ],
@@ -1743,9 +2211,15 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
+     0.0,
+     0.0,
+     0.0,
      0.0,
      0.0
     ],
@@ -1753,388 +2227,556 @@
     "nota": ""
    },
    "clases fundidas (símbolo mayoritario de >=2 dígitos)": {
-    "media": 2.0,
-    "desvio": 0.0,
+    "media": 1.75,
+    "desvio": 1.2583057392117916,
     "semillas": [
-     1
+     1,
+     2,
+     3,
+     4
     ],
     "valores": [
-     2.0
+     2.0,
+     2.0,
+     0.0,
+     3.0
     ],
     "referencia": "0",
     "nota": ""
    },
    "columna n=3 (test)": {
-    "media": 0.2923,
-    "desvio": 0.12303657992645928,
+    "media": 0.30920000000000003,
+    "desvio": 0.1757369909836856,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.2053,
+     0.2167,
+     0.586,
+     0.1587,
      0.3793
     ],
     "referencia": "0.1000",
     "nota": "azar"
    },
    "converge a una permutación (pureza - identidad)": {
-    "media": 0.4885,
-    "desvio": 0.0,
+    "media": 0.56325,
+    "desvio": 0.2496148700164582,
     "semillas": [
-     1
+     1,
+     2,
+     3,
+     4
     ],
     "valores": [
-     0.4885
+     0.4885,
+     0.4445,
+     0.9325,
+     0.3875
     ],
     "referencia": "",
     "nota": "alto: código consistente pero permutado"
    },
    "cota pureza^6 (Thinker perfecto)": {
-    "media": 0.0362,
-    "desvio": 0.02870853531617383,
+    "media": 0.17818,
+    "desvio": 0.2975042386252673,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.0159,
+     0.0897,
+     0.7077,
+     0.0211,
      0.0565
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=1000": {
-    "media": 0.2563,
-    "desvio": 0.008343860018001244,
+    "media": 0.22934000000000002,
+    "desvio": 0.02533491661719059,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.2504,
+     0.2044,
+     0.2159,
+     0.2138,
      0.2622
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=1500": {
-    "media": 0.26115,
-    "desvio": 0.029062088706767103,
+    "media": 0.24326000000000003,
+    "desvio": 0.026698183458804838,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.2406,
+     0.2256,
+     0.2553,
+     0.2131,
      0.2817
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=2000": {
-    "media": 0.28615,
-    "desvio": 0.06625590539717952,
+    "media": 0.26554,
+    "desvio": 0.04464720595961186,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.2393,
+     0.2461,
+     0.2872,
+     0.2221,
      0.333
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=2500": {
-    "media": 0.3319,
-    "desvio": 0.08937829714197962,
+    "media": 0.31433999999999995,
+    "desvio": 0.09284230178103084,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.2687,
+     0.2636,
+     0.4298,
+     0.2145,
      0.3951
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=3000": {
-    "media": 0.35235,
-    "desvio": 0.14135064555919083,
+    "media": 0.35076,
+    "desvio": 0.12501955047111632,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.2524,
+     0.2963,
+     0.5147,
+     0.2381,
      0.4523
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=3500": {
-    "media": 0.37055,
-    "desvio": 0.15902831508885454,
+    "media": 0.36296,
+    "desvio": 0.12917572527375257,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.2581,
+     0.3281,
+     0.5141,
+     0.2315,
      0.483
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=4000": {
-    "media": 0.37895,
-    "desvio": 0.16482659069458422,
+    "media": 0.37362,
+    "desvio": 0.13991185439411488,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.2624,
+     0.336,
+     0.5441,
+     0.2301,
      0.4955
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=500": {
-    "media": 0.22775,
-    "desvio": 0.0071417784899841285,
+    "media": 0.21772,
+    "desvio": 0.01064457608362118,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.2227,
+     0.2127,
+     0.2046,
+     0.2158,
      0.2328
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=1000": {
-    "media": 0.076,
-    "desvio": 0.016970562748477136,
+    "media": 0.11000000000000001,
+    "desvio": 0.04498888751680797,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.088,
+     0.108,
+     0.106,
+     0.184,
      0.064
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=1500": {
-    "media": 0.039,
-    "desvio": 0.024041630560342617,
+    "media": 0.1136,
+    "desvio": 0.07365324161230109,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.056,
+     0.122,
+     0.186,
+     0.182,
      0.022
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=2000": {
-    "media": 0.033,
-    "desvio": 0.0014142135623730963,
+    "media": 0.0988,
+    "desvio": 0.0851892011935785,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.034,
+     0.208,
+     0.046,
+     0.174,
      0.032
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=2500": {
-    "media": 0.019,
-    "desvio": 0.004242640687119284,
+    "media": 0.09280000000000001,
+    "desvio": 0.10373620390201291,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.016,
+     0.228,
+     0.016,
+     0.182,
      0.022
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=3000": {
-    "media": 0.017,
-    "desvio": 0.001414213562373094,
+    "media": 0.10600000000000001,
+    "desvio": 0.12261321299109652,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.016,
+     0.27,
+     0.02,
+     0.206,
      0.018
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=3500": {
-    "media": 0.02,
-    "desvio": 0.01697056274847714,
+    "media": 0.0968,
+    "desvio": 0.10933983720492728,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.032,
+     0.224,
+     0.012,
+     0.208,
      0.008
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=4000": {
-    "media": 0.013000000000000001,
-    "desvio": 0.004242640687119285,
+    "media": 0.08280000000000001,
+    "desvio": 0.10333053759658856,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.016,
+     0.23,
+     0.004,
+     0.154,
      0.01
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=500": {
-    "media": 0.16799999999999998,
-    "desvio": 0.05091168824543141,
+    "media": 0.134,
+    "desvio": 0.05569560126257728,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.204,
+     0.086,
+     0.074,
+     0.174,
      0.132
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=1000": {
-    "media": 0.38,
-    "desvio": 0.04525483399593905,
+    "media": 0.40199999999999997,
+    "desvio": 0.05067543783727973,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.412,
+     0.436,
+     0.352,
+     0.462,
      0.348
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=1500": {
-    "media": 0.47,
-    "desvio": 0.042426406871192854,
+    "media": 0.48319999999999996,
+    "desvio": 0.05254712170994718,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.44,
+     0.514,
+     0.544,
+     0.418,
      0.5
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=2000": {
-    "media": 0.505,
-    "desvio": 0.06646803743153548,
+    "media": 0.5472,
+    "desvio": 0.08844885527806454,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.458,
+     0.566,
+     0.682,
+     0.478,
      0.552
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=2500": {
-    "media": 0.5469999999999999,
-    "desvio": 0.06929646455628163,
+    "media": 0.6124,
+    "desvio": 0.1589050030678707,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.498,
+     0.62,
+     0.874,
+     0.474,
      0.596
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=3000": {
-    "media": 0.536,
-    "desvio": 0.09616652224137043,
+    "media": 0.6140000000000001,
+    "desvio": 0.17867288546391139,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.468,
+     0.648,
+     0.896,
+     0.454,
      0.604
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=3500": {
-    "media": 0.5640000000000001,
-    "desvio": 0.09899494936611666,
+    "media": 0.6372,
+    "desvio": 0.17596931550699402,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.494,
+     0.636,
+     0.926,
+     0.496,
      0.634
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=4000": {
-    "media": 0.563,
-    "desvio": 0.08909545442950499,
+    "media": 0.6467999999999999,
+    "desvio": 0.17335858790380132,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.5,
+     0.646,
+     0.936,
+     0.526,
      0.626
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=500": {
-    "media": 0.389,
-    "desvio": 0.0014142135623730963,
+    "media": 0.3912,
+    "desvio": 0.02364741000617192,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.39,
+     0.366,
+     0.382,
+     0.43,
      0.388
     ],
     "referencia": "",
@@ -2145,9 +2787,15 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
+     10.0,
+     10.0,
+     10.0,
      10.0,
      10.0
     ],
@@ -2155,13 +2803,19 @@
     "nota": ""
    },
    "curva usados ep=1500": {
-    "media": 10.0,
-    "desvio": 0.0,
+    "media": 9.8,
+    "desvio": 0.4472135954999579,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
+     10.0,
+     9.0,
+     10.0,
      10.0,
      10.0
     ],
@@ -2173,9 +2827,15 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
+     10.0,
+     10.0,
+     10.0,
      10.0,
      10.0
     ],
@@ -2187,9 +2847,15 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
+     10.0,
+     10.0,
+     10.0,
      10.0,
      10.0
     ],
@@ -2201,9 +2867,15 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
+     10.0,
+     10.0,
+     10.0,
      10.0,
      10.0
     ],
@@ -2215,9 +2887,15 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
+     10.0,
+     10.0,
+     10.0,
      10.0,
      10.0
     ],
@@ -2229,9 +2907,15 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
+     10.0,
+     10.0,
+     10.0,
      10.0,
      10.0
     ],
@@ -2239,97 +2923,139 @@
     "nota": ""
    },
    "curva usados ep=500": {
-    "media": 9.5,
-    "desvio": 0.7071067811865476,
+    "media": 9.8,
+    "desvio": 0.4472135954999579,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      9.0,
+     10.0,
+     10.0,
+     10.0,
      10.0
     ],
     "referencia": "",
     "nota": ""
    },
    "código es identidad (dígitos)": {
-    "media": 0.5,
-    "desvio": 0.7071067811865476,
+    "media": 1.0,
+    "desvio": 1.224744871391589,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.0,
+     3.0,
+     0.0,
+     1.0,
      1.0
     ],
     "referencia": "10",
     "nota": "dígitos cuyo símbolo en la mejor biyección es el propio dígito"
    },
    "exacta n=1 (test)": {
-    "media": 0.307,
-    "desvio": 0.1711198410471445,
+    "media": 0.2652,
+    "desvio": 0.15349657976645603,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.186,
+     0.19,
+     0.428,
+     0.094,
      0.428
     ],
     "referencia": "0.0550",
     "nota": "azar"
    },
    "exacta n=3 (test)": {
-    "media": 0.035,
-    "desvio": 0.04101219330881976,
+    "media": 0.03319999999999999,
+    "desvio": 0.0400149971885542,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.006,
+     0.006,
+     0.088,
+     0.002,
      0.064
     ],
     "referencia": "0.0005",
     "nota": "azar"
    },
    "exacta n=3 | imágenes bien (código)": {
-    "media": 0.07175,
-    "desvio": 0.027082189719444764,
+    "media": 0.04514,
+    "desvio": 0.04358414849460753,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.0909,
+     0.0,
+     0.0822,
+     0.0,
      0.0526
     ],
     "referencia": "",
     "nota": ""
    },
    "fin (acarreo) n=3 (test)": {
-    "media": 0.643,
-    "desvio": 0.2729432175380073,
+    "media": 0.5588,
+    "desvio": 0.18028643875788328,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.45,
+     0.648,
+     0.44,
+     0.42,
      0.836
     ],
     "referencia": "0.5005",
     "nota": "mejor constante"
    },
    "fracción episodios con las 6 imágenes bien (código)": {
-    "media": 0.049,
-    "desvio": 0.03818376618407357,
+    "media": 0.17559999999999998,
+    "desvio": 0.2973664406082166,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
+     0.022,
+     0.052,
+     0.706,
      0.022,
      0.076
     ],
@@ -2337,92 +3063,134 @@
     "nota": "pureza^6"
    },
    "identidad percepción (test)": {
-    "media": 0.0115,
-    "desvio": 0.002121320343559642,
+    "media": 0.0794,
+    "desvio": 0.09788219960748737,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.013,
+     0.2245,
+     0.0115,
+     0.138,
      0.01
     ],
     "referencia": "0.1000",
     "nota": "símbolo == dígito"
    },
    "masa en s = d (identidad)": {
-    "media": 0.013,
-    "desvio": 0.0,
+    "media": 0.09675,
+    "desvio": 0.10376776956261516,
     "semillas": [
-     1
+     1,
+     2,
+     3,
+     4
     ],
     "valores": [
-     0.013
+     0.013,
+     0.2245,
+     0.0115,
+     0.138
     ],
     "referencia": "0.1000",
     "nota": "fracción de imágenes"
    },
    "masa en s = d + 5": {
-    "media": 0.01,
-    "desvio": 0.0,
+    "media": 0.24937499999999999,
+    "desvio": 0.4632075443758085,
     "semillas": [
-     1
+     1,
+     2,
+     3,
+     4
     ],
     "valores": [
-     0.01
+     0.01,
+     0.0105,
+     0.944,
+     0.033
     ],
     "referencia": "0.1000",
     "nota": "invisible para el dígito módulo 10"
    },
    "masa en s = d +- 1 (vecinos)": {
-    "media": 0.038,
-    "desvio": 0.0,
+    "media": 0.194,
+    "desvio": 0.3085960142321997,
     "semillas": [
-     1
+     1,
+     2,
+     3,
+     4
     ],
     "valores": [
-     0.038
+     0.038,
+     0.6555,
+     0.012,
+     0.0705
     ],
     "referencia": "0.2000",
     "nota": ""
    },
    "pureza percepción (test)": {
-    "media": 0.5605,
-    "desvio": 0.08343860018001269,
+    "media": 0.6519,
+    "desvio": 0.17696164838744016,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      0.5015,
+     0.669,
+     0.944,
+     0.5255,
      0.6195
     ],
     "referencia": "0.1000",
     "nota": "mejor biyección"
    },
    "segundos": {
-    "media": 599.45,
-    "desvio": 78.84240610230005,
+    "media": 499.8,
+    "desvio": 135.18481793455953,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      543.7,
+     583.0,
+     348.6,
+     368.5,
      655.2
     ],
     "referencia": "",
     "nota": ""
    },
    "segundos entrenamiento": {
-    "media": 455.85,
-    "desvio": 61.87184335382291,
+    "media": 385.26000000000005,
+    "desvio": 95.22396232041598,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
      412.1,
+     440.8,
+     282.3,
+     291.5,
      499.6
     ],
     "referencia": "",
@@ -2433,9 +3201,15 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
+     3,
+     4,
      0
     ],
     "valores": [
+     10.0,
+     10.0,
+     10.0,
      10.0,
      10.0
     ],
@@ -2445,27 +3219,31 @@
   },
   "c_barajadas": {
    "Thinker con código-oráculo: columna n=3": {
-    "media": 0.112,
-    "desvio": 0.009475230867899732,
+    "media": 0.10466666666666667,
+    "desvio": 0.01436047817216869,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.1053,
+     0.09,
      0.1187
     ],
     "referencia": "0.1000",
     "nota": ""
    },
    "Thinker con código-oráculo: exacta n=3": {
-    "media": 0.001,
-    "desvio": 0.001414213562373095,
+    "media": 0.0006666666666666666,
+    "desvio": 0.0011547005383792516,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     0.0,
      0.0,
      0.002
     ],
@@ -2477,9 +3255,11 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     0.0,
      0.0,
      0.0
     ],
@@ -2487,416 +3267,476 @@
     "nota": ""
    },
    "clases fundidas (símbolo mayoritario de >=2 dígitos)": {
-    "media": 2.0,
-    "desvio": 0.0,
+    "media": 3.0,
+    "desvio": 1.4142135623730951,
     "semillas": [
-     1
+     1,
+     2
     ],
     "valores": [
-     2.0
+     2.0,
+     4.0
     ],
     "referencia": "0",
     "nota": ""
    },
    "columna n=3 (test)": {
-    "media": 0.0993,
-    "desvio": 0.008485281374238578,
+    "media": 0.09443333333333333,
+    "desvio": 0.010346658075597811,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.1053,
+     0.0847,
      0.0933
     ],
     "referencia": "0.1000",
     "nota": "azar"
    },
    "converge a una permutación (pureza - identidad)": {
-    "media": 0.232,
-    "desvio": 0.0,
+    "media": 0.2725,
+    "desvio": 0.05727564927611034,
     "semillas": [
-     1
+     1,
+     2
     ],
     "valores": [
-     0.232
+     0.232,
+     0.313
     ],
     "referencia": "",
     "nota": "alto: código consistente pero permutado"
    },
    "cota pureza^6 (Thinker perfecto)": {
-    "media": 0.00325,
-    "desvio": 0.0013435028842544402,
+    "media": 0.0032666666666666664,
+    "desvio": 0.0009504384952922167,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.0023,
+     0.0033,
      0.0042
     ],
     "referencia": "",
     "nota": ""
    },
    "créditos a la percepción": {
-    "media": 49.0,
-    "desvio": 1.4142135623730951,
+    "media": 47.333333333333336,
+    "desvio": 3.055050463303893,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      48.0,
+     44.0,
      50.0
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=1000": {
-    "media": 0.21775,
-    "desvio": 0.005727564927611032,
+    "media": 0.21983333333333333,
+    "desvio": 0.005424327915358118,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.2137,
+     0.224,
      0.2218
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=1500": {
-    "media": 0.2137,
-    "desvio": 0.018950461735799465,
+    "media": 0.21443333333333334,
+    "desvio": 0.013460064388157035,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.2003,
+     0.2159,
      0.2271
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=2000": {
-    "media": 0.20850000000000002,
-    "desvio": 0.0031112698372208003,
+    "media": 0.2084666666666667,
+    "desvio": 0.002200757445365869,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.2107,
+     0.2084,
      0.2063
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=2500": {
-    "media": 0.22194999999999998,
-    "desvio": 0.0004949747468305876,
+    "media": 0.21376666666666666,
+    "desvio": 0.01417826975809578,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.2216,
+     0.1974,
      0.2223
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=3000": {
-    "media": 0.21689999999999998,
-    "desvio": 0.00014142135623731355,
+    "media": 0.21116666666666664,
+    "desvio": 0.009930928120439369,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.217,
+     0.1997,
      0.2168
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=3500": {
-    "media": 0.20190000000000002,
-    "desvio": 0.017253405460951762,
+    "media": 0.20473333333333335,
+    "desvio": 0.0131500316856399,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.1897,
+     0.2104,
      0.2141
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=4000": {
-    "media": 0.2087,
-    "desvio": 0.004525483399593916,
+    "media": 0.21093333333333333,
+    "desvio": 0.005020292156173128,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.2055,
+     0.2154,
      0.2119
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=500": {
-    "media": 0.2158,
-    "desvio": 0.0036769552621700543,
+    "media": 0.22153333333333336,
+    "desvio": 0.01026515140333222,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.2132,
+     0.233,
      0.2184
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=1000": {
-    "media": 0.069,
-    "desvio": 0.02969848480983499,
+    "media": 0.10399999999999998,
+    "desvio": 0.06415605972938175,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.048,
+     0.174,
      0.09
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=1500": {
-    "media": 0.124,
-    "desvio": 0.0028284271247461927,
+    "media": 0.11599999999999999,
+    "desvio": 0.013999999999999995,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.122,
+     0.1,
      0.126
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=2000": {
-    "media": 0.084,
-    "desvio": 0.03676955262170047,
+    "media": 0.07266666666666667,
+    "desvio": 0.03257811126098831,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.11,
+     0.05,
      0.058
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=2500": {
-    "media": 0.094,
-    "desvio": 0.0028284271247461927,
+    "media": 0.08133333333333333,
+    "desvio": 0.022030282189144407,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.092,
+     0.056,
      0.096
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=3000": {
-    "media": 0.134,
-    "desvio": 0.014142135623730944,
+    "media": 0.10733333333333332,
+    "desvio": 0.04725815626252608,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.144,
+     0.054,
      0.124
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=3500": {
-    "media": 0.127,
-    "desvio": 0.01555634918610405,
+    "media": 0.10000000000000002,
+    "desvio": 0.04804164859785726,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.116,
+     0.046,
      0.138
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=4000": {
-    "media": 0.108,
-    "desvio": 0.014142135623730944,
+    "media": 0.09933333333333334,
+    "desvio": 0.018036999011291573,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.118,
+     0.082,
      0.098
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=500": {
-    "media": 0.075,
-    "desvio": 0.024041630560342614,
+    "media": 0.09333333333333334,
+    "desvio": 0.0360185137579736,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.092,
+     0.13,
      0.058
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=1000": {
-    "media": 0.372,
-    "desvio": 0.016970562748477157,
+    "media": 0.37666666666666665,
+    "desvio": 0.014468356276140484,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.384,
+     0.386,
      0.36
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=1500": {
-    "media": 0.375,
-    "desvio": 0.038183766184073605,
+    "media": 0.39733333333333337,
+    "desvio": 0.04717343885422532,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.402,
+     0.442,
      0.348
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=2000": {
-    "media": 0.368,
-    "desvio": 0.062225396744416156,
+    "media": 0.39066666666666666,
+    "desvio": 0.05896891836665594,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.412,
+     0.436,
      0.324
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=2500": {
-    "media": 0.403,
-    "desvio": 0.05798275605729691,
+    "media": 0.4046666666666667,
+    "desvio": 0.041101500378128944,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.444,
+     0.408,
      0.362
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=3000": {
-    "media": 0.398,
-    "desvio": 0.025455844122715694,
+    "media": 0.3913333333333333,
+    "desvio": 0.02138535324312724,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.416,
+     0.378,
      0.38
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=3500": {
-    "media": 0.399,
-    "desvio": 0.052325901807804526,
+    "media": 0.3713333333333333,
+    "desvio": 0.060541996443240396,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.436,
+     0.316,
      0.362
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=4000": {
-    "media": 0.402,
-    "desvio": 0.03394112549695427,
+    "media": 0.408,
+    "desvio": 0.026153393661244032,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.378,
+     0.42,
      0.426
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=500": {
-    "media": 0.382,
-    "desvio": 0.005656854249492385,
+    "media": 0.36400000000000005,
+    "desvio": 0.031432467291003414,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.386,
+     0.328,
      0.378
     ],
     "referencia": "",
     "nota": ""
    },
    "curva usados ep=1000": {
-    "media": 9.5,
-    "desvio": 0.7071067811865476,
+    "media": 9.666666666666666,
+    "desvio": 0.5773502691896257,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      9.0,
+     10.0,
      10.0
     ],
     "referencia": "",
@@ -2907,9 +3747,11 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     10.0,
      10.0,
      10.0
     ],
@@ -2921,9 +3763,11 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     10.0,
      10.0,
      10.0
     ],
@@ -2935,9 +3779,11 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     10.0,
      10.0,
      10.0
     ],
@@ -2949,9 +3795,11 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     10.0,
      10.0,
      10.0
     ],
@@ -2963,9 +3811,11 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     10.0,
      10.0,
      10.0
     ],
@@ -2977,9 +3827,11 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     10.0,
      10.0,
      10.0
     ],
@@ -2987,13 +3839,15 @@
     "nota": ""
    },
    "curva usados ep=500": {
-    "media": 9.5,
-    "desvio": 0.7071067811865476,
+    "media": 9.666666666666666,
+    "desvio": 0.5773502691896257,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     10.0,
      10.0,
      9.0
     ],
@@ -3001,13 +3855,15 @@
     "nota": ""
    },
    "código es identidad (dígitos)": {
-    "media": 1.5,
-    "desvio": 0.7071067811865476,
+    "media": 1.3333333333333333,
+    "desvio": 0.5773502691896257,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     1.0,
      1.0,
      2.0
     ],
@@ -3015,202 +3871,232 @@
     "nota": "dígitos cuyo símbolo en la mejor biyección es el propio dígito"
    },
    "exacta n=1 (test)": {
-    "media": 0.047,
-    "desvio": 0.012727922061357857,
+    "media": 0.050666666666666665,
+    "desvio": 0.011015141094572205,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.038,
+     0.058,
      0.056
     ],
     "referencia": "0.0550",
     "nota": "azar"
    },
    "exacta n=3 (test)": {
-    "media": 0.002,
-    "desvio": 0.0,
+    "media": 0.0013333333333333333,
+    "desvio": 0.0011547005383792516,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.002,
+     0.0,
      0.002
     ],
     "referencia": "0.0005",
     "nota": "azar"
    },
    "exacta n=3 | imágenes bien (código)": {
-    "media": 0.0,
-    "desvio": 0.0,
+    "media": NaN,
+    "desvio": NaN,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.0,
+     NaN,
      0.0
     ],
     "referencia": "",
     "nota": ""
    },
    "fin (acarreo) n=3 (test)": {
-    "media": 0.472,
-    "desvio": 0.025455844122715694,
+    "media": 0.4746666666666666,
+    "desvio": 0.018583146486355125,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.454,
+     0.48,
      0.49
     ],
     "referencia": "0.5005",
     "nota": "mejor constante"
    },
    "fracción episodios con las 6 imágenes bien (código)": {
-    "media": 0.003,
-    "desvio": 0.001414213562373095,
+    "media": 0.002,
+    "desvio": 0.002,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.002,
+     0.0,
      0.004
     ],
     "referencia": "0.0023",
     "nota": "pureza^6"
    },
    "identidad percepción (test)": {
-    "media": 0.1215,
-    "desvio": 0.012727922061357857,
+    "media": 0.105,
+    "desvio": 0.029962476533157274,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.1305,
+     0.072,
      0.1125
     ],
     "referencia": "0.1000",
     "nota": "símbolo == dígito"
    },
    "masa en s = d (identidad)": {
-    "media": 0.1305,
-    "desvio": 0.0,
+    "media": 0.10125,
+    "desvio": 0.041365746699413036,
     "semillas": [
-     1
+     1,
+     2
     ],
     "valores": [
-     0.1305
+     0.1305,
+     0.072
     ],
     "referencia": "0.1000",
     "nota": "fracción de imágenes"
    },
    "masa en s = d + 5": {
-    "media": 0.1205,
-    "desvio": 0.0,
+    "media": 0.094,
+    "desvio": 0.03747665940288701,
     "semillas": [
-     1
+     1,
+     2
     ],
     "valores": [
-     0.1205
+     0.1205,
+     0.0675
     ],
     "referencia": "0.1000",
     "nota": "invisible para el dígito módulo 10"
    },
    "masa en s = d +- 1 (vecinos)": {
-    "media": 0.1515,
-    "desvio": 0.0,
+    "media": 0.16125,
+    "desvio": 0.013788582233137689,
     "semillas": [
-     1
+     1,
+     2
     ],
     "valores": [
-     0.1515
+     0.1515,
+     0.171
     ],
     "referencia": "0.2000",
     "nota": ""
    },
    "precisión del crédito (código final)": {
-    "media": 0.22415000000000002,
-    "desvio": 0.022415284963613544,
+    "media": 0.24793333333333334,
+    "desvio": 0.04413800327759891,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.2083,
+     0.2955,
      0.24
     ],
     "referencia": "0.1000",
     "nota": ""
    },
    "precisión del crédito (identidad)": {
-    "media": 0.1729,
-    "desvio": 0.038325187540310876,
+    "media": 0.13043333333333335,
+    "desvio": 0.07838790297828699,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.1458,
+     0.0455,
      0.2
     ],
     "referencia": "0.1000",
     "nota": ""
    },
    "precisión del crédito, 2.a mitad (código final)": {
-    "media": 0.125,
-    "desvio": 0.0,
+    "media": 0.2443,
+    "desvio": 0.16871567799111023,
     "semillas": [
-     1
+     1,
+     2
     ],
     "valores": [
-     0.125
+     0.125,
+     0.3636
     ],
     "referencia": "0.1000",
     "nota": ""
    },
    "pureza percepción (test)": {
-    "media": 0.382,
-    "desvio": 0.027577164466275377,
+    "media": 0.383,
+    "desvio": 0.01957677195045191,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.3625,
+     0.385,
      0.4015
     ],
     "referencia": "0.1000",
     "nota": "mejor biyección"
    },
    "segundos": {
-    "media": 499.15,
-    "desvio": 47.87112908632926,
+    "media": 499.96666666666664,
+    "desvio": 33.87954151598473,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      533.0,
+     501.6,
      465.3
     ],
     "referencia": "",
     "nota": ""
    },
    "segundos entrenamiento": {
-    "media": 390.95000000000005,
-    "desvio": 42.63853890554883,
+    "media": 391.3,
+    "desvio": 30.156093911513146,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      421.1,
+     392.0,
      360.8
     ],
     "referencia": "",
@@ -3221,9 +4107,11 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     10.0,
      10.0,
      10.0
     ],
@@ -3233,28 +4121,32 @@
   },
   "rep": {
    "Thinker con código-oráculo: columna n=3": {
-    "media": 0.17735,
-    "desvio": 0.006576093065034894,
+    "media": 0.16756666666666664,
+    "desvio": 0.017571662793638324,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.1727,
+     0.148,
      0.182
     ],
     "referencia": "0.1000",
     "nota": ""
    },
    "Thinker con código-oráculo: exacta n=3": {
-    "media": 0.001,
-    "desvio": 0.001414213562373095,
+    "media": 0.0013333333333333333,
+    "desvio": 0.0011547005383792516,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.0,
+     0.002,
      0.002
     ],
     "referencia": "",
@@ -3265,9 +4157,11 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     0.0,
      0.0,
      0.0
     ],
@@ -3275,402 +4169,460 @@
     "nota": ""
    },
    "clases fundidas (símbolo mayoritario de >=2 dígitos)": {
-    "media": 2.0,
-    "desvio": 0.0,
+    "media": 2.5,
+    "desvio": 0.7071067811865476,
     "semillas": [
-     1
+     1,
+     2
     ],
     "valores": [
-     2.0
+     2.0,
+     3.0
     ],
     "referencia": "0",
     "nota": ""
    },
    "columna n=3 (test)": {
-    "media": 0.12234999999999999,
-    "desvio": 0.025950818869546293,
+    "media": 0.1158,
+    "desvio": 0.021573826735190024,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.104,
+     0.1027,
      0.1407
     ],
     "referencia": "0.1000",
     "nota": "azar"
    },
    "converge a una permutación (pureza - identidad)": {
-    "media": 0.338,
-    "desvio": 0.0,
+    "media": 0.358,
+    "desvio": 0.028284271247461888,
     "semillas": [
-     1
+     1,
+     2
     ],
     "valores": [
-     0.338
+     0.338,
+     0.378
     ],
     "referencia": "",
     "nota": "alto: código consistente pero permutado"
    },
    "cota pureza^6 (Thinker perfecto)": {
-    "media": 0.0054,
-    "desvio": 0.0032526911934581187,
+    "media": 0.0057,
+    "desvio": 0.0023579652245103193,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.0031,
+     0.0063,
      0.0077
     ],
     "referencia": "",
     "nota": ""
    },
    "créditos a la percepción": {
-    "media": 48.5,
-    "desvio": 7.7781745930520225,
+    "media": 44.666666666666664,
+    "desvio": 8.621678104251709,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      54.0,
+     37.0,
      43.0
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=1000": {
-    "media": 0.2215,
-    "desvio": 0.00777817459305203,
+    "media": 0.2237,
+    "desvio": 0.006691038783328044,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.216,
+     0.2281,
      0.227
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=1500": {
-    "media": 0.22139999999999999,
-    "desvio": 0.016970562748477136,
+    "media": 0.2174666666666667,
+    "desvio": 0.013799033782599895,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.2094,
+     0.2096,
      0.2334
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=2000": {
-    "media": 0.2395,
-    "desvio": 0.012586500705120553,
+    "media": 0.23293333333333333,
+    "desvio": 0.014442068180608121,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.2484,
+     0.2198,
      0.2306
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=2500": {
-    "media": 0.2434,
-    "desvio": 0.017819090885900998,
+    "media": 0.2392,
+    "desvio": 0.01454922678357857,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.256,
+     0.2308,
      0.2308
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=3000": {
-    "media": 0.2323,
-    "desvio": 0.0009899494936611753,
+    "media": 0.23496666666666668,
+    "desvio": 0.004671545069175013,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.233,
+     0.2403,
      0.2316
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=3500": {
-    "media": 0.24875000000000003,
-    "desvio": 0.022132442251138952,
+    "media": 0.2447,
+    "desvio": 0.01715021865749823,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.2644,
+     0.2366,
      0.2331
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=4000": {
-    "media": 0.23854999999999998,
-    "desvio": 0.02340523445727472,
+    "media": 0.2333333333333333,
+    "desvio": 0.018855856738248022,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.2551,
+     0.2229,
      0.222
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=500": {
-    "media": 0.21605,
-    "desvio": 0.008131727983645304,
+    "media": 0.2157,
+    "desvio": 0.005781868210189511,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.2103,
+     0.215,
      0.2218
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=1000": {
-    "media": 0.092,
-    "desvio": 0.016970562748477136,
+    "media": 0.10666666666666667,
+    "desvio": 0.028095076674273977,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.08,
+     0.136,
      0.104
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=1500": {
-    "media": 0.111,
-    "desvio": 0.06646803743153547,
+    "media": 0.10666666666666667,
+    "desvio": 0.04759551799627075,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.064,
+     0.098,
      0.158
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=2000": {
-    "media": 0.089,
-    "desvio": 0.0014142135623730963,
+    "media": 0.09133333333333334,
+    "desvio": 0.004163331998932269,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.088,
+     0.096,
      0.09
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=2500": {
-    "media": 0.064,
-    "desvio": 0.03394112549695428,
+    "media": 0.09133333333333332,
+    "desvio": 0.05307855813163478,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.088,
+     0.146,
      0.04
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=3000": {
-    "media": 0.081,
-    "desvio": 0.04101219330881976,
+    "media": 0.084,
+    "desvio": 0.029461839725312473,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.11,
+     0.09,
      0.052
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=3500": {
-    "media": 0.08,
-    "desvio": 0.025455844122715714,
+    "media": 0.074,
+    "desvio": 0.02078460969082653,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.098,
+     0.062,
      0.062
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=4000": {
-    "media": 0.045,
-    "desvio": 0.009899494936611665,
+    "media": 0.049999999999999996,
+    "desvio": 0.011135528725660043,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.052,
+     0.06,
      0.038
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=500": {
-    "media": 0.10800000000000001,
-    "desvio": 0.04242640687119286,
+    "media": 0.09466666666666668,
+    "desvio": 0.03785938897200183,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.078,
+     0.068,
      0.138
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=1000": {
-    "media": 0.43,
-    "desvio": 0.014142135623730963,
+    "media": 0.38866666666666666,
+    "desvio": 0.07228646715211176,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.44,
+     0.306,
      0.42
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=1500": {
-    "media": 0.42000000000000004,
-    "desvio": 0.031112698372208078,
+    "media": 0.3913333333333333,
+    "desvio": 0.05430776494511013,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.442,
+     0.334,
      0.398
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=2000": {
-    "media": 0.44,
-    "desvio": 0.07353910524340093,
+    "media": 0.43133333333333335,
+    "desvio": 0.05412331598611945,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.492,
+     0.414,
      0.388
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=2500": {
-    "media": 0.453,
-    "desvio": 0.0862670273047588,
+    "media": 0.4286666666666667,
+    "desvio": 0.07414400402819728,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.514,
+     0.38,
      0.392
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=3000": {
-    "media": 0.479,
-    "desvio": 0.07778174593052026,
+    "media": 0.45799999999999996,
+    "desvio": 0.06593936608733816,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.534,
+     0.416,
      0.424
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=3500": {
-    "media": 0.48,
-    "desvio": 0.07071067811865477,
+    "media": 0.45333333333333337,
+    "desvio": 0.06806859285554046,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.53,
+     0.4,
      0.43
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=4000": {
-    "media": 0.41200000000000003,
-    "desvio": 0.01979898987322331,
+    "media": 0.4186666666666667,
+    "desvio": 0.018147543451754917,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.398,
+     0.432,
      0.426
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=500": {
-    "media": 0.373,
-    "desvio": 0.004242640687119289,
+    "media": 0.3706666666666667,
+    "desvio": 0.0050332229568471705,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.37,
+     0.366,
      0.376
     ],
     "referencia": "",
@@ -3681,9 +4633,11 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     10.0,
      10.0,
      10.0
     ],
@@ -3695,9 +4649,11 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     10.0,
      10.0,
      10.0
     ],
@@ -3709,9 +4665,11 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     10.0,
      10.0,
      10.0
     ],
@@ -3723,9 +4681,11 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     10.0,
      10.0,
      10.0
     ],
@@ -3737,9 +4697,11 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     10.0,
      10.0,
      10.0
     ],
@@ -3751,9 +4713,11 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     10.0,
      10.0,
      10.0
     ],
@@ -3761,14 +4725,16 @@
     "nota": ""
    },
    "curva usados ep=4000": {
-    "media": 9.5,
-    "desvio": 0.7071067811865476,
+    "media": 9.666666666666666,
+    "desvio": 0.5773502691896257,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      9.0,
+     10.0,
      10.0
     ],
     "referencia": "",
@@ -3779,9 +4745,11 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     10.0,
      10.0,
      10.0
     ],
@@ -3789,41 +4757,47 @@
     "nota": ""
    },
    "código es identidad (dígitos)": {
-    "media": 0.5,
-    "desvio": 0.7071067811865476,
+    "media": 0.3333333333333333,
+    "desvio": 0.5773502691896258,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      1.0,
+     0.0,
      0.0
     ],
     "referencia": "10",
     "nota": "dígitos cuyo símbolo en la mejor biyección es el propio dígito"
    },
    "exacta n=1 (test)": {
-    "media": 0.075,
-    "desvio": 0.04666904755831214,
+    "media": 0.084,
+    "desvio": 0.036496575181789316,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.042,
+     0.102,
      0.108
     ],
     "referencia": "0.0550",
     "nota": "azar"
    },
    "exacta n=3 (test)": {
-    "media": 0.001,
-    "desvio": 0.001414213562373095,
+    "media": 0.0006666666666666666,
+    "desvio": 0.0011547005383792516,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     0.0,
      0.0,
      0.002
     ],
@@ -3835,9 +4809,11 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     0.0,
      0.0,
      0.0
     ],
@@ -3845,124 +4821,178 @@
     "nota": ""
    },
    "fin (acarreo) n=3 (test)": {
-    "media": 0.506,
-    "desvio": 0.028284271247461926,
+    "media": 0.562,
+    "desvio": 0.09903534722511961,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.486,
+     0.674,
      0.526
     ],
     "referencia": "0.5005",
     "nota": "mejor constante"
    },
    "fracción episodios con las 6 imágenes bien (código)": {
-    "media": 0.007,
-    "desvio": 0.001414213562373095,
+    "media": 0.007333333333333333,
+    "desvio": 0.0011547005383792516,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.006,
+     0.008,
      0.008
     ],
     "referencia": "0.0031",
     "nota": "pureza^6"
    },
    "identidad percepción (test)": {
-    "media": 0.041249999999999995,
-    "desvio": 0.004596194077712558,
+    "media": 0.044833333333333336,
+    "desvio": 0.0070059498523279,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.0445,
+     0.052,
      0.038
     ],
     "referencia": "0.1000",
     "nota": "símbolo == dígito"
    },
+   "masa en s = d (identidad)": {
+    "media": 0.052,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.052
+    ],
+    "referencia": "0.1000",
+    "nota": "fracción de imágenes"
+   },
+   "masa en s = d + 5": {
+    "media": 0.229,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.229
+    ],
+    "referencia": "0.1000",
+    "nota": "invisible para el dígito módulo 10"
+   },
+   "masa en s = d +- 1 (vecinos)": {
+    "media": 0.185,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.185
+    ],
+    "referencia": "0.2000",
+    "nota": ""
+   },
    "precisión del crédito (código final)": {
-    "media": 0.37595,
-    "desvio": 0.060316208435212536,
+    "media": 0.36776666666666663,
+    "desvio": 0.04494355719492323,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.3333,
+     0.3514,
      0.4186
     ],
     "referencia": "0.1000",
     "nota": ""
    },
    "precisión del crédito (identidad)": {
-    "media": 0.10205,
-    "desvio": 0.012798632739476514,
+    "media": 0.10406666666666668,
+    "desvio": 0.00970068726087659,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.1111,
+     0.1081,
      0.093
     ],
     "referencia": "0.1000",
     "nota": ""
    },
    "precisión del crédito, 2.a mitad (código final)": {
-    "media": 0.3704,
-    "desvio": 0.0,
+    "media": 0.29045,
+    "desvio": 0.11306637431172896,
     "semillas": [
-     1
+     1,
+     2
     ],
     "valores": [
-     0.3704
+     0.3704,
+     0.2105
     ],
     "referencia": "0.1000",
     "nota": ""
    },
    "pureza percepción (test)": {
-    "media": 0.4135,
-    "desvio": 0.04384062043356595,
+    "media": 0.41900000000000004,
+    "desvio": 0.032430695336363044,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      0.3825,
+     0.43,
      0.4445
     ],
     "referencia": "0.1000",
     "nota": "mejor biyección"
    },
    "segundos": {
-    "media": 711.25,
-    "desvio": 212.48558774655754,
+    "media": 741.1,
+    "desvio": 158.89660159990837,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      861.5,
+     800.8,
      561.0
     ],
     "referencia": "",
     "nota": ""
    },
    "segundos entrenamiento": {
-    "media": 402.6,
-    "desvio": 113.41992770232224,
+    "media": 407.7666666666667,
+    "desvio": 80.69772817950538,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
      482.8,
+     418.1,
      322.4
     ],
     "referencia": "",
@@ -3973,9 +5003,11 @@
     "desvio": 0.0,
     "semillas": [
      1,
+     2,
      0
     ],
     "valores": [
+     10.0,
      10.0,
      10.0
     ],
@@ -3985,29 +5017,33 @@
   },
   "rep_v02": {
    "Thinker con código-oráculo: columna n=3": {
-    "media": 0.24,
-    "desvio": 0.02828427124746191,
+    "media": 0.21509999999999999,
+    "desvio": 0.047539772822343195,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.22,
-     0.26
+     0.26,
+     0.1653
     ],
     "referencia": "0.1000",
     "nota": ""
    },
    "Thinker con código-oráculo: exacta n=3": {
-    "media": 0.013000000000000001,
-    "desvio": 0.004242640687119285,
+    "media": 0.008666666666666668,
+    "desvio": 0.00808290376865476,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.016,
-     0.01
+     0.01,
+     0.0
     ],
     "referencia": "",
     "nota": "símbolos = código final perfecto"
@@ -4017,9 +5053,11 @@
     "desvio": 0.0,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
+     0.0,
      0.0,
      0.0
     ],
@@ -4027,407 +5065,465 @@
     "nota": ""
    },
    "clases fundidas (símbolo mayoritario de >=2 dígitos)": {
-    "media": 1.5,
-    "desvio": 0.7071067811865476,
+    "media": 1.6666666666666667,
+    "desvio": 0.5773502691896257,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      2.0,
-     1.0
+     1.0,
+     2.0
     ],
     "referencia": "0",
     "nota": ""
    },
    "columna n=3 (test)": {
-    "media": 0.179,
-    "desvio": 0.024041630560342617,
+    "media": 0.16243333333333332,
+    "desvio": 0.03335211137744256,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.162,
-     0.196
+     0.196,
+     0.1293
     ],
     "referencia": "0.1000",
     "nota": "azar"
    },
    "converge a una permutación (pureza - identidad)": {
-    "media": 0.5065000000000001,
-    "desvio": 0.1499066376115481,
+    "media": 0.4805,
+    "desvio": 0.11516944039110376,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.4005,
-     0.6125
+     0.6125,
+     0.4285
     ],
     "referencia": "",
     "nota": "alto: código consistente pero permutado"
    },
    "cota pureza^6 (Thinker perfecto)": {
-    "media": 0.04165,
-    "desvio": 0.035567471093683335,
+    "media": 0.030366666666666667,
+    "desvio": 0.03185064101919039,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.0165,
-     0.0668
+     0.0668,
+     0.0078
     ],
     "referencia": "",
     "nota": ""
    },
    "créditos a la percepción": {
-    "media": 56.5,
-    "desvio": 7.7781745930520225,
+    "media": 56.333333333333336,
+    "desvio": 5.507570547286102,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      51.0,
-     62.0
+     62.0,
+     56.0
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=1000": {
-    "media": 0.222,
-    "desvio": 0.011030865786510143,
+    "media": 0.21960000000000002,
+    "desvio": 0.008838551917593746,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.2298,
-     0.2142
+     0.2142,
+     0.2148
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=1500": {
-    "media": 0.2279,
-    "desvio": 0.005232590180780444,
+    "media": 0.23056666666666667,
+    "desvio": 0.005918051481132389,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.2316,
-     0.2242
+     0.2242,
+     0.2359
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=2000": {
-    "media": 0.21815,
-    "desvio": 0.004879036790187171,
+    "media": 0.22023333333333336,
+    "desvio": 0.004992327446525644,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.2216,
-     0.2147
+     0.2147,
+     0.2244
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=2500": {
-    "media": 0.2496,
-    "desvio": 0.0072124891681027755,
+    "media": 0.2435333333333333,
+    "desvio": 0.011680039954269557,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.2547,
-     0.2445
+     0.2445,
+     0.2314
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=3000": {
-    "media": 0.2365,
-    "desvio": 0.010606601717798203,
+    "media": 0.23166666666666666,
+    "desvio": 0.011239810200058238,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.244,
-     0.229
+     0.229,
+     0.222
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=3500": {
-    "media": 0.25295,
-    "desvio": 0.015202795795510765,
+    "media": 0.24710000000000001,
+    "desvio": 0.014772609789742633,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.2637,
-     0.2422
+     0.2422,
+     0.2354
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=4000": {
-    "media": 0.2651,
-    "desvio": 0.02220315292925758,
+    "media": 0.25656666666666667,
+    "desvio": 0.021562544685944034,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.2808,
-     0.2494
+     0.2494,
+     0.2395
     ],
     "referencia": "",
     "nota": ""
    },
    "curva columna ep=500": {
-    "media": 0.20775,
-    "desvio": 0.007707463914933363,
+    "media": 0.20826666666666668,
+    "desvio": 0.005522982286168706,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.2023,
-     0.2132
+     0.2132,
+     0.2093
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=1000": {
-    "media": 0.132,
-    "desvio": 0.008485281374238578,
+    "media": 0.10533333333333333,
+    "desvio": 0.04657610259922285,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.138,
-     0.126
+     0.126,
+     0.052
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=1500": {
-    "media": 0.123,
-    "desvio": 0.0834386001800126,
+    "media": 0.09533333333333333,
+    "desvio": 0.07600877142365434,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.182,
-     0.064
+     0.064,
+     0.04
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=2000": {
-    "media": 0.08199999999999999,
-    "desvio": 0.08768124086713187,
+    "media": 0.06199999999999999,
+    "desvio": 0.0710211236182588,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.144,
-     0.02
+     0.02,
+     0.022
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=2500": {
-    "media": 0.10200000000000001,
-    "desvio": 0.08485281374238571,
+    "media": 0.082,
+    "desvio": 0.06928203230275509,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.162,
+     0.042,
      0.042
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=3000": {
-    "media": 0.072,
-    "desvio": 0.05091168824543142,
+    "media": 0.057333333333333326,
+    "desvio": 0.04406056437828881,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.108,
-     0.036
+     0.036,
+     0.028
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=3500": {
-    "media": 0.078,
-    "desvio": 0.0565685424949238,
+    "media": 0.058666666666666666,
+    "desvio": 0.05216640042530568,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.118,
-     0.038
+     0.038,
+     0.02
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=4000": {
-    "media": 0.082,
-    "desvio": 0.06505382386916238,
+    "media": 0.06,
+    "desvio": 0.059732738092272315,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.128,
-     0.036
+     0.036,
+     0.016
     ],
     "referencia": "",
     "nota": ""
    },
    "curva identidad ep=500": {
-    "media": 0.138,
-    "desvio": 0.05939696961966998,
+    "media": 0.11933333333333335,
+    "desvio": 0.053003144560802545,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.096,
-     0.18
+     0.18,
+     0.082
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=1000": {
-    "media": 0.389,
-    "desvio": 0.024041630560342638,
+    "media": 0.38999999999999996,
+    "desvio": 0.017088007490635077,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.406,
-     0.372
+     0.372,
+     0.392
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=1500": {
-    "media": 0.391,
-    "desvio": 0.024041630560342597,
+    "media": 0.3960000000000001,
+    "desvio": 0.019078784028338912,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.408,
-     0.374
+     0.374,
+     0.406
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=2000": {
-    "media": 0.453,
-    "desvio": 0.007071067811865481,
+    "media": 0.4406666666666667,
+    "desvio": 0.021939310229205797,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.448,
-     0.458
+     0.458,
+     0.416
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=2500": {
-    "media": 0.487,
-    "desvio": 0.032526911934581175,
+    "media": 0.45,
+    "desvio": 0.06808817812219682,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.464,
-     0.51
+     0.51,
+     0.376
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=3000": {
-    "media": 0.513,
-    "desvio": 0.018384776310850254,
+    "media": 0.48066666666666663,
+    "desvio": 0.05749202843293438,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.526,
-     0.5
+     0.5,
+     0.416
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=3500": {
-    "media": 0.514,
-    "desvio": 0.005656854249492385,
+    "media": 0.48266666666666663,
+    "desvio": 0.054418134232380067,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.51,
-     0.518
+     0.518,
+     0.42
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=4000": {
-    "media": 0.552,
-    "desvio": 0.06788225099390854,
+    "media": 0.514,
+    "desvio": 0.08146164741766519,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.504,
-     0.6
+     0.6,
+     0.438
     ],
     "referencia": "",
     "nota": ""
    },
    "curva pureza ep=500": {
-    "media": 0.387,
-    "desvio": 0.01555634918610406,
+    "media": 0.3826666666666667,
+    "desvio": 0.013316656236958798,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.398,
-     0.376
+     0.376,
+     0.374
     ],
     "referencia": "",
     "nota": ""
@@ -4437,9 +5533,11 @@
     "desvio": 0.0,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
+     10.0,
      10.0,
      10.0
     ],
@@ -4451,9 +5549,11 @@
     "desvio": 0.0,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
+     10.0,
      10.0,
      10.0
     ],
@@ -4465,9 +5565,11 @@
     "desvio": 0.0,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
+     10.0,
      10.0,
      10.0
     ],
@@ -4479,9 +5581,11 @@
     "desvio": 0.0,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
+     10.0,
      10.0,
      10.0
     ],
@@ -4493,9 +5597,11 @@
     "desvio": 0.0,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
+     10.0,
      10.0,
      10.0
     ],
@@ -4507,9 +5613,11 @@
     "desvio": 0.0,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
+     10.0,
      10.0,
      10.0
     ],
@@ -4521,9 +5629,11 @@
     "desvio": 0.0,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
+     10.0,
      10.0,
      10.0
     ],
@@ -4535,9 +5645,11 @@
     "desvio": 0.0,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
+     10.0,
      10.0,
      10.0
     ],
@@ -4549,9 +5661,11 @@
     "desvio": 0.0,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
+     0.0,
      0.0,
      0.0
     ],
@@ -4559,15 +5673,17 @@
     "nota": "dígitos cuyo símbolo en la mejor biyección es el propio dígito"
    },
    "exacta n=1 (test)": {
-    "media": 0.126,
-    "desvio": 0.01131370849898477,
+    "media": 0.11266666666666665,
+    "desvio": 0.024440403706431153,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.134,
-     0.118
+     0.118,
+     0.086
     ],
     "referencia": "0.0550",
     "nota": "azar"
@@ -4577,9 +5693,11 @@
     "desvio": 0.0,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
+     0.0,
      0.0,
      0.0
     ],
@@ -4587,177 +5705,203 @@
     "nota": "azar"
    },
    "exacta n=3 | imágenes bien (código)": {
-    "media": 0.0625,
-    "desvio": 0.08838834764831845,
+    "media": 0.041666666666666664,
+    "desvio": 0.07216878364870323,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.125,
+     0.0,
      0.0
     ],
     "referencia": "",
     "nota": ""
    },
    "fin (acarreo) n=3 (test)": {
-    "media": 0.525,
-    "desvio": 0.007071067811865481,
+    "media": 0.536,
+    "desvio": 0.019697715603592226,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.53,
-     0.52
+     0.52,
+     0.558
     ],
     "referencia": "0.5005",
     "nota": "mejor constante"
    },
    "fracción episodios con las 6 imágenes bien (código)": {
-    "media": 0.033,
-    "desvio": 0.024041630560342617,
+    "media": 0.02266666666666667,
+    "desvio": 0.024684678108764825,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.016,
-     0.05
+     0.05,
+     0.002
     ],
     "referencia": "0.0165",
     "nota": "pureza^6"
    },
    "identidad percepción (test)": {
-    "media": 0.06425,
-    "desvio": 0.05621498910433052,
+    "media": 0.04850000000000001,
+    "desvio": 0.04821047603996459,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.104,
-     0.0245
+     0.0245,
+     0.017
     ],
     "referencia": "0.1000",
     "nota": "símbolo == dígito"
    },
    "masa en s = d (identidad)": {
-    "media": 0.0245,
-    "desvio": 0.0,
+    "media": 0.02075,
+    "desvio": 0.005303300858899107,
     "semillas": [
-     1
+     1,
+     2
     ],
     "valores": [
-     0.0245
+     0.0245,
+     0.017
     ],
     "referencia": "0.1000",
     "nota": "fracción de imágenes"
    },
    "masa en s = d + 5": {
-    "media": 0.049,
-    "desvio": 0.0,
+    "media": 0.06175,
+    "desvio": 0.01803122292025696,
     "semillas": [
-     1
+     1,
+     2
     ],
     "valores": [
-     0.049
+     0.049,
+     0.0745
     ],
     "referencia": "0.1000",
     "nota": "invisible para el dígito módulo 10"
    },
    "masa en s = d +- 1 (vecinos)": {
-    "media": 0.181,
-    "desvio": 0.0,
+    "media": 0.23349999999999999,
+    "desvio": 0.07424621202458748,
     "semillas": [
-     1
+     1,
+     2
     ],
     "valores": [
-     0.181
+     0.181,
+     0.286
     ],
     "referencia": "0.2000",
     "nota": ""
    },
    "precisión del crédito (código final)": {
-    "media": 0.3332,
-    "desvio": 0.0834386001800126,
+    "media": 0.30546666666666666,
+    "desvio": 0.07608162283582898,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.3922,
-     0.2742
+     0.2742,
+     0.25
     ],
     "referencia": "0.1000",
     "nota": ""
    },
    "precisión del crédito (identidad)": {
-    "media": 0.0732,
-    "desvio": 0.03507249634685276,
+    "media": 0.0488,
+    "desvio": 0.049001224474496556,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.098,
-     0.0484
+     0.0484,
+     0.0
     ],
     "referencia": "0.1000",
     "nota": ""
    },
    "precisión del crédito, 2.a mitad (código final)": {
-    "media": 0.32445,
-    "desvio": 0.1395121679281058,
+    "media": 0.3353333333333333,
+    "desvio": 0.10043487110228862,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.4231,
-     0.2258
+     0.2258,
+     0.3571
     ],
     "referencia": "0.1000",
     "nota": ""
    },
    "pureza percepción (test)": {
-    "media": 0.57075,
-    "desvio": 0.09369164850721759,
+    "media": 0.529,
+    "desvio": 0.0980726771328284,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      0.5045,
-     0.637
+     0.637,
+     0.4455
     ],
     "referencia": "0.1000",
     "nota": "mejor biyección"
    },
    "segundos": {
-    "media": 398.65,
-    "desvio": 61.30615792887366,
+    "media": 400.8666666666666,
+    "desvio": 43.519689030751735,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      355.3,
-     442.0
+     442.0,
+     405.3
     ],
     "referencia": "",
     "nota": ""
    },
    "segundos entrenamiento": {
-    "media": 315.45000000000005,
-    "desvio": 37.26452736853105,
+    "media": 313.06666666666666,
+    "desvio": 26.671395414063603,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
      289.1,
-     341.8
+     341.8,
+     308.3
     ],
     "referencia": "",
     "nota": "4000 episodios"
@@ -4767,9 +5911,11 @@
     "desvio": 0.0,
     "semillas": [
      0,
-     1
+     1,
+     2
     ],
     "valores": [
+     10.0,
      10.0,
      10.0
     ],
@@ -4779,32 +5925,58 @@
   },
   "total": {
    "segundos": {
-    "media": 512.4454545454545,
-    "desvio": 631.0790273232606,
+    "media": 423.42083333333335,
+    "desvio": 462.90180664000405,
     "semillas": [
      1,
+     2,
      1,
+     2,
      1,
+     2,
      1,
+     2,
      1,
+     2,
+     3,
+     4,
      1,
+     2,
+     3,
+     4,
      1,
+     2,
      1,
+     2,
      0,
      1,
+     2,
      0
     ],
     "valores": [
      24.5,
+     25.1,
      17.8,
+     26.2,
+     24.6,
      24.6,
      21.2,
+     21.5,
      608.8,
+     555.1,
+     533.6,
+     329.4,
      544.0,
+     583.4,
+     348.9,
+     368.8,
      533.3,
+     501.9,
      861.7,
+     801.1,
      355.6,
      442.3,
+     405.6,
      2203.1
     ],
     "referencia": "",
@@ -4963,6 +6135,456 @@
     ]
    }
   },
+  "integracion3_f0_b_cred2_seed2": {
+   "b_cred2": {
+    "confusion": [
+     [
+      109,
+      0,
+      2,
+      17,
+      3,
+      0,
+      0,
+      48,
+      4,
+      0
+     ],
+     [
+      0,
+      195,
+      1,
+      1,
+      27,
+      0,
+      0,
+      0,
+      0,
+      13
+     ],
+     [
+      19,
+      26,
+      83,
+      23,
+      29,
+      1,
+      1,
+      2,
+      3,
+      20
+     ],
+     [
+      0,
+      1,
+      42,
+      77,
+      13,
+      48,
+      25,
+      2,
+      1,
+      4
+     ],
+     [
+      2,
+      17,
+      42,
+      1,
+      88,
+      0,
+      12,
+      19,
+      0,
+      6
+     ],
+     [
+      5,
+      1,
+      0,
+      77,
+      27,
+      29,
+      11,
+      32,
+      0,
+      1
+     ],
+     [
+      2,
+      1,
+      5,
+      124,
+      2,
+      0,
+      0,
+      15,
+      35,
+      0
+     ],
+     [
+      2,
+      3,
+      0,
+      0,
+      44,
+      1,
+      17,
+      77,
+      1,
+      67
+     ],
+     [
+      32,
+      18,
+      1,
+      24,
+      40,
+      0,
+      42,
+      1,
+      20,
+      1
+     ],
+     [
+      5,
+      1,
+      11,
+      1,
+      75,
+      0,
+      25,
+      16,
+      2,
+      79
+     ]
+    ],
+    "codigo": [
+     0,
+     1,
+     2,
+     5,
+     4,
+     8,
+     3,
+     7,
+     6,
+     9
+    ],
+    "desplazamientos": [
+     0.3785,
+     0.035,
+     0.1295,
+     0.06,
+     0.007,
+     0.057,
+     0.0275,
+     0.139,
+     0.1085,
+     0.058
+    ]
+   }
+  },
+  "integracion3_f0_b_cred2_seed3": {
+   "b_cred2": {
+    "confusion": [
+     [
+      1,
+      4,
+      3,
+      0,
+      30,
+      28,
+      0,
+      67,
+      58,
+      0
+     ],
+     [
+      6,
+      0,
+      0,
+      50,
+      0,
+      1,
+      0,
+      0,
+      0,
+      165
+     ],
+     [
+      44,
+      4,
+      0,
+      6,
+      108,
+      19,
+      1,
+      18,
+      2,
+      22
+     ],
+     [
+      17,
+      76,
+      0,
+      0,
+      5,
+      4,
+      60,
+      22,
+      5,
+      5
+     ],
+     [
+      50,
+      6,
+      14,
+      11,
+      4,
+      41,
+      58,
+      6,
+      1,
+      0
+     ],
+     [
+      22,
+      20,
+      9,
+      4,
+      4,
+      4,
+      3,
+      87,
+      41,
+      0
+     ],
+     [
+      5,
+      0,
+      0,
+      0,
+      83,
+      46,
+      0,
+      4,
+      54,
+      0
+     ],
+     [
+      79,
+      3,
+      1,
+      60,
+      0,
+      34,
+      8,
+      2,
+      13,
+      7
+     ],
+     [
+      70,
+      1,
+      0,
+      0,
+      18,
+      24,
+      35,
+      27,
+      0,
+      17
+     ],
+     [
+      58,
+      27,
+      3,
+      5,
+      2,
+      43,
+      19,
+      22,
+      11,
+      3
+     ]
+    ],
+    "codigo": [
+     8,
+     9,
+     4,
+     1,
+     6,
+     7,
+     5,
+     3,
+     0,
+     2
+    ],
+    "desplazamientos": [
+     0.007,
+     0.0755,
+     0.234,
+     0.1045,
+     0.034,
+     0.038,
+     0.099,
+     0.082,
+     0.2675,
+     0.0585
+    ]
+   }
+  },
+  "integracion3_f0_b_cred2_seed4": {
+   "b_cred2": {
+    "confusion": [
+     [
+      8,
+      0,
+      0,
+      116,
+      0,
+      8,
+      1,
+      60,
+      0,
+      3
+     ],
+     [
+      5,
+      0,
+      5,
+      0,
+      141,
+      11,
+      0,
+      7,
+      53,
+      0
+     ],
+     [
+      8,
+      0,
+      9,
+      2,
+      8,
+      137,
+      1,
+      14,
+      1,
+      14
+     ],
+     [
+      152,
+      0,
+      3,
+      0,
+      2,
+      8,
+      0,
+      8,
+      1,
+      17
+     ],
+     [
+      0,
+      101,
+      39,
+      5,
+      2,
+      6,
+      13,
+      32,
+      3,
+      2
+     ],
+     [
+      54,
+      3,
+      65,
+      0,
+      0,
+      17,
+      3,
+      2,
+      18,
+      8
+     ],
+     [
+      5,
+      2,
+      13,
+      67,
+      0,
+      3,
+      0,
+      6,
+      2,
+      108
+     ],
+     [
+      27,
+      0,
+      17,
+      6,
+      157,
+      6,
+      2,
+      3,
+      0,
+      2
+     ],
+     [
+      14,
+      33,
+      23,
+      0,
+      9,
+      79,
+      3,
+      15,
+      1,
+      2
+     ],
+     [
+      1,
+      4,
+      103,
+      2,
+      7,
+      6,
+      96,
+      0,
+      0,
+      0
+     ]
+    ],
+    "codigo": [
+     3,
+     8,
+     5,
+     0,
+     1,
+     2,
+     9,
+     4,
+     7,
+     6
+    ],
+    "desplazamientos": [
+     0.02,
+     0.0135,
+     0.0265,
+     0.3575,
+     0.0305,
+     0.0525,
+     0.0315,
+     0.422,
+     0.028,
+     0.018
+    ]
+   }
+  },
   "integracion3_f0_b_refuerzo_seed1": {
    "b_refuerzo": {
     "confusion": [
@@ -5110,6 +6732,456 @@
      0.32,
      0.1335,
      0.0185
+    ]
+   }
+  },
+  "integracion3_f0_b_refuerzo_seed2": {
+   "b_refuerzo": {
+    "confusion": [
+     [
+      1,
+      60,
+      0,
+      0,
+      0,
+      0,
+      4,
+      1,
+      0,
+      117
+     ],
+     [
+      4,
+      3,
+      228,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+     ],
+     [
+      2,
+      176,
+      9,
+      0,
+      1,
+      0,
+      2,
+      5,
+      11,
+      1
+     ],
+     [
+      1,
+      4,
+      1,
+      5,
+      184,
+      0,
+      2,
+      12,
+      4,
+      0
+     ],
+     [
+      31,
+      1,
+      5,
+      10,
+      0,
+      99,
+      1,
+      0,
+      40,
+      0
+     ],
+     [
+      2,
+      1,
+      1,
+      2,
+      114,
+      15,
+      37,
+      4,
+      5,
+      2
+     ],
+     [
+      0,
+      3,
+      1,
+      1,
+      9,
+      86,
+      81,
+      0,
+      0,
+      3
+     ],
+     [
+      3,
+      4,
+      2,
+      3,
+      0,
+      0,
+      4,
+      192,
+      4,
+      0
+     ],
+     [
+      1,
+      3,
+      1,
+      2,
+      19,
+      0,
+      3,
+      7,
+      142,
+      1
+     ],
+     [
+      117,
+      4,
+      0,
+      2,
+      2,
+      18,
+      2,
+      7,
+      62,
+      1
+     ]
+    ],
+    "codigo": [
+     9,
+     2,
+     1,
+     4,
+     5,
+     3,
+     6,
+     7,
+     8,
+     0
+    ],
+    "desplazamientos": [
+     0.2245,
+     0.365,
+     0.006,
+     0.008,
+     0.0315,
+     0.0105,
+     0.044,
+     0.004,
+     0.016,
+     0.2905
+    ]
+   }
+  },
+  "integracion3_f0_b_refuerzo_seed3": {
+   "b_refuerzo": {
+    "confusion": [
+     [
+      0,
+      1,
+      0,
+      0,
+      2,
+      187,
+      0,
+      0,
+      0,
+      1
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      222,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      2,
+      3,
+      2,
+      0,
+      4,
+      1,
+      207,
+      3,
+      2
+     ],
+     [
+      0,
+      1,
+      4,
+      1,
+      0,
+      0,
+      0,
+      6,
+      182,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      187
+     ],
+     [
+      186,
+      3,
+      0,
+      0,
+      1,
+      2,
+      0,
+      0,
+      2,
+      0
+     ],
+     [
+      10,
+      179,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      195,
+      0,
+      3,
+      1,
+      3,
+      4,
+      0,
+      1
+     ],
+     [
+      6,
+      1,
+      2,
+      172,
+      2,
+      1,
+      0,
+      4,
+      3,
+      1
+     ],
+     [
+      1,
+      1,
+      4,
+      2,
+      171,
+      5,
+      1,
+      1,
+      1,
+      6
+     ]
+    ],
+    "codigo": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    "desplazamientos": [
+     0.0115,
+     0.0025,
+     0.004,
+     0.0055,
+     0.0115,
+     0.944,
+     0.0065,
+     0.0035,
+     0.0015,
+     0.0095
+    ]
+   }
+  },
+  "integracion3_f0_b_refuerzo_seed4": {
+   "b_refuerzo": {
+    "confusion": [
+     [
+      34,
+      2,
+      0,
+      137,
+      0,
+      5,
+      14,
+      0,
+      0,
+      4
+     ],
+     [
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      1,
+      0,
+      215,
+      4
+     ],
+     [
+      9,
+      21,
+      18,
+      7,
+      4,
+      77,
+      0,
+      7,
+      8,
+      43
+     ],
+     [
+      81,
+      0,
+      4,
+      50,
+      8,
+      41,
+      1,
+      0,
+      0,
+      6
+     ],
+     [
+      2,
+      0,
+      17,
+      3,
+      13,
+      0,
+      1,
+      154,
+      2,
+      11
+     ],
+     [
+      25,
+      5,
+      55,
+      24,
+      12,
+      27,
+      9,
+      1,
+      0,
+      12
+     ],
+     [
+      0,
+      0,
+      0,
+      74,
+      0,
+      2,
+      123,
+      2,
+      0,
+      5
+     ],
+     [
+      160,
+      0,
+      8,
+      0,
+      8,
+      4,
+      0,
+      3,
+      5,
+      32
+     ],
+     [
+      13,
+      30,
+      8,
+      4,
+      1,
+      105,
+      3,
+      0,
+      4,
+      11
+     ],
+     [
+      48,
+      0,
+      101,
+      2,
+      5,
+      12,
+      1,
+      45,
+      1,
+      4
+     ]
+    ],
+    "codigo": [
+     3,
+     8,
+     9,
+     4,
+     7,
+     1,
+     6,
+     0,
+     5,
+     2
+    ],
+    "desplazamientos": [
+     0.138,
+     0.047,
+     0.046,
+     0.3325,
+     0.012,
+     0.033,
+     0.024,
+     0.291,
+     0.053,
+     0.0235
     ]
    }
   },
@@ -5263,6 +7335,156 @@
     ]
    }
   },
+  "integracion3_f0_c_barajadas_seed2": {
+   "c_barajadas": {
+    "confusion": [
+     [
+      0,
+      13,
+      53,
+      0,
+      1,
+      74,
+      2,
+      27,
+      10,
+      3
+     ],
+     [
+      53,
+      0,
+      0,
+      0,
+      161,
+      0,
+      0,
+      1,
+      1,
+      21
+     ],
+     [
+      7,
+      69,
+      3,
+      2,
+      2,
+      16,
+      63,
+      22,
+      8,
+      15
+     ],
+     [
+      5,
+      124,
+      0,
+      2,
+      9,
+      50,
+      8,
+      1,
+      6,
+      8
+     ],
+     [
+      12,
+      1,
+      72,
+      9,
+      6,
+      1,
+      10,
+      5,
+      59,
+      12
+     ],
+     [
+      0,
+      54,
+      0,
+      3,
+      2,
+      81,
+      3,
+      0,
+      38,
+      2
+     ],
+     [
+      1,
+      4,
+      3,
+      0,
+      1,
+      12,
+      7,
+      64,
+      91,
+      1
+     ],
+     [
+      8,
+      11,
+      4,
+      31,
+      24,
+      16,
+      1,
+      10,
+      56,
+      51
+     ],
+     [
+      38,
+      55,
+      3,
+      11,
+      11,
+      26,
+      4,
+      19,
+      7,
+      5
+     ],
+     [
+      4,
+      10,
+      72,
+      62,
+      2,
+      9,
+      1,
+      10,
+      17,
+      28
+     ]
+    ],
+    "codigo": [
+     7,
+     4,
+     6,
+     1,
+     2,
+     5,
+     8,
+     9,
+     0,
+     3
+    ],
+    "desplazamientos": [
+     0.072,
+     0.0785,
+     0.1525,
+     0.182,
+     0.1015,
+     0.0675,
+     0.0695,
+     0.05,
+     0.134,
+     0.0925
+    ]
+   }
+  },
   "integracion3_f0_rep_seed1": {
    "rep": {
     "confusion": [
@@ -5410,6 +7632,156 @@
      0.074,
      0.0755,
      0.2085
+    ]
+   }
+  },
+  "integracion3_f0_rep_seed2": {
+   "rep": {
+    "confusion": [
+     [
+      1,
+      9,
+      69,
+      1,
+      0,
+      52,
+      0,
+      43,
+      1,
+      7
+     ],
+     [
+      53,
+      1,
+      2,
+      1,
+      0,
+      0,
+      178,
+      0,
+      2,
+      0
+     ],
+     [
+      109,
+      13,
+      2,
+      25,
+      0,
+      8,
+      5,
+      10,
+      30,
+      5
+     ],
+     [
+      1,
+      159,
+      21,
+      22,
+      2,
+      2,
+      3,
+      0,
+      3,
+      0
+     ],
+     [
+      14,
+      0,
+      36,
+      41,
+      39,
+      8,
+      6,
+      0,
+      20,
+      23
+     ],
+     [
+      3,
+      70,
+      24,
+      2,
+      22,
+      27,
+      1,
+      4,
+      3,
+      27
+     ],
+     [
+      1,
+      0,
+      86,
+      0,
+      0,
+      53,
+      4,
+      2,
+      1,
+      37
+     ],
+     [
+      5,
+      1,
+      20,
+      42,
+      102,
+      2,
+      3,
+      2,
+      34,
+      1
+     ],
+     [
+      5,
+      34,
+      9,
+      51,
+      9,
+      6,
+      3,
+      56,
+      1,
+      5
+     ],
+     [
+      1,
+      4,
+      10,
+      54,
+      118,
+      10,
+      0,
+      1,
+      12,
+      5
+     ]
+    ],
+    "codigo": [
+     5,
+     6,
+     0,
+     1,
+     3,
+     9,
+     2,
+     8,
+     7,
+     4
+    ],
+    "desplazamientos": [
+     0.052,
+     0.0445,
+     0.0465,
+     0.0505,
+     0.0585,
+     0.229,
+     0.1305,
+     0.0915,
+     0.1565,
+     0.1405
     ]
    }
   },
@@ -5710,6 +8082,156 @@
      0.09,
      0.174,
      0.027
+    ]
+   }
+  },
+  "integracion3_f0_rep_v02_seed2": {
+   "rep_v02": {
+    "confusion": [
+     [
+      1,
+      34,
+      0,
+      2,
+      4,
+      2,
+      17,
+      65,
+      15,
+      43
+     ],
+     [
+      129,
+      0,
+      13,
+      0,
+      0,
+      0,
+      36,
+      58,
+      1,
+      0
+     ],
+     [
+      29,
+      1,
+      0,
+      2,
+      3,
+      64,
+      29,
+      64,
+      7,
+      8
+     ],
+     [
+      6,
+      0,
+      1,
+      5,
+      115,
+      6,
+      4,
+      34,
+      17,
+      25
+     ],
+     [
+      0,
+      21,
+      94,
+      5,
+      0,
+      33,
+      22,
+      4,
+      6,
+      2
+     ],
+     [
+      1,
+      1,
+      1,
+      33,
+      34,
+      0,
+      11,
+      21,
+      23,
+      58
+     ],
+     [
+      0,
+      21,
+      0,
+      0,
+      0,
+      3,
+      0,
+      34,
+      126,
+      0
+     ],
+     [
+      1,
+      0,
+      5,
+      164,
+      0,
+      22,
+      14,
+      5,
+      0,
+      1
+     ],
+     [
+      4,
+      4,
+      5,
+      0,
+      12,
+      0,
+      49,
+      33,
+      7,
+      65
+     ],
+     [
+      0,
+      27,
+      100,
+      37,
+      1,
+      15,
+      8,
+      9,
+      2,
+      16
+     ]
+    ],
+    "codigo": [
+     7,
+     0,
+     5,
+     4,
+     2,
+     9,
+     8,
+     3,
+     6,
+     1
+    ],
+    "desplazamientos": [
+     0.017,
+     0.1535,
+     0.105,
+     0.101,
+     0.0865,
+     0.0745,
+     0.1495,
+     0.055,
+     0.1255,
+     0.1325
     ]
    }
   },

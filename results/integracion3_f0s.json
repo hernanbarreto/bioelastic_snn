@@ -545,6 +545,202 @@
     "nota": ""
    }
   },
+  "muestreo+fin | aleatorio": {
+   "biyeccion (media de 20)": {
+    "media": 0.65,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.65
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "columna_final (media de 20)": {
+    "media": 0.7859,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.7859
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "fracción con >= 60 % de dígitos en d+-1": {
+    "media": 0.3,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.3
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "fracción que termina en +5": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "fracción que termina en la identidad": {
+    "media": 0.65,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.65
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "identidad (media de 20)": {
+    "media": 0.65,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.65
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "mas5 (media de 20)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "vecinos (media de 20)": {
+    "media": 0.3,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.3
+    ],
+    "referencia": "",
+    "nota": ""
+   }
+  },
+  "muestreo+fin | mas0": {
+   "biyeccion (media de 20)": {
+    "media": 0.9,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "columna_final (media de 20)": {
+    "media": 0.9376,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9376
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "fracción con >= 60 % de dígitos en d+-1": {
+    "media": 0.1,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.1
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "fracción que termina en +5": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "fracción que termina en la identidad": {
+    "media": 0.9,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "identidad (media de 20)": {
+    "media": 0.9,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "mas5 (media de 20)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "vecinos (media de 20)": {
+    "media": 0.1,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.1
+    ],
+    "referencia": "",
+    "nota": ""
+   }
+  },
   "refuerzo | aleatorio": {
    "biyeccion (media de 20)": {
     "media": 0.3,
@@ -743,14 +939,16 @@
   },
   "total": {
    "segundos": {
-    "media": 145.1,
-    "desvio": 33.65828278447967,
+    "media": 126.86666666666667,
+    "desvio": 39.544953323190725,
     "semillas": [
+     0,
      0,
      0
     ],
     "valores": [
      121.3,
+     90.4,
      168.9
     ],
     "referencia": "",
@@ -759,6 +957,492 @@
   }
  },
  "por_corrida": {
+  "integracion3_f0s_fin_seed0": {
+   "muestreo+fin | aleatorio": [
+    [
+     1,
+     2,
+     1,
+     2,
+     3,
+     6,
+     5,
+     8,
+     9,
+     8
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     1,
+     0,
+     3,
+     4,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    [
+     1,
+     2,
+     3,
+     2,
+     3,
+     6,
+     7,
+     8,
+     9,
+     8
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     1,
+     0,
+     3,
+     4,
+     3,
+     4,
+     7,
+     8,
+     7,
+     8
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     2,
+     3,
+     0,
+     1,
+     2,
+     7,
+     8,
+     5,
+     0,
+     7
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     1,
+     2,
+     1,
+     2,
+     3,
+     4,
+     7,
+     6,
+     9,
+     8
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ],
+   "muestreo+fin | mas0": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     1,
+     2,
+     3,
+     2,
+     5,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     1,
+     2,
+     1,
+     4,
+     3,
+     4,
+     7,
+     8,
+     7,
+     8
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   ]
+  },
   "integracion3_f0s_seed0": {
    "refuerzo | aleatorio": [
     [

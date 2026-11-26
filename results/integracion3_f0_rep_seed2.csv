@@ -1,0 +1,64 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+f0,rep,2,segundos entrenamiento,418.1000,,4000 episodios
+f0,rep,2,curva columna ep=500,0.2150,,
+f0,rep,2,curva pureza ep=500,0.3660,,
+f0,rep,2,curva identidad ep=500,0.0680,,
+f0,rep,2,curva usados ep=500,10,,
+f0,rep,2,curva columna ep=1000,0.2281,,
+f0,rep,2,curva pureza ep=1000,0.3060,,
+f0,rep,2,curva identidad ep=1000,0.1360,,
+f0,rep,2,curva usados ep=1000,10,,
+f0,rep,2,curva columna ep=1500,0.2096,,
+f0,rep,2,curva pureza ep=1500,0.3340,,
+f0,rep,2,curva identidad ep=1500,0.0980,,
+f0,rep,2,curva usados ep=1500,10,,
+f0,rep,2,curva columna ep=2000,0.2198,,
+f0,rep,2,curva pureza ep=2000,0.4140,,
+f0,rep,2,curva identidad ep=2000,0.0960,,
+f0,rep,2,curva usados ep=2000,10,,
+f0,rep,2,curva columna ep=2500,0.2308,,
+f0,rep,2,curva pureza ep=2500,0.3800,,
+f0,rep,2,curva identidad ep=2500,0.1460,,
+f0,rep,2,curva usados ep=2500,10,,
+f0,rep,2,curva columna ep=3000,0.2403,,
+f0,rep,2,curva pureza ep=3000,0.4160,,
+f0,rep,2,curva identidad ep=3000,0.0900,,
+f0,rep,2,curva usados ep=3000,10,,
+f0,rep,2,curva columna ep=3500,0.2366,,
+f0,rep,2,curva pureza ep=3500,0.4000,,
+f0,rep,2,curva identidad ep=3500,0.0620,,
+f0,rep,2,curva usados ep=3500,10,,
+f0,rep,2,curva columna ep=4000,0.2229,,
+f0,rep,2,curva pureza ep=4000,0.4320,,
+f0,rep,2,curva identidad ep=4000,0.0600,,
+f0,rep,2,curva usados ep=4000,10,,
+f0,rep,2,pureza percepción (test),0.4300,0.1000,mejor biyección
+f0,rep,2,identidad percepción (test),0.0520,0.1000,símbolo == dígito
+f0,rep,2,símbolos usados,10,10,
+f0,rep,2,código es identidad (dígitos),0,10,dígitos cuyo símbolo en la mejor biyección es el propio dígito
+f0,rep,2,créditos a la percepción,37,,
+f0,rep,2,precisión del crédito (código final),0.3514,0.1000,
+f0,rep,2,precisión del crédito (identidad),0.1081,0.1000,
+f0,rep,2,"precisión del crédito, 2.a mitad (código final)",0.2105,0.1000,
+f0,rep,2,abstenciones Thinker,0,,
+f0,rep,2,exacta n=3 (test),0.0000,0.0005,azar
+f0,rep,2,columna n=3 (test),0.1027,0.1000,azar
+f0,rep,2,fin (acarreo) n=3 (test),0.6740,0.5005,mejor constante
+f0,rep,2,exacta n=1 (test),0.1020,0.0550,azar
+f0,rep,2,cota pureza^6 (Thinker perfecto),0.0063,,
+f0,rep,2,exacta n=3 | imágenes bien (código),0.0000,,
+f0,rep,2,fracción episodios con las 6 imágenes bien (código),0.0080,0.0063,pureza^6
+f0,rep,2,Thinker con código-oráculo: exacta n=3,0.0020,,símbolos = código final perfecto
+f0,rep,2,Thinker con código-oráculo: columna n=3,0.1480,0.1000,
+f0,a_congelada,2,segundos entrenamiento,287.4000,,
+f0,a_congelada,2,pureza percepción (test),0.4300,0.1000,"la de rep, congelada"
+f0,a_congelada,2,exacta n=3 (test),0.0000,0.0063,pureza^6
+f0,a_congelada,2,columna n=3 (test),0.1647,0.1000,azar
+f0,a_congelada,2,Thinker con código-oráculo: exacta n=3,0.0040,,
+f0,rep,2,clases fundidas (símbolo mayoritario de >=2 dígitos),3,0,
+f0,rep,2,masa en s = d (identidad),0.0520,0.1000,fracción de imágenes
+f0,rep,2,masa en s = d +- 1 (vecinos),0.1850,0.2000,
+f0,rep,2,masa en s = d + 5,0.2290,0.1000,invisible para el dígito módulo 10
+f0,rep,2,converge a una permutación (pureza - identidad),0.3780,,alto: código consistente pero permutado
+f0,rep,2,segundos,800.8000,,
+f0,total,2,segundos,801.1000,,

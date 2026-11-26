@@ -1,0 +1,53 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+f0,b_refuerzo,2,segundos entrenamiento,440.8000,,4000 episodios
+f0,b_refuerzo,2,curva columna ep=500,0.2127,,
+f0,b_refuerzo,2,curva pureza ep=500,0.3660,,
+f0,b_refuerzo,2,curva identidad ep=500,0.0860,,
+f0,b_refuerzo,2,curva usados ep=500,10,,
+f0,b_refuerzo,2,curva columna ep=1000,0.2044,,
+f0,b_refuerzo,2,curva pureza ep=1000,0.4360,,
+f0,b_refuerzo,2,curva identidad ep=1000,0.1080,,
+f0,b_refuerzo,2,curva usados ep=1000,10,,
+f0,b_refuerzo,2,curva columna ep=1500,0.2256,,
+f0,b_refuerzo,2,curva pureza ep=1500,0.5140,,
+f0,b_refuerzo,2,curva identidad ep=1500,0.1220,,
+f0,b_refuerzo,2,curva usados ep=1500,9,,
+f0,b_refuerzo,2,curva columna ep=2000,0.2461,,
+f0,b_refuerzo,2,curva pureza ep=2000,0.5660,,
+f0,b_refuerzo,2,curva identidad ep=2000,0.2080,,
+f0,b_refuerzo,2,curva usados ep=2000,10,,
+f0,b_refuerzo,2,curva columna ep=2500,0.2636,,
+f0,b_refuerzo,2,curva pureza ep=2500,0.6200,,
+f0,b_refuerzo,2,curva identidad ep=2500,0.2280,,
+f0,b_refuerzo,2,curva usados ep=2500,10,,
+f0,b_refuerzo,2,curva columna ep=3000,0.2963,,
+f0,b_refuerzo,2,curva pureza ep=3000,0.6480,,
+f0,b_refuerzo,2,curva identidad ep=3000,0.2700,,
+f0,b_refuerzo,2,curva usados ep=3000,10,,
+f0,b_refuerzo,2,curva columna ep=3500,0.3281,,
+f0,b_refuerzo,2,curva pureza ep=3500,0.6360,,
+f0,b_refuerzo,2,curva identidad ep=3500,0.2240,,
+f0,b_refuerzo,2,curva usados ep=3500,10,,
+f0,b_refuerzo,2,curva columna ep=4000,0.3360,,
+f0,b_refuerzo,2,curva pureza ep=4000,0.6460,,
+f0,b_refuerzo,2,curva identidad ep=4000,0.2300,,
+f0,b_refuerzo,2,curva usados ep=4000,10,,
+f0,b_refuerzo,2,pureza percepción (test),0.6690,0.1000,mejor biyección
+f0,b_refuerzo,2,identidad percepción (test),0.2245,0.1000,símbolo == dígito
+f0,b_refuerzo,2,símbolos usados,10,10,
+f0,b_refuerzo,2,código es identidad (dígitos),3,10,dígitos cuyo símbolo en la mejor biyección es el propio dígito
+f0,b_refuerzo,2,abstenciones Thinker,0,,
+f0,b_refuerzo,2,exacta n=3 (test),0.0060,0.0005,azar
+f0,b_refuerzo,2,columna n=3 (test),0.2167,0.1000,azar
+f0,b_refuerzo,2,fin (acarreo) n=3 (test),0.6480,0.5005,mejor constante
+f0,b_refuerzo,2,exacta n=1 (test),0.1900,0.0550,azar
+f0,b_refuerzo,2,cota pureza^6 (Thinker perfecto),0.0897,,
+f0,b_refuerzo,2,exacta n=3 | imágenes bien (código),0.0000,,
+f0,b_refuerzo,2,fracción episodios con las 6 imágenes bien (código),0.0520,0.0897,pureza^6
+f0,b_refuerzo,2,clases fundidas (símbolo mayoritario de >=2 dígitos),2,0,
+f0,b_refuerzo,2,masa en s = d (identidad),0.2245,0.1000,fracción de imágenes
+f0,b_refuerzo,2,masa en s = d +- 1 (vecinos),0.6555,0.2000,
+f0,b_refuerzo,2,masa en s = d + 5,0.0105,0.1000,invisible para el dígito módulo 10
+f0,b_refuerzo,2,converge a una permutación (pureza - identidad),0.4445,,alto: código consistente pero permutado
+f0,b_refuerzo,2,segundos,583.0000,,
+f0,total,2,segundos,583.4000,,
