@@ -33,6 +33,28 @@ aprende sólo con recompensa (en la integración con el Thinker, desde cero, la 
 percepción subió de 0.21 a 0.58 y de 0.62 a 0.85 en la identidad, 3 semillas). No cambia
 cómo se reparte el crédito. Con etiquetas no hace falta y no se usa.
 
+Metacognición y neuromodulación (opcionales; por defecto apagadas, sin efecto en nada):
+  señales   `confidence()` (probabilidad de la decisión; calibrada si hay `metacog`),
+            `conflict()` (desacuerdo entre votantes sobre la decisión: 1 - la probabilidad
+            media que cada votante le da a la salida elegida, como el conflicto de
+            respuesta del cingulado anterior: Yeung, Botvinick y Cohen, 2004),
+            `surprise(correct)` (-log de la probabilidad del desenlace según la propia
+            confianza) y `signals()` (todo junto). Se calculan del último pase, a pedido.
+  metacog   dict(lr=...): calibrador online (regresión logística sobre logit de la
+            confianza y el conflicto) que aprende P(acierto) de cada desenlace conocido
+            (etiqueta o recompensa). Sin él, `confidence()` es la probabilidad cruda.
+  hypercorrection   g > 0: un error se corrige con la tasa de las lecturas multiplicada
+            por 1 + g * confianza en lo que se decidió (efecto de hipercorrección:
+            Butterfield y Metcalfe, 2001). `hypercorrection_mode="plano"` es el control:
+            la misma ganancia media en los errores, sin ponderar por confianza.
+  neuromod  dict: incertidumbre esperada e inesperada (Yu y Dayan, 2005). La sorpresa de
+            cada desenlace se promedia lento (ACh: incertidumbre esperada, el ruido de
+            fondo) y rápido; NE = max(0, (rápida - lenta) / desvío lento) es la sorpresa
+            que excede lo esperado (un cambio en el mundo). Efectos: la tasa de las lecturas
+            se multiplica por (1 + ne_gain * NE) / (1 + ach_gain * ACh); si NE > ne_reset se
+            libera parte de la consolidación de las lecturas (`release`) y las áreas de
+            asociación crecen ante cualquier error mientras dure (neurogénesis).
+
 Paralelismo (`workers` > 1): las áreas de asociación que leen la entrada cruda no
 dependen de las áreas sensoriales, así que su pase y su aprendizaje corren en otro hilo
 mientras la jerarquía codifica o aprende. Los resultados no cambian: cada hilo toca sólo
@@ -47,6 +69,7 @@ from concurrent.futures import ThreadPoolExecutor
 import numpy as np
 
 from .area import FeatureArea
+from .metacog import Calibrator, SurpriseTracker
 from .network import BioElasticNet
 from .readout import Readout
 
@@ -55,7 +78,9 @@ class Cortex:
     def __init__(self, input_shape, n_outputs: int, *, areas=(), heads=({},), projection=None,
                  replay: float = 0.0, rehearse: float = 0.0, replay_focus: str = "uniform",
                  joint: bool = True, temperature: float = 0.25, arbiter: float = 0.0,
-                 seed: int = 0, workers: int = 1, homeostasis: float = 0.0):
+                 seed: int = 0, workers: int = 1, homeostasis: float = 0.0,
+                 metacog: dict | None = None, hypercorrection: float = 0.0,
+                 hypercorrection_mode: str = "confianza", neuromod: dict | None = None):
         self._config = dict(input_shape=input_shape, n_outputs=int(n_outputs),
                             areas=[dict(a) for a in areas], heads=[],
                             projection=projection, replay=float(replay),
@@ -69,6 +94,29 @@ class Cortex:
         self.homeostasis = float(homeostasis)
         if self.homeostasis > 0.0:
             self._config["homeostasis"] = self.homeostasis
+        # metacognición y neuromodulación (sólo se guardan en la configuración si se usan)
+        self.metacog = dict(metacog) if metacog else None
+        self.hypercorrection = float(hypercorrection)
+        self.hypercorrection_mode = str(hypercorrection_mode)
+        self.neuromod = None
+        if neuromod:
+            self.neuromod = dict(dict(slow=0.002, fast=0.05, ne_gain=0.5, ach_gain=0.0, ne_cap=4.0,
+                                      ne_reset=3.0, release=0.5, grow=True, warmup=200, var0=1.0),
+                                 **neuromod)
+        for k, v in (("metacog", self.metacog), ("hypercorrection", self.hypercorrection or None),
+                     ("neuromod", self.neuromod)):
+            if v:
+                self._config[k] = v
+        if self.hypercorrection and self.hypercorrection_mode != "confianza":
+            self._config["hypercorrection_mode"] = self.hypercorrection_mode
+        self._cal = Calibrator(n_extra=1, lr=float(self.metacog.get("lr", 0.05))) if self.metacog else None
+        self._err_conf = [0.0, 0]                             # confianza media en los errores (control plano)
+        nm = self.neuromod or {}
+        self._surprise = SurpriseTracker(nm.get("slow", 0.002), nm.get("fast", 0.05),
+                                         nm.get("warmup", 200), nm.get("var0", 1.0)) if nm else None
+        self.lr_gain = 1.0
+        self.releases = 0
+        self._votes_last = []
         self.is_sheet = not np.isscalar(input_shape)
         self.input_shape = tuple(int(v) for v in input_shape) if self.is_sheet else int(input_shape)
         self.C = int(n_outputs)
@@ -216,6 +264,7 @@ class Cortex:
             self._zs.append(z)
             if z is not None:
                 votes.append((z, a.clf.temperature))
+        self._votes_last = votes
         if self.arbiter > 0.0 and votes:
             if self.beta is None or len(self.beta) != len(votes):
                 self.beta = np.ones(len(votes), dtype=np.float32)
@@ -281,7 +330,117 @@ class Cortex:
             self.umbral -= np.float32(self.homeostasis / self.C)
             self.umbral[self.pred] += np.float32(self.homeostasis)
 
+    # ------------------------------------------------------------------ metacognición
+    def voter_probs(self) -> np.ndarray:
+        """(votantes, C): la distribución propia de cada votante en el último pase (áreas
+        de asociación, proyección directa y lectores locales, en ese orden)."""
+        out = []
+        for z, T in self._votes_last:
+            e = np.exp((np.asarray(z, dtype=np.float64) - float(np.max(z))) / float(T))
+            out.append(e / e.sum())
+        return np.array(out) if out else np.ones((1, self.C)) / self.C
+
+    def conflict(self) -> float:
+        """Desacuerdo entre votantes sobre la última decisión: 1 - probabilidad media que
+        cada votante le da a la salida elegida (0: todos la dan por segura)."""
+        return float(1.0 - self.voter_probs()[:, self.pred].mean())
+
+    def raw_confidence(self) -> float:
+        """Probabilidad de la última decisión en la competencia entre salidas."""
+        return float(self._p()[self.pred])
+
+    @property
+    def expected_uncertainty(self) -> float:
+        """ACh: sorpresa media esperada (0 sin `neuromod`)."""
+        return self._surprise.expected if self._surprise is not None else 0.0
+
+    @property
+    def unexpected_uncertainty(self) -> float:
+        """NE: exceso reciente de sorpresa sobre lo esperado (0 sin `neuromod`)."""
+        return self._surprise.unexpected if self._surprise is not None else 0.0
+
+    @property
+    def last_surprise(self) -> float:
+        return self._surprise.last if self._surprise is not None else 0.0
+
+    def confidence(self) -> float:
+        """P(acierto) de la última decisión: calibrada (si hay `metacog`) o la cruda."""
+        raw = self.raw_confidence()
+        if self._cal is None:
+            return raw
+        return self._cal.predict(self._cal.features(raw, self.conflict()))
+
+    def surprise(self, correct: bool) -> float:
+        """Sorpresa del desenlace según la propia confianza: -log P(desenlace)."""
+        return SurpriseTracker.surprise(self.confidence(), correct)
+
+    def signals(self) -> dict:
+        """Señales internas del último pase (antes de saber si acertó)."""
+        p = self._p(); srt = np.sort(p)
+        return dict(confidence=self.confidence(), raw_confidence=float(p[self.pred]),
+                    conflict=self.conflict(), margin=float(srt[-1] - srt[-2]) if len(p) > 1 else 1.0,
+                    expected_uncertainty=self.expected_uncertainty,
+                    unexpected_uncertainty=self.unexpected_uncertainty)
+
+    def _outcome(self, correct: bool) -> float:
+        """Desenlace conocido de la última decisión: calibra la confianza, actualiza la
+        neuromodulación y devuelve la ganancia de la tasa de aprendizaje para esta vez."""
+        raw = self.raw_confidence()
+        g = 1.0
+        s = self.surprise(correct) if self._surprise is not None else 0.0   # con la confianza de antes
+        if self._cal is not None:
+            self._cal.update(self._cal.features(raw, self.conflict()), correct)
+        if self.hypercorrection > 0.0 and not correct:
+            m = self._err_conf
+            m[0] += raw; m[1] += 1
+            c = raw if self.hypercorrection_mode == "confianza" else m[0] / m[1]
+            g *= 1.0 + self.hypercorrection * c
+        nm = self.neuromod
+        if nm:
+            ne = self._surprise.update(s)
+            g *= (1.0 + nm["ne_gain"] * min(ne, nm["ne_cap"])) / (1.0 + nm["ach_gain"] * self.expected_uncertainty)
+            if ne > nm["ne_reset"] and nm["release"] > 0.0:
+                for h in self.heads:                          # se reabre lo consolidado
+                    h.readout.count[:h.readout.n] *= np.float32(1.0 - nm["release"])
+                self.releases += 1
+        self.lr_gain = g
+        return g
+
+    def _readouts(self):
+        return [h.readout for h in self.heads] + ([self.proj] if self.proj is not None else [])
+
+    def _gained(self, g: float, fn, grow: bool = False):
+        """Corre `fn` con la tasa de las lecturas multiplicada por `g` (y, con `grow`, con
+        las áreas de asociación creciendo ante cualquier error)."""
+        if g == 1.0 and not grow:
+            return fn()
+        saved = [(r, r.lr) for r in self._readouts()]
+        rho = [(h, h.rho_sup) for h in self.heads]
+        for r, lr in saved:
+            r.lr = lr * g
+        if grow:
+            for h, _ in rho:
+                h.rho_sup = 2.0
+        try:
+            return fn()
+        finally:
+            for r, lr in saved:
+                r.lr = lr
+            for h, v in rho:
+                h.rho_sup = v
+
+    def _modulated(self) -> bool:
+        return bool(self.metacog or self.hypercorrection > 0.0 or self.neuromod)
+
     def teach(self, target: int):
+        if self._modulated():
+            g = self._outcome(self.pred == int(target))
+            grow = bool(self.neuromod and self.neuromod["grow"]
+                        and self.unexpected_uncertainty > self.neuromod["ne_reset"])
+            return self._gained(g, lambda: self._teach(target), grow)
+        return self._teach(target)
+
+    def _teach(self, target: int):
         self._adapt_thresholds()
         p = self._p()                                         # no depende del aprendizaje de las áreas
         arb = self._arbitrated()
@@ -399,6 +558,12 @@ class Cortex:
         self.rehearsals += 1
 
     def reinforce(self, reward: float):
+        if self._modulated():
+            g = self._outcome(reward > 0)
+            return self._gained(g, lambda: self._reinforce(reward))
+        return self._reinforce(reward)
+
+    def _reinforce(self, reward: float):
         self._adapt_thresholds()
         p = self._p()
         one = lambda i: self.heads[i].reinforce(reward, pred=self.pred, p=p)
@@ -483,6 +648,8 @@ class Cortex:
             out["beta"] = self.beta
         if self.homeostasis > 0.0:
             out["umbral"] = self.umbral
+        if self._cal is not None:
+            out["cal"] = self._cal.w
         np.savez_compressed(path, **out)
 
     @classmethod
@@ -508,4 +675,6 @@ class Cortex:
                 net.beta = z["beta"].copy()
             if "umbral" in z.files:
                 net.umbral[:] = z["umbral"]
+            if "cal" in z.files and net._cal is not None:
+                net._cal.w = z["cal"].astype(np.float64).copy()
         return net

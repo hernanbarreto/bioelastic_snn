@@ -1,0 +1,18 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+f0,a_ruido_0.9,1,segundos entrenamiento,16.8000,,4000 episodios
+f0,a_ruido_0.9,1,curva columna ep=500,0.3746,,
+f0,a_ruido_0.9,1,curva columna ep=1000,0.5675,,
+f0,a_ruido_0.9,1,curva columna ep=1500,0.6538,,
+f0,a_ruido_0.9,1,curva columna ep=2000,0.6882,,
+f0,a_ruido_0.9,1,curva columna ep=2500,0.6992,,
+f0,a_ruido_0.9,1,curva columna ep=3000,0.7099,,
+f0,a_ruido_0.9,1,curva columna ep=3500,0.7328,,
+f0,a_ruido_0.9,1,curva columna ep=4000,0.7247,,
+f0,a_ruido_0.9,1,abstenciones Thinker,0,,
+f0,a_ruido_0.9,1,exacta n=3 (test),0.3980,0.0005,azar
+f0,a_ruido_0.9,1,columna n=3 (test),0.7353,0.1000,azar
+f0,a_ruido_0.9,1,fin (acarreo) n=3 (test),0.8520,0.5005,mejor constante
+f0,a_ruido_0.9,1,exacta n=1 (test),0.7100,0.0550,azar
+f0,a_ruido_0.9,1,Thinker con oráculo: exacta n=3,0.7420,,
+f0,a_ruido_0.9,1,segundos,21.0000,,
+f0,total,1,segundos,21.2000,,

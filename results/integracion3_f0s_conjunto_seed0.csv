@@ -1,0 +1,14 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+f0s,conjunto L2 muestreo | aleatorio,0,pureza (media de 20),0.7093,0.0767,desvío en referencia
+f0s,conjunto L2 muestreo | aleatorio,0,columna_final (media de 20),0.5722,0.0833,desvío en referencia
+f0s,conjunto L2 muestreo | aleatorio,0,fracción con pureza >= 0.9,0.0000,,
+f0s,conjunto L2 muestreo | mas0,0,pureza (media de 20),0.8591,0.0582,desvío en referencia
+f0s,conjunto L2 muestreo | mas0,0,columna_final (media de 20),0.7560,0.0949,desvío en referencia
+f0s,conjunto L2 muestreo | mas0,0,fracción con pureza >= 0.9,0.0000,,
+f0s,conjunto L2 map | aleatorio,0,pureza (media de 20),0.6495,0.0670,desvío en referencia
+f0s,conjunto L2 map | aleatorio,0,columna_final (media de 20),0.4768,0.0713,desvío en referencia
+f0s,conjunto L2 map | aleatorio,0,fracción con pureza >= 0.9,0.0000,,
+f0s,conjunto L2 map | mas0,0,pureza (media de 20),0.7344,0.0725,desvío en referencia
+f0s,conjunto L2 map | mas0,0,columna_final (media de 20),0.5742,0.0947,desvío en referencia
+f0s,conjunto L2 map | mas0,0,fracción con pureza >= 0.9,0.0000,,
+f0s,total,0,segundos,121.3000,,
