@@ -40,6 +40,10 @@ VARIANTS = {
     "d3_arb": dict(areas=[L(V1, lr=0.5), L(V2, lr=0.5)], arbiter=0.01, **B),
     "d2_arb_lr0": dict(areas=[L(V1, lr=0.0)], arbiter=0.01, **B),      # sólo lector local
     "d3_arb_lr0": dict(areas=[L(V1, lr=0.0), L(V2, lr=0.0)], arbiter=0.01, **B),
+    "d3_arb_norep": dict(areas=[L(V1, lr=0.5), L(V2, lr=0.5)], arbiter=0.01,
+                         **dict(B, replay=0.0)),                         # sin repaso
+    "d3_arb_nomem": dict(areas=[L(V1, lr=0.5), L(V2, lr=0.5)], arbiter=0.01,
+                         **dict(B, heads=[])),                           # sin memoria (ni repaso)
     "d2_sum": dict(areas=[L(V1, lr=0.5)], **B),                         # suma sin árbitro
     "d3_sum": dict(areas=[L(V1, lr=0.5), L(V2, lr=0.5)], **B),
     "d2_rnd": dict(areas=[L(V1, feedback="random")], **B),         # lector local fijo aleatorio
