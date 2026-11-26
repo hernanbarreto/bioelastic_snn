@@ -333,3 +333,43 @@ def test_cortex_new_sequence_resets_area_traces():
     net.new_sequence()
     assert not net.areas[1]._trace.any()
     assert net.areas[0].tr is None
+
+
+def test_soft_wta_gives_a_graded_code_and_learns():
+    rng = np.random.default_rng(12)
+    a = FeatureArea((12, 12, 1), rf=3, pool=2, max_features=16, theta=0.8,
+                    soft=dict(tau=0.1, lr=0.2))
+    for _ in range(300):
+        a.encode(_bar(rng, bool(rng.integers(2)))); a.learn()
+    W = a.W[a.alive]
+    assert np.allclose(np.linalg.norm(W, axis=1), 1.0, atol=1e-4)
+    code = a.encode(_bar(rng, True))
+    active = (code > 0).sum(axis=2)
+    assert active.max() > a.k                                # más rasgos activos que el k-WTA duro
+    assert code.min() >= 0 and code.max() <= 1.0
+    with pytest.raises(ValueError):
+        FeatureArea((12, 12, 1), rf=3, pool=2, soft=dict(tau=0.1), support=4)
+
+
+def test_error_driven_neurogenesis_recruits_only_when_the_local_reader_fails():
+    rng = np.random.default_rng(13)
+    def run(grow):
+        net = Cortex((8, 8, 1), 4, areas=[AREAS[0], dict(AREAS[1], max_features=64, support=6, theta=0.7,
+                                                         local=dict(lr=0.05, grow=grow))], **KW)
+        _stream(net, 400)
+        return net.areas[1]
+    plain, grown = run(0), run(2)
+    assert plain.grown == 0 and grown.grown > 0
+    assert grown.created > plain.created                     # nacieron rasgos por error además de por novedad
+    assert grown.grown <= 2 * (grown.local_seen - grown.local_hits)   # a lo sumo `grow` por error
+
+
+def test_critical_period_freezes_the_dictionary_but_not_the_local_reader():
+    net = Cortex((8, 8, 1), 4, areas=[dict(AREAS[0], critical=100), AREAS[1]], **KW)
+    _stream(net, 100)
+    a = net.areas[0]
+    W = a.W.copy(); clf = a.clf.W.copy(); created = a.created
+    _stream(net, 100, seed=7)
+    assert np.array_equal(a.W, W) and a.created == created   # el diccionario ya no cambia
+    assert not np.array_equal(a.clf.W, clf)                  # su lector sigue aprendiendo
+    assert not np.array_equal(net.areas[1].W, 0 * net.areas[1].W)

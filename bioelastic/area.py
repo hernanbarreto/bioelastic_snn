@@ -41,6 +41,19 @@ ese residuo (presináptico = célula compleja de arriba, postsináptico = residu
 abajo): dG_f = lr * sum_q c_q R_q / max(sum_q c_q^2, 1). `pe` es la fracción de la energía
 de la entrada que la predicción no explica.
 
+WTA blando (opcional, `soft=dict(tau, lr, power, anti)`; SoftHebb, Journé et al. 2023): la
+competencia dura (k rasgos por posición sobre un piso fijo) se reemplaza por la activación
+«triángulo» (potencial menos la media de los rasgos en esa posición, rectificado y elevado
+a `power`): un código graduado y denso. El diccionario aprende con la regla de Hebb de WTA
+blando, dW_f = lr * mean_p s_pf y_pf (x̂_p - u_pf W_f), con y = softmax(u / tau) entre los
+rasgos de cada posición y s = +1 para el que más responde y -1 para los demás si `anti`
+(anti-Hebbiano blando). La neurogénesis por novedad sigue creando los rasgos.
+
+Período crítico (opcional, `critical=N`): después de N láminas el diccionario del área deja
+de cambiar (ni STDP, ni error local sobre los rasgos, ni nacimientos, ni poda) y sólo sigue
+aprendiendo su lector local. Con períodos escalonados (V1 cierra antes que V2) cada área
+aprende sobre una entrada que ya no se mueve.
+
 Regla de traza (opcional, `trace=dict(lr, decay)`; Földiák 1991): cada célula compleja
 guarda una traza de su actividad en las vistas anteriores de la misma secuencia (micro-
 sacadas sobre una imagen). Un rasgo que estuvo activo en q aprende también del parche que
@@ -86,7 +99,8 @@ class FeatureArea:
                  maintain_every: int = 500, neurogenesis: bool = True,
                  local: dict | None = None, n_classes: int = 0, seed: int = 0,
                  predictive: dict | None = None, lateral: dict | None = None,
-                 support: int = 0, passthrough: bool = False, trace: dict | None = None):
+                 support: int = 0, passthrough: bool = False, trace: dict | None = None,
+                 soft: dict | None = None, critical: int = 0):
         H, W, C = (int(v) for v in in_shape)
         self.in_shape = (H, W, C)
         self.rf = _pair(rf); self.stride = _pair(stride); self.pool = _pair(pool)
@@ -107,6 +121,7 @@ class FeatureArea:
         self.probation = int(probation); self.survival_hits = int(survival_hits)
         self.maintain_every = int(maintain_every)
         self.neurogenesis = bool(neurogenesis)   # False: no nacen rasgos nuevos
+        self.critical = int(critical)    # > 0: período crítico; después el diccionario no cambia
 
         self.W = np.zeros((self.F, self.D), dtype=np.float32)     # diccionario (lámina 4)
         self.S = int(support)            # > 0: cada rasgo es una conjunción de S aferentes
@@ -121,7 +136,7 @@ class FeatureArea:
         self.n = 0                       # marca de agua: rasgos alguna vez usados
         self.free: list[int] = []        # lugares de rasgos muertos
         self.t = 0
-        self.created = 0; self.pruned = 0
+        self.created = 0; self.pruned = 0; self.grown = 0
         self.plastic = True
         self.on_reuse = None             # hook(f): el lugar f pasa a significar otra cosa
 
@@ -138,6 +153,17 @@ class FeatureArea:
         self._pool_pos = ((qy[:, :, None] + my) * self.ow + (qx[:, :, None] + mx)).reshape(-1, a * b)
         if self.passthrough:                                      # entradas que ve cada célula compleja
             self._pass_idx = np.stack([np.unique(self._gather[pp].ravel()) for pp in self._pool_pos])
+
+        self.soft = None
+        if soft:
+            spec = dict(tau=0.1, lr=0.01, power=1.0, anti=True)
+            unknown = set(soft) - set(spec)
+            if unknown:
+                raise ValueError(f"opciones de `soft` desconocidas: {sorted(unknown)}")
+            spec.update(soft)
+            if self.floor < 0.0 or lateral or support:
+                raise ValueError("soft no se combina con floor < 0, lateral ni support")
+            self.soft = spec
 
         # regla de traza: vecindario 3x3 de cada célula compleja (en células simples)
         self.tr = None
@@ -162,7 +188,8 @@ class FeatureArea:
         # error local: lector de clase propio del área
         self.local = None
         if local and n_classes:
-            spec = dict(lr=0.02, lr_readout=0.5, temperature=0.25, feedback="sym", residual=False)
+            spec = dict(lr=0.02, lr_readout=0.5, temperature=0.25, feedback="sym", residual=False,
+                        grow=0)
             spec.update(local)
             self.local = spec
             n_out = self.ph * self.pw * self.Fo
@@ -175,6 +202,7 @@ class FeatureArea:
             elif spec["feedback"] != "sym":
                 raise ValueError(f"feedback desconocido: {spec['feedback']}")
         self.local_hits = 0; self.local_seen = 0
+        self._lerr = None                # (¿falló el lector local?, error por célula compleja)
 
         # predicción descendente: pesos generativos del área sobre su entrada
         self.pc = None
@@ -248,7 +276,14 @@ class FeatureArea:
             else:
                 act = a_rows = full[vr] / np.maximum(norms[vr], 1e-6)[:, None]
             gain = np.float32(1.0 / (1.0 - self.floor))
-            if self.floor >= 0.0:                                 # mismas operaciones, sin temporales
+            if self.soft is not None:                             # triángulo: sobre la media, graduado
+                live = self.alive[:n]
+                out = a_rows - a_rows[:, live].mean(axis=1, keepdims=True)
+                np.maximum(out, 0.0, out=out)
+                out[:, ~live] = 0.0
+                if self.soft["power"] != 1.0:
+                    out = out ** np.float32(self.soft["power"])
+            elif self.floor >= 0.0:                               # mismas operaciones, sin temporales
                 if self.lat is not None and n > self.k:           # inhibición lateral plástica
                     out = self._lateral(a_rows, gain)
                 else:
@@ -258,6 +293,8 @@ class FeatureArea:
                 if n > self.k and self.lat is None:               # inhibición lateral: k rasgos por posición
                     kth = np.partition(a_rows, n - self.k, axis=1)[:, n - self.k]
                     out[~(a_rows >= kth[:, None])] = 0.0          # (perdedoras: max(0 - floor, 0) = 0)
+            if self.soft is not None or self.floor >= 0.0:
+                pass
             else:
                 out = a_rows
                 if n > self.k:
@@ -384,6 +421,7 @@ class FeatureArea:
             V = V + prior
         p = R.probs(V)
         self.local_seen += 1; self.local_hits += int(np.argmax(V) == target)
+        wrong = int(np.argmax(V)) != target
         err = -p; err[target] += 1.0
         err = err.astype(np.float32)
         g = R.W[:, cols].T @ err                                  # error dendrítico de cada célula compleja
@@ -395,6 +433,8 @@ class FeatureArea:
             g = (g - hn * float(hn @ g)) / nrm                    # derivada de la normalización del código
             if self.local["feedback"] == "sym":
                 R.W[:, cols] += (R.lr * err)[:, None] * hn[None, :]
+        if self.local["grow"]:                                    # dónde duele el error (neurogénesis)
+            self._lerr = (wrong, np.bincount(q, weights=np.abs(g), minlength=self.ph * self.pw))
         # célula simple que ganó el pooling: posición y potencial
         pos = self._pool_pos[q, arg[q, f]]
         s = act[pos, f]
@@ -417,6 +457,13 @@ class FeatureArea:
         Si el área es predictiva, también aprenden los pesos generativos y, si se configuró,
         la sorpresa (`surprise`, por defecto el `pe` propio) modula la plasticidad."""
         if not self.plastic or self._cache is None:
+            return
+        if self.critical and self.t >= self.critical:             # período crítico cerrado:
+            code = self._cache[5]                                 # sólo aprende el lector local
+            self._cache = None
+            self.t += 1
+            if target is not None:
+                self.learn_readout(int(target), code)
             return
         g = gn = 1.0
         if self.pc is not None:
@@ -444,6 +491,10 @@ class FeatureArea:
             best = np.zeros(len(vr), dtype=np.int64); bc = np.zeros(len(vr), dtype=np.float32)
         ok = bc >= self.theta
         sel = vr[ok]                                              # posiciones válidas reconocidas
+        if self.soft is not None:                                 # Hebb de WTA blando en vez de STDP
+            if act is not None and len(vr):
+                self._learn_soft(Pm, norms, vr, act, g)
+            sel = sel[:0]
         if len(sel):                                              # STDP promediado sobre la lámina
             b = best[ok]
             u, inv = np.unique(b, return_inverse=True)            # sólo los rasgos que ganaron
@@ -484,35 +535,34 @@ class FeatureArea:
             for c in nov:
                 if len(fresh) >= limit:
                     break
-                if self.S:                                        # conjunción de las S aferentes más fuertes
-                    sup = np.zeros(self.D, dtype=bool)
-                    sup[np.argpartition(-Pm[c], self.S - 1)[:self.S]] = True
-                    sup &= Pm[c] > 0
-                    p = np.where(sup, Pm[c], 0.0).astype(np.float32)
-                    p /= max(float(np.sqrt(p @ p)), 1e-6)
-                    if fresh:
-                        dd = np.sqrt(self.M[fresh].astype(np.float32) @ (Pm[c] * Pm[c]))
-                        if float((self.W[fresh] @ Pm[c] / np.maximum(dd, 1e-6)).max()) >= self.theta:
-                            continue
-                else:
-                    p = Pm[c] / norms[c]
-                    if fresh and float((self.W[fresh] @ p).max()) >= self.theta:
-                        continue                                  # ya cubierto por uno recién creado
-                f = self._new_slot()
+                f = self._recruit_from(c, Pm, norms, fresh)
+                if f is None:
+                    continue                                      # ya cubierto por uno recién creado
                 if f < 0:
                     break
-                self.W[f] = p; self.alive[f] = True
-                if self.S:
-                    self.M[f] = sup
-                if self.pc is not None:                           # predice el parche que lo creó
-                    self.G[f] = np.float32(self.pc["init"]) * Pm[c]
-                if self.lat is not None:                          # sin inhibición aprendida
-                    self.V[f, :] = 0.0; self.V[:, f] = 0.0; self.lat_m[f] = 0.0; self.lat_b[f] = 0.0
-                if self.tr is not None:
-                    self._trace[:, f] = 0.0
-                self.wins[f] = 0; self.born[f] = self.t
-                self.created += 1
                 fresh.append(f)
+        grow = int(self.local["grow"]) if self.local is not None else 0
+        if grow and self._lerr is not None and self._lerr[0] and len(vr):
+            # neurogénesis por error: el lector local falló; nacen rasgos en las células
+            # complejas donde el error dendrítico es mayor (parche con más energía de su campo)
+            gpos = self._lerr[1]
+            thr = norms[vr].min()
+            made = []
+            for qpos in np.argsort(-gpos)[:2 * grow]:
+                if len(made) >= grow or gpos[qpos] <= 0.0:
+                    break
+                cells = self._pool_pos[qpos]
+                c = int(cells[np.argmax(norms[cells])])
+                if norms[c] < thr:
+                    continue
+                f = self._recruit_from(c, Pm, norms, made)
+                if f is None:
+                    continue
+                if f < 0:
+                    break
+                made.append(f)
+            self.grown += len(made)
+        self._lerr = None
         if self.maintain_every and self.t % self.maintain_every == 0:
             self.maintain()
 
@@ -584,6 +634,29 @@ class FeatureArea:
         nf = np.bincount(np.searchsorted(u, f), minlength=len(u)).astype(np.float32)
         self.G[u] += (np.float32(lr) / nf)[:, None] * s
 
+    def _learn_soft(self, Pm, norms, vr, act, g: float = 1.0):
+        """Hebb de WTA blando (SoftHebb): dW_f = lr * mean_p s_pf y_pf (x̂_p - u_pf W_f)."""
+        n = act.shape[1]
+        live = self.alive[:n]
+        if not live.any():
+            return
+        z = act / np.float32(self.soft["tau"])
+        z[:, ~live] = -np.inf
+        z -= z.max(axis=1, keepdims=True)
+        y = np.exp(z); y /= y.sum(axis=1, keepdims=True)
+        rows = np.arange(len(vr)); top = z.argmax(axis=1)
+        if self.soft["anti"]:                                     # anti-Hebbiano para los que no ganan
+            sy = -y; sy[rows, top] = y[rows, top]
+        else:
+            sy = y
+        X = Pm[vr] / norms[vr, None]
+        dW = sy.T @ X - (sy * act).sum(axis=0)[:, None] * self.W[:n]
+        Wn = self.W[:n] + np.float32(self.soft["lr"] * g / len(vr)) * dW
+        Wn[live] /= np.maximum(np.linalg.norm(Wn[live], axis=1, keepdims=True), 1e-8)
+        Wn[~live] = 0.0
+        self.W[:n] = Wn
+        self.wins[np.unique(top)] += 1
+
     def reset_trace(self):
         """Comienza otra secuencia: se borra la traza."""
         if self.tr is not None:
@@ -636,6 +709,39 @@ class FeatureArea:
         self.gain = g
         self.gain_avg += 0.01 * (g - self.gain_avg)
         return g, gn
+
+    def _recruit_from(self, c: int, Pm, norms, fresh: list):
+        """Nace un rasgo con el parche de la posición c. Devuelve su índice, None si un rasgo
+        recién creado ya lo cubre, o -1 si no queda lugar."""
+        if self.S:                                                # conjunción de las S aferentes más fuertes
+            sup = np.zeros(self.D, dtype=bool)
+            sup[np.argpartition(-Pm[c], self.S - 1)[:self.S]] = True
+            sup &= Pm[c] > 0
+            p = np.where(sup, Pm[c], 0.0).astype(np.float32)
+            p /= max(float(np.sqrt(p @ p)), 1e-6)
+            if fresh:
+                dd = np.sqrt(self.M[fresh].astype(np.float32) @ (Pm[c] * Pm[c]))
+                if float((self.W[fresh] @ Pm[c] / np.maximum(dd, 1e-6)).max()) >= self.theta:
+                    return None
+        else:
+            p = Pm[c] / norms[c]
+            if fresh and float((self.W[fresh] @ p).max()) >= self.theta:
+                return None                                       # ya cubierto por uno recién creado
+        f = self._new_slot()
+        if f < 0:
+            return -1
+        self.W[f] = p; self.alive[f] = True
+        if self.S:
+            self.M[f] = sup
+        if self.pc is not None:                                   # predice el parche que lo creó
+            self.G[f] = np.float32(self.pc["init"]) * Pm[c]
+        if self.lat is not None:                                  # sin inhibición aprendida
+            self.V[f, :] = 0.0; self.V[:, f] = 0.0; self.lat_m[f] = 0.0; self.lat_b[f] = 0.0
+        if self.tr is not None:
+            self._trace[:, f] = 0.0
+        self.wins[f] = 0; self.born[f] = self.t
+        self.created += 1
+        return f
 
     def _new_slot(self) -> int:
         if not self.neurogenesis:

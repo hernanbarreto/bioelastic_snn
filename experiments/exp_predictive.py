@@ -319,6 +319,7 @@ def run_one(name: str, depth: int, seed: int, n_train: int, n_val: int, n_test: 
     nL = len(dims)
     timeline = []
     w_net = 0; w_probe = np.zeros(nL); w_pe = np.zeros(len(net.areas)); w_n = 0
+    w_loc = np.zeros(len(net.areas))                      # aciertos de los lectores locales
     preq = 0
     t0 = time.time()
     for i in range(n_train):
@@ -329,6 +330,7 @@ def run_one(name: str, depth: int, seed: int, n_train: int, n_val: int, n_test: 
         pred = net.forward(x)
         pp = probes.predict(levels_of(net, x))
         pe = area_pe(net)
+        w_loc += [float(z is not None and int(np.argmax(z)) == t) for z in net._zs]
         net.teach(t)
         probes.learn(t)
         w_net += int(pred == t); preq += int(pred == t)
@@ -337,6 +339,7 @@ def run_one(name: str, depth: int, seed: int, n_train: int, n_val: int, n_test: 
         if (i + 1) % log_every == 0 or i + 1 == n_train:
             st = net.stats()
             row = dict(step=i + 1, acc=w_net / w_n, probe=(w_probe / w_n).tolist(),
+                       local=(w_loc / w_n).tolist(),
                        features=[s["features"] for s in st["areas"]],
                        secs=round(time.time() - t0, 1))
             if any(a.__dict__.get("pc") for a in net.areas):
@@ -345,7 +348,7 @@ def run_one(name: str, depth: int, seed: int, n_train: int, n_val: int, n_test: 
                 row["gain"] = [float(getattr(a, "gain_avg", np.nan)) for a in net.areas]
             timeline.append(row)
             print(f"[{tag} {name} d{depth} {cond} s{seed}] {json.dumps(row)}", flush=True)
-            w_net = 0; w_probe[:] = 0; w_pe[:] = 0; w_n = 0
+            w_net = 0; w_probe[:] = 0; w_pe[:] = 0; w_n = 0; w_loc[:] = 0
     train_secs = time.time() - t0
     val = evaluate(net, probes, E, Xva[:n_val], yva[:n_val], collect=min(n_cka, n_val))
     test = evaluate(net, probes, E, Xte[:n_test], yte[:n_test], extra=extra_eval) if n_test else {}
