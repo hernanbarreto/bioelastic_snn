@@ -380,9 +380,44 @@ def test_identical_to_reference(name):
     _compare(name, SCENARIOS[name]())
 
 
+@pytest.mark.parametrize("name", ["layer_dense", "layer_sparse", "layer_columns", "net", "cortex_deep",
+                                  "cortex_wide", "thinker"])
+def test_identical_with_inverted_index_forced(name, monkeypatch):
+    """Con el índice invertido forzado en toda columna, las salidas siguen idénticas."""
+    for attr, v in (("SPARSE_MIN_NEURONS", 1), ("SPARSE_MIN_SYNAPSES", 1),
+                    ("SPARSE_MAX_ACTIVE", 1.0), ("SPARSE_MAX_TOUCHED", np.inf)):
+        monkeypatch.setattr(ElasticLayer, attr, v)
+    calls = []
+    orig = ElasticLayer._sparse_pass
+    monkeypatch.setattr(ElasticLayer, "_sparse_pass",
+                        lambda self, *a: calls.append(1) or orig(self, *a))
+    _compare(name, SCENARIOS[name]())
+    assert calls                                          # la ruta dispersa se usó de verdad
+
+
+
+
+@pytest.mark.parametrize("name", ["cortex_deep", "cortex_wide"])
+def test_identical_with_parallel_workers(name, monkeypatch):
+    """Con dos hilos (áreas de asociación sobre la entrada en paralelo con la jerarquía),
+    las salidas siguen idénticas."""
+    init = Cortex.__init__
+    used = []
+
+    def init2(self, *a, **kw):
+        init(self, *a, **kw)
+        self.workers = 2
+        used.append(self)
+    monkeypatch.setattr(Cortex, "__init__", init2)
+    _compare(name, SCENARIOS[name]())
+    assert used and all(c._pool is not None for c in used)
+
+
 if __name__ == "__main__":
     if "--regen" in sys.argv:
         GOLDEN.mkdir(exist_ok=True)
         for name, fn in SCENARIOS.items():
+            if "--only" in sys.argv and name not in sys.argv:
+                continue
             np.savez_compressed(GOLDEN / f"{name}.npz", **fn())
             print("golden", name)

@@ -73,28 +73,46 @@ class FeatureArea:
 
     # ------------------------------------------------------------------ pase
     def encode(self, X: np.ndarray) -> np.ndarray:
-        """Lámina de entrada (H, W, C) -> código disperso (ph, pw, F)."""
+        """Lámina de entrada (H, W, C) -> código disperso (ph, pw, F).
+
+        Las posiciones sin energía suficiente (`valid` falso) dan código nulo: la
+        competencia, el umbral y el pooling se calculan sólo sobre las válidas. El
+        producto con el diccionario se hace completo, como siempre: un producto sobre un
+        subconjunto de filas puede cambiar los bits del resultado según la ruta de BLAS.
+        """
         H, W, C = self.in_shape
         P = self.oh * self.ow
         Pm = np.asarray(X, dtype=np.float32).reshape(H * W, C)[self._gather].reshape(P, self.D)
         norms = np.sqrt(np.einsum("pd,pd->p", Pm, Pm))
         mx = float(norms.max())
         valid = norms >= max(self.min_energy * mx, 1e-6)
+        vr = np.flatnonzero(valid)
         n = self.n
         act = None
         code = np.zeros(self.out_shape, dtype=np.float32)
         if n and mx > 0:
-            act = (Pm @ self.W[:n].T) / np.maximum(norms, 1e-6)[:, None]
-            act[~valid] = 0.0
-            out = act
+            full = Pm @ self.W[:n].T
+            rows = vr
+            if self.floor < 0.0:                                  # el código no es nulo fuera de `valid`
+                full /= np.maximum(norms, 1e-6)[:, None]
+                full[~valid] = 0.0
+                rows = np.arange(P); a_rows = full; act = full[vr]
+            else:
+                act = a_rows = full[vr] / np.maximum(norms[vr], 1e-6)[:, None]
+            out = a_rows
             if n > self.k:                                        # inhibición lateral: k rasgos por posición
-                kth = np.partition(act, n - self.k, axis=1)[:, n - self.k]
-                out = np.where(act >= kth[:, None], act, 0.0)
+                kth = np.partition(a_rows, n - self.k, axis=1)[:, n - self.k]
+                out = np.where(a_rows >= kth[:, None], a_rows, 0.0)
             out = np.maximum(out - self.floor, 0.0) * np.float32(1.0 / (1.0 - self.floor))
+            if len(rows) < P:
+                sheet = np.zeros((P, n), dtype=np.float32)
+                sheet[rows] = out
+            else:
+                sheet = out
             ph, pw = self.ph, self.pw; a, b = self.pool
-            out = out.reshape(self.oh, self.ow, n)[:ph * a, :pw * b]
-            code[:, :, :n] = out.reshape(ph, a, pw, b, n).max(axis=(1, 3))   # células complejas
-        self._cache = (Pm, norms, valid, act)
+            o = sheet.reshape(self.oh, self.ow, n)[:ph * a, :pw * b].reshape(ph, a, pw * b * n)
+            code[:, :, :n] = o.max(axis=1).reshape(ph, pw, b, n).max(axis=2)   # células complejas
+        self._cache = (Pm, norms, vr, act)
         return code
 
     # ------------------------------------------------------------------ plasticidad
@@ -102,7 +120,7 @@ class FeatureArea:
         """Actualiza el diccionario con la última lámina vista (no supervisado)."""
         if not self.plastic or self._cache is None:
             return
-        Pm, norms, valid, act = self._cache
+        Pm, norms, vr, act = self._cache
         self._cache = None
         self.t += 1
         n = self.n
@@ -110,19 +128,20 @@ class FeatureArea:
             best = act.argmax(axis=1)
             bc = act[np.arange(len(best)), best]
         else:
-            best = np.zeros(len(norms), dtype=np.int64); bc = np.zeros(len(norms), dtype=np.float32)
-        sel = valid & (bc >= self.theta)
-        if sel.any():                                             # STDP promediado sobre la lámina
-            b = best[sel]
-            M = np.zeros((n, self.D), dtype=np.float32)
-            np.add.at(M, b, Pm[sel] / norms[sel, None])
-            cnt = np.bincount(b, minlength=n)
-            u = np.flatnonzero(cnt)
+            best = np.zeros(len(vr), dtype=np.int64); bc = np.zeros(len(vr), dtype=np.float32)
+        ok = bc >= self.theta
+        sel = vr[ok]                                              # posiciones válidas reconocidas
+        if len(sel):                                              # STDP promediado sobre la lámina
+            b = best[ok]
+            u, inv = np.unique(b, return_inverse=True)            # sólo los rasgos que ganaron
+            M = np.zeros((len(u), self.D), dtype=np.float32)
+            np.add.at(M, inv, Pm[sel] / norms[sel, None])         # mismo orden de suma que antes
+            cnt = np.bincount(inv, minlength=len(u))
             eta = np.maximum(self.lr_min, self.lr / (1.0 + self.wins[u] / self.lr_half)).astype(np.float32)
-            Wn = (1.0 - eta)[:, None] * self.W[u] + eta[:, None] * (M[u] / cnt[u, None])
+            Wn = (1.0 - eta)[:, None] * self.W[u] + eta[:, None] * (M / cnt[:, None])
             self.W[u] = Wn / np.maximum(np.linalg.norm(Wn, axis=1, keepdims=True), 1e-8)
             self.wins[u] += 1
-        nov = np.flatnonzero(valid & (bc < self.theta))
+        nov = vr[bc < self.theta]
         if len(nov):                                              # neurogénesis por novedad
             nov = nov[np.argsort(-norms[nov])][:16]               # primero los parches con más energía
             fresh = []

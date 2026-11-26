@@ -15,10 +15,17 @@ Profundidad y anchura son elásticas y configurables:
 
 No hay backprop: las áreas sensoriales aprenden sin supervisión y las de asociación con
 la regla de tres factores. Agregar un área nueva no borra lo que saben las demás.
+
+Paralelismo (`workers` > 1): las áreas de asociación que leen la entrada cruda no
+dependen de las áreas sensoriales, así que su pase y su aprendizaje corren en otro hilo
+mientras la jerarquía codifica o aprende. Los resultados no cambian: cada hilo toca sólo
+su propio estado y las sumas se hacen en el mismo orden. La ganancia está limitada por
+el GIL (sólo las operaciones NumPy grandes lo liberan).
 """
 from __future__ import annotations
 
 import json
+from concurrent.futures import ThreadPoolExecutor
 
 import numpy as np
 
@@ -30,7 +37,7 @@ from .readout import Readout
 class Cortex:
     def __init__(self, input_shape, n_outputs: int, *, areas=(), heads=({},), projection=None,
                  replay: float = 0.0, joint: bool = True, temperature: float = 0.25,
-                 seed: int = 0):
+                 seed: int = 0, workers: int = 1):
         self._config = dict(input_shape=input_shape, n_outputs=int(n_outputs),
                             areas=[dict(a) for a in areas], heads=[],
                             projection=projection, replay=float(replay), joint=bool(joint),
@@ -63,6 +70,8 @@ class Cortex:
             self.proj = Readout(self.C, capacity=n_in, **{"consolidation": 0.0, "lr": 0.5, **spec})
             self.proj.n = n_in
         self._V = None; self.pred = 0; self._pv = None
+        self.workers = int(workers)    # hilos (no es parte del modelo: no se guarda)
+        self._pool = None
 
     # ------------------------------------------------------------------ estructura
     def _input_size(self) -> int:
@@ -107,21 +116,41 @@ class Cortex:
         idxs, vals = [], []
         for i, off in parts:
             c = codes[i].ravel()
-            idx = np.flatnonzero(c)
+            idx = np.flatnonzero(c != 0)                      # (sobre bool es ~10x más rápido)
             idxs.append(idx + off); vals.append(c[idx])
         if len(idxs) == 1:
             return idxs[0], vals[0]
         return np.concatenate(idxs), np.concatenate(vals)
 
+    def _parallel(self):
+        """Ejecutor y áreas de asociación que leen la entrada cruda, si hay con qué
+        superponer trabajo; si no, (None, [])."""
+        if self.workers < 2 or not self.areas:
+            return None, []
+        indep = [i for i, src in enumerate(self._src) if not self._offsets(src)]
+        if not indep:
+            return None, []
+        if self._pool is None:
+            self._pool = ThreadPoolExecutor(max_workers=self.workers - 1)
+        return self._pool, indep
+
     def forward(self, x, explore: bool = False) -> int:
+        pool, indep = self._parallel()
+        job = None
+        if pool is not None:                                  # en paralelo con la jerarquía
+            job = pool.submit(lambda: [self.heads[i].forward(x) for i in indep])
         codes = []
         if self.areas:
             X = np.asarray(x, dtype=np.float32).reshape(self.input_shape)
             for a in self.areas:
                 X = a.encode(X); codes.append(X)
+        for i, (head, src) in enumerate(zip(self.heads, self._src)):
+            if job is None or i not in indep:
+                head.forward(self._volley(src, x, codes))
+        if job is not None:
+            job.result()
         V = np.zeros(self.C, dtype=np.float32)
-        for head, src in zip(self.heads, self._src):
-            head.forward(self._volley(src, x, codes))
+        for head in self.heads:                               # mismo orden de suma
             V = V + head._last.V
         if self.proj is not None:
             idx, val = self._volley(self._proj_src, x, codes)
@@ -142,15 +171,36 @@ class Cortex:
         e = np.exp((self._V - self._V.max()) / self.temperature)
         return e / e.sum()
 
+    def _learn_areas_and(self, fn):
+        """Aprendizaje de las áreas sensoriales (en otro hilo) mientras en este corre
+        `fn(i)` para las áreas de asociación que leen la entrada cruda. Devuelve cuáles ya
+        se hicieron; las demás deben esperar, porque el reuso de un rasgo puede cortar sus
+        sinapsis (`_on_reuse`)."""
+        pool, par = self._parallel()
+        if pool is None:
+            for a in self.areas:
+                a.learn()
+            return []
+        job = pool.submit(lambda: [a.learn() for a in self.areas])
+        try:
+            for i in par:
+                fn(i)
+        finally:
+            job.result()
+        return par
+
     def teach(self, target: int):
-        for a in self.areas:
-            a.learn()
-        p = self._p()
-        for head in self.heads:
+        p = self._p()                                         # no depende del aprendizaje de las áreas
+
+        def one(i):
             if self.joint:
-                head.teach(target, pred=self.pred, p=p)
+                self.heads[i].teach(target, pred=self.pred, p=p)
             else:                                             # cada área aprende de su propio error
-                head.teach(target)
+                self.heads[i].teach(target)
+        done = self._learn_areas_and(one)
+        for i in range(len(self.heads)):
+            if i not in done:
+                one(i)
         if self.proj is not None:
             self.proj.learn(*self._pv, target, p=p)
             if self.replay > 0.0:
@@ -190,20 +240,22 @@ class Cortex:
         self.replays += 1
 
     def reinforce(self, reward: float):
-        for a in self.areas:
-            a.learn()
         p = self._p()
-        for head in self.heads:
-            head.reinforce(reward, pred=self.pred, p=p)
+        one = lambda i: self.heads[i].reinforce(reward, pred=self.pred, p=p)
+        done = self._learn_areas_and(one)
+        for i in range(len(self.heads)):
+            if i not in done:
+                one(i)
         if self.proj is not None:
             self.proj.learn_reward(*self._pv, self.pred, reward, p=p)
 
     def observe(self, x):
         self.forward(x)
-        for a in self.areas:
-            a.learn()
-        for head in self.heads:
-            head.observe()
+        one = lambda i: self.heads[i].observe()
+        done = self._learn_areas_and(one)
+        for i in range(len(self.heads)):
+            if i not in done:
+                one(i)
 
     def step(self, x, target: int) -> int:
         pred = self.forward(x)
