@@ -139,3 +139,20 @@ def test_cortex_cost_counts_evaluated_not_stored_synapses():
     L = net.heads[0].layer
     assert c["parts"]["head0"]["macs"] == L.n * int(L.fill[:L.n].max())
     assert c["macs_per_training_step"] > c["macs_per_inference"]          # el repaso cuesta
+
+
+
+def test_merge_eviction_keeps_the_inverted_index_exact():
+    """La fusión al desalojar reescribe aferentes de una neurona: el pase con índice
+    tiene que seguir dando lo mismo que el pase denso."""
+    rng = np.random.default_rng(11)
+    D = 4000
+
+    def make():
+        L = ElasticLayer(D, fan_in=16, theta=0.3, max_neurons=40, evict="merge")
+        L.group_of = lambda: np.zeros(L.n, dtype=np.int64)
+        return L
+    stream = [(np.sort(rng.choice(D, 12, replace=False)), rng.random(12).astype(np.float32) + 0.1)
+              for _ in range(400)]
+    used = _lockstep(make, stream)
+    assert used > 0

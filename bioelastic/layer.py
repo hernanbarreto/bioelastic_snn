@@ -13,8 +13,14 @@ Plasticidad estructural a dos niveles:
   * Neuronas: `recruit` imprime la volea actual en una neurona nueva (quién decide
     cuándo es la red: novedad o error). Una neurona nueva que no vuelve a ser útil
     antes de `probation` pasos muere (`maintain`). La tasa de STDP de cada neurona
-    decae con su uso (consolidación). Con `max_neurons`, reclutar desaloja a la de
-    menor utilidad reciente.
+    decae con su uso (consolidación). Con `max_neurons`, reclutar exige liberar lugar:
+      evict="utility"  desaloja a la de menor utilidad reciente (la que menos se usó
+                       últimamente: las clases ausentes pierden primero).
+      evict="merge"    funde las dos neuronas más parecidas del grupo (clase preferida)
+                       con más neuronas. El recuerdo no se borra: se comprime. Es el
+                       mantenimiento de presupuesto por fusión de los SVM con presupuesto
+                       (Wang, Crammer y Vucetic 2012), con cupo parejo entre clases como
+                       el muestreador de GDumb (Prabhu et al. 2020).
 
 Rendimiento. El pase denso evalúa todas las neuronas vivas (costo n x fan-in). Con
 entrada dispersa (pocas aferentes activas respecto de D) se usa un índice invertido
@@ -59,7 +65,8 @@ class ElasticLayer:
                  lr: float = 0.3, lr_min: float = 0.01, lr_half: float = 10.0,
                  max_neurons: int | None = None, probation: int = 20000,
                  survival_hits: int = 1, util_tau: float = 20000.0,
-                 max_candidates: int = 64, capacity: int = 256):
+                 max_candidates: int = 64, capacity: int = 256, neurogenesis: bool = True,
+                 evict: str = "utility", merge_candidates: int = 48):
         self.D = int(n_inputs)
         self.K = int(min(fan_in or 256, self.D))       # sinapsis por neurona
         self.k = int(k)
@@ -73,6 +80,13 @@ class ElasticLayer:
         self.survival_hits = int(survival_hits)
         self.util_tau = float(util_tau)
         self.max_candidates = int(max_candidates)
+        self.neurogenesis = bool(neurogenesis)     # False: no nacen neuronas (sólo plasticidad sináptica)
+        if evict not in ("utility", "merge"):
+            raise ValueError(f"evict desconocido: {evict}")
+        self.evict = evict
+        self.merge_candidates = int(merge_candidates)
+        self.merged = 0
+        self._rng = np.random.default_rng(0)
 
         self.cap = int(capacity)
         self.n = 0                      # neuronas vivas
@@ -91,6 +105,8 @@ class ElasticLayer:
         self._neg = False               # ¿algún peso pudo quedar negativo?
         self.on_add = None              # hook(j)
         self.on_remove = None           # hook(j, last): la neurona `last` pasó a la posición j
+        self.group_of = None            # () -> grupo (clase preferida) de cada neurona, -1 sin grupo
+        self.on_merge = None            # hook(a, b, alpha): b se funde en a con peso alpha para a
 
     # ------------------------------------------------------------------ memoria
     def _alloc_stats(self, cap):
@@ -430,7 +446,7 @@ class ElasticLayer:
     # ------------------------------------------------------------------ plasticidad estructural
     def recruit(self, v: Volley) -> int:
         """Neurogénesis: imprime la volea en una neurona nueva. Devuelve su índice o -1."""
-        if v.norm == 0.0:
+        if v.norm == 0.0 or not self.neurogenesis:
             return -1
         if self.max_neurons is not None and self.n >= self.max_neurons:
             if not self._evict():
@@ -467,8 +483,53 @@ class ElasticLayer:
     def _evict(self) -> bool:
         if self.n == 0:
             return False
+        if self.evict == "merge" and self.n >= 2 and self._merge_most_redundant():
+            self.evicted += 1
+            return True
         self.remove(int(np.argmin(self.utility())))
         self.evicted += 1
+        return True
+
+    def _merge_most_redundant(self) -> bool:
+        """Funde el par más parecido (coseno de pesos) dentro del grupo más numeroso."""
+        n = self.n
+        g = self.group_of() if self.group_of is not None else np.zeros(n, dtype=np.int64)
+        vals, cnt = np.unique(g, return_counts=True)
+        cnt = np.where(vals < 0, cnt * 2, cnt)                # las no comprometidas primero
+        if cnt.max() < 2:
+            return False
+        cand = np.flatnonzero(g == vals[int(np.argmax(cnt))])
+        if len(cand) > self.merge_candidates:
+            cand = self._rng.choice(cand, self.merge_candidates, replace=False)
+        kf = int(self.fill[cand].max())
+        P = self.pre[cand, :kf]; Wt = self.w[cand, :kf]
+        U, inv = np.unique(P, return_inverse=True)            # aferentes de los candidatos
+        dense = np.zeros((len(cand), len(U)), dtype=np.float32)
+        np.add.at(dense, (np.repeat(np.arange(len(cand)), kf), inv.ravel()), Wt.ravel())
+        S = dense @ dense.T
+        np.fill_diagonal(S, -np.inf)
+        a, b = np.unravel_index(int(np.argmax(S)), S.shape)
+        ja, jb = int(cand[a]), int(cand[b])
+        ma = float(self.wins[ja]) + 1.0; mb = float(self.wins[jb]) + 1.0
+        alpha = ma / (ma + mb)
+        v = alpha * dense[a] + (1.0 - alpha) * dense[b]
+        keep = np.flatnonzero(v > 0)
+        if len(keep) > self.K:
+            keep = keep[np.argpartition(-v[keep], self.K - 1)[:self.K]]
+        m = len(keep)
+        self.pre[ja] = 0; self.w[ja] = 0.0
+        self.pre[ja, :m] = U[keep]
+        self.w[ja, :m] = v[keep] / np.float32(max(float(np.sqrt(v[keep] @ v[keep])), 1e-12))
+        self.fill[ja] = m
+        self._touch(ja); self._kf = -1                 # cambió de aferentes: el índice se entera
+        u = self.utility()
+        self.util[ja] = u[ja] + u[jb]; self.util_t[ja] = self.t
+        self.wins[ja] += self.wins[jb]; self.hits[ja] += self.hits[jb]
+        self.born[ja] = min(self.born[ja], self.born[jb])
+        if self.on_merge is not None:
+            self.on_merge(ja, jb, alpha)
+        self.remove(jb)
+        self.merged += 1
         return True
 
     def remove(self, j: int):

@@ -44,12 +44,13 @@ class BioElasticNet:
     def __init__(self, n_inputs: int, n_outputs: int, *, context: int = 1, delay: float = 0.15,
                  tau: float = 0.0, grow_on_error: bool = True, rho_sup: float = 0.98,
                  anti: float = 0.3, grow_per_error: int = 4, maintain_every: int = 500,
-                 layer: dict | None = None, readout: dict | None = None, seed: int = 0):
+                 protect: bool = False, vote_tau: float = 0.0, layer: dict | None = None,
+                 readout: dict | None = None, seed: int = 0):
         self._config = dict(n_inputs=int(n_inputs), n_outputs=int(n_outputs), context=int(context),
                             delay=float(delay), tau=float(tau), grow_on_error=bool(grow_on_error),
                             rho_sup=float(rho_sup), anti=float(anti),
                             grow_per_error=int(grow_per_error), maintain_every=int(maintain_every),
-                            layer=dict(layer or {}), readout=dict(readout or {}), seed=int(seed))
+                            protect=bool(protect), vote_tau=float(vote_tau), layer=dict(layer or {}), readout=dict(readout or {}), seed=int(seed))
         self.N = int(n_inputs)
         self.tau = float(tau)
         self.context = 1 if self.tau > 0 else int(context)
@@ -59,11 +60,15 @@ class BioElasticNet:
         self.grow_per_error = int(grow_per_error)
         self.anti = float(anti)
         self.maintain_every = int(maintain_every)
+        self.protect = bool(protect)        # no tocar neuronas de clases ausentes (ver `teach`)
+        self.vote_tau = float(vote_tau)     # > 0: voto por orden de llegada (ver `_votes`)
         self.rng = np.random.default_rng(seed)
         self.layer = ElasticLayer(self.N * self.context, **(layer or {}))
         self.readout = Readout(n_outputs, **(readout or {}))
         self.layer.on_add = self._on_add
         self.layer.on_remove = self._on_remove
+        self.layer.group_of = lambda: self.readout.preferred(np.arange(self.layer.n))
+        self.layer.on_merge = self.readout.merge_inputs
         self._pending_cls: int | None = None
         self._acc: dict | None = None
         self._buf: deque = deque(maxlen=self.context)
@@ -131,7 +136,17 @@ class BioElasticNet:
 
     # ------------------------------------------------------------------ inferencia
     def _votes(self, v: Volley) -> np.ndarray:
-        h = (1.0 - v.times + _EPS).astype(np.float32)
+        """Peso del voto de cada ganadora.
+
+        Por defecto, la fuerza del spike (1 - t). Como las ganadoras llegan casi juntas
+        (t ~ 0.8-0.95), eso es casi un voto por mayoría entre las k: decide la *densidad*
+        de neuronas de cada clase cerca de la entrada, no la más parecida.
+        Con `vote_tau` > 0, el voto decae con el retraso respecto de la primera:
+        exp(-(t - t_1) / vote_tau), un código por orden de llegada (Thorpe 1998)."""
+        if self.vote_tau > 0.0 and len(v.times):
+            h = np.exp(-(v.times - v.times.min()) / self.vote_tau).astype(np.float32)
+        else:
+            h = (1.0 - v.times + _EPS).astype(np.float32)
         return h / h.sum() if len(h) else h
 
     def forward(self, frame, explore: bool = False) -> int:
@@ -172,14 +187,26 @@ class BioElasticNet:
 
         `pred` y `p` permiten que varias áreas compartan una misma decisión y un mismo
         error (el neuromodulador es global): los pasa `Cortex`.
+
+        Con `protect` (y una lectura con `active_window`), las ganadoras comprometidas con
+        una clase ausente no cambian ni su lectura ni sus pesos: el error de lo que se
+        enseña ahora no reescribe recuerdos que no se pueden contrastar. Si estorban, la
+        respuesta es una neurona nueva, no recablear la vieja.
         """
         st = self._last; v = st.v; L = self.layer; R = self.readout
         pred = st.pred if pred is None else pred
         L.tick()
         wn = v.winners
         pref = R.preferred(wn)
+        guard = np.zeros(len(wn), dtype=bool)
+        if self.protect and R.active_window > 0:
+            act = R.active()
+            guard = (pref >= 0) & (pref != target) & ~act[np.maximum(pref, 0)]
         if not v.novel:                                       # sin spike presináptico no hay plasticidad
-            R.learn(wn, st.h, target, st.V, p)
+            if guard.any():
+                R.learn(wn[~guard], st.h[~guard], target, st.V, p)
+            else:
+                R.learn(wn, st.h, target, st.V, p)
         agree = np.flatnonzero(pref == target)
         best_agree = float(v.cos[agree[0]]) if len(agree) and not v.novel else 0.0
         grow = v.novel or (self.grow_on_error and pred != target and best_agree < self.rho_sup)
@@ -189,7 +216,7 @@ class BioElasticNet:
             if len(agree):                                    # la más temprana que acierta: LTP
                 j = int(wn[agree[0]])
                 L.stdp(j, v, +1.0); L.credit(j)
-            if pref[0] >= 0 and pref[0] != target:            # la primera, si se equivoca: anti-STDP
+            if pref[0] >= 0 and pref[0] != target and not guard[0]:   # la primera, si se equivoca: anti-STDP
                 L.stdp(int(wn[0]), v, -self.anti)
         self._after_learning()
 

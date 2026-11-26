@@ -36,17 +36,23 @@ from .readout import Readout
 
 class Cortex:
     def __init__(self, input_shape, n_outputs: int, *, areas=(), heads=({},), projection=None,
-                 replay: float = 0.0, joint: bool = True, temperature: float = 0.25,
-                 seed: int = 0, workers: int = 1):
+                 replay: float = 0.0, rehearse: float = 0.0, replay_focus: str = "uniform",
+                 joint: bool = True, temperature: float = 0.25, seed: int = 0, workers: int = 1):
         self._config = dict(input_shape=input_shape, n_outputs=int(n_outputs),
                             areas=[dict(a) for a in areas], heads=[],
-                            projection=projection, replay=float(replay), joint=bool(joint),
+                            projection=projection, replay=float(replay),
+                            rehearse=float(rehearse), replay_focus=str(replay_focus),
+                            joint=bool(joint),
                             temperature=float(temperature), seed=int(seed))
         self.is_sheet = not np.isscalar(input_shape)
         self.input_shape = tuple(int(v) for v in input_shape) if self.is_sheet else int(input_shape)
         self.C = int(n_outputs)
         self.temperature = float(temperature)
         self.replay = float(replay); self._replay_debt = 0.0; self.replays = 0
+        self.rehearse = float(rehearse); self._rehearse_debt = 0.0; self.rehearsals = 0
+        if replay_focus not in ("uniform", "absent"):
+            raise ValueError(f"replay_focus desconocido: {replay_focus}")
+        self.replay_focus = replay_focus
         self.joint = bool(joint)
         self.rng = np.random.default_rng(seed)
         self.areas: list[FeatureArea] = []
@@ -107,6 +113,10 @@ class Cortex:
             for i, off in self._offsets(src):
                 if i == area:
                     head.layer.forget_afferents(ids + off)
+        if self.proj is not None:                             # la proyección también olvida ese canal
+            for i, off in self._offsets(self._proj_src):
+                if i == area:
+                    self.proj.W[:, ids + off] = 0.0
 
     # ------------------------------------------------------------------ inferencia
     def _volley(self, src, x, codes):
@@ -208,36 +218,97 @@ class Cortex:
                 while self._replay_debt >= 1.0:
                     self._replay_debt -= 1.0
                     self._replay_one()
+        if self.rehearse > 0.0:
+            self._rehearse_debt += self.rehearse
+            while self._rehearse_debt >= 1.0:
+                self._rehearse_debt -= 1.0
+                self._rehearse_one()
+
+    def _replay_source(self):
+        """Área de asociación de la que se puede repasar y en qué espacio guarda sus recuerdos.
+
+        "input": sus neuronas son patrones de entrada; el recuerdo se reactiva y recorre
+                 las áreas sensoriales (como en el sueño, sin entrenar los rasgos).
+        "code" : sus neuronas ya están en el espacio de la proyección (lee de la misma
+                 fuente); el recuerdo se usa directamente.
+        Sin ninguna de las dos, no hay de dónde repasar."""
+        usable = [(h, src) for h, src in zip(self.heads, self._src)
+                  if h.layer.n and h.context == 1 and h.tau <= 0]
+        for h, src in usable:
+            if not self._offsets(src):
+                return h, "input"
+        for h, src in usable:
+            if self._offsets(src) == self._offsets(self._proj_src):
+                return h, "code"
+        return None, None
 
     def _replay_one(self):
         """Consolidación por repetición: un recuerdo del área de asociación (el patrón que
-        guarda una de sus neuronas) se reactiva, recorre las áreas sensoriales y entrena la
-        proyección directa con la clase de esa neurona. Las clases se eligen de forma pareja,
-        así lo viejo se repasa aunque el flujo ya no lo muestre."""
-        mem = next((h for h, src in zip(self.heads, self._src) if not self._offsets(src)), None)
-        if mem is None or mem.layer.n == 0 or mem.context != 1 or mem.tau > 0:
+        guarda una de sus neuronas) se reactiva y entrena la proyección directa con la clase
+        de esa neurona. Las clases se eligen de forma pareja, así lo viejo se repasa aunque
+        el flujo ya no lo muestre. Con replay_focus="absent" (y una proyección con
+        `active_window`) se repasan sólo las clases ausentes del flujo: las presentes ya
+        reciben ejemplos reales."""
+        mem, space = self._replay_source()
+        if mem is None:
             return
         L = mem.layer
         pref = mem.readout.preferred(np.arange(L.n))
+        classes = np.unique(pref[pref >= 0])
+        if self.replay_focus == "absent" and self.proj.active_window > 0 and len(classes):
+            absent = classes[~self.proj.active()[classes]]
+            if len(absent):
+                classes = absent
+        if len(classes) == 0:
+            return
+        c = int(self.rng.choice(classes))
+        j = int(self.rng.choice(np.flatnonzero(pref == c)))
+        x = L.dense(j)
+        if space == "input":
+            X = (x / max(float(x.max()), 1e-8)).reshape(self.input_shape)
+            codes = []
+            for a in self.areas:
+                X = a.encode(X); codes.append(X)
+                a._cache = None                               # el repaso no entrena los rasgos
+            idx, val = self._volley(self._proj_src, None, codes)
+        else:
+            idx = np.flatnonzero(x > 0); val = x[idx]
+        if len(idx) == 0:
+            return
+        h = val / np.float32(max(float(np.sqrt(val @ val)), 1e-6))
+        V = self.proj.potentials(idx, h)
+        e = np.exp((V - V.max()) / self.temperature)
+        self.proj.learn(idx, h, c, p=e / e.sum(), replay=True)
+        self.replays += 1
+
+    def _rehearse_one(self):
+        """Ensayo en la propia memoria: el recuerdo de una neurona (clase elegida de forma
+        pareja) vuelve a entrar como si fuera un ejemplo, sin la neurona que lo guarda, y
+        las demás ganadoras corrigen su lectura con el error completo. Mantiene la frontera
+        con clases ausentes: las neuronas nuevas que invaden el territorio de una clase
+        vieja aprenden que ahí también vive esa clase. No crea ni mueve neuronas."""
+        mem = next((h for h, src in zip(self.heads, self._src)
+                    if not self._offsets(src) and h.context == 1 and h.tau <= 0 and h.layer.n), None)
+        if mem is None:
+            return
+        L, R = mem.layer, mem.readout
+        pref = R.preferred(np.arange(L.n))
         classes = np.unique(pref[pref >= 0])
         if len(classes) == 0:
             return
         c = int(self.rng.choice(classes))
         j = int(self.rng.choice(np.flatnonzero(pref == c)))
         x = L.dense(j)
-        X = (x / max(float(x.max()), 1e-8)).reshape(self.input_shape)
-        codes = []
-        for a in self.areas:
-            X = a.encode(X); codes.append(X)
-            a._cache = None                                   # el repaso no entrena los rasgos
-        idx, val = self._volley(self._proj_src, None, codes)
-        if len(idx) == 0:
+        idx = np.flatnonzero(x > 0); val = x[idx] / max(float(x.max()), 1e-8)
+        v = L.forward(idx, val)
+        keep = v.winners != j
+        if v.novel or not keep.any():
             return
-        h = val / np.float32(max(float(np.sqrt(val @ val)), 1e-6))
-        V = self.proj.potentials(idx, h)
-        e = np.exp((V - V.max()) / self.temperature)
-        self.proj.learn(idx, h, c, p=e / e.sum())
-        self.replays += 1
+        wn = v.winners[keep]
+        h = mem._votes(v)[keep]
+        h = h / h.sum()
+        R.learn(wn, h, c, replay=True)
+        self.rehearsals += 1
 
     def reinforce(self, reward: float):
         p = self._p()
