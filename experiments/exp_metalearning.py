@@ -33,7 +33,7 @@ Tareas
             sorteados en cada pregunta).
 
   python experiments/exp_metalearning.py <grupo> [<grupo> ...]   (OMP_NUM_THREADS=1)
-  grupos: f0
+  grupos: f0 f1
   (resultados en results/metaaprendizaje_<grupo>.csv y .json)
 """
 from __future__ import annotations
@@ -96,15 +96,20 @@ def _jsonable(x):
 
 # ---------------------------------------------------------------- Harlow
 def harlow_problem(net, rng, objs, T=6, mode="objeto", perceive=True, cue=0, explore=True,
-                   p=0.8, h=0.3, learn=True):
+                   p=0.8, h=0.3, learn=True, split=False, reverse_at=None):
     """Un problema de discriminación. Devuelve (aciertos contra el objetivo de cada ensayo,
-    aciertos contra el objeto que conviene elegir: el premiado en "ruido"/"volatil")."""
+    aciertos contra el objeto que conviene elegir: el premiado en "ruido"/"volatil", y si
+    lo más fuerte que devuelve la memoria episódica ante la pregunta es ese objeto).
+    `split`: los objetos llegan como ítems separados (por la compuerta) en vez de juntos en
+    el foco. `reverse_at`: en ese ensayo el premiado pasa a ser otro (reversión)."""
     k = len(objs)
     good = int(rng.integers(k))                       # índice del objeto (o posición) premiado
     alt = int(rng.integers(k))
-    hit, best = [], []
+    hit, best, mem = [], [], []
     net.reset()
     for t in range(T):
+        if reverse_at is not None and t == reverse_at:
+            good = (good + 1 + int(rng.integers(k - 1))) % k
         q = [objs[i] for i in rng.permutation(k)]
         if mode == "objeto":
             y = objs[good]
@@ -120,48 +125,70 @@ def harlow_problem(net, rng, objs, T=6, mode="objeto", perceive=True, cue=0, exp
             y = objs[(alt + t) % k]
         else:
             raise ValueError(mode)
-        out = net.answer(tuple(q), cue=cue, explore=explore)
+        want = objs[good] if mode in ("ruido", "volatil") else y
+        if net.fast is not None:
+            mem.append(net._best(net.fast.recall(tuple(q))) == want)
+        if split:
+            out = net.answer(q[0], cue=cue, explore=explore, probe=q[1], extra=tuple((x,) for x in q[2:]))
+        else:
+            out = net.answer(tuple(q), cue=cue, explore=explore)
         hit.append(out == y)
-        best.append(out == (objs[good] if mode in ("ruido", "volatil") else y))
+        best.append(out == want)
         if learn:
             net.feedback(target=y)
         if perceive:
             net.observe(tuple(q)); net.observe(y); net.observe(None)
         if mode == "volatil" and rng.random() < h:
             good = (good + 1 + int(rng.integers(k - 1))) % k
-    return hit, best
+    return hit, best, mem
 
 
 def run_harlow(make, P, seeds=SEEDS, T=6, k=2, mode="objeto", perceive=True, n_test=100,
-               test_mode=None, **kw):
+               test_mode=None, tests=(), **kw):
     """Entrena con P problemas por semilla (en línea) y prueba congelado con `n_test`
-    problemas nuevos. Devuelve dict con curvas por semilla."""
+    problemas nuevos. `tests`: pruebas congeladas adicionales [(nombre, dict con k, T,
+    mode, reverse_at...)], cada una con `n_test` problemas nuevos, en orden y sobre la red
+    congelada al final del entrenamiento. Devuelve dict con curvas por semilla."""
     out = dict(online=[], online_best=[], frozen=[], seconds=[], answers=[])
+    tests = list(tests)
+    out["tests"] = {name: [] for name, _ in tests}
+    kmax = max([k] + [t.get("k", k) for _, t in tests])
     for seed in seeds:
         rng = np.random.default_rng(1000 + seed)
-        net = make(seed, (P + n_test) * k + 2)
-        sup = Supply((P + n_test) * k, rng)
+        n_obj = (P + n_test) * k + n_test * kmax * len(tests)
+        net = make(seed, n_obj + 2)
+        sup = Supply(n_obj, rng)
         t0 = time.time()
         acc = np.zeros((P, T)); accb = np.zeros((P, T))
         for i in range(P):
-            a, b = harlow_problem(net, rng, sup.take(k), T, mode, perceive, **kw)
+            a, b, _ = harlow_problem(net, rng, sup.take(k), T, mode, perceive, **kw)
             acc[i] = a; accb[i] = b
         dt = time.time() - t0
         net.reset(); net.plastic = False
+        # congelado: `feedback` se sigue llamando (con plastic=False no aprende nada, pero la
+        # recompensa es entrada del estado con `prev_io`)
         fr = np.array([harlow_problem(net, rng, sup.take(k), T, test_mode or mode, perceive,
-                                      explore=False, learn=False, **kw)[1] for _ in range(n_test)])
+                                      explore=False, **kw)[1] for _ in range(n_test)])
+        for name, t in tests:
+            t = dict(t); kk = t.pop("k", k); TT = t.pop("T", T); mm = t.pop("mode", mode)
+            kw2 = dict(kw); kw2.update(t)
+            out["tests"][name].append(np.array([harlow_problem(net, rng, sup.take(kk), TT, mm, perceive,
+                                                               explore=False, **kw2)[1] for _ in range(n_test)]))
         out["online"].append(acc); out["online_best"].append(accb); out["frozen"].append(fr)
         out["seconds"].append(dt); out["answers"].append(P * T)
-    return {key: np.array(v) for key, v in out.items()}
+    res = {key: np.array(v) for key, v in out.items() if key != "tests"}
+    res["tests"] = {name: np.array(v) for name, v in out["tests"].items()}
+    return res
 
 
 # ---------------------------------------------------------------- estructura
 def line_block(net, rng, syms, YES, NO, R=3, struct="linea", perceive=True, explore=True,
-               learn=True, n_before=6, extra=None, queries=(1, 2, 3)):
+               learn=True, n_before=6, extra=None, queries=(1, 2, 3), end=None):
     """Un bloque de transferencia de estructura. `syms`: los L símbolos del bloque (orden
     oculto). `extra`: símbolos fuera del bloque (para "funcion"). Devuelve un dict con
     aciertos por tipo de pregunta (en su primera aparición) y errores de la fase de
-    aprendizaje."""
+    aprendizaje. `end`: símbolo FIN; si se da, en la línea también se pregunta qué sigue al
+    último (objetivo FIN), la misma pregunta que en el anillo es el cierre."""
     L = len(syms)
     edges = [(i, i + 1) for i in range(L - 1)]
     if struct == "anillo":
@@ -199,6 +226,8 @@ def line_block(net, rng, syms, YES, NO, R=3, struct="linea", perceive=True, expl
     res = dict(errors=float(len(seq) - sum(seq)), ttc=float(_ttc(seq)))
     if hidden is not None:                                # cierre del anillo
         res["closure"] = float(ask(syms[hidden[0]], 0, syms[hidden[1]]))
+    elif end is not None and struct == "linea":           # ¿qué sigue al último? FIN
+        res["closure"] = float(ask(syms[L - 1], 0, end))
     order = list(range(L)) if struct != "anillo" else None
     if 1 in queries and order is not None:
         pairs = [(i, j) for i in range(L) for j in range(L) if abs(i - j) >= 2]
@@ -238,36 +267,49 @@ def _ttc(seq):
 
 
 def run_line(make, B, seeds=SEEDS, L=5, R=3, struct="linea", perceive=True, n_test=50,
-             test_struct=None, **kw):
+             test_struct=None, tests=(), schedule=None, use_end=False, **kw):
+    """Entrena con B bloques por semilla y prueba congelado con `n_test` bloques nuevos.
+    `tests`: pruebas congeladas adicionales [(nombre, dict con L, R, struct)].
+    `schedule`: función bloque -> estructura (para cambiar de estructura a mitad)."""
     out = {}
+    tests = list(tests)
+    Lmax = max([L] + [t.get("L", L) for _, t in tests])
     for seed in seeds:
         rng = np.random.default_rng(2000 + seed)
-        n = (B + n_test) * L * (2 if struct == "funcion" or test_struct == "funcion" else 1)
-        net = make(seed, n + 2)
+        n = (B + n_test) * L * (2 if "funcion" in (struct, test_struct) else 1)
+        n += n_test * len(tests) * Lmax * 2
+        net = make(seed, n + (3 if use_end else 2))
         YES, NO = n, n + 1
+        if use_end:
+            kw["end"] = n + 2
         sup = Supply(n, rng)
         t0 = time.time()
         rows = []
-        for _ in range(B):
+        for b in range(B):
+            st = schedule(b) if schedule is not None else struct
             syms = sup.take(L)
-            extra = sup.take(L) if struct == "funcion" else None
-            rows.append(line_block(net, rng, syms, YES, NO, R, struct, perceive, extra=extra, **kw))
+            extra = sup.take(L) if st == "funcion" else None
+            rows.append(line_block(net, rng, syms, YES, NO, R, st, perceive, extra=extra, **kw))
         dt = time.time() - t0
         net.reset(); net.plastic = False
-        ts = test_struct or struct
-        frows = []
-        for _ in range(n_test):
-            syms = sup.take(L)
-            extra = sup.take(L) if ts == "funcion" else None
-            frows.append(line_block(net, rng, syms, YES, NO, R, ts, perceive, explore=False,
-                                    learn=False, extra=extra, **kw))
-        for key in rows[0]:
-            out.setdefault("online_" + key, []).append([r[key] for r in rows])
-        for key in frows[0]:
-            out.setdefault("frozen_" + key, []).append(float(np.mean([r[key] for r in frows])))
+        for name, t in [("", dict(L=L, R=R, struct=test_struct or (schedule(B - 1) if schedule else struct)))] + tests:
+            frows = []
+            for _ in range(n_test):
+                LL = t.get("L", L); ts = t.get("struct", struct)
+                syms = sup.take(LL)
+                extra = sup.take(LL) if ts == "funcion" else None
+                frows.append(line_block(net, rng, syms, YES, NO, t.get("R", R), ts, perceive,
+                                        explore=False, extra=extra, **kw))
+            pre = "frozen_" + (name + " | " if name else "")
+            for key in frows[0]:
+                out.setdefault(pre + key, []).append(float(np.mean([r[key] for r in frows])))
+        keys = sorted(set(k for r in rows for k in r))
+        for key in keys:
+            out.setdefault("online_" + key, []).append([r.get(key, np.nan) for r in rows])
         out.setdefault("seconds", []).append(dt)
         out.setdefault("say_neurons", []).append(net.say.layer.n)
-    return {k: np.array(v) for k, v in out.items()}
+        out.setdefault("decisions", []).append(net.stats())
+    return {k: (np.array(v) if k != "decisions" else v) for k, v in out.items()}
 
 
 # ---------------------------------------------------------------- informes
@@ -300,7 +342,8 @@ def report_line(log, name, system, res, width):
     summ = {}
     for key in sorted(res):
         if key.startswith("online_"):
-            b = np.array([bins(a, width) for a in res[key]])
+            b = np.array([np.nanmean(np.asarray(a, dtype=float)[:len(a) // width * width].reshape(-1, width), 1)
+                          for a in res[key]])
             m, s = ms(b)
             summ[key + "_bins_mean"] = m; summ[key + "_bins_sd"] = s
             for i in (0, len(m) // 2, len(m) - 1):
@@ -311,6 +354,7 @@ def report_line(log, name, system, res, width):
             summ[key] = res[key]
             log.row(name, system, "congelado, bloques nuevos", key[7:], float(m), float(s), len(res[key]))
     summ["say_neurons"] = res["say_neurons"]
+    summ["decisions"] = res.get("decisions")
     summ["width"] = width
     return summ
 
@@ -344,7 +388,172 @@ def group_f0():
     dump("f0", summary)
 
 
-GROUPS = {"f0": group_f0}
+# ---------------------------------------------------------------- F1
+REGIMES = {"S": ("ruido", dict(p=0.7)), "V": ("volatil", dict(h=0.2))}
+
+
+def run_regimes(make, P, seeds=SEEDS, T=12, block=25, test_blocks=4, skip=5, pretrain=0,
+                freeze_control=False, explore=True):
+    """Problemas de Harlow con dos regímenes que se alternan en tramos de `block` problemas:
+    S (estable y ruidoso: el premiado sale con p=0.7; conviene integrar) y V (volátil y
+    determinista: el premiado cambia con h=0.2 tras cada ensayo; conviene quedarse con lo
+    último). Medidas, ensayos 2..T: elegir el objeto premiado (no el objetivo ruidoso) y
+    que lo más fuerte de la memoria episódica sea el premiado (lo que controla la tasa de
+    ligadura, sin el ruido del control). Prueba congelada: `test_blocks` tramos alternados;
+    se miden desde el problema `skip` de cada tramo (las señales necesitan unos problemas
+    para reflejar el régimen).
+
+    `pretrain`: problemas de Harlow determinista antes (para que el control aprenda a usar
+    la memoria). `freeze_control`: después del preentrenamiento, el control deja de
+    aprender (lr=0) y responde sin explorar: sólo aprende el meta-controlador."""
+    out = dict(online=[], online_mem=[], regime=[], rate=[], params=[], frozen=[], frozen_mem=[],
+               frozen_rate=[], seconds=[], noisy=[], noisy_rate=[])
+    for seed in seeds:
+        rng = np.random.default_rng(3000 + seed)
+        n_obj = 2 * (pretrain + P + 2 * test_blocks * block)
+        net = make(seed, n_obj + 2)
+        sup = Supply(n_obj, rng)
+        for _ in range(pretrain):
+            harlow_problem(net, rng, sup.take(2), T, "objeto", True)
+        if freeze_control:                      # la contracción L1 del control no depende de lr:
+            net.lr = 0.0; net.decay = 0.0       # sin decay=0 el control se borraba solo (todo DECIR)
+            explore = False
+        if hasattr(net, "trace"):
+            net.trace = []
+        reg = ["S" if (i // block) % 2 == 0 else "V" for i in range(P)]
+        acc = np.zeros(P); macc = np.zeros(P); rates = np.zeros(P); t0 = time.time()
+        for i in range(P):
+            mode, kw = REGIMES[reg[i]]
+            _, best, mem = harlow_problem(net, rng, sup.take(2), T, mode, True, explore=explore, **kw)
+            acc[i] = np.mean(best[1:]); macc[i] = np.mean(mem[1:])
+            rates[i] = net.fast.rate if hasattr(net.fast, "rate") else 1.0
+        out["seconds"].append(time.time() - t0)
+        tr = getattr(net, "trace", [])[:P]                      # meta-parámetros de cada problema
+        last = range(2 * P // 3, len(tr))
+        out["params"].append({r: {k: float(np.mean([tr[i][k] for i in last if reg[i] == r]))
+                                  for k in (tr[0] if tr else {})} for r in ("S", "V")})
+        net.reset(); net.plastic = False
+        fr = {"S": [], "V": []}; fm = {"S": [], "V": []}; frr = {"S": [], "V": []}
+        for b in range(test_blocks):
+            r = "S" if b % 2 == 0 else "V"
+            mode, kw = REGIMES[r]
+            for j in range(block):
+                _, best, mem = harlow_problem(net, rng, sup.take(2), T, mode, True, explore=False, **kw)
+                if j >= skip:
+                    fr[r].append(np.mean(best[1:])); fm[r].append(np.mean(mem[1:]))
+                    frr[r].append(net.fast.rate if hasattr(net.fast, "rate") else 1.0)
+        if getattr(net, "meta", None) is not None:
+            # la misma prueba congelada, pero el meta-controlador sigue sorteando con ruido (sin
+            # aprender): ¿la trampa de lazo cerrado desaparece con la exploración?
+            net.meta_noise_frozen = True
+            nz = {"S": [], "V": []}; nzr = {"S": [], "V": []}
+            for b in range(test_blocks):
+                r = "S" if b % 2 == 0 else "V"
+                mode, kw = REGIMES[r]
+                for j in range(block):
+                    _, best, _ = harlow_problem(net, rng, sup.take(2), T, mode, True, explore=False, **kw)
+                    if j >= skip:
+                        nz[r].append(np.mean(best[1:])); nzr[r].append(net.fast.rate)
+            net.meta_noise_frozen = False
+            out["noisy"].append({r: float(np.mean(v)) for r, v in nz.items()})
+            out["noisy_rate"].append({r: float(np.mean(v)) for r, v in nzr.items()})
+        out["online"].append(acc); out["online_mem"].append(macc); out["regime"].append(reg)
+        out["rate"].append(rates)
+        out["frozen"].append({r: float(np.mean(v)) for r, v in fr.items()})
+        out["frozen_mem"].append({r: float(np.mean(v)) for r, v in fm.items()})
+        out["frozen_rate"].append({r: float(np.mean(v)) for r, v in frr.items()})
+    return out
+
+
+def report_regimes(log, name, system, res):
+    summ = {}
+    P = len(res["online"][0])
+    last = slice(2 * P // 3, P)
+
+    def by(key, r):
+        return [float(np.mean(a[last][np.array(g[last]) == r])) for a, g in zip(res[key], res["regime"])]
+    for r in ("S", "V"):
+        on, onm, rt = by("online", r), by("online_mem", r), by("rate", r)
+        fz = [f[r] for f in res["frozen"]]; fzm = [f[r] for f in res["frozen_mem"]]
+        fr = [f[r] for f in res["frozen_rate"]]
+        for label, v, what in (("en línea, último tercio", on, "elige el premiado"),
+                               ("congelado", fz, "elige el premiado"),
+                               ("en línea, último tercio", onm, "memoria da el premiado"),
+                               ("congelado", fzm, "memoria da el premiado"),
+                               ("en línea, último tercio", rt, "tasa de ligadura"),
+                               ("congelado", fr, "tasa de ligadura")):
+            log.row(name, system, label, f"{what}, régimen {r}", float(np.mean(v)), float(np.std(v)), len(v))
+        summ[r] = dict(online_last_third=on, online_mem_last_third=onm, frozen=fz, frozen_mem=fzm,
+                       rate_online=rt, rate_frozen=fr)
+    for key, what in (("frozen", "elige el premiado"), ("frozen_mem", "memoria da el premiado")):
+        both = [float(np.mean([summ["S"][key][i], summ["V"][key][i]])) for i in range(len(res["frozen"]))]
+        log.row(name, system, "congelado", f"{what}, promedio S y V", float(np.mean(both)), float(np.std(both)), len(both))
+        summ[key + "_mean_SV"] = both
+    if res["noisy"]:
+        for r in ("S", "V"):
+            v = [f[r] for f in res["noisy"]]; vr = [f[r] for f in res["noisy_rate"]]
+            log.row(name, system, "congelado, meta-controlador con ruido", f"elige el premiado, régimen {r}", float(np.mean(v)), float(np.std(v)), len(v))
+            log.row(name, system, "congelado, meta-controlador con ruido", f"tasa de ligadura, régimen {r}", float(np.mean(vr)), float(np.std(vr)), len(vr))
+            summ[r]["frozen_meta_noise"] = v; summ[r]["rate_frozen_meta_noise"] = vr
+        both = [float(np.mean([f["S"], f["V"]])) for f in res["noisy"]]
+        log.row(name, system, "congelado, meta-controlador con ruido", "elige el premiado, promedio S y V", float(np.mean(both)), float(np.std(both)), len(both))
+        summ["frozen_meta_noise_mean_SV"] = both
+    summ["seconds"] = res["seconds"]
+    summ["params_last_third"] = res["params"]
+    for r in ("S", "V"):
+        for k in (res["params"][0][r] if res["params"] else {}):
+            if k != "rate":
+                v = [p[r][k] for p in res["params"]]
+                log.row(name, system, "en línea, último tercio", f"{k}, régimen {r}", float(np.mean(v)), float(np.std(v)), len(v))
+    summ["rate_by_problem_mean"] = np.mean(np.array(res["rate"]), 0)
+    return summ
+
+
+def make_meta(**over):
+    from bioelastic.metalearning import MetaThinker
+
+    def make(seed, n):
+        kw = dict(BASE); kw.update(over)
+        return MetaThinker(n, seed=seed, **kw)
+    return make
+
+
+def group_f1():
+    from bioelastic.metalearning import PARAMS
+    log = CsvLog("metaaprendizaje_f1", HEADER)
+    summary = {}
+    P = 3000
+    default = ("exito", "sorpresa", "td", "novedad")
+    plus = default + ("persistencia",)
+    # F1a: control preentrenado (100 problemas deterministas) y congelado; sólo aprende el
+    # meta-controlador. Aísla si la tasa de ligadura se aprende y se condiciona al régimen.
+    conds = [("Thinker actual (FastMemory)", make_base())]
+    conds += [(f"tasa fija {a}", make_meta(fixed={"rate": a})) for a in (0.15, 0.3, 0.5, 1.0)]
+    conds += [
+        ("tasa aprendida, sin señales (sólo sesgo)", make_meta(meta=("rate",), signals=())),
+        ("tasa aprendida; señales: éxito, sorpresa, |td|, novedad", make_meta(meta=("rate",), signals=default)),
+        ("tasa aprendida; + persistencia de la sorpresa", make_meta(meta=("rate",), signals=plus)),
+        ("tasa y olvido aprendidos; + persistencia", make_meta(meta=("rate", "forget"), signals=plus)),
+    ]
+    for label, make in conds:
+        res = run_regimes(make, P, pretrain=100, freeze_control=True)
+        summary["F1a " + label] = report_regimes(log, "F1a harlow S/V, control congelado", label, res)
+    # F1b: todo aprende a la vez (control con exploración y meta-controlador)
+    conds = [("Thinker actual (FastMemory)", make_base()),
+             ("tasa fija 0.15", make_meta(fixed={"rate": 0.15})),
+             ("tasa fija 1.0", make_meta(fixed={"rate": 1.0})),
+             ("tasa aprendida; + persistencia", make_meta(meta=("rate",), signals=plus)),
+             ("tasa, olvido y exploración aprendidos; + persistencia",
+              make_meta(meta=("rate", "forget", "epsilon"), signals=plus)),
+             ("los 7 meta-parámetros aprendidos; + persistencia", make_meta(meta=tuple(PARAMS), signals=plus))]
+    for label, make in conds:
+        res = run_regimes(make, P, pretrain=100)
+        summary["F1b " + label] = report_regimes(log, "F1b harlow S/V, todo aprende", label, res)
+    log.close()
+    dump("f1", summary)
+
+
+GROUPS = {"f0": group_f0, "f1": group_f1}
 
 
 def main():
