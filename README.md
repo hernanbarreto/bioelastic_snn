@@ -14,7 +14,8 @@ cada corrida están en `results/`.
 > siendo **hipótesis**. El objetivo del proyecto es encontrar dónde falla: la sección
 > [Dónde falla](#dónde-falla) importa tanto como los resultados.
 > Hay rondas en curso que implementan mecanismos del aprendizaje humano
-> (ver [En curso](#en-curso-mecanismos-del-aprendizaje-humano)).
+> (ver [En curso](#en-curso-mecanismos-del-aprendizaje-humano)) y una
+> [hoja de ruta](#hoja-de-ruta-hacia-el-aprendizaje-humano) con criterios de abandono.
 
 ## Arquitectura
 
@@ -190,6 +191,45 @@ se prueban todos juntos.
 | La dopamina entrena a la prefrontal para que sea un aprendiz rápido propio | Wang et al. 2018 | **medido** (ver resultados) |
 | Mapas cognitivos: estructura relacional reutilizable | Behrens et al. 2018 | **medido** (ver resultados) |
 
+## Hoja de ruta hacia el aprendizaje humano
+
+Nadie tiene hoy un camino demostrado hasta la inteligencia humana con aprendizaje local y
+online: es un problema abierto. Esta hoja de ruta ordena el trabajo por dependencias, mide
+cada escalón contra un benchmark externo y fija de antemano qué resultado obligaría a cambiar
+el diseño.
+
+**Regla de diseño** (sale de lo medido). Antes de cambiar un peso, inferir qué causó el
+resultado —qué módulo, qué recuerdo, qué causa latente, error o novedad— y aplicar la
+plasticidad local en proporción a esa responsabilidad. Lo que funcionó la cumple: error local
+por área, crédito conjunto en la suma con imágenes, conjuntos de tareas, búsqueda
+contrafáctica que separa estrategia de conocimiento. Lo que falló la viola: crédito casilla
+por casilla, reconsolidación ante cualquier error, compuertas gobernadas por una confianza
+sin calibrar.
+
+| Escalón | Qué tiene que lograr | Medida externa | Estado |
+|---|---|---|---|
+| A. Saber cuándo se equivoca | confianza calibrada; separar error de novedad | apuesta por confianza (ratas, Kepecs 2008); ECE ≤ 0.05; AUROC ≥ 0.85 | en curso, sin resultado |
+| B. Símbolos anclados en lo que ve | crédito conjunto entre percepción y razonamiento | MNIST-addition (DeepProbLog: 97.2 % con 30 000 pares); después con la regla desconocida | preliminar: 97.6 % de sumas y 98.8 % por dígito en validación (1 semilla, 10 000 pares) |
+| C. Abstracción por niveles | que cada nivel aporte; invariancia | CIFAR-10 contra Hebb local publicado (SoftHebb: 80.3 %, con otro protocolo); sonda por nivel; desplazamientos | abierto: el nivel 2 copia al 1 |
+| D. Memoria sin interferencia | actualizar o crear según la causa inferida | Split-MNIST y Split-Fashion incremental por clases; ER-ACE con los mismos bytes | en curso |
+| E. Razonamiento composicional | generalizar a combinaciones nuevas | SCAN, bAbI; datos de personas de Lake y Baroni 2023 | asignado |
+| F. Lenguaje | predecir y componer sobre secuencias | BabyLM (10 M de palabras, escala de un niño) a escala reducida | sin empezar; hoy rinde como n-gramas |
+| G. Razonar con neuronas | memoria de trabajo y ligadura en neuronas de spikes, no en estructuras programadas | las pruebas de E, sin pérdida | sin empezar |
+| H. Actuar y explorar | elegir qué mirar y qué preguntar; metas propias | pruebas de cognición animal (igual/distinto, inferencia transitiva, Harlow); BabyAI | sin empezar |
+
+**Hardware o arquitectura.** Una capacidad sólo se da por «limitada por el hardware» si su
+curva de escalado (exactitud contra neuronas y datos, en 3 escalas o más) sigue subiendo. Si
+se aplana, el límite es de diseño y hay que corregirlo.
+
+**Criterios de abandono.**
+- C: si con ancho creciente por nivel y aprendizaje de invariancia por continuidad temporal la
+  sonda del nivel 2 no supera a la del 1, la pila de áreas hacia adelante es el diseño
+  equivocado y se reemplaza.
+- F: si a escala reducida no supera a un modelo de n-gramas con los mismos datos, el mecanismo
+  de secuencias es el equivocado.
+- G: si al pasar la memoria de trabajo a neuronas se pierde el razonamiento ya logrado, el
+  Thinker es un programa con control aprendido y no una red.
+
 ## Escala: qué significa «capacidad humana»
 
 | | Cerebro humano | Transformer abierto de referencia | Esta red |
@@ -275,3 +315,16 @@ tiny-shakespeare ([karpathy/char-rnn](https://github.com/karpathy/char-rnn)).
 - Empezar simple: Elman 1993 — https://web.cs.swarthmore.edu/~meeden/cogs1/s07/elman_cognition1993.pdf · Rohde & Plaut 1999 — https://www.cnbc.cmu.edu/~plaut/papers/pdf/RohdePlaut99Cog.startingSmall.pdf
 - Prefrontal como meta-RL: Wang et al. 2018 — https://www.nature.com/articles/s41593-018-0147-8
 - Mapas cognitivos: Behrens et al. 2018 — https://www.pubmed.gov/30359611/
+- Suma con imágenes: Manhaeve et al., DeepProbLog — https://arxiv.org/pdf/1907.08194 · Dai et al. 2019, aprendizaje abductivo — https://proceedings.neurips.cc/paper/2019/hash/9c19a2aa1d84e04b0bd4bc888792bd1e-Abstract.html · atajos de razonamiento: Marconato et al. 2023 — https://arxiv.org/pdf/2302.01242
+- Causas latentes: Gershman, Monfils, Norman & Niv 2017 — https://elifesciences.org/articles/23763v2
+- Conjuntos de tareas: Collins & Frank 2013 — https://pmc.ncbi.nlm.nih.gov/articles/PMC3974273
+- Neuromoduladores y meta-aprendizaje: Doya 2002 — https://doi.org/10.1016/S0893-6080(02)00044-8
+- Mapa estructural: Whittington et al. 2020 — https://pmc.ncbi.nlm.nih.gov/articles/PMC7707106
+- Inhibición lateral anti-Hebbiana: Földiák 1990 — https://link.springer.com/doi/10.1007/BF02331346
+- Hebb local multicapa: Journé et al. 2023, SoftHebb — https://arxiv.org/abs/2209.11883v2
+- Invariancia con plasticidad predictiva: Halvagal & Zenke 2023 — https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10620089/
+- Escalado de algoritmos biológicos: Bartunov et al. 2018 — https://arxiv.org/abs/1807.04587
+- Composicionalidad con meta-aprendizaje: Lake & Baroni 2023 — https://pmc.ncbi.nlm.nih.gov/articles/PMC10620072
+- Lenguaje con datos de escala infantil: BabyLM — https://arxiv.org/html/2504.08165v1
+- Prueba de Turing encarnada: Zador et al. 2023 — https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10033876/
+- Confianza en ratas: Kepecs et al. 2008 — https://doi.org/10.1038/nature07200 · conceptos en abejas: Giurfa et al. 2001 — https://www.doi.org/10.1038/35073582
