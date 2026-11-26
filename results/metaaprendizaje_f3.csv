@@ -1,0 +1,217 @@
+prueba,sistema,tramo,medida,media,desvio,semillas
+F3 linea,B1 (sin recorrido inverso),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | before,1.0000,0.0000,3
+F3 linea,B1 (sin recorrido inverso),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | errors,7.0000,0.0000,3
+F3 linea,B1 (sin recorrido inverso),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | inverse,0.0000,0.0000,3
+F3 linea,B1 (sin recorrido inverso),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | ttc,11.7867,0.1147,3
+F3 linea,B1 (sin recorrido inverso),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | two_step,1.0000,0.0000,3
+F3 linea,B1 (sin recorrido inverso),"congelado, bloques nuevos",R=1 (cada relación observada una vez) | before,1.0000,0.0000,3
+F3 linea,B1 (sin recorrido inverso),"congelado, bloques nuevos",R=1 (cada relación observada una vez) | errors,4.0000,0.0000,3
+F3 linea,B1 (sin recorrido inverso),"congelado, bloques nuevos",R=1 (cada relación observada una vez) | inverse,0.0000,0.0000,3
+F3 linea,B1 (sin recorrido inverso),"congelado, bloques nuevos",R=1 (cada relación observada una vez) | ttc,5.0000,0.0000,3
+F3 linea,B1 (sin recorrido inverso),"congelado, bloques nuevos",R=1 (cada relación observada una vez) | two_step,1.0000,0.0000,3
+F3 linea,B1 (sin recorrido inverso),"congelado, bloques nuevos",before,1.0000,0.0000,3
+F3 linea,B1 (sin recorrido inverso),"congelado, bloques nuevos",errors,4.0000,0.0000,3
+F3 linea,B1 (sin recorrido inverso),"congelado, bloques nuevos",inverse,0.0000,0.0000,3
+F3 linea,B1 (sin recorrido inverso),"congelado, bloques nuevos",ttc,6.0000,0.1840,3
+F3 linea,B1 (sin recorrido inverso),"congelado, bloques nuevos",two_step,1.0000,0.0000,3
+F3 linea,B1 (sin recorrido inverso),bloques 0-24,before,0.3933,0.1093,3
+F3 linea,B1 (sin recorrido inverso),bloques 150-174,before,0.8556,0.0031,3
+F3 linea,B1 (sin recorrido inverso),bloques 275-299,before,0.8400,0.0163,3
+F3 linea,B1 (sin recorrido inverso),bloques 0-24,errors,5.1600,0.1818,3
+F3 linea,B1 (sin recorrido inverso),bloques 150-174,errors,4.6533,0.1799,3
+F3 linea,B1 (sin recorrido inverso),bloques 275-299,errors,4.8000,0.0327,3
+F3 linea,B1 (sin recorrido inverso),bloques 0-24,inverse,0.0000,0.0000,3
+F3 linea,B1 (sin recorrido inverso),bloques 150-174,inverse,0.0000,0.0000,3
+F3 linea,B1 (sin recorrido inverso),bloques 275-299,inverse,0.0000,0.0000,3
+F3 linea,B1 (sin recorrido inverso),bloques 0-24,ttc,8.2000,0.3456,3
+F3 linea,B1 (sin recorrido inverso),bloques 150-174,ttc,7.6667,0.4759,3
+F3 linea,B1 (sin recorrido inverso),bloques 275-299,ttc,7.7600,0.1818,3
+F3 linea,B1 (sin recorrido inverso),bloques 0-24,two_step,0.4133,0.0475,3
+F3 linea,B1 (sin recorrido inverso),bloques 150-174,two_step,0.8356,0.0548,3
+F3 linea,B1 (sin recorrido inverso),bloques 275-299,two_step,0.8444,0.0559,3
+F3 linea,B1 (sin recorrido inverso),al final,neuronas de DECIR (conocimiento ligado a identidad),35.6667,26.9114,3
+F3 linea,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | before,0.7700,0.1703,3
+F3 linea,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | errors,7.0000,0.0000,3
+F3 linea,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | inverse,1.0000,0.0000,3
+F3 linea,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | ttc,11.7867,0.1147,3
+F3 linea,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | two_step,1.0000,0.0000,3
+F3 linea,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",R=1 (cada relación observada una vez) | before,0.8911,0.0975,3
+F3 linea,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",R=1 (cada relación observada una vez) | errors,4.0000,0.0000,3
+F3 linea,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",R=1 (cada relación observada una vez) | inverse,1.0000,0.0000,3
+F3 linea,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",R=1 (cada relación observada una vez) | ttc,5.0000,0.0000,3
+F3 linea,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",R=1 (cada relación observada una vez) | two_step,1.0000,0.0000,3
+F3 linea,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",before,0.8867,0.1034,3
+F3 linea,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",errors,4.0000,0.0000,3
+F3 linea,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",inverse,1.0000,0.0000,3
+F3 linea,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",ttc,6.0000,0.1840,3
+F3 linea,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",two_step,1.0000,0.0000,3
+F3 linea,B1 + mapa recorrible al revés (back),bloques 0-24,before,0.3578,0.0833,3
+F3 linea,B1 + mapa recorrible al revés (back),bloques 150-174,before,0.8644,0.0577,3
+F3 linea,B1 + mapa recorrible al revés (back),bloques 275-299,before,0.8556,0.0551,3
+F3 linea,B1 + mapa recorrible al revés (back),bloques 0-24,errors,5.1600,0.1424,3
+F3 linea,B1 + mapa recorrible al revés (back),bloques 150-174,errors,4.7733,0.2125,3
+F3 linea,B1 + mapa recorrible al revés (back),bloques 275-299,errors,4.6667,0.1147,3
+F3 linea,B1 + mapa recorrible al revés (back),bloques 0-24,inverse,0.4756,0.0166,3
+F3 linea,B1 + mapa recorrible al revés (back),bloques 150-174,inverse,0.8178,0.0314,3
+F3 linea,B1 + mapa recorrible al revés (back),bloques 275-299,inverse,0.8356,0.0063,3
+F3 linea,B1 + mapa recorrible al revés (back),bloques 0-24,ttc,8.0667,0.9158,3
+F3 linea,B1 + mapa recorrible al revés (back),bloques 150-174,ttc,7.8000,0.3410,3
+F3 linea,B1 + mapa recorrible al revés (back),bloques 275-299,ttc,7.5200,0.4942,3
+F3 linea,B1 + mapa recorrible al revés (back),bloques 0-24,two_step,0.4844,0.0166,3
+F3 linea,B1 + mapa recorrible al revés (back),bloques 150-174,two_step,0.8178,0.0333,3
+F3 linea,B1 + mapa recorrible al revés (back),bloques 275-299,two_step,0.8133,0.0000,3
+F3 linea,B1 + mapa recorrible al revés (back),al final,neuronas de DECIR (conocimiento ligado a identidad),19.0000,26.8701,3
+F3 linea,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | before,1.0000,0.0000,3
+F3 linea,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | errors,7.0000,0.0000,3
+F3 linea,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | inverse,1.0000,0.0000,3
+F3 linea,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | ttc,11.7867,0.1147,3
+F3 linea,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | two_step,1.0000,0.0000,3
+F3 linea,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",R=1 (cada relación observada una vez) | before,1.0000,0.0000,3
+F3 linea,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",R=1 (cada relación observada una vez) | errors,4.0000,0.0000,3
+F3 linea,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",R=1 (cada relación observada una vez) | inverse,1.0000,0.0000,3
+F3 linea,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",R=1 (cada relación observada una vez) | ttc,5.0000,0.0000,3
+F3 linea,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",R=1 (cada relación observada una vez) | two_step,1.0000,0.0000,3
+F3 linea,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",before,1.0000,0.0000,3
+F3 linea,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",errors,4.0000,0.0000,3
+F3 linea,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",inverse,1.0000,0.0000,3
+F3 linea,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",ttc,6.0000,0.1840,3
+F3 linea,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",two_step,1.0000,0.0000,3
+F3 linea,ablación: back sin la señal de predecesores,bloques 0-24,before,0.2844,0.1610,3
+F3 linea,ablación: back sin la señal de predecesores,bloques 150-174,before,0.8222,0.0083,3
+F3 linea,ablación: back sin la señal de predecesores,bloques 275-299,before,0.8644,0.0175,3
+F3 linea,ablación: back sin la señal de predecesores,bloques 0-24,errors,5.1867,0.2494,3
+F3 linea,ablación: back sin la señal de predecesores,bloques 150-174,errors,4.7600,0.1178,3
+F3 linea,ablación: back sin la señal de predecesores,bloques 275-299,errors,4.6400,0.0653,3
+F3 linea,ablación: back sin la señal de predecesores,bloques 0-24,inverse,0.5600,0.0606,3
+F3 linea,ablación: back sin la señal de predecesores,bloques 150-174,inverse,0.8578,0.0350,3
+F3 linea,ablación: back sin la señal de predecesores,bloques 275-299,inverse,0.8133,0.0288,3
+F3 linea,ablación: back sin la señal de predecesores,bloques 0-24,ttc,8.0933,0.3304,3
+F3 linea,ablación: back sin la señal de predecesores,bloques 150-174,ttc,8.1600,0.2286,3
+F3 linea,ablación: back sin la señal de predecesores,bloques 275-299,ttc,7.8400,0.2592,3
+F3 linea,ablación: back sin la señal de predecesores,bloques 0-24,two_step,0.4756,0.0559,3
+F3 linea,ablación: back sin la señal de predecesores,bloques 150-174,two_step,0.8800,0.0327,3
+F3 linea,ablación: back sin la señal de predecesores,bloques 275-299,two_step,0.8444,0.0453,3
+F3 linea,ablación: back sin la señal de predecesores,al final,neuronas de DECIR (conocimiento ligado a identidad),16.3333,23.0988,3
+F3 anillo,B1 (sin recorrido inverso),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | closure,0.0000,0.0000,3
+F3 anillo,B1 (sin recorrido inverso),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | errors,7.0000,0.0000,3
+F3 anillo,B1 (sin recorrido inverso),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | inverse,0.1489,0.0137,3
+F3 anillo,B1 (sin recorrido inverso),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | ttc,12.3600,0.0589,3
+F3 anillo,B1 (sin recorrido inverso),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | two_step,0.7533,0.0536,3
+F3 anillo,B1 (sin recorrido inverso),"congelado, bloques nuevos",R=1 (cada relación observada una vez) | closure,0.0000,0.0000,3
+F3 anillo,B1 (sin recorrido inverso),"congelado, bloques nuevos",R=1 (cada relación observada una vez) | errors,4.0000,0.0000,3
+F3 anillo,B1 (sin recorrido inverso),"congelado, bloques nuevos",R=1 (cada relación observada una vez) | inverse,0.2089,0.0113,3
+F3 anillo,B1 (sin recorrido inverso),"congelado, bloques nuevos",R=1 (cada relación observada una vez) | ttc,5.0000,0.0000,3
+F3 anillo,B1 (sin recorrido inverso),"congelado, bloques nuevos",R=1 (cada relación observada una vez) | two_step,0.5933,0.0249,3
+F3 anillo,B1 (sin recorrido inverso),"congelado, bloques nuevos",closure,0.0000,0.0000,3
+F3 anillo,B1 (sin recorrido inverso),"congelado, bloques nuevos",errors,4.0000,0.0000,3
+F3 anillo,B1 (sin recorrido inverso),"congelado, bloques nuevos",inverse,0.2022,0.0257,3
+F3 anillo,B1 (sin recorrido inverso),"congelado, bloques nuevos",ttc,6.0267,0.0411,3
+F3 anillo,B1 (sin recorrido inverso),"congelado, bloques nuevos",two_step,0.5911,0.0063,3
+F3 anillo,B1 (sin recorrido inverso),bloques 0-24,closure,0.0000,0.0000,3
+F3 anillo,B1 (sin recorrido inverso),bloques 150-174,closure,0.0000,0.0000,3
+F3 anillo,B1 (sin recorrido inverso),bloques 275-299,closure,0.0000,0.0000,3
+F3 anillo,B1 (sin recorrido inverso),bloques 0-24,errors,5.2133,0.3714,3
+F3 anillo,B1 (sin recorrido inverso),bloques 150-174,errors,4.6800,0.1960,3
+F3 anillo,B1 (sin recorrido inverso),bloques 275-299,errors,4.5733,0.1147,3
+F3 anillo,B1 (sin recorrido inverso),bloques 0-24,inverse,0.0178,0.0166,3
+F3 anillo,B1 (sin recorrido inverso),bloques 150-174,inverse,0.0622,0.0126,3
+F3 anillo,B1 (sin recorrido inverso),bloques 275-299,inverse,0.0489,0.0440,3
+F3 anillo,B1 (sin recorrido inverso),bloques 0-24,ttc,8.2267,0.4084,3
+F3 anillo,B1 (sin recorrido inverso),bloques 150-174,ttc,7.8667,0.2620,3
+F3 anillo,B1 (sin recorrido inverso),bloques 275-299,ttc,7.3200,0.3767,3
+F3 anillo,B1 (sin recorrido inverso),bloques 0-24,two_step,0.2000,0.0218,3
+F3 anillo,B1 (sin recorrido inverso),bloques 150-174,two_step,0.4444,0.0453,3
+F3 anillo,B1 (sin recorrido inverso),bloques 275-299,two_step,0.4578,0.0412,3
+F3 anillo,B1 (sin recorrido inverso),al final,neuronas de DECIR (conocimiento ligado a identidad),0.0000,0.0000,3
+F3 anillo,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | closure,0.0000,0.0000,3
+F3 anillo,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | errors,7.0000,0.0000,3
+F3 anillo,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | inverse,1.0000,0.0000,3
+F3 anillo,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | ttc,12.3600,0.0589,3
+F3 anillo,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | two_step,0.8800,0.0283,3
+F3 anillo,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",R=1 (cada relación observada una vez) | closure,0.0000,0.0000,3
+F3 anillo,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",R=1 (cada relación observada una vez) | errors,4.0000,0.0000,3
+F3 anillo,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",R=1 (cada relación observada una vez) | inverse,1.0000,0.0000,3
+F3 anillo,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",R=1 (cada relación observada una vez) | ttc,5.0000,0.0000,3
+F3 anillo,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",R=1 (cada relación observada una vez) | two_step,0.8111,0.0113,3
+F3 anillo,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",closure,0.0000,0.0000,3
+F3 anillo,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",errors,4.0000,0.0000,3
+F3 anillo,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",inverse,1.0000,0.0000,3
+F3 anillo,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",ttc,6.0267,0.0411,3
+F3 anillo,B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",two_step,0.8111,0.0279,3
+F3 anillo,B1 + mapa recorrible al revés (back),bloques 0-24,closure,0.0400,0.0327,3
+F3 anillo,B1 + mapa recorrible al revés (back),bloques 150-174,closure,0.2267,0.1236,3
+F3 anillo,B1 + mapa recorrible al revés (back),bloques 275-299,closure,0.2000,0.1818,3
+F3 anillo,B1 + mapa recorrible al revés (back),bloques 0-24,errors,5.9867,0.6113,3
+F3 anillo,B1 + mapa recorrible al revés (back),bloques 150-174,errors,4.4000,0.0653,3
+F3 anillo,B1 + mapa recorrible al revés (back),bloques 275-299,errors,4.7733,0.1611,3
+F3 anillo,B1 + mapa recorrible al revés (back),bloques 0-24,inverse,0.2844,0.0412,3
+F3 anillo,B1 + mapa recorrible al revés (back),bloques 150-174,inverse,0.6222,0.0412,3
+F3 anillo,B1 + mapa recorrible al revés (back),bloques 275-299,inverse,0.7200,0.0327,3
+F3 anillo,B1 + mapa recorrible al revés (back),bloques 0-24,ttc,9.1200,0.6205,3
+F3 anillo,B1 + mapa recorrible al revés (back),bloques 150-174,ttc,7.1067,0.1799,3
+F3 anillo,B1 + mapa recorrible al revés (back),bloques 275-299,ttc,7.9333,0.3896,3
+F3 anillo,B1 + mapa recorrible al revés (back),bloques 0-24,two_step,0.1022,0.0314,3
+F3 anillo,B1 + mapa recorrible al revés (back),bloques 150-174,two_step,0.4667,0.0653,3
+F3 anillo,B1 + mapa recorrible al revés (back),bloques 275-299,two_step,0.5378,0.0274,3
+F3 anillo,B1 + mapa recorrible al revés (back),al final,neuronas de DECIR (conocimiento ligado a identidad),0.0000,0.0000,3
+F3 anillo,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | closure,0.0000,0.0000,3
+F3 anillo,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | errors,7.0000,0.0000,3
+F3 anillo,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | inverse,0.8511,0.0137,3
+F3 anillo,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | ttc,12.3600,0.0589,3
+F3 anillo,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | two_step,0.7533,0.0536,3
+F3 anillo,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",R=1 (cada relación observada una vez) | closure,0.0000,0.0000,3
+F3 anillo,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",R=1 (cada relación observada una vez) | errors,4.0000,0.0000,3
+F3 anillo,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",R=1 (cada relación observada una vez) | inverse,0.7911,0.0113,3
+F3 anillo,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",R=1 (cada relación observada una vez) | ttc,5.0000,0.0000,3
+F3 anillo,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",R=1 (cada relación observada una vez) | two_step,0.5933,0.0249,3
+F3 anillo,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",closure,0.0000,0.0000,3
+F3 anillo,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",errors,4.0000,0.0000,3
+F3 anillo,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",inverse,0.7978,0.0257,3
+F3 anillo,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",ttc,6.0267,0.0411,3
+F3 anillo,ablación: back sin la señal de predecesores,"congelado, bloques nuevos",two_step,0.5911,0.0063,3
+F3 anillo,ablación: back sin la señal de predecesores,bloques 0-24,closure,0.0000,0.0000,3
+F3 anillo,ablación: back sin la señal de predecesores,bloques 150-174,closure,0.0000,0.0000,3
+F3 anillo,ablación: back sin la señal de predecesores,bloques 275-299,closure,0.0000,0.0000,3
+F3 anillo,ablación: back sin la señal de predecesores,bloques 0-24,errors,5.8667,1.0990,3
+F3 anillo,ablación: back sin la señal de predecesores,bloques 150-174,errors,4.8133,0.1611,3
+F3 anillo,ablación: back sin la señal de predecesores,bloques 275-299,errors,4.9333,0.1360,3
+F3 anillo,ablación: back sin la señal de predecesores,bloques 0-24,inverse,0.2889,0.0629,3
+F3 anillo,ablación: back sin la señal de predecesores,bloques 150-174,inverse,0.4978,0.0227,3
+F3 anillo,ablación: back sin la señal de predecesores,bloques 275-299,inverse,0.5778,0.0412,3
+F3 anillo,ablación: back sin la señal de predecesores,bloques 0-24,ttc,8.8933,1.3236,3
+F3 anillo,ablación: back sin la señal de predecesores,bloques 150-174,ttc,7.4933,0.8213,3
+F3 anillo,ablación: back sin la señal de predecesores,bloques 275-299,ttc,7.8800,0.5806,3
+F3 anillo,ablación: back sin la señal de predecesores,bloques 0-24,two_step,0.1911,0.0274,3
+F3 anillo,ablación: back sin la señal de predecesores,bloques 150-174,two_step,0.4622,0.0491,3
+F3 anillo,ablación: back sin la señal de predecesores,bloques 275-299,two_step,0.4756,0.0333,3
+F3 anillo,ablación: back sin la señal de predecesores,al final,neuronas de DECIR (conocimiento ligado a identidad),0.0000,0.0000,3
+"F3 anillo, sólo premisas",B1 (sin recorrido inverso),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | closure,0.0000,0.0000,3
+"F3 anillo, sólo premisas",B1 (sin recorrido inverso),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | inverse,0.1311,0.0063,3
+"F3 anillo, sólo premisas",B1 (sin recorrido inverso),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | two_step,0.7778,0.0175,3
+"F3 anillo, sólo premisas",B1 (sin recorrido inverso),"congelado, bloques nuevos",closure,0.0000,0.0000,3
+"F3 anillo, sólo premisas",B1 (sin recorrido inverso),"congelado, bloques nuevos",inverse,0.1978,0.0137,3
+"F3 anillo, sólo premisas",B1 (sin recorrido inverso),"congelado, bloques nuevos",two_step,0.6044,0.0191,3
+"F3 anillo, sólo premisas",B1 (sin recorrido inverso),bloques 0-24,closure,0.0000,0.0000,3
+"F3 anillo, sólo premisas",B1 (sin recorrido inverso),bloques 150-174,closure,0.0000,0.0000,3
+"F3 anillo, sólo premisas",B1 (sin recorrido inverso),bloques 275-299,closure,0.0000,0.0000,3
+"F3 anillo, sólo premisas",B1 (sin recorrido inverso),bloques 0-24,inverse,0.0089,0.0063,3
+"F3 anillo, sólo premisas",B1 (sin recorrido inverso),bloques 150-174,inverse,0.0444,0.0350,3
+"F3 anillo, sólo premisas",B1 (sin recorrido inverso),bloques 275-299,inverse,0.0933,0.0218,3
+"F3 anillo, sólo premisas",B1 (sin recorrido inverso),bloques 0-24,two_step,0.2133,0.0393,3
+"F3 anillo, sólo premisas",B1 (sin recorrido inverso),bloques 150-174,two_step,0.3911,0.0314,3
+"F3 anillo, sólo premisas",B1 (sin recorrido inverso),bloques 275-299,two_step,0.4578,0.0440,3
+"F3 anillo, sólo premisas",B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | closure,1.0000,0.0000,3
+"F3 anillo, sólo premisas",B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | inverse,1.0000,0.0000,3
+"F3 anillo, sólo premisas",B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | two_step,0.8911,0.0063,3
+"F3 anillo, sólo premisas",B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",closure,1.0000,0.0000,3
+"F3 anillo, sólo premisas",B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",inverse,1.0000,0.0000,3
+"F3 anillo, sólo premisas",B1 + mapa recorrible al revés (back),"congelado, bloques nuevos",two_step,0.8178,0.0175,3
+"F3 anillo, sólo premisas",B1 + mapa recorrible al revés (back),bloques 0-24,closure,0.1067,0.0189,3
+"F3 anillo, sólo premisas",B1 + mapa recorrible al revés (back),bloques 150-174,closure,0.6933,0.0189,3
+"F3 anillo, sólo premisas",B1 + mapa recorrible al revés (back),bloques 275-299,closure,0.4933,0.0998,3
+"F3 anillo, sólo premisas",B1 + mapa recorrible al revés (back),bloques 0-24,inverse,0.2844,0.0537,3
+"F3 anillo, sólo premisas",B1 + mapa recorrible al revés (back),bloques 150-174,inverse,0.6933,0.0218,3
+"F3 anillo, sólo premisas",B1 + mapa recorrible al revés (back),bloques 275-299,inverse,0.7289,0.0166,3
+"F3 anillo, sólo premisas",B1 + mapa recorrible al revés (back),bloques 0-24,two_step,0.1111,0.0559,3
+"F3 anillo, sólo premisas",B1 + mapa recorrible al revés (back),bloques 150-174,two_step,0.4489,0.0350,3
+"F3 anillo, sólo premisas",B1 + mapa recorrible al revés (back),bloques 275-299,two_step,0.5067,0.0475,3

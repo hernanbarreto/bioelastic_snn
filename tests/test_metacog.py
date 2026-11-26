@@ -245,3 +245,14 @@ def test_curriculo_por_etapas_y_presupuesto():
     assert per_slot_information(range(3), range(3)) > 0.5
     with pytest.raises(ValueError):
         sum_stages("nada")
+
+
+def test_consistencia_con_prev_io_conserva_el_estado_previo():
+    th = Thinker(20, seed=0, prev_io=True)
+    rng = np.random.default_rng(0)
+    for _ in range(300):
+        a, b = rng.integers(10, size=2)
+        th.reset(); th.answer((int(a), 10 + int(b)), explore=True); th.feedback(target=int((a + b) % 10))
+    th.reset(); th.answer((3, 15))
+    st = th.consistency(8, [np.arange(10), np.arange(10, 20)])
+    assert st.shape == (1, 10, 10) and set(np.unique(st)) <= {-1, 0, 1}

@@ -1,0 +1,22 @@
+test,system,evaluated_on,accuracy_mean,accuracy_min,seeds,chance
+T1 ligadura,red v0.2 (ventana + traza),claves ligadas en el episodio,0.1557,0.1460,3,0.0312
+T1 ligadura,red v0.2 (ventana + traza),claves no ligadas (dato permanente),0.4130,0.4070,3,0.0312
+T1 ligadura,thinker sin memoria,claves ligadas en el episodio,0.0413,0.0340,3,0.0312
+T1 ligadura,thinker sin memoria,claves no ligadas (dato permanente),1.0000,1.0000,3,0.0312
+T1 ligadura,thinker,claves ligadas en el episodio,1.0000,1.0000,3,0.0312
+T1 ligadura,thinker,claves no ligadas (dato permanente),1.0000,1.0000,3,0.0312
+T2 cadenas,thinker,1 saltos,1.0000,1.0000,3,0.0156
+T2 cadenas,thinker,2 saltos,1.0000,1.0000,3,0.0156
+T2 cadenas,thinker,3 saltos (nunca entrenado),1.0000,1.0000,3,0.0156
+T2 cadenas,thinker,4 saltos (nunca entrenado),1.0000,1.0000,3,0.0156
+T3 suma,thinker sin registros,"1-6 dígitos, suma exacta",0.4117,0.4030,3,0.2500
+T3 suma,thinker sin registros,"10-20 dígitos, suma exacta",0.0230,0.0210,3,0.0005
+T3 suma,thinker sin registros,"100 dígitos, suma exacta",0.0000,0.0000,3,0.0000
+T3 suma,thinker,"1-6 dígitos, suma exacta",0.8497,0.5490,3,0.2500
+T3 suma,thinker,"10-20 dígitos, suma exacta",0.6773,0.0320,3,0.0005
+T3 suma,thinker,"100 dígitos, suma exacta",0.6667,0.0000,3,0.0000
+T3 suma,red v0.2 (ventana + traza),"10-20 dígitos, suma exacta",0.5013,0.4740,3,0.0005
+T4 composición,thinker sin habla interna,"f(f(x)), x de 8 a 15 (no vistos)",0.0000,0.0000,3,0.0625
+T4 composición,thinker sin habla interna,"f(x), todos",0.5000,0.5000,3,0.0625
+T4 composición,thinker,"f(f(x)), x de 8 a 15 (no vistos)",1.0000,1.0000,3,0.0625
+T4 composición,thinker,"f(x), todos",1.0000,1.0000,3,0.0625
