@@ -29,6 +29,7 @@ conocido. Señales: 1 - confianza (cruda/calibrada), conflicto, -margen, 1 - fam
                 volver a `nivel` (cambios de distribución: clases nuevas, contexto nuevo,
                 clases que vuelven)
   olvido        acierto final en test por grupo (lo que quedó de lo anterior)
+  apuesta       prueba de Kepecs et al. (2008) con mezclas de dos dígitos (`prueba_kepecs`)
 
   python experiments/exp_metacog.py --seed S [--variante V] [--scale 0.05]
   python experiments/exp_metacog.py --resumen
@@ -51,6 +52,7 @@ from exp_vision import encoder
 
 HEADER = ["prueba", "variante", "semilla", "metrica", "valor", "referencia", "nota"]
 N_NUEVO, N_CONOCIDO = 10, 100     # «nuevo»: < 10 vistas de (clase, contexto); «conocido»: >= 100
+N_KEPECS = 200                     # pares de dígitos mezclados en la prueba de apuesta
 MC = dict(lr=0.05)
 VARIANTES = {
     "base": {},
@@ -164,9 +166,57 @@ def correr(var: str, seed: int, scale: float, n_eval: int, data, out, extra):
             for i in rng.choice(len(test[c]), n_eval, replace=False):
                 hits.append(net.forward(enc(test[c][i].astype(np.float32) / 255.0)) == c)
         out("metacog", var, f"final test grupo {g}", float(np.mean(hits)), "", "")
+    prueba_kepecs(net, enc, test, np.random.default_rng([seed, 2008]), N_KEPECS, out, var, extra)
     extra["ne_curva"] = [float(x) for x in rec["ne"][::max(1, T // 500)]]
     extra["acierto_curva"] = [float(ok[i:i + max(1, T // 200)].mean()) for i in range(0, T, max(1, T // 200))]
     extra["bounds"] = bounds
+
+
+def prueba_kepecs(net, enc, test, rng, n_pares: int = 200, out=None, var="", extra=None):
+    """Apuesta por confianza al estilo de Kepecs et al. (2008): las ratas categorizan una
+    mezcla de dos olores y después esperan la recompensa; el tiempo que esperan crece con
+    la confianza y separa aciertos de errores, con la firma de la confianza estadística:
+    en los aciertos la confianza sube con la facilidad del estímulo y en los errores baja
+    (Sanders, Hangya y Kepecs, 2016). Análogo: mezclas píxel a píxel de dos dígitos de test
+    de clases distintas, x = r A + (1 - r) B, con r en {0.55 ... 1}; la respuesta correcta
+    es A; facilidad = r - 0.5. El tiempo de espera (la apuesta) es la confianza calibrada
+    (monótona: lo mismo da cualquier función creciente de ella). Se mide sin aprender."""
+    rs = (0.55, 0.6, 0.7, 0.8, 0.9, 1.0)
+    filas = []
+    for _ in range(n_pares):
+        A, B = (int(x) for x in rng.choice(10, 2, replace=False))
+        ia = test[A][int(rng.integers(len(test[A])))].astype(np.float32) / 255.0
+        ib = test[B][int(rng.integers(len(test[B])))].astype(np.float32) / 255.0
+        for r in rs:
+            pred = net.forward(enc(r * ia + (1 - r) * ib))
+            sg = net.signals()
+            filas.append((r - 0.5, pred == A, sg["confidence"], sg["conflict"], sg["familiarity"]))
+    F = np.array(filas, dtype=np.float64)
+    fac, ok, conf = F[:, 0], F[:, 1].astype(bool), F[:, 2]
+    out("metacog", var, "Kepecs: acierto por facilidad", float(ok.mean()), "", " ".join(
+        f"{f:.2f}:{ok[np.isclose(fac, f)].mean():.2f}" for f in np.unique(fac)))
+    out("metacog", var, "Kepecs: AUROC de la apuesta (acierto vs error)", auroc(conf, ok), 0.5, "")
+    out("metacog", var, "Kepecs: apuesta media en aciertos", float(conf[ok].mean()), float(conf[~ok].mean()),
+        "en errores en referencia")
+    for nombre, m in (("aciertos", ok), ("errores", ~ok)):
+        if m.sum() > 5 and len(np.unique(fac[m])) > 1:
+            pend = float(np.polyfit(fac[m], conf[m], 1)[0])
+            out("metacog", var, f"Kepecs: pendiente apuesta vs facilidad en {nombre}", pend, 0.0,
+                "firma esperada: + en aciertos, - en errores")
+    e, curva = ece(conf, ok)
+    out("metacog", var, "Kepecs: ECE en las mezclas", e, 0.0, "")
+    # apuesta binaria (Persaud et al., 2007): apostar alto si la confianza supera 0.5
+    alto = conf > 0.5
+    gan = np.where(ok, 1.0, -1.0) * np.where(alto, 2.0, 1.0)
+    out("metacog", var, "Kepecs: ganancia media apostando por confianza", float(gan.mean()),
+        float(np.where(ok, 2.0, -2.0).mean()), "siempre alto en referencia")
+    if extra is not None:
+        extra["kepecs"] = dict(facilidad=sorted(set(fac.round(2).tolist())),
+                               apuesta_aciertos=[float(conf[ok & np.isclose(fac, f)].mean()) if (ok & np.isclose(fac, f)).any()
+                                                 else None for f in np.unique(fac)],
+                               apuesta_errores=[float(conf[~ok & np.isclose(fac, f)].mean()) if (~ok & np.isclose(fac, f)).any()
+                                                else None for f in np.unique(fac)],
+                               confiabilidad=curva)
 
 
 def main():

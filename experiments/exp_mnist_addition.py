@@ -51,7 +51,37 @@ VARIANTES = {
     "duro": dict(config="depth2", gamma=1.0, h=0.0, duro=True),
     # ablación del ensayo de conceptos (repaso de la memoria a la proyección: Marconato et al. 2023)
     "sin_repaso": dict(config="depth2", gamma=1.0, h=0.0, kw=dict(replay=0.0)),
+    # ACh: gamma sigue a la fiabilidad medida de la percepción (cuán a menudo el par más
+    # probable es consistente con la suma) frente a la que declara (contra la
+    # auto-confirmación que sostiene los atajos de desplazamientos compensados)
+    "ach": dict(config="depth2", gamma=1.0, h=0.0, ach=dict(rate=0.01, lo=0.05, hi=1.0)),
+    # EM estocástico: el objetivo es una muestra de la marginal (sale de óptimos locales)
+    "muestreo": dict(config="depth2", gamma=1.0, h=0.0, muestreo=True),
+    "ach+muestreo": dict(config="depth2", gamma=1.0, h=0.0, muestreo=True, ach=dict(rate=0.01, lo=0.05, hi=1.0)),
 }
+
+
+class Fiabilidad:
+    """ACh: incertidumbre esperada del canal perceptivo. Lleva, con promedios móviles, la
+    frecuencia con que el par de dígitos más probable es consistente con la suma
+    observada (r_par: evidencia que no pasa por el prior de la percepción) y la certeza
+    que la percepción declara; gamma es el exponente que lleva una a la otra
+    (`bioelastic.posterior.gamma_for`) y descuenta la evidencia perceptiva en el
+    posterior cuando la percepción es menos fiable de lo que cree."""
+
+    def __init__(self, rate=0.01, lo=0.05, hi=1.0):
+        self.rate, self.lo, self.hi = float(rate), float(lo), float(hi)
+        self.r = None; self.d = None; self.gamma = 1.0
+
+    def actualizar(self, p1, p2, y):
+        from bioelastic.posterior import gamma_for
+        ok = float(int(np.argmax(p1)) + int(np.argmax(p2)) == int(y))
+        dec = 0.5 * (float(p1.max()) + float(p2.max()))
+        if self.r is None:
+            self.r, self.d = ok, dec
+        self.r += self.rate * (ok - self.r); self.d += self.rate * (dec - self.d)
+        self.gamma = float(np.clip(gamma_for(self.d, max(self.r, 1e-3) ** 0.5), self.lo, self.hi))
+        return self.gamma
 
 
 def posterior_suma(p1, p2, y, gamma=1.0):
@@ -118,17 +148,26 @@ def correr(var, seed, n_pares, test, out, extra, cada=2500):
     else:
         Xe, ye = Xtr[55000:], ytr[55000:]; n_eval = 2500
     red = Red(cfg, seed)
-    hits = []; t0 = time.time()
+    fia = Fiabilidad(**cfg["ach"]) if cfg.get("ach") else None
+    rng = np.random.default_rng(30_000 + seed)
+    hits = []; gam = []; t0 = time.time()
     for i in range(n_pares):
         x1, x2 = Xf[2 * i], Xf[2 * i + 1]
         s = int(yf[2 * i]) + int(yf[2 * i + 1])
         p1, p2 = red.p(x1), red.p(x2)
         hits.append(suma_predicha(p1, p2) == s)              # test-then-train
-        _, q1, q2 = posterior_suma(p1, p2, s, cfg["gamma"])
+        g = fia.actualizar(p1, p2, s) if fia is not None else cfg["gamma"]
+        gam.append(g)
+        _, q1, q2 = posterior_suma(p1, p2, s, g)
+        if cfg.get("muestreo"):
+            q1 = np.eye(10)[int(rng.choice(10, p=q1 / q1.sum()))]
+            q2 = np.eye(10)[int(rng.choice(10, p=q2 / q2.sum()))]
         red.aprender(x1, q1, cfg.get("duro", False))
         red.aprender(x2, q2, cfg.get("duro", False))
         if (i + 1) % cada == 0:
             out("suma_mnist", var, f"curva suma prequential par={i + 1}", float(np.mean(hits[-cada:])), "", "")
+            if fia is not None:
+                out("suma_mnist", var, f"curva gamma par={i + 1}", float(np.mean(gam[-cada:])), "", "ACh")
     out("suma_mnist", var, "segundos entrenamiento", round(time.time() - t0, 1), "", f"{n_pares} pares")
     meta: dict = {}
     acc_s, acc_d, conf = evaluar(red, Xe, ye, n_eval, meta)
@@ -147,6 +186,54 @@ def correr(var, seed, n_pares, test, out, extra, cada=2500):
     extra[var] = dict(confusion=conf.tolist())
 
 
+def correr_n(var, seed, N, test, out, extra, cada=500, max_ej=None):
+    """MNIST-addition de N cifras (protocolo de DeepProbLog y sucesores): dos números de N
+    cifras, cada cifra una imagen; la etiqueta es la suma entera. Una sola pasada: cada
+    imagen de train[:55000] se usa una vez (55000 // (2N) ejemplos). El razonamiento
+    calcula el posterior conjunto sobre todas las cifras y los acarreos dada la suma
+    (`chain_posterior` con la suma conocida: las cifras de la suma y el acarreo final) y la
+    percepción aprende cada imagen con su marginal (objetivo blando). Predicción: la suma de
+    los dígitos más probables. Test: t10k en grupos de 2N imágenes."""
+    from bioelastic.posterior import chain_posterior, known_sum_factor
+    cfg = VARIANTES[var]
+    Xtr, ytr, Xte, yte = load_mnist()
+    orden = np.random.default_rng(seed).permutation(55000)
+    Xf, yf = Xtr[orden], ytr[orden]
+    Xe, ye = (Xte, yte) if test else (Xtr[55000:], ytr[55000:])
+    red = Red(cfg, seed)
+    n_ej = 55000 // (2 * N) if max_ej is None else int(max_ej)
+    pot = 10 ** np.arange(N)
+    hits = []; t0 = time.time()
+    for k in range(n_ej):
+        idx = np.arange(2 * N * k, 2 * N * (k + 1))
+        da, db = yf[idx[:N]].astype(int), yf[idx[N:]].astype(int)       # cifra menos significativa primero
+        s = int(da @ pot + db @ pot)
+        pa = [red.p(Xf[i]) for i in idx[:N]]; pb = [red.p(Xf[i]) for i in idx[N:]]
+        pred = int(np.array([int(np.argmax(x)) for x in pa]) @ pot + np.array([int(np.argmax(x)) for x in pb]) @ pot)
+        hits.append(pred == s)                                            # test-then-train
+        digs = [(s // 10 ** i) % 10 for i in range(N)]
+        qa, qb, _, _, _ = chain_posterior(pa, pb, [known_sum_factor(d) for d in digs], np.eye(2)[s // 10 ** N],
+                                          cfg["gamma"])
+        for i, q in zip(idx, list(qa) + list(qb)):
+            red.aprender(Xf[i], q, cfg.get("duro", False))
+        if (k + 1) % cada == 0:
+            out("suma_mnist", var, f"N={N} curva suma prequential ej={k + 1}", float(np.mean(hits[-cada:])), "", "")
+    out("suma_mnist", var, f"N={N} segundos entrenamiento", round(time.time() - t0, 1), "", f"{n_ej} ejemplos")
+    n_t = len(ye) // (2 * N) if test else 2500 // N
+    if max_ej is not None:
+        n_t = min(n_t, int(max_ej))
+    ok = 0; okd = 0; nd = 0
+    for k in range(n_t):
+        idx = np.arange(2 * N * k, 2 * N * (k + 1))
+        da, db = ye[idx[:N]].astype(int), ye[idx[N:]].astype(int)
+        ps = [int(np.argmax(red.p(Xe[i]))) for i in idx]
+        ok += int(np.array(ps[:N]) @ pot + np.array(ps[N:]) @ pot) == int(da @ pot + db @ pot)
+        okd += sum(int(a == b) for a, b in zip(ps, ye[idx])); nd += 2 * N
+    nombre = "test" if test else "validación"
+    out("suma_mnist", var, f"N={N} exactitud suma ({nombre})", ok / n_t, "", f"{n_t} ejemplos")
+    out("suma_mnist", var, f"N={N} exactitud dígito ({nombre})", okd / nd, "", "")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--seed", type=int, default=0)
@@ -154,9 +241,11 @@ def main():
     ap.add_argument("--pares", type=int, default=27500)
     ap.add_argument("--test", action="store_true", help="evaluar en test (sólo corridas finales)")
     ap.add_argument("--skip-existing", action="store_true", help="no correr si la salida ya está completa")
+    ap.add_argument("--cifras", type=int, default=1, help="cifras de cada sumando (1 = el par original)")
     a = ap.parse_args()
     tag = "" if a.test else "val"
-    nombre = f"integracion3_suma_mnist{tag}_{a.variante}_p{a.pares}_seed{a.seed}"
+    nombre = f"integracion3_suma_mnist{tag}_{a.variante}_p{a.pares}_seed{a.seed}" if a.cifras == 1 else \
+        f"integracion3_suma_mnist{tag}_{a.variante}_N{a.cifras}_seed{a.seed}"
     from exp_integration3 import completo
     if a.skip_existing and completo(RESULTS / f"{nombre}.csv"):
         print("ya está:", nombre)
@@ -164,8 +253,11 @@ def main():
     log = CsvLog(nombre, HEADER)
     extra: dict = {}
     t0 = time.time()
-    correr(a.variante, a.seed, a.pares, a.test,
-           lambda *r: log.row(r[0] + tag, r[1], a.seed, *r[2:]), extra)
+    fn = lambda *r: log.row(r[0] + tag, r[1], a.seed, *r[2:])  # noqa: E731
+    if a.cifras == 1:
+        correr(a.variante, a.seed, a.pares, a.test, fn, extra)
+    else:
+        correr_n(a.variante, a.seed, a.cifras, a.test, fn, extra)
     log.row("suma_mnist" + tag, "total", a.seed, "segundos", round(time.time() - t0, 1), "", "")
     log.close()
     (RESULTS / f"{nombre}.json").write_text(json.dumps(extra))

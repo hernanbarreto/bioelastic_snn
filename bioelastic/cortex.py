@@ -397,7 +397,23 @@ class Cortex:
         return SurpriseTracker.surprise(self.confidence(), correct)
 
     def signals(self) -> dict:
-        """Señales internas del último pase (antes de saber si acertó)."""
+        """Señales internas del último pase, leídas antes de saber si acertó (API estable,
+        la consumen otras partes del proyecto):
+
+          confidence              P(acierto) de la decisión: calibrada si hay `metacog`
+                                  (regresión logística online sobre logit de la confianza
+                                  cruda, conflicto y familiaridad), si no la cruda
+          raw_confidence          probabilidad de la decisión en la competencia de salidas
+          conflict                desacuerdo entre votantes sobre la decisión (0 = todos la
+                                  dan por segura): predice el error dentro de lo conocido
+          margin                  diferencia entre las dos salidas más probables
+          familiarity             coseno con el prototipo más cercano de las áreas de
+                                  asociación: baja ante lo nuevo o distinto (novedad), alta
+                                  ante un error en algo conocido
+          expected_uncertainty    ACh: sorpresa media esperada (0 sin `neuromod`)
+          unexpected_uncertainty  NE: exceso estandarizado de la sorpresa reciente (0 sin
+                                  `neuromod`): un cambio en el mundo
+        """
         p = self._p(); srt = np.sort(p)
         return dict(confidence=self.confidence(), raw_confidence=float(p[self.pred]),
                     conflict=self.conflict(), margin=float(srt[-1] - srt[-2]) if len(p) > 1 else 1.0,
