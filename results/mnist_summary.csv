@@ -1,0 +1,2 @@
+test_acc,mlp_sgd_test_acc,neurons,created,pruned,train_seconds
+0.9717,0.9470,1914,2467,553,36.3000
