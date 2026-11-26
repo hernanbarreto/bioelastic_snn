@@ -366,9 +366,12 @@ def _with(cfg, *, head=None, layer=None, readout=None, area=None, **top):
 
 
 # Ronda 2 (clases parecidas): huella episódica en la memoria, repaso dirigido a la confusión
-# (dos repasos por paso, uno a la clase que compite), error asimétrico en la proyección y
-# separación de patrones al reclutar. Equivale a d2+episodic+cfocus+replay=2+pgate=200+sep=0.01.
-C2 = dict(areas=[V1], heads=[dict(source="input", episodic=True, separation=0.01)],
+# (dos repasos por paso, uno a la clase que compite), error asimétrico en la proyección,
+# separación de patrones al reclutar y presupuesto de 2000 neuronas con desalojo
+# balanceado. Equivale a d2+episodic+cfocus+replay=2+pgate=200+sep=0.01+budget=2000
+# (+balanced, que ahora es el desalojo por defecto). Sin presupuesto: c2+budget=0.
+C2 = dict(areas=[V1], heads=[dict(source="input", episodic=True, separation=0.01,
+                                  layer=dict(max_neurons=2000))],
           projection=dict(source="all", active_window=200), replay=2.0,
           replay_focus="confusion", joint=False)
 
@@ -386,7 +389,7 @@ def build(spec: str):
           c2 (d2 con los mecanismos de la ronda 2 contra la interferencia, ver C2) |
           knn_buffer | slda | mlp_replay | er | erace (ER y ER-ACE con reservorio; mods
           bytes=N para igualar bytes, lr=X, iters=N)
-    mods: budget=N     presupuesto de neuronas de asociación (desalojo)
+    mods: budget=N     presupuesto de neuronas de asociación (desalojo; 0 = sin presupuesto)
           no_neuro     neurogénesis apagada después de la primera fase
           no_prune     sin poda de período crítico (capa y áreas)
           no_replay    sin repaso
@@ -396,7 +399,8 @@ def build(spec: str):
           gate=N       error asimétrico: clases sin objetivo en N aprendizajes, inactivas
           protect      además, no tocar neuronas de clases inactivas
           merge        desalojo por fusión del par más redundante (en vez de utilidad)
-          balanced     desalojo por utilidad dentro de la clase con más neuronas
+          balanced     desalojo por utilidad dentro de la clase con más neuronas (por defecto)
+          utility      desalojo por menor utilidad global (el de la ronda 1)
           floor=X      piso de plasticidad de la lectura de la memoria
           relax=N      metaplasticidad de la lectura que se relaja con constante N
           v1=N         tamaño máximo del diccionario de V1
@@ -441,7 +445,7 @@ def build(spec: str):
     agent = CortexAgent
     for m, v in kv.items():
         if m == "budget":
-            layer["max_neurons"] = int(v)
+            layer["max_neurons"] = int(v) if int(v) > 0 else None
         elif m == "no_neuro":
             agent = NoNeurogenesis
         elif m == "no_prune":
@@ -460,6 +464,8 @@ def build(spec: str):
             layer["evict"] = "merge"
         elif m == "balanced":
             layer["evict"] = "balanced"
+        elif m == "utility":
+            layer["evict"] = "utility"
         elif m == "relax":
             readout["relax"] = float(v)
         elif m == "floor":

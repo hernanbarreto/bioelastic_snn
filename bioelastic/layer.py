@@ -13,13 +13,15 @@ Plasticidad estructural a dos niveles:
   * Neuronas: `recruit` imprime la volea actual en una neurona nueva (quién decide
     cuándo es la red: novedad o error). Una neurona nueva que no vuelve a ser útil
     antes de `probation` pasos muere (`maintain`). La tasa de STDP de cada neurona
-    decae con su uso (consolidación). Con `max_neurons`, reclutar exige liberar lugar:
+    decae con su uso (consolidación). Con `max_neurons`, reclutar exige liberar lugar, así
+    la red siempre puede aprender algo nuevo aunque haya llegado a su presupuesto:
+      evict="balanced" (por defecto) desaloja a la de menor utilidad dentro del grupo
+                       (clase preferida) con más neuronas: cupo parejo entre clases, como el
+                       muestreador de GDumb (Prabhu et al. 2020). Una clase ausente no se
+                       vacía sólo por estar ausente; paga la clase que más ocupa. Sin grupos
+                       (`group_of` sin definir) es igual a "utility".
       evict="utility"  desaloja a la de menor utilidad reciente (la que menos se usó
                        últimamente: las clases ausentes pierden primero).
-      evict="balanced" desaloja a la de menor utilidad dentro del grupo (clase preferida)
-                       con más neuronas: cupo parejo entre clases, como el muestreador de
-                       GDumb (Prabhu et al. 2020). Una clase ausente no se vacía sólo por
-                       estar ausente; paga la clase que más ocupa.
       evict="merge"    funde las dos neuronas más parecidas del grupo (clase preferida)
                        con más neuronas. El recuerdo no se borra: se comprime. Es el
                        mantenimiento de presupuesto por fusión de los SVM con presupuesto
@@ -70,7 +72,7 @@ class ElasticLayer:
                  max_neurons: int | None = None, probation: int = 20000,
                  survival_hits: int = 1, util_tau: float = 20000.0,
                  max_candidates: int = 64, capacity: int = 256, neurogenesis: bool = True,
-                 evict: str = "utility", merge_candidates: int = 48):
+                 evict: str = "balanced", merge_candidates: int = 48):
         self.D = int(n_inputs)
         self.K = int(min(fan_in or 256, self.D))       # sinapsis por neurona
         self.k = int(k)

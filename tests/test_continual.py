@@ -331,3 +331,41 @@ def test_confusion_picks_competing_class_and_its_nearest_memory():
     for _ in range(50):
         c = int(rng.integers(4)); strict.step(_blob(rng, c), c)
     assert strict.directed == 0 and strict.replays > 0   # sin confusión, repaso parejo
+
+
+# ---------------------------------------------------------------- ronda 2: presupuesto
+def test_at_budget_the_network_still_learns_new_classes_and_keeps_old_ones():
+    def run(evict):
+        rng = np.random.default_rng(2)
+        P = _protos(6, seed=2)
+        net = BioElasticNet(60, 6, layer=dict(max_neurons=24, theta=0.98, evict=evict))
+        for _ in range(400):                           # 0-2 llenan el presupuesto
+            c = int(rng.integers(3)); net.step(_sample(P, c, rng, noise=0.4), c)
+        assert net.layer.n == 24
+        for _ in range(400):                           # después sólo clases nuevas
+            c = 3 + int(rng.integers(3)); net.step(_sample(P, c, rng, noise=0.4), c)
+            assert net.layer.n <= 24 and net.readout.n == net.layer.n
+        pref = net.readout.preferred(np.arange(net.layer.n))
+        acc = lambda cs: np.mean([net.predict(_sample(P, c, rng, noise=0.4)) == c for c in cs for _ in range(40)])
+        return set(pref.tolist()), acc(range(3)), acc(range(3, 6))
+    kinds_u, old_u, new_u = run("utility")
+    kinds_b, old_b, new_b = run("balanced")
+    assert new_b > 0.9 and new_u > 0.9                 # con el presupuesto lleno, aprende lo nuevo
+    assert set(range(6)) <= kinds_b                    # balanceado: ninguna clase se vacía
+    assert not set(range(3)) & kinds_u                 # por utilidad global, las ausentes sí
+    assert old_b > 0.9 and old_u < 0.5
+
+
+def test_balanced_eviction_without_groups_is_utility_eviction():
+    a = ElasticLayer(20, theta=0.8, max_neurons=5, evict="balanced")
+    b = ElasticLayer(20, theta=0.8, max_neurons=5, evict="utility")
+    rng = np.random.default_rng(0)
+    for _ in range(40):
+        x = (rng.random(20) < 0.3).astype(np.float32)
+        for L in (a, b):
+            L.tick(); v = L.forward(np.flatnonzero(x), x[x > 0])
+            if v.novel:
+                L.recruit(v)
+            else:
+                L.credit(int(v.winners[0]))
+    assert np.array_equal(a.pre[:a.n], b.pre[:b.n]) and a.evicted == b.evicted > 0
