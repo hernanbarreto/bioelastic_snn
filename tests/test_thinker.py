@@ -376,3 +376,38 @@ def test_learned_gate_focuses_single_item_questions():
     net.reset(); net.plastic = False
     assert np.mean([_chain_episode(net, rng, False, 4) for _ in range(200)]) > 0.97
     assert net._path[0] == FOCUS
+
+
+# ---------------------------------------------------------------- ronda 2: pruebas para romperlo
+def test_rule_change_midstream_revises_knowledge_and_the_strategy_that_depends_on_it():
+    """La regla cambia (f -> g) y sólo se entrena g(x). El conocimiento se revisa (misma
+    consigna, contradicción consistente) y la composición, nunca reentrenada, pasa a dar
+    g(g(x)) en x no vistos: lo aprendido como estrategia se reutiliza sobre lo revisado."""
+    rng = np.random.default_rng(14)
+    f = np.array([5, 6, 10, 11, 8, 4, 7, 0, 1, 15, 2, 3, 13, 14, 9, 12])
+    g = np.roll(np.arange(16), 7)
+    net = Thinker(16, n_cues=2, speak=True, seed=14)
+    for i in range(3000):
+        _f4_episode(net, f, rng, True, cue=0 if i < 750 else None)
+    for _ in range(1500):
+        _f4_episode(net, g, rng, True, cue=0)
+    net.reset(); net.plastic = False
+    assert np.mean([_f4_episode(net, g, rng, False, x, 0) for x in range(16)]) == 1.0
+    assert np.mean([_f4_episode(net, g, rng, False, x, 1) for x in range(8, 16)]) == 1.0
+    assert net.revised[0] > 0
+
+
+def test_contradicting_cues_without_reconciling_strategy_do_not_corrupt_knowledge():
+    """Dos consignas exigen respuestas directas incompatibles (f y g sin relación) sobre el
+    mismo contenido. Un único conocimiento compartido no puede sostener las dos: es un
+    límite conocido. Lo que se prueba es que no queda basura: cada contenido termina con
+    la respuesta de una de las dos consignas."""
+    rng = np.random.default_rng(15)
+    f = np.roll(np.arange(16), 3); g = np.roll(np.arange(16), 11)
+    net = Thinker(16, n_cues=2, speak=True, seed=15)
+    for _ in range(3000):
+        x = int(rng.integers(16)); cue = int(rng.integers(2))
+        net.reset(); net.answer(x, cue=cue, explore=True)
+        net.feedback(target=int(f[x]) if cue == 0 else int(g[x]))
+    outs = [net.say.peek((np.array([x]), np.ones(1, dtype=np.float32))) for x in range(16)]
+    assert np.mean([o in (f[x], g[x]) for x, o in enumerate(outs)]) >= 0.9

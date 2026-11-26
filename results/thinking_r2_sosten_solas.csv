@@ -1,0 +1,10 @@
+prueba,sistema,caso,acc_media,acc_min,semillas,nodos_busqueda,neuronas_say,segundos
+"C1 sola, sostén aprendido",despues,"v nunca compuesto, 1-2 saltos",1.0000,1.0000,5,2.3260,32.4000,18.2668
+"C1 sola, sostén aprendido",despues,"v nunca compuesto, 3-4 saltos",1.0000,1.0000,5,2.3260,32.4000,18.2669
+"C3 sola, sostén aprendido",despues,5-8 saltos,1.0000,1.0000,5,1.1330,5.0000,12.7264
+"C3 sola, sostén aprendido",despues,"5-8 saltos, 16 distractores + 8 ruidos",1.0000,1.0000,5,1.1330,5.0000,12.7266
+"C3 sola, sostén aprendido",despues,"3 saltos, orden reverso",1.0000,1.0000,5,1.1330,5.0000,12.7266
+"C3 sola, sostén aprendido",despues,"3 saltos, hecho corregido",1.0000,1.0000,5,1.1330,5.0000,12.7267
+"C3 sola, sostén aprendido",despues,"3 saltos, distractores que apuntan a la cadena",1.0000,1.0000,5,1.1330,5.0000,12.7267
+"C6 sola, sostén aprendido",despues,5 eventos,1.0000,1.0000,5,0.2704,1.6000,7.1372
+T3 suma con registro,sostén aprendido (compuerta en cada dígito),50 dígitos exactos (fracción de semillas = 1.0: 0/5),0.0000,0.0000,5,0.0000,20.8000,55.2373

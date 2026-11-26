@@ -1,0 +1,16 @@
+prueba,sistema,caso,acc_media,acc_min,semillas,nodos_busqueda,neuronas_say,segundos
+T4 sin currículo,trazas acumulativas,"f(f(x)), x no vistos",1.0000,1.0000,5,0.3279,24.6000,26.0115
+T4 sin currículo,trazas acumulativas,"f(x), todos",1.0000,1.0000,5,0.3279,24.6000,26.0117
+"bloques, orden inverso (f al final)",trazas acumulativas,"C0 f(x), todos los x",0.9430,0.8200,5,6.2497,74.2000,67.6902
+"bloques, orden inverso (f al final)",trazas acumulativas,"C1 v nunca compuesto, 1-2 saltos",0.7810,0.0000,5,6.2497,74.2000,67.6903
+"bloques, orden inverso (f al final)",trazas acumulativas,"C1 v nunca compuesto, 3-4 saltos",0.7800,0.0000,5,6.2497,74.2000,67.6903
+"bloques, orden inverso (f al final)",trazas acumulativas,C2 x nunca compuesto,0.8050,0.0250,5,6.2497,74.2000,67.6903
+"bloques, orden inverso (f al final)",trazas acumulativas,C3 5-8 saltos,1.0000,1.0000,5,6.2497,74.2000,67.6904
+"bloques, orden inverso (f al final)",trazas acumulativas,"C3 5-8 saltos, 16 distractores + 8 ruidos",1.0000,1.0000,5,6.2497,74.2000,67.6904
+"bloques, orden inverso (f al final)",trazas acumulativas,"C3 3 saltos, orden reverso",1.0000,1.0000,5,6.2497,74.2000,67.6904
+"bloques, orden inverso (f al final)",trazas acumulativas,"C3 3 saltos, hecho corregido",1.0000,1.0000,5,6.2497,74.2000,67.6904
+"bloques, orden inverso (f al final)",trazas acumulativas,"C3 3 saltos, distractores que apuntan a la cadena",1.0000,1.0000,5,6.2497,74.2000,67.6904
+"bloques, orden inverso (f al final)",trazas acumulativas,C4 x nunca compuesto,0.9350,0.6750,5,6.2497,74.2000,67.6904
+"bloques, orden inverso (f al final)",trazas acumulativas,"C5 orden de 8, distancia >= 4",1.0000,1.0000,5,6.2497,74.2000,67.6905
+"bloques, orden inverso (f al final)",trazas acumulativas,C6 5 eventos,1.0000,1.0000,5,6.2497,74.2000,67.6905
+"C5 transitiva sola, sostén aprendido",trazas acumulativas,"orden de 8, distancia >= 4",0.9090,0.5600,5,2.6200,7.0000,20.2191

@@ -1,0 +1,7 @@
+prueba,sistema,caso,acc_media,acc_min,semillas,nodos_busqueda,neuronas_say,segundos
+consignas contradictorias (f y g sin relación),antes,consigna 0 (f),0.4875,0.4062,5,0.0000,0.0000,19.0156
+consignas contradictorias (f y g sin relación),antes,consigna 1 (g),0.5125,0.4375,5,0.0000,0.0000,19.0158
+consignas contradictorias (f y g sin relación),antes,ambas a la vez,0.0000,0.0000,5,0.0000,0.0000,19.0158
+consignas contradictorias (f y g sin relación),despues,consigna 0 (f),0.2313,0.0000,5,0.0000,0.0000,36.5718
+consignas contradictorias (f y g sin relación),despues,consigna 1 (g),0.7750,0.5938,5,0.0000,0.0000,36.5719
+consignas contradictorias (f y g sin relación),despues,ambas a la vez,0.0125,0.0000,5,0.0000,0.0000,36.5719

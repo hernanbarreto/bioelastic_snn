@@ -1,0 +1,16 @@
+prueba,sistema,caso,acc_media,acc_min,semillas,nodos_busqueda,neuronas_say,segundos
+T4 sin currículo,crédito al eslabón intermedio (ronda 1),"f(f(x)), x no vistos",1.0000,1.0000,5,0.2631,25.6000,27.4871
+T4 sin currículo,crédito al eslabón intermedio (ronda 1),"f(x), todos",1.0000,1.0000,5,0.2631,25.6000,27.4873
+"bloques, orden inverso (f al final)",crédito al eslabón intermedio (ronda 1),"C0 f(x), todos los x",0.9310,0.6550,5,5.1002,75.8000,62.5479
+"bloques, orden inverso (f al final)",crédito al eslabón intermedio (ronda 1),"C1 v nunca compuesto, 1-2 saltos",0.9350,0.6750,5,5.1002,75.8000,62.5480
+"bloques, orden inverso (f al final)",crédito al eslabón intermedio (ronda 1),"C1 v nunca compuesto, 3-4 saltos",0.9360,0.6800,5,5.1002,75.8000,62.5480
+"bloques, orden inverso (f al final)",crédito al eslabón intermedio (ronda 1),C2 x nunca compuesto,0.9790,0.8950,5,5.1002,75.8000,62.5480
+"bloques, orden inverso (f al final)",crédito al eslabón intermedio (ronda 1),C3 5-8 saltos,1.0000,1.0000,5,5.1002,75.8000,62.5480
+"bloques, orden inverso (f al final)",crédito al eslabón intermedio (ronda 1),"C3 5-8 saltos, 16 distractores + 8 ruidos",1.0000,1.0000,5,5.1002,75.8000,62.5481
+"bloques, orden inverso (f al final)",crédito al eslabón intermedio (ronda 1),"C3 3 saltos, orden reverso",1.0000,1.0000,5,5.1002,75.8000,62.5481
+"bloques, orden inverso (f al final)",crédito al eslabón intermedio (ronda 1),"C3 3 saltos, hecho corregido",1.0000,1.0000,5,5.1002,75.8000,62.5481
+"bloques, orden inverso (f al final)",crédito al eslabón intermedio (ronda 1),"C3 3 saltos, distractores que apuntan a la cadena",1.0000,1.0000,5,5.1002,75.8000,62.5482
+"bloques, orden inverso (f al final)",crédito al eslabón intermedio (ronda 1),C4 x nunca compuesto,0.8840,0.4200,5,5.1002,75.8000,62.5482
+"bloques, orden inverso (f al final)",crédito al eslabón intermedio (ronda 1),"C5 orden de 8, distancia >= 4",1.0000,1.0000,5,5.1002,75.8000,62.5482
+"bloques, orden inverso (f al final)",crédito al eslabón intermedio (ronda 1),C6 5 eventos,1.0000,1.0000,5,5.1002,75.8000,62.5482
+"C5 transitiva sola, sostén aprendido",crédito al eslabón intermedio (ronda 1),"orden de 8, distancia >= 4",0.9020,0.5100,5,4.7619,9.6000,21.4766

@@ -1,0 +1,4 @@
+prueba,sistema,caso,acc_media,acc_min,semillas,nodos_busqueda,neuronas_say,segundos
+T3 suma con registro,"antes, sin protección (la ronda 1 la apagaba con registros)",50 dígitos exactos (fracción de semillas = 1.0: 7/8),0.8750,0.0000,8,0.0000,66.1250,92.8298
+T3 suma con registro,"antes, con protección forzada",50 dígitos exactos (fracción de semillas = 1.0: 6/8),0.7500,0.0000,8,0.0000,38.5000,93.0638
+T3 suma con registro,despues (con protección),50 dígitos exactos (fracción de semillas = 1.0: 8/8),1.0000,1.0000,8,0.0000,29.7500,72.0841

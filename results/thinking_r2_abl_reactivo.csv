@@ -1,0 +1,16 @@
+prueba,sistema,caso,acc_media,acc_min,semillas,nodos_busqueda,neuronas_say,segundos
+T4 sin currículo,sin reactivo,"f(f(x)), x no vistos",1.0000,1.0000,5,0.3131,24.8000,27.3596
+T4 sin currículo,sin reactivo,"f(x), todos",1.0000,1.0000,5,0.3131,24.8000,27.3599
+"bloques, orden inverso (f al final)",sin reactivo,"C0 f(x), todos los x",0.7500,0.2350,5,9.1979,61.0000,89.8607
+"bloques, orden inverso (f al final)",sin reactivo,"C1 v nunca compuesto, 1-2 saltos",0.4560,0.0500,5,9.1979,61.0000,89.8608
+"bloques, orden inverso (f al final)",sin reactivo,"C1 v nunca compuesto, 3-4 saltos",0.4700,0.0250,5,9.1979,61.0000,89.8608
+"bloques, orden inverso (f al final)",sin reactivo,C2 x nunca compuesto,0.5960,0.0550,5,9.1979,61.0000,89.8609
+"bloques, orden inverso (f al final)",sin reactivo,C3 5-8 saltos,1.0000,1.0000,5,9.1979,61.0000,89.8609
+"bloques, orden inverso (f al final)",sin reactivo,"C3 5-8 saltos, 16 distractores + 8 ruidos",1.0000,1.0000,5,9.1979,61.0000,89.8609
+"bloques, orden inverso (f al final)",sin reactivo,"C3 3 saltos, orden reverso",1.0000,1.0000,5,9.1979,61.0000,89.8609
+"bloques, orden inverso (f al final)",sin reactivo,"C3 3 saltos, hecho corregido",1.0000,1.0000,5,9.1979,61.0000,89.8609
+"bloques, orden inverso (f al final)",sin reactivo,"C3 3 saltos, distractores que apuntan a la cadena",1.0000,1.0000,5,9.1979,61.0000,89.8609
+"bloques, orden inverso (f al final)",sin reactivo,C4 x nunca compuesto,0.2540,0.0000,5,9.1979,61.0000,89.8609
+"bloques, orden inverso (f al final)",sin reactivo,"C5 orden de 8, distancia >= 4",1.0000,1.0000,5,9.1979,61.0000,89.8610
+"bloques, orden inverso (f al final)",sin reactivo,C6 5 eventos,1.0000,1.0000,5,9.1979,61.0000,89.8610
+"C5 transitiva sola, sostén aprendido",sin reactivo,"orden de 8, distancia >= 4",1.0000,1.0000,5,3.1840,7.8000,21.1912
