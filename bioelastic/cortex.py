@@ -66,6 +66,7 @@ class Cortex:
         self.beta = None                                      # pesos del árbitro (uno por votante)
         self._L = None
         self._zs = []
+        self._codes = []
         self.homeostasis = float(homeostasis)
         if self.homeostasis > 0.0:
             self._config["homeostasis"] = self.homeostasis
@@ -200,6 +201,7 @@ class Cortex:
             X = np.asarray(x, dtype=np.float32).reshape(self.input_shape)
             for a in self.areas:
                 X = a.encode(X); codes.append(X)
+        self._codes = codes                                   # códigos del último pase (diagnóstico)
         for i, (head, src) in enumerate(zip(self.heads, self._src)):
             if job is None or i not in indep:
                 head.forward(self._volley(src, x, codes))
