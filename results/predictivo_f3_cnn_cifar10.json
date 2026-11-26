@@ -1,0 +1,74 @@
+[
+ {
+  "name": "cifar10",
+  "model": "cnn1",
+  "seed": 0,
+  "lr": 0.001,
+  "n_train": 5000,
+  "val_acc": 0.457,
+  "test_acc": 0.469,
+  "train_secs": 4.151695251464844,
+  "noise_acc": 0.385,
+  "occlude_acc": 0.4
+ },
+ {
+  "name": "cifar10",
+  "model": "cnn2",
+  "seed": 0,
+  "lr": 0.003,
+  "n_train": 5000,
+  "val_acc": 0.439,
+  "test_acc": 0.4454,
+  "train_secs": 6.310982942581177,
+  "noise_acc": 0.392,
+  "occlude_acc": 0.326
+ },
+ {
+  "name": "cifar10",
+  "model": "cnn1",
+  "seed": 1,
+  "lr": 0.001,
+  "n_train": 5000,
+  "val_acc": 0.45,
+  "test_acc": 0.4606,
+  "train_secs": 4.478152275085449,
+  "noise_acc": 0.396,
+  "occlude_acc": 0.386
+ },
+ {
+  "name": "cifar10",
+  "model": "cnn2",
+  "seed": 1,
+  "lr": 0.001,
+  "n_train": 5000,
+  "val_acc": 0.4525,
+  "test_acc": 0.4534,
+  "train_secs": 5.617695569992065,
+  "noise_acc": 0.372,
+  "occlude_acc": 0.356
+ },
+ {
+  "name": "cifar10",
+  "model": "cnn1",
+  "seed": 2,
+  "lr": 0.001,
+  "n_train": 5000,
+  "val_acc": 0.4645,
+  "test_acc": 0.4534,
+  "train_secs": 4.390420913696289,
+  "noise_acc": 0.335,
+  "occlude_acc": 0.375
+ },
+ {
+  "name": "cifar10",
+  "model": "cnn2",
+  "seed": 2,
+  "lr": 0.001,
+  "n_train": 5000,
+  "val_acc": 0.4105,
+  "test_acc": 0.4128,
+  "train_secs": 5.85073709487915,
+  "noise_acc": 0.336,
+  "occlude_acc": 0.3
+ }
+]
