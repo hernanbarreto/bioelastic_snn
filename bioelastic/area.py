@@ -35,7 +35,7 @@ class FeatureArea:
                  theta: float = 0.8, floor: float = 0.5, k: int = 2, lr: float = 0.2,
                  lr_min: float = 0.002, lr_half: float = 20.0, min_energy: float = 0.2,
                  recruit_per_step: int = 2, probation: int = 2000, survival_hits: int = 5,
-                 maintain_every: int = 500):
+                 maintain_every: int = 500, neurogenesis: bool = True):
         H, W, C = (int(v) for v in in_shape)
         self.in_shape = (H, W, C)
         self.rf = _pair(rf); self.stride = _pair(stride); self.pool = _pair(pool)
@@ -53,6 +53,7 @@ class FeatureArea:
         self.recruit_per_step = int(recruit_per_step)
         self.probation = int(probation); self.survival_hits = int(survival_hits)
         self.maintain_every = int(maintain_every)
+        self.neurogenesis = bool(neurogenesis)   # False: no nacen rasgos nuevos
 
         self.W = np.zeros((self.F, self.D), dtype=np.float32)     # diccionario (lámina 4)
         self.alive = np.zeros(self.F, dtype=bool)
@@ -143,6 +144,8 @@ class FeatureArea:
             self.maintain()
 
     def _new_slot(self) -> int:
+        if not self.neurogenesis:
+            return -1
         if self.free:
             f = self.free.pop()
             if self.on_reuse is not None:
