@@ -174,7 +174,7 @@ class Cortex:
 
     def _on_reuse(self, area: int, f: int):
         a = self.areas[area]
-        F = a.F
+        F = a.out_shape[2]                                    # canales de salida (con la entrada agrupada)
         if area + 1 < len(self.areas):
             self.areas[area + 1].forget_channel(f)
         ids = np.arange(a.ph * a.pw) * F + f

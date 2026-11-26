@@ -78,7 +78,8 @@ class FeatureArea:
                  recruit_per_step: int = 2, probation: int = 2000, survival_hits: int = 5,
                  maintain_every: int = 500, neurogenesis: bool = True,
                  local: dict | None = None, n_classes: int = 0, seed: int = 0,
-                 predictive: dict | None = None):
+                 predictive: dict | None = None, lateral: dict | None = None,
+                 support: int = 0, passthrough: bool = False):
         H, W, C = (int(v) for v in in_shape)
         self.in_shape = (H, W, C)
         self.rf = _pair(rf); self.stride = _pair(stride); self.pool = _pair(pool)
@@ -88,7 +89,9 @@ class FeatureArea:
         if min(self.ph, self.pw) < 1:
             raise ValueError(f"lámina {in_shape} demasiado chica para rf={rf}, pool={pool}")
         self.F = int(max_features)
-        self.out_shape = (self.ph, self.pw, self.F)
+        self.passthrough = bool(passthrough)  # además, la entrada agrupada (células complejas de abajo)
+        self.Fo = self.F + (C if self.passthrough else 0)          # canales de salida
+        self.out_shape = (self.ph, self.pw, self.Fo)
         self.D = self.rf[0] * self.rf[1] * C
         self.theta = float(theta); self.floor = float(floor); self.k = int(k)
         self.lr = float(lr); self.lr_min = float(lr_min); self.lr_half = float(lr_half)
@@ -99,6 +102,12 @@ class FeatureArea:
         self.neurogenesis = bool(neurogenesis)   # False: no nacen rasgos nuevos
 
         self.W = np.zeros((self.F, self.D), dtype=np.float32)     # diccionario (lámina 4)
+        self.S = int(support)            # > 0: cada rasgo es una conjunción de S aferentes
+        if self.S:
+            if self.floor < 0.0:
+                raise ValueError("support requiere floor >= 0")
+            self.M = np.zeros((self.F, self.D), dtype=bool)       # soporte de cada rasgo
+            self._den = None
         self.alive = np.zeros(self.F, dtype=bool)
         self.wins = np.zeros(self.F, dtype=np.int64)
         self.born = np.zeros(self.F, dtype=np.int64)
@@ -120,6 +129,8 @@ class FeatureArea:
         qy, qx = np.meshgrid(np.arange(self.ph) * a, np.arange(self.pw) * b, indexing="ij")
         my, mx = np.divmod(np.arange(a * b), b)
         self._pool_pos = ((qy[:, :, None] + my) * self.ow + (qx[:, :, None] + mx)).reshape(-1, a * b)
+        if self.passthrough:                                      # entradas que ve cada célula compleja
+            self._pass_idx = np.stack([np.unique(self._gather[pp].ravel()) for pp in self._pool_pos])
 
         # error local: lector de clase propio del área
         self.local = None
@@ -127,7 +138,7 @@ class FeatureArea:
             spec = dict(lr=0.02, lr_readout=0.5, temperature=0.25, feedback="sym", residual=False)
             spec.update(local)
             self.local = spec
-            n_out = self.ph * self.pw * self.F
+            n_out = self.ph * self.pw * self.Fo
             self.clf = Readout(int(n_classes), capacity=n_out, consolidation=0.0,
                                lr=float(spec["lr_readout"]), temperature=float(spec["temperature"]))
             self.clf.n = n_out
@@ -144,7 +155,7 @@ class FeatureArea:
         self.pe = float("nan"); self.gain = 1.0; self.pe_parts = (float("nan"), float("nan"))
         if predictive:
             spec = dict(lr=0.1, init=0.0, modulate=0.0, neuro=0.0, tau=500.0, warmup=100,
-                        gain_min=0.25, gain_max=4.0)
+                        gain_min=0.25, gain_max=4.0, dict_res=0.0)
             unknown = set(predictive) - set(spec)
             if unknown:
                 raise ValueError(f"opciones de `predictive` desconocidas: {sorted(unknown)}")
@@ -154,6 +165,20 @@ class FeatureArea:
             self.sur_avg = 0.0; self.sur_n = 0               # media móvil de la sorpresa
             self.gain_avg = 1.0; self._rdebt = 0.0
             self.pred_macs = 0
+
+        # inhibición lateral plástica anti-Hebbiana entre rasgos (Földiák 1990)
+        self.lat = None; self._lat_y = None
+        if lateral:
+            spec = dict(lr=0.05, cand=2, tau=1000.0, vmax=1.0, homeo=0.0)
+            unknown = set(lateral) - set(spec)
+            if unknown:
+                raise ValueError(f"opciones de `lateral` desconocidas: {sorted(unknown)}")
+            spec.update(lateral)
+            self.lat = spec
+            self.V = np.zeros((self.F, self.F), dtype=np.float32)   # inhibición j <- k (>= 0)
+            self.lat_m = np.zeros(self.F, dtype=np.float32)         # actividad media por posición
+            self.lat_n = 0
+            self.lat_b = np.zeros(self.F, dtype=np.float32)         # umbral adaptativo (Földiák)
 
     # ------------------------------------------------------------------ pase
     def encode(self, X: np.ndarray) -> np.ndarray:
@@ -166,6 +191,8 @@ class FeatureArea:
         """
         H, W, C = self.in_shape
         P = self.oh * self.ow
+        if self.lat is not None:
+            self._lat_y = None
         Pm = np.asarray(X, dtype=np.float32).reshape(H * W, C)[self._gather].reshape(P, self.D)
         norms = np.sqrt(np.einsum("pd,pd->p", Pm, Pm))
         mx = float(norms.max())
@@ -174,10 +201,20 @@ class FeatureArea:
         n = self.n
         act = None; arg = None
         code = np.zeros(self.out_shape, dtype=np.float32)
-        if n and mx > 0:
+        if n and mx > 0 and self.S:                               # conjunciones: coseno sobre el soporte
+            Ws = sparse.csr_matrix(self.W[:n]); Ms = sparse.csr_matrix(self.M[:n].astype(np.float32))
+            num = np.asarray((Ws @ Pm[vr].T).T, dtype=np.float32)
+            den = np.sqrt(np.asarray((Ms @ (Pm[vr] * Pm[vr]).T).T, dtype=np.float32))
+            self._den = np.zeros((P, n), dtype=np.float32); self._den[vr] = den
+            full = None; rows = vr
+            act = a_rows = np.where(den > 1e-6, num / np.maximum(den, 1e-6), 0.0).astype(np.float32)
+        elif n and mx > 0:
             full = Pm @ self.W[:n].T
             rows = vr
-            if self.floor < 0.0:                                  # el código no es nulo fuera de `valid`
+        if n and mx > 0:
+            if self.S:
+                pass
+            elif self.floor < 0.0:                                # el código no es nulo fuera de `valid`
                 full /= np.maximum(norms, 1e-6)[:, None]
                 full[~valid] = 0.0
                 rows = np.arange(P); a_rows = full; act = full[vr]
@@ -185,10 +222,13 @@ class FeatureArea:
                 act = a_rows = full[vr] / np.maximum(norms[vr], 1e-6)[:, None]
             gain = np.float32(1.0 / (1.0 - self.floor))
             if self.floor >= 0.0:                                 # mismas operaciones, sin temporales
-                out = a_rows - np.float32(self.floor)
-                np.maximum(out, 0.0, out=out)
-                out *= gain
-                if n > self.k:                                    # inhibición lateral: k rasgos por posición
+                if self.lat is not None and n > self.k:           # inhibición lateral plástica
+                    out = self._lateral(a_rows, gain)
+                else:
+                    out = a_rows - np.float32(self.floor)
+                    np.maximum(out, 0.0, out=out)
+                    out *= gain
+                if n > self.k and self.lat is None:               # inhibición lateral: k rasgos por posición
                     kth = np.partition(a_rows, n - self.k, axis=1)[:, n - self.k]
                     out[~(a_rows >= kth[:, None])] = 0.0          # (perdedoras: max(0 - floor, 0) = 0)
             else:
@@ -211,11 +251,64 @@ class FeatureArea:
                 o = o.transpose(0, 2, 1, 3, 4).reshape(ph * pw, a * b, n)
                 arg = o.argmax(axis=1)                            # (ph*pw, n)
                 code[:, :, :n] = np.take_along_axis(o, arg[:, None, :], axis=1).reshape(ph, pw, n)
+        if self.passthrough:                                      # máximo de la entrada en el campo de cada compleja
+            code[:, :, self.F:] = np.asarray(X, dtype=np.float32).reshape(H * W, C)[self._pass_idx] \
+                .max(axis=1).reshape(self.ph, self.pw, C)
         self._cache = (Pm, norms, vr, act, arg, code)
         if self.pc is not None:
             self._x = np.asarray(X, dtype=np.float32).reshape(H * W, C)
             self._pred = None
         return code
+
+    def _lateral(self, a: np.ndarray, gain) -> np.ndarray:
+        """k-WTA con inhibición lateral aprendida: entre las `cand`*k candidatas de cada
+        posición, cada una recibe -sum_k V[j, k] y_k de las demás (y = actividad antes de la
+        inhibición) y ganan las k con más potencial inhibido. Los rasgos que suelen
+        dispararse juntos se inhiben y la posición se describe con rasgos distintos."""
+        n = a.shape[1]; k = self.k
+        if self.lat["homeo"] > 0.0:                               # umbral adaptativo por rasgo
+            a = a - self.lat_b[:n]
+        ck = min(n, max(k + 1, int(self.lat["cand"] * k)))
+        cand = np.argpartition(-a, ck - 1, axis=1)[:, :ck]
+        ac = np.take_along_axis(a, cand, axis=1)
+        fl = np.float32(self.floor)
+        yc = np.maximum(ac - fl, 0.0) * gain
+        Vs = self.V[cand[:, :, None], cand[:, None, :]]           # (posiciones, ck, ck)
+        a2 = ac - np.einsum("pjk,pk->pj", Vs, yc)
+        win = np.argpartition(-a2, k - 1, axis=1)[:, :k]
+        wi = np.take_along_axis(cand, win, axis=1)
+        wv = np.maximum(np.take_along_axis(a2, win, axis=1) - fl, 0.0) * gain
+        out = np.zeros_like(a)
+        np.put_along_axis(out, wi, wv.astype(np.float32), axis=1)
+        self._lat_y = out
+        return out
+
+    def _learn_lateral(self):
+        """Regla anti-Hebbiana: dV_jk = lr * mean_p (y_j - <y_j>) y_k, V >= 0, sin
+        autoinhibición. Dos rasgos que se activan juntos más de lo esperado se inhiben más;
+        los que no, menos (la inhibición se desarma)."""
+        Y = self._lat_y
+        if Y is None or not len(Y):
+            return
+        n = Y.shape[1]
+        P = np.float32(len(Y))
+        Ys = sparse.csr_matrix(Y)
+        co = np.asarray((Ys.T @ Ys).todense(), dtype=np.float32)
+        ysum = np.asarray(Ys.sum(axis=0), dtype=np.float32).ravel()
+        self.lat_n += 1
+        m = self.lat_m[:n]
+        m += (ysum / P - m) / np.float32(min(self.lat_n, self.lat["tau"]))
+        dV = (co - np.outer(m, ysum)) / P
+        V = self.V[:n, :n]
+        V += np.float32(self.lat["lr"]) * dV
+        np.clip(V, 0.0, np.float32(self.lat["vmax"]), out=V)
+        np.fill_diagonal(V, 0.0)
+        if self.lat["homeo"] > 0.0:                               # cada rasgo tiende a la tasa k/n
+            rate = np.asarray((Ys > 0).sum(axis=0), dtype=np.float32).ravel() / P
+            alive = self.alive[:n]
+            target = np.float32(self.k / max(int(alive.sum()), 1))
+            self.lat_b[:n] += np.float32(self.lat["homeo"]) * (rate - target) * alive
+        self._lat_y = None
 
     # ------------------------------------------------------------------ plasticidad
     def potentials(self, code: np.ndarray | None = None) -> np.ndarray | None:
@@ -250,10 +343,16 @@ class FeatureArea:
         if len(act_i) == 0:
             return
         q, f = np.divmod(act_i, n)
-        cols = q * self.F + f                                     # índice en el código completo
-        h = c[act_i]; nrm = np.float32(np.sqrt(h @ h)); hn = h / nrm
+        cols = q * self.Fo + f                                    # índice en el código completo
+        h = c[act_i]
+        if self.passthrough:                                      # el lector también ve la entrada agrupada
+            full = code.reshape(-1); every = np.flatnonzero(full); hv = full[every]
+            nrm = np.float32(np.sqrt(hv @ hv)); hvn = hv / nrm
+            hn = h / nrm
+        else:
+            nrm = np.float32(np.sqrt(h @ h)); hn = h / nrm
         R = self.clf
-        V = R.potentials(cols, hn)
+        V = R.potentials(every, hvn) if self.passthrough else R.potentials(cols, hn)
         if prior is not None:                                     # residual: lo que abajo aún falla
             V = V + prior
         p = R.probs(V)
@@ -261,15 +360,23 @@ class FeatureArea:
         err = -p; err[target] += 1.0
         err = err.astype(np.float32)
         g = R.W[:, cols].T @ err                                  # error dendrítico de cada célula compleja
-        g = (g - hn * float(hn @ g)) / nrm                        # derivada de la normalización del código
-        if self.local["feedback"] == "sym":
-            R.W[:, cols] += (R.lr * err)[:, None] * hn[None, :]
+        if self.passthrough:
+            g = (g - hn * float(hvn @ (R.W[:, every].T @ err))) / nrm
+            if self.local["feedback"] == "sym":
+                R.W[:, every] += (R.lr * err)[:, None] * hvn[None, :]
+        else:
+            g = (g - hn * float(hn @ g)) / nrm                    # derivada de la normalización del código
+            if self.local["feedback"] == "sym":
+                R.W[:, cols] += (R.lr * err)[:, None] * hn[None, :]
         # célula simple que ganó el pooling: posición y potencial
         pos = self._pool_pos[q, arg[q, f]]
         s = act[pos, f]
         gi = (g / np.float32(1.0 - self.floor)).astype(np.float32)
         # dW_f = sum_q g (x_q - s_q W_f) = sum_q g x_q - (sum_q g s_q) W_f,  x_q = parche normalizado
-        u, gx = _segment_sum(f, Pm[pos], gi / np.maximum(norms[pos], 1e-6))
+        if self.S:                                                # x_q visto desde el soporte de f
+            u, gx = _segment_sum(f, Pm[pos] * self.M[f], gi / np.maximum(self._den[pos, f], 1e-6))
+        else:
+            u, gx = _segment_sum(f, Pm[pos], gi / np.maximum(norms[pos], 1e-6))
         gs = np.bincount(np.searchsorted(u, f), weights=gi * s, minlength=len(u)).astype(np.float32)
         lr = np.float32(self.local["lr"]) if scale == 1.0 else np.float32(self.local["lr"] * scale)
         Wn = self.W[u] + lr * (gx - gs[:, None] * self.W[u])
@@ -292,6 +399,8 @@ class FeatureArea:
             g, gn = self._surprise_gain(self.pe if surprise is None else surprise)
         Pm, norms, vr, act, arg, code = self._cache
         self._cache = None
+        if self.lat is not None:
+            self._learn_lateral()
         if target is not None and self.local is not None and act is not None:
             act_full = np.zeros((len(norms), act.shape[1]), dtype=np.float32)
             act_full[vr] = act                                    # potencial por posición (inválidas: 0)
@@ -310,12 +419,24 @@ class FeatureArea:
             b = best[ok]
             u, inv = np.unique(b, return_inverse=True)            # sólo los rasgos que ganaron
             M = np.zeros((len(u), self.D), dtype=np.float32)
-            np.add.at(M, inv, Pm[sel] / norms[sel, None])         # mismo orden de suma que antes
+            if self.S:                                            # el parche visto desde el soporte
+                np.add.at(M, inv, Pm[sel] * self.M[b] / np.maximum(self._den[sel, b], 1e-6)[:, None])
+            else:
+                np.add.at(M, inv, Pm[sel] / norms[sel, None])     # mismo orden de suma que antes
             cnt = np.bincount(inv, minlength=len(u))
             eta = np.maximum(self.lr_min, self.lr / (1.0 + self.wins[u] / self.lr_half)).astype(np.float32)
             if g != 1.0:                                          # plasticidad dirigida por la sorpresa
                 eta = np.minimum(eta * np.float32(g), np.float32(1.0))
-            Wn = (1.0 - eta)[:, None] * self.W[u] + eta[:, None] * (M / cnt[:, None])
+            beta = float(self.pc["dict_res"]) if self.pc is not None and self._pred is not None else 0.0
+            if beta > 0.0:                                        # el diccionario aprende del residuo
+                Rp = self._pred[2][self._gather[sel]].reshape(len(sel), self.D) / norms[sel, None]
+                Rm = np.zeros((len(u), self.D), dtype=np.float32)
+                np.add.at(Rm, inv, Rp)
+                step = np.float32(1.0 - beta) * (M / cnt[:, None] - self.W[u]) + \
+                    np.float32(beta) * (Rm / cnt[:, None])
+                Wn = self.W[u] + eta[:, None] * step
+            else:
+                Wn = (1.0 - eta)[:, None] * self.W[u] + eta[:, None] * (M / cnt[:, None])
             self.W[u] = Wn / np.maximum(np.linalg.norm(Wn, axis=1, keepdims=True), 1e-8)
             self.wins[u] += 1
         nov = vr[bc < self.theta]
@@ -334,15 +455,30 @@ class FeatureArea:
             for c in nov:
                 if len(fresh) >= limit:
                     break
-                p = Pm[c] / norms[c]
-                if fresh and float((self.W[fresh] @ p).max()) >= self.theta:
-                    continue                                      # ya cubierto por uno recién creado
+                if self.S:                                        # conjunción de las S aferentes más fuertes
+                    sup = np.zeros(self.D, dtype=bool)
+                    sup[np.argpartition(-Pm[c], self.S - 1)[:self.S]] = True
+                    sup &= Pm[c] > 0
+                    p = np.where(sup, Pm[c], 0.0).astype(np.float32)
+                    p /= max(float(np.sqrt(p @ p)), 1e-6)
+                    if fresh:
+                        dd = np.sqrt(self.M[fresh].astype(np.float32) @ (Pm[c] * Pm[c]))
+                        if float((self.W[fresh] @ Pm[c] / np.maximum(dd, 1e-6)).max()) >= self.theta:
+                            continue
+                else:
+                    p = Pm[c] / norms[c]
+                    if fresh and float((self.W[fresh] @ p).max()) >= self.theta:
+                        continue                                  # ya cubierto por uno recién creado
                 f = self._new_slot()
                 if f < 0:
                     break
                 self.W[f] = p; self.alive[f] = True
+                if self.S:
+                    self.M[f] = sup
                 if self.pc is not None:                           # predice el parche que lo creó
                     self.G[f] = np.float32(self.pc["init"]) * Pm[c]
+                if self.lat is not None:                          # sin inhibición aprendida
+                    self.V[f, :] = 0.0; self.V[:, f] = 0.0; self.lat_m[f] = 0.0; self.lat_b[f] = 0.0
                 self.wins[f] = 0; self.born[f] = self.t
                 self.created += 1
                 fresh.append(f)
@@ -443,7 +579,7 @@ class FeatureArea:
         if self.free:
             f = self.free.pop()
             if self.local is not None and self.local["feedback"] == "sym":
-                self.clf.W[:, f::self.F] = 0.0                    # el lector local olvida ese rasgo
+                self.clf.W[:, f::self.Fo] = 0.0                   # el lector local olvida ese rasgo
             if self.on_reuse is not None:
                 self.on_reuse(f)
             return f
@@ -459,8 +595,12 @@ class FeatureArea:
         for f in dead:
             self.alive[f] = False
             self.W[f] = 0.0
+            if self.S:
+                self.M[f] = False
             if self.pc is not None:
                 self.G[f] = 0.0
+            if self.lat is not None:
+                self.V[f, :] = 0.0; self.V[:, f] = 0.0
             self.free.append(int(f))
         self.pruned += len(dead)
         return len(dead)
@@ -469,6 +609,8 @@ class FeatureArea:
         """El canal de entrada f cambió de significado: se cortan sus sinapsis."""
         C = self.in_shape[2]
         self.W[:, f::C] = 0.0
+        if self.S:
+            self.M[:, f::C] = False
         if self.pc is not None:                                   # y su predicción de ese canal
             self.G[:, f::C] = 0.0
 
@@ -477,15 +619,20 @@ class FeatureArea:
         feats = int(self.alive.sum())
         return dict(features=feats, created=self.created, pruned=self.pruned,
                     units=feats * (self.oh * self.ow + self.ph * self.pw),   # simples + complejas
-                    synapses=feats * self.D)
+                    synapses=int(self.M.sum()) if self.S else feats * self.D)
 
     def cost(self) -> dict:
         """Operaciones por lámina codificada. El diccionario se comparte entre posiciones:
         se guardan F x D sinapsis pero se evalúan P x F x D (una por posición)."""
         n = self.n
         P = self.oh * self.ow
-        out = dict(stored_synapses=int(self.alive.sum()) * self.D, macs=P * n * self.D,
+        syn = int(self.M[:n].sum()) if self.S else int(self.alive.sum()) * self.D
+        out = dict(stored_synapses=syn, macs=(2 * P * syn) if self.S else P * n * self.D,
                    memory_bytes=self.W.nbytes + self.alive.nbytes + self.wins.nbytes + self.born.nbytes)
+        if self.lat is not None:                                  # inhibición entre candidatas
+            ck = min(n, max(self.k + 1, int(self.lat["cand"] * self.k)))
+            out["macs"] += P * ck * ck
+            out["memory_bytes"] += self.V.nbytes
         if self.pc is not None:                                   # pesos generativos y última predicción
             out["stored_synapses"] *= 2
             out["memory_bytes"] += self.G.nbytes
@@ -494,10 +641,14 @@ class FeatureArea:
 
     def state(self) -> dict:
         out = dict(W=self.W, alive=self.alive, wins=self.wins, born=self.born,
+                   **({"M": self.M} if self.S else {}),
                    free=np.array(self.free, dtype=np.int64),
                    meta=np.array([self.n, self.t, self.created, self.pruned], dtype=np.int64))
         if self.local is not None:
             out["clf"] = self.clf.W
+        if self.lat is not None:
+            out["V"] = self.V; out["lat_m"] = self.lat_m; out["lat_n"] = np.array([self.lat_n])
+            out["lat_b"] = self.lat_b
         if self.pc is not None:
             out["G"] = self.G
             out["pcstat"] = np.array([self.sur_avg, self.sur_n, self.gain_avg, self._rdebt], dtype=np.float64)
@@ -505,11 +656,16 @@ class FeatureArea:
 
     def restore(self, z, prefix: str = ""):
         self.W[:] = z[prefix + "W"]; self.alive[:] = z[prefix + "alive"]
+        if self.S:
+            self.M[:] = z[prefix + "M"]
         self.wins[:] = z[prefix + "wins"]; self.born[:] = z[prefix + "born"]
         self.free = [int(v) for v in z[prefix + "free"]]
         self.n, self.t, self.created, self.pruned = (int(v) for v in z[prefix + "meta"])
         if self.local is not None and prefix + "clf" in z:
             self.clf.W[:] = z[prefix + "clf"]
+        if self.lat is not None and prefix + "V" in z:
+            self.V[:] = z[prefix + "V"]; self.lat_m[:] = z[prefix + "lat_m"]
+            self.lat_n = int(z[prefix + "lat_n"][0]); self.lat_b[:] = z[prefix + "lat_b"]
         if self.pc is not None and prefix + "G" in z:
             self.G[:] = z[prefix + "G"]
             a, n, g, d = (float(v) for v in z[prefix + "pcstat"])

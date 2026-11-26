@@ -227,3 +227,78 @@ def test_gain_only_amplifies_what_is_already_active():
     Q = net.areas[1].predict()
     assert np.allclose(lower, np.maximum(ff * (1.0 + Q), 0.0), atol=1e-5)
     assert ((lower > 0) <= (ff > 0)).all()                   # no aparece actividad nueva
+
+
+# ---------------------------------------------------------------- F5: redundancia
+def test_lateral_inhibition_learns_to_separate_features_that_fire_together():
+    a = FeatureArea((5, 5, 1), rf=3, pool=1, max_features=3, theta=0.5, floor=0.1, k=2,
+                    lateral=dict(lr=0.2, cand=2), neurogenesis=False, lr=0.0, lr_min=0.0)
+    bar = np.zeros((3, 3), dtype=np.float32); bar[1, :] = 1.0
+    dot = np.zeros((3, 3), dtype=np.float32); dot[0, 0] = 1.0
+    for f, w in enumerate((bar, bar + 0.05, bar + 2 * dot)):  # dos casi iguales y uno distinto
+        a.W[f] = w.ravel() / np.linalg.norm(w); a.alive[f] = True
+    a.n = 3
+    x = np.zeros((5, 5, 1), dtype=np.float32); x[2, 1:4, 0] = 1.0
+    first = a.encode(x)[1, 1]
+    assert (first[:2] > 0).all() and first[2] == 0           # al principio ganan los dos duplicados
+    for _ in range(50):
+        a.encode(x); a.lat_m[:] = 0.0; a.learn()
+    assert a.V[0, 1] > 0 and a.V[1, 0] > 0 and np.all(np.diag(a.V) == 0)
+    last = a.encode(x)[1, 1]
+    assert (last[:2] > 0).sum() == 1 and last[2] > 0         # ahora uno de ellos cede su lugar
+
+
+def test_lateral_and_residual_dictionary_are_off_by_default_and_roundtrip(tmp_path):
+    a = FeatureArea((8, 8, 1), rf=3, pool=2, max_features=8, theta=0.8)
+    assert a.lat is None and not hasattr(a, "V")
+    net = Cortex((8, 8, 1), 4, areas=[dict(AREAS[0], lateral=dict(lr=0.05),
+                                           predictive=dict(lr=0.2, dict_res=1.0)),
+                                      dict(AREAS[1], predictive=dict(lr=0.2, dict_res=0.5))], **KW)
+    hits = _stream(net, 300)
+    assert np.mean(hits[-100:]) > 0.5 and net.areas[0].V.max() > 0
+    net.save(tmp_path / "f5.npz")
+    twin = Cortex.load(tmp_path / "f5.npz")
+    assert np.array_equal(twin.areas[0].V, net.areas[0].V)
+    rng = np.random.default_rng(4)
+    for x in [_blob(rng, int(c)) for c in rng.integers(4, size=30)]:
+        assert twin.predict(x) == net.predict(x)
+
+
+def test_residual_dictionary_does_not_move_what_is_already_explained():
+    rng = np.random.default_rng(5)
+    a = FeatureArea((12, 12, 1), rf=3, pool=2, max_features=16, theta=0.8,
+                    predictive=dict(lr=0.5, dict_res=1.0), neurogenesis=True)
+    b = FeatureArea((12, 12, 1), rf=3, pool=2, max_features=16, theta=0.8)
+    x = _bar(rng, False)
+    for _ in range(200):                                     # un solo estímulo, aprendido de memoria
+        a.encode(x); a.learn(); b.encode(x); b.learn()
+    Wa, Wb = a.W.copy(), b.W.copy()
+    a.encode(x); pe = a.prediction_error(); a.learn(); b.encode(x); b.learn()
+    assert pe < 0.05
+    assert np.abs(a.W - Wa).max() < 1e-4                     # lo ya explicado casi no se mueve
+
+
+def test_conjunction_features_stay_on_their_support_and_learn():
+    rng = np.random.default_rng(7)
+    net = Cortex((8, 8, 1), 4, areas=[AREAS[0], dict(AREAS[1], support=6, theta=0.7)], **KW)
+    hits = _stream(net, 400)
+    a = net.areas[1]
+    assert np.mean(hits[-100:]) > 0.6 and a.alive.sum() > 0
+    assert (a.M.sum(axis=1)[a.alive] <= 6).all()
+    assert not a.W[~a.M].any()                               # nada fuera del soporte
+    assert a.cost()["macs"] == 2 * a.oh * a.ow * int(a.M[:a.n].sum())
+    code = a.encode(net.areas[0].encode(_blob(rng, 1)))
+    assert code.max() <= 1.0 + 1e-5
+
+
+def test_passthrough_adds_the_pooled_input_to_the_code():
+    net = Cortex((8, 8, 1), 4, areas=[AREAS[0], dict(AREAS[1], passthrough=True)], **KW)
+    a1, a2 = net.areas
+    assert a2.out_shape == (a2.ph, a2.pw, a2.F + a1.out_shape[2])
+    hits = _stream(net, 400)
+    assert np.mean(hits[-100:]) > 0.6
+    x = _blob(np.random.default_rng(8), 2)
+    c1 = a1.encode(x); c2 = a2.encode(c1)
+    # cada célula compleja (pool 1, rf 2) ve un bloque 2x2 de la entrada: su máximo por canal
+    assert np.allclose(c2[0, 0, a2.F:], c1[:2, :2].max(axis=(0, 1)))
+    assert a2.potentials() is not None and np.isfinite(a2.potentials()).all()
