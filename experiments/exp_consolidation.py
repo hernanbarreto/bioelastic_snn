@@ -519,9 +519,84 @@ def phase_f3(a, data):
     finish("f3", rows, extra, cfg)
 
 
+UNI = "+top.replay_focus=uniform"
+EQUAL = "+top.replay_mode=active+top.spacing=equal+top.space_base=200"
+EXPAND = "+top.replay_mode=active+top.spacing=expanding+top.space_base=86+top.space_factor=2"
+REVIEW = {
+    "pasivo uniforme": C2 + STORED + UNI,
+    "pasivo c2 (confusión)": C2 + STORED,
+    "activo sin espaciado": C2 + STORED + UNI + "+top.replay_mode=active",
+    "activo iguales": C2 + STORED + UNI + EQUAL,
+    "activo expansivos": C2 + STORED + UNI + EXPAND,
+    "agendado expansivo (aprende siempre)": C2 + STORED + UNI + EXPAND.replace("=active", "=scheduled"),
+    "activo expansivos + confusión": C2 + STORED + EXPAND,
+    "contraste dirigido": C2 + STORED + "+top.replay_contrast=true",
+    "contraste + activos expansivos": C2 + STORED + EXPAND + "+top.replay_contrast=true",
+}
+CDM = [((10, 11, 12, 13), 3000), ((14, 15, 16, 17), 3000), ((0, 1, 2, 3, 4), 3000)]
+
+
+def cdm_row(spec, seed, r) -> dict:
+    """Retención larga: C y D después de 3000 pasos de dígitos sin repaso del flujo."""
+    row = dict(bench="retention", scenario="CDM", model=spec, seed=seed)
+    hD = r["hist"][-3][2]; hf = r["hist"][-1][2]        # fin de D, fin de M
+    for part in ("full", "slow", "fast"):
+        if not hf[part]:
+            continue
+        cd = (10, 11, 12, 13, 14, 15, 16, 17)
+        row[f"{part}_CD_end"] = float(np.mean([hf[part][c] for c in cd]))
+        row[f"{part}_C_end"] = float(np.mean([hf[part][c] for c in cd[:4]]))
+        row[f"{part}_CD_afterD"] = float(np.mean([hD[part][c] for c in cd]))
+        row[f"{part}_CD_loss"] = row[f"{part}_CD_afterD"] - row[f"{part}_CD_end"]
+        row[f"{part}_M_end"] = float(np.mean([hf[part][c] for c in range(5)]))
+    row.update(r.get("counters", {}), seconds=r["seconds"])
+    return row
+
+
+def phase_f4(a, data):
+    rows: list = []
+    for name, spec in REVIEW.items():
+        for seed in a.seeds:
+            r = run_scenario("CD", spec, seed, data)
+            row = scenario_row("CD", spec, seed, r); row["variant"] = name
+            rows.append(row)
+            print(f"[f4] CD {name} s{seed}: " + " ".join(f"{k}={row[k]:.3f}" for k in
+                  ("old", "new", "all", "min", "slow_all", "fast_all")) +
+                  f" repasos={row.get('replays')} exámenes={row.get('tests')} fallos={row.get('test_errors')}", flush=True)
+    for name in ("pasivo c2 (confusión)", "activo expansivos + confusión", "contraste dirigido"):
+        for seed in a.seeds:                         # clases que llegan de a una (propuesta de Continuo 2)
+            r = run_scenario("chainF", REVIEW[name], seed, data)
+            row = scenario_row("chainF", REVIEW[name], seed, r); row["variant"] = name
+            rows.append(row)
+            print(f"[f4] chainF {name} s{seed}: " + " ".join(f"{k}={row[k]:.3f}" for k in
+                  ("old", "new", "all", "min", "slow_all", "slow_old")), flush=True)
+    lrows: list = []
+    for name in ("pasivo uniforme", "activo sin espaciado", "activo iguales", "activo expansivos"):
+        for seed in a.seeds:
+            r = run_scenario("CDM", REVIEW[name], seed, data, phases=CDM)
+            row = cdm_row(REVIEW[name], seed, r); row["variant"] = name
+            lrows.append(row)
+            print(f"[f4] CDM {name} s{seed}: " + " ".join(f"{k}={row[k]:.3f}" for k in
+                  ("full_CD_afterD", "full_CD_end", "full_CD_loss", "slow_CD_end", "full_M_end")), flush=True)
+    lkeys = sorted({k for r in lrows for k in r if isinstance(r[k], (int, float)) and k != "seed"})
+    lsum = agg(lrows, ("bench", "scenario", "model"), lkeys)
+    for d in lsum:
+        print(f"  CDM {d['model']:90s} " + fmt(d, ["full_CD_afterD", "full_CD_end", "full_CD_loss",
+                                                   "slow_CD_end", "slow_CD_loss", "full_M_end"]))
+    cfg = dict(seeds=a.seeds, variants=REVIEW, interference=SCENARIOS["CD"], retention=CDM,
+               budget="replay=2 repasos por paso en todas las variantes (mismo número de repasos)",
+               spacing=dict(equal=dict(gap=200), expanding=dict(first=86, factor=2),
+                            note="86 + 172 + 344 ~ 3 x 200: mismo retraso total hasta el tercer examen, "
+                                 "como 1-5-9 vs 5-5-5 en Karpicke y Roediger 2007"),
+               contrast="replay_contrast: el repaso dirigido a la confusión se vuelve un examen de a dos "
+                        "(clase guardada contra la que se enseña) y aprende sólo si falla",
+               reductions="CD; chainF sólo para 3 variantes; CDM (retención tras 3000 pasos de dígitos) para 4")
+    finish("f4", rows, dict(retention_rows=lrows, retention_summary=lsum), cfg)
+
+
 SCEN_STEPS = {k: sum(p[1] for p in v) for k, v in SCENARIOS.items()}
 
-PHASES = {"f0": phase_f0, "f1": phase_f1, "f1b": phase_f1b, "f2": phase_f2, "f3": phase_f3}
+PHASES = {"f0": phase_f0, "f1": phase_f1, "f1b": phase_f1b, "f2": phase_f2, "f3": phase_f3, "f4": phase_f4}
 
 
 def main():

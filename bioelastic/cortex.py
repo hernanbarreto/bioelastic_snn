@@ -61,6 +61,9 @@ class Cortex:
                  stored_labels: bool = False, slow_error: str = "joint",
                  schema: str = "off", schema_fit: float = 0.5, schema_boost: float = 4.0,
                  schema_misfit_lr: float = 1.0, schema_beta: float = 0.02, schema_known: int = 20,
+                 replay_mode: str = "passive", spacing: str = "none", space_base: float = 200.0,
+                 space_factor: float = 2.0, active_margin: float = 0.0, fail_weight: float = 4.0,
+                 replay_contrast: bool = False,
                  seed: int = 0, workers: int = 1, homeostasis: float = 0.0):
         self._config = dict(input_shape=input_shape, n_outputs=int(n_outputs),
                             areas=[dict(a) for a in areas], heads=[],
@@ -76,6 +79,10 @@ class Cortex:
                             schema=str(schema), schema_fit=float(schema_fit),
                             schema_boost=float(schema_boost), schema_misfit_lr=float(schema_misfit_lr),
                             schema_beta=float(schema_beta), schema_known=int(schema_known),
+                            replay_mode=str(replay_mode), spacing=str(spacing), space_base=float(space_base),
+                            space_factor=float(space_factor), active_margin=float(active_margin),
+                            fail_weight=float(fail_weight),
+                            replay_contrast=bool(replay_contrast),
                             seed=int(seed))
         self.arbiter = float(arbiter)
         self.beta = None                                      # pesos del árbitro (uno por votante)
@@ -126,6 +133,17 @@ class Cortex:
         self.fit = float("nan"); self.fit_parts = (float("nan"),) * 3
         self.assimilated = 0
         self._taught = np.zeros(self.C, dtype=np.int64)       # enseñanzas por clase
+        # Repaso como autoexamen espaciado (ver `_replay_scheduled`).
+        if replay_mode not in ("passive", "active", "scheduled"):
+            raise ValueError(f"replay_mode desconocido: {replay_mode}")
+        if spacing not in ("none", "equal", "expanding"):
+            raise ValueError(f"spacing desconocido: {spacing}")
+        self.replay_mode = replay_mode; self.spacing = spacing
+        self.space_base = float(space_base); self.space_factor = float(space_factor)
+        self.active_margin = float(active_margin); self.fail_weight = float(fail_weight)
+        self.tests = 0; self.test_errors = 0
+        self.replay_contrast = bool(replay_contrast)          # repaso dirigido como examen de a dos
+        self._steps = 0                                       # pasos de enseñanza (reloj del calendario)
         self.rng = np.random.default_rng(seed)
         self.areas: list[FeatureArea] = []
         shape = self.input_shape
@@ -445,6 +463,7 @@ class Cortex:
             if i not in done:
                 one(i)
         self._taught[target] += 1
+        self._steps += 1
         if self.proj is not None:
             pp = None if arb else p
             if self.slow_error == "own" and not arb:
@@ -461,7 +480,11 @@ class Cortex:
                 while self._replay_debt >= 1.0:
                     self._replay_debt -= 1.0
                     if aimed:                                 # un repaso por paso va a la confusión
-                        self._replay_pattern(conf[0], conf[1], conf[3]); aimed = False
+                        if self.replay_contrast:
+                            self._contrast(conf[0], conf[1], conf[3], target)
+                        else:
+                            self._replay_pattern(conf[0], conf[1], conf[3])
+                        aimed = False
                         self.directed += 1
                     else:
                         self._replay_one()
@@ -600,13 +623,17 @@ class Cortex:
                 return h, "code"
         return None, None
 
-    def _replay_one(self):
+    def _replay_one(self, passive: bool = False):
         """Consolidación por repetición: un recuerdo del área de asociación (el patrón que
         guarda una de sus neuronas) se reactiva y entrena la proyección directa con la clase
         de esa neurona. Las clases se eligen de forma pareja, así lo viejo se repasa aunque
         el flujo ya no lo muestre. Con replay_focus="absent" (y una proyección con
         `active_window`) se repasan sólo las clases ausentes del flujo: las presentes ya
-        reciben ejemplos reales."""
+        reciben ejemplos reales.
+        Con replay_mode="active" o "scheduled", ver `_replay_scheduled`."""
+        if self.replay_mode != "passive" and not passive:
+            self._replay_scheduled()
+            return
         mem, space = self._replay_source()
         if mem is None:
             return
@@ -623,26 +650,139 @@ class Cortex:
         j = int(self.rng.choice(np.flatnonzero(pref == c)))
         self._replay_pattern(mem.episode(j), c, space)
 
-    def _replay_pattern(self, x, c: int, space: str):
-        """Reactiva el recuerdo denso `x` (espacio de la memoria) y entrena la proyección
-        directa con la clase c, con el error completo."""
+    def _reactivate(self, x, space: str):
+        """Recuerdo denso `x` (espacio de la memoria) -> (volea normalizada de la proyección,
+        códigos de las áreas). El repaso no entrena los rasgos de las áreas."""
+        codes = []
         if space == "input":
             X = (x / max(float(x.max()), 1e-8)).reshape(self.input_shape)
-            codes = []
             for a in self.areas:
                 X = a.encode(X); codes.append(X)
                 a._cache = None                               # el repaso no entrena los rasgos
-                a.learn_readout(c, X)                         # pero sí los lectores locales
             idx, h = self._proj_input(codes)
         else:
             idx = np.flatnonzero(x > 0); val = x[idx]
             h = val / np.float32(max(float(np.sqrt(val @ val)), 1e-6))
         if len(idx) == 0:
+            return None
+        return idx, h, codes
+
+    def _replay_local(self, c: int, codes):
+        """Los lectores locales de las áreas (si hay error local) también aprenden del repaso."""
+        for a, X in zip(self.areas, codes):
+            a.learn_readout(c, X)
+
+    def _replay_pattern(self, x, c: int, space: str):
+        """Reactiva el recuerdo denso `x` (espacio de la memoria) y entrena la proyección
+        directa con la clase c, con el error completo."""
+        r = self._reactivate(x, space)
+        if r is None:
             return
+        idx, h, codes = r
+        self._replay_local(c, codes)
         V = self.proj.potentials(idx, h)
         e = np.exp((V - V.max()) / self.temperature)
         self.proj.learn(idx, h, c, p=e / e.sum(), replay=True)
         self.replays += 1
+
+    def _contrast(self, x, c: int, space: str, rival: int):
+        """Autoexamen dirigido contra la clase que compite (propuesta de Continuo 2): el
+        recuerdo de la clase c más cercano a lo que entra (ver `_confusion`) se presenta a
+        la proyección y se compara su puntaje para c con el de `rival`, la clase que se
+        está enseñando, aunque sea la única presente en el flujo. Si c no le gana por más
+        de `active_margin` (en la competencia de a dos), aprende con el error de esa
+        competencia: sólo cambian las filas c y rival."""
+        r = self._reactivate(x, space)
+        if r is None:
+            return
+        idx, h, codes = r
+        V = self.proj.potentials(idx, h)
+        pair = np.array([c, rival])
+        z = V[pair] / self.temperature
+        e = np.exp(z - z.max()); e /= e.sum()
+        self.tests += 1
+        self.replays += 1
+        if e[0] - e[1] > self.active_margin:
+            return
+        self.test_errors += 1
+        q = np.zeros(self.C); q[pair] = e
+        self._replay_local(c, codes)
+        self.proj.learn(idx, h, c, p=q, replay=True)
+
+    # ------------------------------------------------------------------ autoexamen espaciado
+    def _pick_scheduled(self, mem, lab):
+        """Recuerdo a examinar. Sin espaciado: muestreo proporcional a 1 + `fail_weight` x
+        (media móvil de sus fallos). Con espaciado: entre los vencidos, el de mayor
+        prioridad = `fail_weight` x fallo + atraso / intervalo; si no hay vencidos, el que
+        vence antes (el presupuesto de repasos se gasta igual)."""
+        ep = mem.ep; n = mem.layer.n
+        ok = np.flatnonzero(lab >= 0)
+        if len(ok) == 0:
+            return -1
+        fail = ep["fail"][ok]
+        if self.spacing == "none":
+            w = 1.0 + self.fail_weight * fail.astype(np.float64)
+            return int(self.rng.choice(ok, p=w / w.sum()))
+        due = ep["due"][ok]
+        late = self._steps - due
+        ready = late >= 0
+        if not ready.any():
+            return int(ok[int(np.argmin(due))])
+        cand = ok[ready]
+        pri = self.fail_weight * fail[ready] + late[ready] / np.maximum(ep["gap"][cand], 1.0)
+        return int(cand[int(np.argmax(pri))])
+
+    def _replay_scheduled(self):
+        """Repaso como autoexamen (efecto de testeo, Roediger y Karpicke 2006): se presenta
+        la clave (el episodio guardado), el sistema lento predice y se compara con la
+        etiqueta guardada. replay_mode="active": aprende sólo si falla (o si el margen
+        p(etiqueta) - p(otra) no supera `active_margin`); "scheduled": misma elección y
+        calendario, pero aprende siempre (ablación del examen). El resultado ajusta el
+        calendario: acierto -> el intervalo se mantiene (spacing="equal") o se multiplica
+        por `space_factor` ("expanding"); fallo -> vuelve a `space_base`. Un recuerdo que
+        se sabía y ahora falla (se está olvidando) queda con prioridad máxima. Un examen
+        adelantado (no había ninguno vencido) que acierta no estira el intervalo."""
+        mem, space = self._replay_source()
+        if mem is None or mem.ep is None:
+            self._replay_one(passive=True)
+            return
+        lab = self._labels(mem)
+        j = self._pick_scheduled(mem, lab)
+        if j < 0:
+            return
+        c = int(lab[j])
+        r = self._reactivate(mem.episode(j), space)
+        if r is None:
+            return
+        idx, h, codes = r
+        V = self.proj.potentials(idx, h)
+        e = np.exp((V - V.max()) / self.temperature); q = e / e.sum()
+        other = np.delete(q, c)
+        passed = int(np.argmax(q)) == c and q[c] - (other.max() if len(other) else 0.0) > self.active_margin
+        self.tests += 1
+        if not passed:
+            self.test_errors += 1
+        if self.replay_mode == "scheduled" or not passed:
+            self._replay_local(c, codes)
+            self.proj.learn(idx, h, c, p=q, replay=True)
+        self.replays += 1
+        ep = mem.ep
+        if passed:
+            g = float(ep["gap"][j])
+            early = self._steps < int(ep["due"][j])             # examen adelantado (no había vencidos)
+            if g <= 0.0:
+                g = self.space_base
+            elif self.spacing == "expanding" and not early:
+                g = min(g * self.space_factor, 1e7)
+            ep["gap"][j] = g
+            ep["fail"][j] *= np.float32(0.5)
+        else:
+            forgetting = ep["ok"][j] == 1
+            ep["gap"][j] = self.space_base
+            ep["fail"][j] = np.float32(1.0) if forgetting else np.float32(0.5) * ep["fail"][j] + np.float32(0.5)
+        ep["due"][j] = self._steps + int(round(float(ep["gap"][j])))
+        ep["ok"][j] = 1 if passed else 0
+        ep["tests"][j] += 1
 
     def _rehearse_one(self, conf=None):
         """Ensayo en la propia memoria: el recuerdo de una neurona (clase elegida de forma
@@ -721,6 +861,7 @@ class Cortex:
                      + sum(h["neurons"] for h in heads) * self.C
                      + (self.proj.n * self.C if self.proj is not None else 0),
             replays=self.replays, recalls=self.recalls, assimilated=self.assimilated,
+            tests=self.tests,
         )
 
     def cost(self) -> dict:

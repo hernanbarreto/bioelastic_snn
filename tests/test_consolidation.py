@@ -299,3 +299,77 @@ def test_prototype_lock_skips_ltp_only_when_the_area_was_right():
     net.step(np.clip(a + 0.05 * rng.random(20), 0, 1).astype(np.float32), 0)
     assert np.array_equal(net.layer.w[j], w0)          # acierto: el prototipo consolidado no se mueve
 
+
+# ---------------------------------------------------------------- F4: autoexamen espaciado
+def test_active_replay_learns_only_from_errors_and_spends_the_same_budget():
+    rng = np.random.default_rng(10)
+    xs = [(_blob(rng, c), c) for c in rng.integers(4, size=200)]
+    nets = {m: _cortex(replay=2.0, stored_labels=True, replay_mode=m, spacing="expanding", space_base=20)
+            for m in ("passive", "active")}
+    for m, net in nets.items():
+        for x, c in xs:
+            net.step(x, int(c))
+    assert nets["passive"].replays == nets["active"].replays   # mismo presupuesto
+    act = nets["active"]
+    assert act.tests == act.replays and 0 < act.test_errors < act.tests
+    mem = act.heads[0]
+    ep = mem.ep; n = mem.layer.n
+    tested = ep["tests"][:n] > 0
+    assert tested.any() and np.all(ep["gap"][:n][tested] >= 20)
+    # un examen que acierta no cambia la proyección; uno que falla sí
+    W0 = act.proj.W.copy(); e0 = act.test_errors
+    act._replay_scheduled()
+    assert (act.test_errors > e0) == (not np.array_equal(act.proj.W, W0))
+
+
+def test_spacing_expands_or_keeps_the_interval_and_forgetting_gets_priority():
+    rng = np.random.default_rng(11)
+    for spacing, gaps in (("equal", (30, 30, 30)), ("expanding", (60, 120, 120))):
+        net = _cortex(replay=0.0, stored_labels=True, replay_mode="active", spacing=spacing,
+                      space_base=30, space_factor=2.0)
+        for _ in range(150):
+            c = int(rng.integers(4)); net.step(_blob(rng, c), c)
+        mem = net.heads[0]; ep = mem.ep; n = mem.layer.n
+        net.proj.learn = lambda *a, **k: None          # el examen no cambia nada: resultados estables
+        lab = net._labels(mem)
+        passing = []
+        for j in range(n):                             # recuerdos que el lento ya acierta
+            idx, h, _ = net._reactivate(mem.episode(j), "input")
+            if int(np.argmax(net.proj.potentials(idx, h))) == lab[j]:
+                passing.append(j)
+        j = passing[0]
+        ep["due"][:n] = 10 ** 9; ep["fail"][:n] = 0.0
+        ep["due"][j] = net._steps; ep["gap"][j] = 30.0; ep["ok"][j] = 1
+        net._replay_scheduled()                        # vencido y acierta
+        assert ep["gap"][j] == gaps[0] and ep["due"][j] == net._steps + gaps[0]
+        net._steps = int(ep["due"][j])
+        net._replay_scheduled()                        # vencido otra vez
+        assert ep["gap"][j] == gaps[1]
+        net._replay_scheduled()                        # adelantado (nada vencido): no se estira
+        assert ep["gap"][j] == gaps[2]
+        # un recuerdo que se sabía y falla pasa adelante de todos los vencidos
+        k = passing[1]
+        ep["due"][:n] = net._steps - 5; ep["gap"][:n] = 30.0
+        ep["fail"][:n] = 0.0; ep["fail"][k] = 1.0
+        assert net._pick_scheduled(mem, lab) == k
+
+
+def test_contrast_replay_only_touches_the_two_competing_rows_and_only_on_failure():
+    rng = np.random.default_rng(12)
+    net = _cortex(replay=2.0, replay_focus="confusion", confusion_p=0.0, replay_contrast=True,
+                  stored_labels=True)
+    for _ in range(200):
+        c = int(rng.integers(4)); net.step(_blob(rng, c), c)
+    assert net.tests > 0 and net.directed > 0
+    mem = net.heads[0]
+    j = 0; x = mem.episode(j); c = int(mem.ep["y"][j]); rival = (c + 1) % 4
+    W0 = net.proj.W.copy(); e0 = net.test_errors
+    net.active_margin = 2.0                            # imposible de superar: siempre aprende
+    net._contrast(x, c, "input", rival)
+    changed = np.flatnonzero(np.abs(net.proj.W - W0).sum(axis=1) > 0)
+    assert net.test_errors == e0 + 1 and set(changed) <= {c, rival} and len(changed)
+    net.active_margin = -2.0                           # siempre aprueba: no cambia nada
+    W1 = net.proj.W.copy()
+    net._contrast(x, c, "input", rival)
+    assert np.array_equal(net.proj.W, W1)
+

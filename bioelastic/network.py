@@ -41,7 +41,9 @@ class _State:
 
 
 class BioElasticNet:
-    _EP_FIELDS = (("y", np.int16), ("t", np.int64), ("ctx", np.int32), ("norm", np.float32))
+    _EP_FIELDS = (("y", np.int16), ("t", np.int64), ("ctx", np.int32), ("norm", np.float32),
+                  ("due", np.int64), ("gap", np.float32), ("fail", np.float32), ("ok", np.int8),
+                  ("tests", np.int32))
 
     def __init__(self, n_inputs: int, n_outputs: int, *, context: int = 1, delay: float = 0.15,
                  tau: float = 0.0, grow_on_error: bool = True, rho_sup: float = 0.98,
@@ -99,6 +101,7 @@ class BioElasticNet:
         #          como la lectura aprendida
         #   t      paso en que se escribió;  ctx  etiqueta de contexto (`context_tag`)
         #   norm   norma del episodio (para recuperar por coseno, ver `recall`)
+        #   due, gap, fail, ok, tests   calendario y resultado del autoexamen (Cortex)
         self.episodic = bool(episodic)
         self.episodes = np.zeros((0, self.layer.D), dtype=np.uint8) if self.episodic else None
         self.ep = {name: np.zeros(0, dtype=dt) for name, dt in self._EP_FIELDS} if self.episodic else None
@@ -133,6 +136,8 @@ class BioElasticNet:
             ep["y"][j] = -1 if self._pending_cls is None else int(self._pending_cls)
             ep["t"][j] = self.layer.t; ep["ctx"][j] = int(self.context_tag)
             ep["norm"][j] = np.float32(np.sqrt(e @ e) / 255.0)
+            ep["due"][j] = self.layer.t; ep["gap"][j] = 0.0; ep["fail"][j] = 0.0
+            ep["ok"][j] = -1; ep["tests"][j] = 0
 
     def _on_remove(self, j: int, last: int):
         self.readout.remove_input(j, last)
