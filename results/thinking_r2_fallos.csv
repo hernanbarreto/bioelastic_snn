@@ -1,0 +1,29 @@
+prueba,sistema,caso,acc_media,acc_min,semillas,nodos_busqueda,neuronas_say,segundos
+T4 sin currículo,antes,"f(f(x)), x no vistos",0.0000,0.0000,5,0.4824,30.6000,28.8989
+T4 sin currículo,antes,"f(x), todos",0.5125,0.5000,5,0.4824,30.6000,28.8991
+T4 sin currículo,despues,"f(f(x)), x no vistos",1.0000,1.0000,5,0.2986,24.8000,28.1648
+T4 sin currículo,despues,"f(x), todos",1.0000,1.0000,5,0.2986,24.8000,28.1650
+"bloques, orden inverso (f al final)",antes,"C0 f(x), todos los x",0.2610,0.0000,5,2.4896,365.4000,108.6593
+"bloques, orden inverso (f al final)",antes,"C1 v nunca compuesto, 1-2 saltos",0.0650,0.0050,5,2.4896,365.4000,108.6636
+"bloques, orden inverso (f al final)",antes,"C1 v nunca compuesto, 3-4 saltos",0.0610,0.0100,5,2.4896,365.4000,108.6636
+"bloques, orden inverso (f al final)",antes,C2 x nunca compuesto,0.0310,0.0150,5,2.4896,365.4000,108.6637
+"bloques, orden inverso (f al final)",antes,C3 5-8 saltos,1.0000,1.0000,5,2.4896,365.4000,108.6637
+"bloques, orden inverso (f al final)",antes,"C3 5-8 saltos, 16 distractores + 8 ruidos",1.0000,1.0000,5,2.4896,365.4000,108.6637
+"bloques, orden inverso (f al final)",antes,"C3 3 saltos, orden reverso",1.0000,1.0000,5,2.4896,365.4000,108.6637
+"bloques, orden inverso (f al final)",antes,"C3 3 saltos, hecho corregido",1.0000,1.0000,5,2.4896,365.4000,108.6637
+"bloques, orden inverso (f al final)",antes,"C3 3 saltos, distractores que apuntan a la cadena",1.0000,1.0000,5,2.4896,365.4000,108.6638
+"bloques, orden inverso (f al final)",antes,C4 x nunca compuesto,0.0180,0.0000,5,2.4896,365.4000,108.6638
+"bloques, orden inverso (f al final)",antes,"C5 orden de 8, distancia >= 4",0.8590,0.4600,5,2.4896,365.4000,108.6638
+"bloques, orden inverso (f al final)",antes,C6 5 eventos,1.0000,1.0000,5,2.4896,365.4000,108.6638
+"bloques, orden inverso (f al final)",despues,"C0 f(x), todos los x",1.0000,1.0000,5,5.0413,69.8000,62.1445
+"bloques, orden inverso (f al final)",despues,"C1 v nunca compuesto, 1-2 saltos",1.0000,1.0000,5,5.0413,69.8000,62.1446
+"bloques, orden inverso (f al final)",despues,"C1 v nunca compuesto, 3-4 saltos",1.0000,1.0000,5,5.0413,69.8000,62.1446
+"bloques, orden inverso (f al final)",despues,C2 x nunca compuesto,1.0000,1.0000,5,5.0413,69.8000,62.1446
+"bloques, orden inverso (f al final)",despues,C3 5-8 saltos,1.0000,1.0000,5,5.0413,69.8000,62.1447
+"bloques, orden inverso (f al final)",despues,"C3 5-8 saltos, 16 distractores + 8 ruidos",1.0000,1.0000,5,5.0413,69.8000,62.1447
+"bloques, orden inverso (f al final)",despues,"C3 3 saltos, orden reverso",1.0000,1.0000,5,5.0413,69.8000,62.1447
+"bloques, orden inverso (f al final)",despues,"C3 3 saltos, hecho corregido",1.0000,1.0000,5,5.0413,69.8000,62.1447
+"bloques, orden inverso (f al final)",despues,"C3 3 saltos, distractores que apuntan a la cadena",1.0000,1.0000,5,5.0413,69.8000,62.1447
+"bloques, orden inverso (f al final)",despues,C4 x nunca compuesto,1.0000,1.0000,5,5.0413,69.8000,62.1448
+"bloques, orden inverso (f al final)",despues,"C5 orden de 8, distancia >= 4",1.0000,1.0000,5,5.0413,69.8000,62.1448
+"bloques, orden inverso (f al final)",despues,C6 5 eventos,1.0000,1.0000,5,5.0413,69.8000,62.1448

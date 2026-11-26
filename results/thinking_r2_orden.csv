@@ -1,0 +1,61 @@
+prueba,sistema,caso,acc_media,acc_min,semillas,nodos_busqueda,neuronas_say,segundos
+"bloques, orden directo",despues,"C0 f(x), todos los x",1.0000,1.0000,5,0.8206,32.2000,47.7143
+"bloques, orden directo",despues,"C1 v nunca compuesto, 1-2 saltos",1.0000,1.0000,5,0.8206,32.2000,47.7146
+"bloques, orden directo",despues,"C1 v nunca compuesto, 3-4 saltos",1.0000,1.0000,5,0.8206,32.2000,47.7146
+"bloques, orden directo",despues,C2 x nunca compuesto,1.0000,1.0000,5,0.8206,32.2000,47.7146
+"bloques, orden directo",despues,C3 5-8 saltos,1.0000,1.0000,5,0.8206,32.2000,47.7146
+"bloques, orden directo",despues,"C3 5-8 saltos, 16 distractores + 8 ruidos",1.0000,1.0000,5,0.8206,32.2000,47.7147
+"bloques, orden directo",despues,"C3 3 saltos, orden reverso",1.0000,1.0000,5,0.8206,32.2000,47.7147
+"bloques, orden directo",despues,"C3 3 saltos, hecho corregido",1.0000,1.0000,5,0.8206,32.2000,47.7147
+"bloques, orden directo",despues,"C3 3 saltos, distractores que apuntan a la cadena",1.0000,1.0000,5,0.8206,32.2000,47.7147
+"bloques, orden directo",despues,C4 x nunca compuesto,1.0000,1.0000,5,0.8206,32.2000,47.7147
+"bloques, orden directo",despues,"C5 orden de 8, distancia >= 4",0.8940,0.4700,5,0.8206,32.2000,47.7147
+"bloques, orden directo",despues,C6 5 eventos,1.0000,1.0000,5,0.8206,32.2000,47.7148
+multitarea mezclada,despues,"C0 f(x), todos los x",1.0000,1.0000,5,0.7667,32.2000,53.1186
+multitarea mezclada,despues,"C1 v nunca compuesto, 1-2 saltos",1.0000,1.0000,5,0.7667,32.2000,53.1187
+multitarea mezclada,despues,"C1 v nunca compuesto, 3-4 saltos",1.0000,1.0000,5,0.7667,32.2000,53.1187
+multitarea mezclada,despues,C2 x nunca compuesto,1.0000,1.0000,5,0.7667,32.2000,53.1188
+multitarea mezclada,despues,C3 5-8 saltos,1.0000,1.0000,5,0.7667,32.2000,53.1188
+multitarea mezclada,despues,"C3 5-8 saltos, 16 distractores + 8 ruidos",1.0000,1.0000,5,0.7667,32.2000,53.1188
+multitarea mezclada,despues,"C3 3 saltos, orden reverso",1.0000,1.0000,5,0.7667,32.2000,53.1188
+multitarea mezclada,despues,"C3 3 saltos, hecho corregido",1.0000,1.0000,5,0.7667,32.2000,53.1189
+multitarea mezclada,despues,"C3 3 saltos, distractores que apuntan a la cadena",1.0000,1.0000,5,0.7667,32.2000,53.1189
+multitarea mezclada,despues,C4 x nunca compuesto,1.0000,1.0000,5,0.7667,32.2000,53.1189
+multitarea mezclada,despues,"C5 orden de 8, distancia >= 4",1.0000,1.0000,5,0.7667,32.2000,53.1190
+multitarea mezclada,despues,C6 5 eventos,1.0000,1.0000,5,0.7667,32.2000,53.1190
+bloques en orden al azar C3-C1-C5-C4-C2-C0-C6,despues,"C0 f(x), todos los x",1.0000,1.0000,5,5.4849,43.4000,66.1739
+bloques en orden al azar C3-C1-C5-C4-C2-C0-C6,despues,"C1 v nunca compuesto, 1-2 saltos",0.9010,0.5050,5,5.4849,43.4000,66.1740
+bloques en orden al azar C3-C1-C5-C4-C2-C0-C6,despues,"C1 v nunca compuesto, 3-4 saltos",0.8100,0.0500,5,5.4849,43.4000,66.1740
+bloques en orden al azar C3-C1-C5-C4-C2-C0-C6,despues,C2 x nunca compuesto,1.0000,1.0000,5,5.4849,43.4000,66.1740
+bloques en orden al azar C3-C1-C5-C4-C2-C0-C6,despues,C3 5-8 saltos,1.0000,1.0000,5,5.4849,43.4000,66.1740
+bloques en orden al azar C3-C1-C5-C4-C2-C0-C6,despues,"C3 5-8 saltos, 16 distractores + 8 ruidos",1.0000,1.0000,5,5.4849,43.4000,66.1740
+bloques en orden al azar C3-C1-C5-C4-C2-C0-C6,despues,"C3 3 saltos, orden reverso",1.0000,1.0000,5,5.4849,43.4000,66.1740
+bloques en orden al azar C3-C1-C5-C4-C2-C0-C6,despues,"C3 3 saltos, hecho corregido",1.0000,1.0000,5,5.4849,43.4000,66.1741
+bloques en orden al azar C3-C1-C5-C4-C2-C0-C6,despues,"C3 3 saltos, distractores que apuntan a la cadena",1.0000,1.0000,5,5.4849,43.4000,66.1741
+bloques en orden al azar C3-C1-C5-C4-C2-C0-C6,despues,C4 x nunca compuesto,1.0000,1.0000,5,5.4849,43.4000,66.1741
+bloques en orden al azar C3-C1-C5-C4-C2-C0-C6,despues,"C5 orden de 8, distancia >= 4",1.0000,1.0000,5,5.4849,43.4000,66.1741
+bloques en orden al azar C3-C1-C5-C4-C2-C0-C6,despues,C6 5 eventos,1.0000,1.0000,5,5.4849,43.4000,66.1741
+bloques en orden al azar C1-C0-C2-C3-C4-C5-C6,despues,"C0 f(x), todos los x",1.0000,1.0000,5,1.7355,49.2000,50.1895
+bloques en orden al azar C1-C0-C2-C3-C4-C5-C6,despues,"C1 v nunca compuesto, 1-2 saltos",1.0000,1.0000,5,1.7355,49.2000,50.1896
+bloques en orden al azar C1-C0-C2-C3-C4-C5-C6,despues,"C1 v nunca compuesto, 3-4 saltos",1.0000,1.0000,5,1.7355,49.2000,50.1896
+bloques en orden al azar C1-C0-C2-C3-C4-C5-C6,despues,C2 x nunca compuesto,1.0000,1.0000,5,1.7355,49.2000,50.1896
+bloques en orden al azar C1-C0-C2-C3-C4-C5-C6,despues,C3 5-8 saltos,1.0000,1.0000,5,1.7355,49.2000,50.1897
+bloques en orden al azar C1-C0-C2-C3-C4-C5-C6,despues,"C3 5-8 saltos, 16 distractores + 8 ruidos",1.0000,1.0000,5,1.7355,49.2000,50.1897
+bloques en orden al azar C1-C0-C2-C3-C4-C5-C6,despues,"C3 3 saltos, orden reverso",1.0000,1.0000,5,1.7355,49.2000,50.1897
+bloques en orden al azar C1-C0-C2-C3-C4-C5-C6,despues,"C3 3 saltos, hecho corregido",1.0000,1.0000,5,1.7355,49.2000,50.1897
+bloques en orden al azar C1-C0-C2-C3-C4-C5-C6,despues,"C3 3 saltos, distractores que apuntan a la cadena",1.0000,1.0000,5,1.7355,49.2000,50.1897
+bloques en orden al azar C1-C0-C2-C3-C4-C5-C6,despues,C4 x nunca compuesto,1.0000,1.0000,5,1.7355,49.2000,50.1898
+bloques en orden al azar C1-C0-C2-C3-C4-C5-C6,despues,"C5 orden de 8, distancia >= 4",1.0000,1.0000,5,1.7355,49.2000,50.1898
+bloques en orden al azar C1-C0-C2-C3-C4-C5-C6,despues,C6 5 eventos,1.0000,1.0000,5,1.7355,49.2000,50.1898
+bloques en orden al azar C3-C2-C6-C4-C1-C5-C0,despues,"C0 f(x), todos los x",0.8890,0.5400,5,7.8079,81.2000,69.6762
+bloques en orden al azar C3-C2-C6-C4-C1-C5-C0,despues,"C1 v nunca compuesto, 1-2 saltos",0.7810,0.0250,5,7.8079,81.2000,69.6763
+bloques en orden al azar C3-C2-C6-C4-C1-C5-C0,despues,"C1 v nunca compuesto, 3-4 saltos",0.7710,0.0150,5,7.8079,81.2000,69.6763
+bloques en orden al azar C3-C2-C6-C4-C1-C5-C0,despues,C2 x nunca compuesto,0.7780,0.0450,5,7.8079,81.2000,69.6763
+bloques en orden al azar C3-C2-C6-C4-C1-C5-C0,despues,C3 5-8 saltos,1.0000,1.0000,5,7.8079,81.2000,69.6763
+bloques en orden al azar C3-C2-C6-C4-C1-C5-C0,despues,"C3 5-8 saltos, 16 distractores + 8 ruidos",1.0000,1.0000,5,7.8079,81.2000,69.6764
+bloques en orden al azar C3-C2-C6-C4-C1-C5-C0,despues,"C3 3 saltos, orden reverso",1.0000,1.0000,5,7.8079,81.2000,69.6764
+bloques en orden al azar C3-C2-C6-C4-C1-C5-C0,despues,"C3 3 saltos, hecho corregido",1.0000,1.0000,5,7.8079,81.2000,69.6764
+bloques en orden al azar C3-C2-C6-C4-C1-C5-C0,despues,"C3 3 saltos, distractores que apuntan a la cadena",1.0000,1.0000,5,7.8079,81.2000,69.6764
+bloques en orden al azar C3-C2-C6-C4-C1-C5-C0,despues,C4 x nunca compuesto,0.7220,0.0000,5,7.8079,81.2000,69.6764
+bloques en orden al azar C3-C2-C6-C4-C1-C5-C0,despues,"C5 orden de 8, distancia >= 4",1.0000,1.0000,5,7.8079,81.2000,69.6764
+bloques en orden al azar C3-C2-C6-C4-C1-C5-C0,despues,C6 5 eventos,1.0000,1.0000,5,7.8079,81.2000,69.6764

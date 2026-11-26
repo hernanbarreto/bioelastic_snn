@@ -1,0 +1,8 @@
+prueba,sistema,caso,acc_media,acc_min,semillas,nodos_busqueda,neuronas_say,segundos
+"composición sin currículo, vocabulario 64",despues,"f(f(x)), x no vistos",1.0000,1.0000,5,0.6725,96.0000,27.3046
+"composición sin currículo, vocabulario 64",despues,"f(x), todos",1.0000,1.0000,5,0.6725,96.0000,27.3047
+"composición sin currículo, vocabulario 128",despues,"f(f(x)), x no vistos",1.0000,1.0000,5,0.6641,194.2000,50.4860
+"composición sin currículo, vocabulario 128",despues,"f(x), todos",1.0000,1.0000,5,0.6641,194.2000,50.4861
+"C1 sola, vocabulario 256",despues,"v nunca compuesto, 1-2 saltos",1.0000,1.0000,5,2.1537,256.0000,32.3735
+"C1 sola, vocabulario 256",despues,"v nunca compuesto, 3-4 saltos",1.0000,1.0000,5,2.1537,256.0000,32.3736
+"C4 sola, vocabulario 256",despues,x nunca compuesto,1.0000,1.0000,5,1.1883,257.0000,25.3318

@@ -1,0 +1,16 @@
+prueba,sistema,caso,acc_media,acc_min,semillas,nodos_busqueda,neuronas_say,segundos
+C5 transitiva sola,sostén dado (probe),"orden de 8, distancia >= 4",1.0000,1.0000,5,0.4417,4.8000,12.0848
+C5 transitiva sola,sostén aprendido,"orden de 8, distancia >= 4",1.0000,1.0000,5,3.1727,7.8000,19.7188
+"C5 transitiva sola, 6000 episodios",sostén aprendido,"orden de 8, distancia >= 4",1.0000,1.0000,5,1.9720,8.0000,38.2335
+multitarea mezclada,sostén aprendido,"C0 f(x), todos los x",0.9920,0.9600,5,3.8115,32.4000,77.9964
+multitarea mezclada,sostén aprendido,"C1 v nunca compuesto, 1-2 saltos",1.0000,1.0000,5,3.8115,32.4000,77.9965
+multitarea mezclada,sostén aprendido,"C1 v nunca compuesto, 3-4 saltos",1.0000,1.0000,5,3.8115,32.4000,77.9966
+multitarea mezclada,sostén aprendido,C2 x nunca compuesto,1.0000,1.0000,5,3.8115,32.4000,77.9966
+multitarea mezclada,sostén aprendido,C3 5-8 saltos,1.0000,1.0000,5,3.8115,32.4000,77.9966
+multitarea mezclada,sostén aprendido,"C3 5-8 saltos, 16 distractores + 8 ruidos",1.0000,1.0000,5,3.8115,32.4000,77.9966
+multitarea mezclada,sostén aprendido,"C3 3 saltos, orden reverso",1.0000,1.0000,5,3.8115,32.4000,77.9966
+multitarea mezclada,sostén aprendido,"C3 3 saltos, hecho corregido",1.0000,1.0000,5,3.8115,32.4000,77.9966
+multitarea mezclada,sostén aprendido,"C3 3 saltos, distractores que apuntan a la cadena",1.0000,1.0000,5,3.8115,32.4000,77.9966
+multitarea mezclada,sostén aprendido,C4 x nunca compuesto,0.9860,0.9300,5,3.8115,32.4000,77.9967
+multitarea mezclada,sostén aprendido,"C5 orden de 8, distancia >= 4",1.0000,1.0000,5,3.8115,32.4000,77.9967
+multitarea mezclada,sostén aprendido,C6 5 eventos,1.0000,1.0000,5,3.8115,32.4000,77.9967

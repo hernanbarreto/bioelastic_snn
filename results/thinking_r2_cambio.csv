@@ -1,0 +1,11 @@
+prueba,sistema,caso,acc_media,acc_min,semillas,nodos_busqueda,neuronas_say,segundos
+cambio de regla a mitad del flujo,antes,g(x) tras el cambio,1.0000,1.0000,5,0.0000,0.0000,17.3264
+cambio de regla a mitad del flujo,antes,"g(g(x)) sin reentrenar, x no vistos",1.0000,1.0000,5,0.0000,0.0000,17.3265
+cambio de regla a mitad del flujo,antes,f(x) todavía (debería ser 0),0.0625,0.0625,5,0.0000,0.0000,17.3265
+cambio de regla a mitad del flujo,antes,"en línea, 300 primeros de g",0.6413,0.6167,5,0.0000,0.0000,17.3265
+cambio de regla a mitad del flujo,antes,revisiones [misma consigna],0.0000,0.0000,5,0.0000,0.0000,17.3265
+cambio de regla a mitad del flujo,despues,g(x) tras el cambio,1.0000,1.0000,5,0.0000,0.0000,17.3255
+cambio de regla a mitad del flujo,despues,"g(g(x)) sin reentrenar, x no vistos",1.0000,1.0000,5,0.0000,0.0000,17.3256
+cambio de regla a mitad del flujo,despues,f(x) todavía (debería ser 0),0.0625,0.0625,5,0.0000,0.0000,17.3256
+cambio de regla a mitad del flujo,despues,"en línea, 300 primeros de g",0.8133,0.8000,5,0.0000,0.0000,17.3256
+cambio de regla a mitad del flujo,despues,revisiones [misma consigna],15.8000,15.0000,5,0.0000,0.0000,17.3256

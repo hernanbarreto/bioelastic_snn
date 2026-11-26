@@ -1,6 +1,6 @@
 import numpy as np
 
-from bioelastic.thinker import COPY, EMIT, FOLLOW, JUDGE, FastMemory, Thinker
+from bioelastic.thinker import COPY, EMIT, FOCUS, FOLLOW, HOLD, JUDGE, SAY, SPEAK, FastMemory, Thinker
 
 
 def test_fast_memory_binds_successors_and_silence_breaks_adjacency():
@@ -112,9 +112,14 @@ def test_inner_speech_composes_knowledge_on_unseen_inputs():
 def test_hindsight_blames_strategy_and_protects_knowledge():
     net = Thinker(16, n_cues=2, speak=True, seed=4)
     f = np.roll(np.arange(16), 3)
-    for x in range(16):                                    # conocimiento: f
-        for _ in range(3):
-            net.reset(); net.answer(x, cue=0); net.feedback(target=int(f[x]))
+    # conocimiento: f. Con crédito estricto, los episodios en que el control empezó por
+    # HABLAR no escriben nada (el objetivo final no dice qué debía dar el eslabón
+    # intermedio): con 3 repeticiones seguidas por símbolo sólo quedaba 1 de 16
+    # establecido; con 6 pasadas en orden al azar, los 16.
+    rng = np.random.default_rng(4)
+    for _ in range(6):
+        for x in rng.permutation(16):
+            net.reset(); net.answer(int(x), cue=0); net.feedback(target=int(f[x]))
     net.Wc[:] = 0.0                                        # control sin experiencia: dice directo
     before = net.blame.copy()
     net.reset(); out = net.answer(2, cue=1)                # estrategia ingenua para f(f(x))
@@ -263,3 +268,146 @@ def test_repeated_consistent_contradiction_revises_knowledge():
     for _ in range(12):                                    # el mismo objetivo, repetido
         net.reset(); net.answer(1); net.feedback(target=4)
     assert net.say.peek(x) == 4
+
+
+# ---------------------------------------------------------------- ronda 2: consolidación, revisión, repetición
+def _f4_episode(net, f, rng, learn, x=None, cue=None):
+    cue = int(rng.integers(2)) if cue is None else cue
+    x = (int(rng.integers(16)) if cue == 0 else int(rng.integers(8))) if x is None else x
+    y = int(f[x]) if cue == 0 else int(f[f[x]])
+    net.reset()
+    out = net.answer(x, cue=cue, explore=learn)
+    net.feedback(target=y)
+    return out == y
+
+
+def test_composition_without_curriculum():
+    """f(x) y f(f(x)) mezclados desde el principio (sin currículo). Antes, f(f(x)) se
+    memorizaba sobre el mismo contenido que f(x) y lo pisaba: 0/5 semillas. Ahora la
+    revisión por explicación deja f como conocimiento y f(f(x)) como estrategia."""
+    rng = np.random.default_rng(100)
+    f = np.array([5, 6, 10, 11, 8, 4, 7, 0, 1, 15, 2, 3, 13, 14, 9, 12])
+    net = Thinker(16, n_cues=2, speak=True, seed=0)
+    for _ in range(6000):
+        _f4_episode(net, f, rng, True)
+    net.reset(); net.plastic = False
+    assert np.mean([_f4_episode(net, f, rng, False, x, 1) for x in range(8, 16)]) == 1.0
+    assert np.mean([_f4_episode(net, f, rng, False, x, 0) for x in range(16)]) == 1.0
+    assert net.revised[1] > 0                              # ganó la hipótesis que explica a la otra
+
+
+def test_episodic_targets_are_not_consolidated_but_consistent_ones_are():
+    """Marca y captura: un objetivo que cambia cada vez para el mismo contenido no se
+    escribe en el conocimiento; el mismo objetivo repetido, sí (a la segunda)."""
+    net = Thinker(16, seed=11)
+    c = (np.array([3]), np.ones(1, dtype=np.float32))
+    for t in (8, 9, 10, 11, 12, 13):                       # objetivos episódicos
+        net.reset(); net.answer(3); net.feedback(target=t)
+    assert net.say.layer.n == 0
+    net.reset(); net.answer(3); net.feedback(target=7)
+    assert net.say.layer.n == 0                            # una vez: sólo la marca
+    net.reset(); net.answer(3); net.feedback(target=7)
+    assert net.say.peek(c) == 7                            # dos veces seguidas: se consolida
+
+
+def test_search_only_returns_paths_a_reactive_control_can_follow():
+    """En el mismo estado, la misma acción: HABLAR, HABLAR, EMITIR no es una explicación
+    válida si los dos estados tras HABLAR son iguales."""
+    net = Thinker(16, n_cues=2, memory=True, speak=True, model="perfecto", seed=12)
+    f = np.roll(np.arange(16), 3)
+    for x in range(16):                                    # conocimiento f, escrito directo
+        c = (np.array([x]), np.ones(1, dtype=np.float32))
+        for _ in range(3):
+            net.say.forward(c); net.say.teach(int(f[x]))
+    assert all(net._know((np.array([x]), np.ones(1, dtype=np.float32)))[1] for x in range(16))
+    net.Wc[:] = 0.0
+    net.Wc[SAY] = -5.0                                     # el control casi nunca dice: lo barato es hablar y emitir
+    net.reset(); net.answer(2, cue=1)
+    net.reactive = False
+    assert [a for _, _, a in net._search(int(f[f[2]]))[0]] == [SPEAK, SPEAK, EMIT]
+    net.reactive = True
+    paths = net._search(int(f[f[2]]))
+    seq = [a for _, _, a in paths[0]]
+    assert seq == [SPEAK, SAY]
+    states = [s[0].tobytes() for s, _, _ in paths[0]]
+    for i in range(len(states)):
+        for j in range(i):
+            if states[i] == states[j]:
+                assert seq[i] == seq[j]
+
+
+def test_replay_propagates_new_knowledge_to_an_old_task():
+    """Orden adverso: f(f(x)) se entrena antes que f. Lo que no se pudo explicar entonces se
+    repite cuando aparece f y el control de f(f(x)) se corrige sin volver a entrenarlo."""
+    rng = np.random.default_rng(13)
+    f = np.array([5, 6, 10, 11, 8, 4, 7, 0, 1, 15, 2, 3, 13, 14, 9, 12])
+    net = Thinker(16, n_cues=2, speak=True, seed=13)
+    for _ in range(1500):
+        _f4_episode(net, f, rng, True, cue=1)
+    for _ in range(1500):
+        _f4_episode(net, f, rng, True, cue=0)
+    net.reset(); net.plastic = False
+    assert np.mean([_f4_episode(net, f, rng, False, x, 0) for x in range(16)]) == 1.0
+    assert np.mean([_f4_episode(net, f, rng, False, x, 1) for x in range(8, 16)]) == 1.0
+    assert net.replayed > 0
+
+
+def test_learned_gate_decides_what_to_hold():
+    """Compuerta aprendida (sin `probe` privilegiado): la pregunta «¿X > Y?» llega como dos
+    ítems y la red aprende cuál enfocar y cuál sostener. (En 5 semillas generaliza en 4;
+    ver experiments/exp_thinking_r2.py.)"""
+    rng = np.random.default_rng(0)
+    net = Thinker(34, memory=True, judge=True, speak=True, max_steps=10, gate=True, seed=0)
+    for _ in range(3000):
+        _ti_episode(net, rng, True, int(rng.integers(3, 5)))
+    net.reset(); net.plastic = False
+    assert np.mean([_ti_episode(net, rng, False, 8, 4) for _ in range(200)]) > 0.97
+    held = net.decisions[HOLD]
+    assert held > 0 and net.decisions[FOCUS] > 0
+    _ti_episode(net, rng, False, 8, 4)
+    assert sorted(net._path[:2]) == [FOCUS, HOLD]          # uno al foco y otro al sostén
+
+
+def test_learned_gate_focuses_single_item_questions():
+    rng = np.random.default_rng(1)
+    net = Thinker(32, memory=True, gate=True, seed=1)
+    for _ in range(3000):
+        _chain_episode(net, rng, True, int(rng.integers(1, 3)))
+    net.reset(); net.plastic = False
+    assert np.mean([_chain_episode(net, rng, False, 4) for _ in range(200)]) > 0.97
+    assert net._path[0] == FOCUS
+
+
+# ---------------------------------------------------------------- ronda 2: pruebas para romperlo
+def test_rule_change_midstream_revises_knowledge_and_the_strategy_that_depends_on_it():
+    """La regla cambia (f -> g) y sólo se entrena g(x). El conocimiento se revisa (misma
+    consigna, contradicción consistente) y la composición, nunca reentrenada, pasa a dar
+    g(g(x)) en x no vistos: lo aprendido como estrategia se reutiliza sobre lo revisado."""
+    rng = np.random.default_rng(14)
+    f = np.array([5, 6, 10, 11, 8, 4, 7, 0, 1, 15, 2, 3, 13, 14, 9, 12])
+    g = np.roll(np.arange(16), 7)
+    net = Thinker(16, n_cues=2, speak=True, seed=14)
+    for i in range(3000):
+        _f4_episode(net, f, rng, True, cue=0 if i < 750 else None)
+    for _ in range(1500):
+        _f4_episode(net, g, rng, True, cue=0)
+    net.reset(); net.plastic = False
+    assert np.mean([_f4_episode(net, g, rng, False, x, 0) for x in range(16)]) == 1.0
+    assert np.mean([_f4_episode(net, g, rng, False, x, 1) for x in range(8, 16)]) == 1.0
+    assert net.revised[0] > 0
+
+
+def test_contradicting_cues_without_reconciling_strategy_do_not_corrupt_knowledge():
+    """Dos consignas exigen respuestas directas incompatibles (f y g sin relación) sobre el
+    mismo contenido. Un único conocimiento compartido no puede sostener las dos: es un
+    límite conocido. Lo que se prueba es que no queda basura: cada contenido termina con
+    la respuesta de una de las dos consignas."""
+    rng = np.random.default_rng(15)
+    f = np.roll(np.arange(16), 3); g = np.roll(np.arange(16), 11)
+    net = Thinker(16, n_cues=2, speak=True, seed=15)
+    for _ in range(3000):
+        x = int(rng.integers(16)); cue = int(rng.integers(2))
+        net.reset(); net.answer(x, cue=cue, explore=True)
+        net.feedback(target=int(f[x]) if cue == 0 else int(g[x]))
+    outs = [net.say.peek((np.array([x]), np.ones(1, dtype=np.float32))) for x in range(16)]
+    assert np.mean([o in (f[x], g[x]) for x, o in enumerate(outs)]) >= 0.9
