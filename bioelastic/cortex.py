@@ -39,7 +39,8 @@ Metacognición y neuromodulación (opcionales; por defecto apagadas, sin efecto 
             media que cada votante le da a la salida elegida, como el conflicto de
             respuesta del cingulado anterior: Yeung, Botvinick y Cohen, 2004),
             `surprise(correct)` (-log de la probabilidad del desenlace según la propia
-            confianza) y `signals()` (todo junto). Se calculan del último pase, a pedido.
+            confianza), `familiarity()` (parecido de la entrada al prototipo más cercano de
+            las áreas de asociación: novedad vs error en lo conocido) y `signals()`. Se calculan del último pase, a pedido.
   metacog   dict(lr=...): calibrador online (regresión logística sobre logit de la
             confianza y el conflicto) que aprende P(acierto) de cada desenlace conocido
             (etiqueta o recompensa). Sin él, `confidence()` es la probabilidad cruda.
@@ -111,13 +112,14 @@ class Cortex:
                 self._config[k] = v
         if self.hypercorrection and self.hypercorrection_mode != "confianza":
             self._config["hypercorrection_mode"] = self.hypercorrection_mode
-        self._cal = Calibrator(n_extra=1, lr=float(self.metacog.get("lr", 0.05))) if self.metacog else None
+        self._cal = Calibrator(n_extra=2, lr=float(self.metacog.get("lr", 0.05))) if self.metacog else None
         self._err_conf = [0.0, 0]                             # confianza media en los errores (control plano)
         nm = self.neuromod or {}
         self._surprise = SurpriseTracker(nm.get("slow", 0.002), nm.get("fast", 0.05),
                                          nm.get("warmup", 200), nm.get("var0", 1.0)) if nm else None
         self.lr_gain = 1.0
         self.releases = 0
+        self._soft = None                                     # objetivo blando del `teach` en curso
         self._votes_last = []
         self.is_sheet = not np.isscalar(input_shape)
         self.input_shape = tuple(int(v) for v in input_shape) if self.is_sheet else int(input_shape)
@@ -309,8 +311,9 @@ class Cortex:
         usan (con el error residual de las anteriores, si así se configuró)."""
         prior = None
         zs = self._zs if len(self._zs) == len(self.areas) else [None] * len(self.areas)
+        soft = self._soft if target is not None else None
         for a, z in zip(self.areas, zs):
-            a.learn(target, prior)
+            a.learn(target, prior, soft) if soft is not None else a.learn(target, prior)
             if z is not None:
                 prior = z if prior is None else prior + z
 
@@ -352,6 +355,18 @@ class Cortex:
         cada votante le da a la salida elegida (0: todos la dan por segura)."""
         return float(1.0 - self.voter_probs()[:, self.pred].mean())
 
+    def familiarity(self) -> float:
+        """Cuán conocida le resulta la última entrada: el mayor coseno entre la entrada y
+        los prototipos de las áreas de asociación (0 si no tienen neuronas). Separa «esto es
+        nuevo o distinto» (familiaridad baja) de «me equivoqué en algo conocido»
+        (familiaridad alta y confianza baja)."""
+        best = 0.0
+        for h in self.heads:
+            st = h._last
+            if st is not None and len(st.v.cos):
+                best = max(best, float(st.v.cos[0]))
+        return best
+
     def raw_confidence(self) -> float:
         """Probabilidad de la última decisión en la competencia entre salidas."""
         return float(self._p()[self.pred])
@@ -375,7 +390,7 @@ class Cortex:
         raw = self.raw_confidence()
         if self._cal is None:
             return raw
-        return self._cal.predict(self._cal.features(raw, self.conflict()))
+        return self._cal.predict(self._cal.features(raw, self.conflict(), self.familiarity()))
 
     def surprise(self, correct: bool) -> float:
         """Sorpresa del desenlace según la propia confianza: -log P(desenlace)."""
@@ -386,6 +401,7 @@ class Cortex:
         p = self._p(); srt = np.sort(p)
         return dict(confidence=self.confidence(), raw_confidence=float(p[self.pred]),
                     conflict=self.conflict(), margin=float(srt[-1] - srt[-2]) if len(p) > 1 else 1.0,
+                    familiarity=self.familiarity(),
                     expected_uncertainty=self.expected_uncertainty,
                     unexpected_uncertainty=self.unexpected_uncertainty)
 
@@ -396,7 +412,7 @@ class Cortex:
         g = 1.0
         s = self.surprise(correct) if self._surprise is not None else 0.0   # con la confianza de antes
         if self._cal is not None:
-            self._cal.update(self._cal.features(raw, self.conflict()), correct)
+            self._cal.update(self._cal.features(raw, self.conflict(), self.familiarity()), correct)
         if self.hypercorrection > 0.0 and not correct:
             m = self._err_conf
             m[0] += raw; m[1] += 1
@@ -439,20 +455,35 @@ class Cortex:
     def _modulated(self) -> bool:
         return bool(self.metacog or self.hypercorrection > 0.0 or self.neuromod)
 
-    def teach(self, target: int):
-        if self._modulated():
-            g = self._outcome(self.pred == int(target))
-            grow = bool(self.neuromod and self.neuromod["grow"]
-                        and self.unexpected_uncertainty > self.neuromod["ne_reset"])
-            return self._gained(g, lambda: self._teach(target), grow)
-        return self._teach(target)
+    def teach(self, target: int | None = None, soft=None):
+        """Aprende de la última decisión con el objetivo `target`, o con un objetivo
+        blando `soft` (distribución sobre las salidas, p. ej. el posterior que calcula el
+        razonamiento): cada regla local usa soft - p como tercer factor donde usaba
+        1[objetivo] - p (lecturas de las áreas de asociación, proyección, lectores locales
+        y árbitro). La estructura (neuronas nuevas, STDP) sigue a la clase más probable."""
+        if soft is not None:
+            soft = np.asarray(soft, dtype=np.float64)
+            soft = soft / soft.sum()
+            if target is None:
+                target = int(np.argmax(soft))
+        self._soft = soft
+        try:
+            if self._modulated():
+                g = self._outcome(self.pred == int(target))
+                grow = bool(self.neuromod and self.neuromod["grow"]
+                            and self.unexpected_uncertainty > self.neuromod["ne_reset"])
+                return self._gained(g, lambda: self._teach(target), grow)
+            return self._teach(target)
+        finally:
+            self._soft = None
 
     def _teach(self, target: int):
         self._adapt_thresholds()
         p = self._p()                                         # no depende del aprendizaje de las áreas
         arb = self._arbitrated()
+        soft = self._soft
         if arb:                                               # el árbitro aprende del error global
-            g = self._L[:, target] - self._L @ p
+            g = (self._L @ soft if soft is not None else self._L[:, target]) - self._L @ p
             self.beta = np.maximum(self.beta + np.float32(self.arbiter) * g.astype(np.float32), 0.0)
         conf = None
         if (self.replay_focus == "confusion" and self.replay > 0.0 and self.proj is not None) or \
@@ -460,16 +491,17 @@ class Cortex:
             conf = self._confusion(target, p)                 # antes de que la memoria cambie
 
         def one(i):
+            kw = {} if soft is None else dict(soft=soft)
             if self.joint and not arb:
-                self.heads[i].teach(target, pred=self.pred, p=p)
+                self.heads[i].teach(target, pred=self.pred, p=p, **kw)
             else:                                             # cada área aprende de su propio error
-                self.heads[i].teach(target)
+                self.heads[i].teach(target, **kw)
         done = self._learn_areas_and(one, target)
         for i in range(len(self.heads)):
             if i not in done:
                 one(i)
         if self.proj is not None:
-            self.proj.learn(*self._pv, target, p=None if arb else p)
+            self.proj.learn(*self._pv, target, p=None if arb else p, **({} if soft is None else dict(soft=soft)))
             if self.replay > 0.0:
                 self._replay_debt += self.replay
                 aimed = conf is not None and self.replay_focus == "confusion"

@@ -1,0 +1,61 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+f4,rep | corto,0,segundos entrenamiento,334.7000,,10000 columnas
+f4,rep | corto,0,episodios,6162,,
+f4,rep | corto,0,información por ranura en la 1.a etapa (bits),0.0000,0.0000,aleatorio
+f4,rep | corto,0,curva columna ep=1250,0.1008,,
+f4,rep | corto,0,curva etapa ep=1250,0,,
+f4,rep | corto,0,curva pureza ep=1250,0.3460,,
+f4,rep | corto,0,curva identidad ep=1250,0.1560,,
+f4,rep | corto,0,curva columna ep=2500,0.1080,,
+f4,rep | corto,0,curva etapa ep=2500,0,,
+f4,rep | corto,0,curva pureza ep=2500,0.4060,,
+f4,rep | corto,0,curva identidad ep=2500,0.1900,,
+f4,rep | corto,0,curva columna ep=3750,0.1096,,
+f4,rep | corto,0,curva etapa ep=3750,1,,
+f4,rep | corto,0,curva pureza ep=3750,0.3820,,
+f4,rep | corto,0,curva identidad ep=3750,0.1540,,
+f4,rep | corto,0,curva columna ep=5001,0.1199,,
+f4,rep | corto,0,curva etapa ep=5001,2,,
+f4,rep | corto,0,curva pureza ep=5001,0.5300,,
+f4,rep | corto,0,curva identidad ep=5001,0.1740,,
+f4,rep | corto,0,curva columna ep=6253,0.1286,,
+f4,rep | corto,0,curva etapa ep=6253,2,,
+f4,rep | corto,0,curva pureza ep=6253,0.4820,,
+f4,rep | corto,0,curva identidad ep=6253,0.2380,,
+f4,rep | corto,0,curva columna ep=7500,0.1604,,
+f4,rep | corto,0,curva etapa ep=7500,2,,
+f4,rep | corto,0,curva pureza ep=7500,0.5700,,
+f4,rep | corto,0,curva identidad ep=7500,0.2240,,
+f4,rep | corto,0,curva columna ep=8750,0.1744,,
+f4,rep | corto,0,curva etapa ep=8750,2,,
+f4,rep | corto,0,curva pureza ep=8750,0.6400,,
+f4,rep | corto,0,curva identidad ep=8750,0.2380,,
+f4,rep | corto,0,curva columna ep=10002,0.1861,,
+f4,rep | corto,0,curva etapa ep=10002,2,,
+f4,rep | corto,0,curva pureza ep=10002,0.6700,,
+f4,rep | corto,0,curva identidad ep=10002,0.2100,,
+f4,rep | corto,0,pureza percepción (test),0.6735,0.1000,mejor biyección
+f4,rep | corto,0,identidad percepción (test),0.2315,0.1000,símbolo == dígito
+f4,rep | corto,0,símbolos usados,10,10,
+f4,rep | corto,0,código es identidad (dígitos),3,10,dígitos cuyo símbolo en la mejor biyección es el propio dígito
+f4,rep | corto,0,créditos a la percepción,31,,
+f4,rep | corto,0,precisión del crédito (código final),0.4516,0.1000,
+f4,rep | corto,0,precisión del crédito (identidad),0.1290,0.1000,
+f4,rep | corto,0,"precisión del crédito, 2.a mitad (código final)",0.5000,0.1000,
+f4,rep | corto,0,abstenciones Thinker,0,,
+f4,rep | corto,0,exacta n=3 (test),0.0100,0.0005,azar
+f4,rep | corto,0,columna n=3 (test),0.2533,0.1000,azar
+f4,rep | corto,0,fin (acarreo) n=3 (test),0.6640,0.5005,mejor constante
+f4,rep | corto,0,exacta n=1 (test),0.1880,0.0550,azar
+f4,rep | corto,0,cota pureza^6 (Thinker perfecto),0.0933,,
+f4,rep | corto,0,exacta n=3 | imágenes bien (código),0.0227,,
+f4,rep | corto,0,fracción episodios con las 6 imágenes bien (código),0.0880,0.0933,pureza^6
+f4,rep | corto,0,Thinker con código-oráculo: exacta n=3,0.0240,,símbolos = código final perfecto
+f4,rep | corto,0,Thinker con código-oráculo: columna n=3,0.3013,0.1000,
+f4,rep | corto,0,clases fundidas (símbolo mayoritario de >=2 dígitos),2,0,
+f4,rep | corto,0,masa en s = d (identidad),0.2315,0.1000,fracción de imágenes
+f4,rep | corto,0,masa en s = d +- 1 (vecinos),0.2820,0.2000,
+f4,rep | corto,0,masa en s = d + 5,0.0360,0.1000,invisible para el dígito módulo 10
+f4,rep | corto,0,converge a una permutación (pureza - identidad),0.4420,,alto: código consistente pero permutado
+f4,rep | corto,0,segundos,472.5000,,
+f4,total,0,segundos,472.7000,,

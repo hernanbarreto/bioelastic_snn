@@ -120,6 +120,17 @@ class Percepcion3(e2.Percepcion):
         return s, c, alts
 
 
+def _ensenar_suave(self, img, q):
+    """La percepción aprende de la imagen con un objetivo blando (posterior): q - p como
+    tercer factor en cada regla local (`Cortex.teach(soft=q)`)."""
+    self.v.net.forward(self.v._E(img))
+    self.v.net.teach(soft=np.asarray(q, dtype=np.float64))
+    self.ensenadas += 1
+
+
+Percepcion3.ensenar_suave = _ensenar_suave
+
+
 class OraculoP:
     """Percepción perfecta: el símbolo es el dígito (o `pi[dígito]`: el código de otra
     percepción usado como oráculo)."""
@@ -296,6 +307,61 @@ class CreditoPosterior:
                 st["creditos"] = st.get("creditos", 0) + 1
                 st["creditos_bien"] = st.get("creditos_bien", 0) + int(j == int(dg))
                 st.setdefault("pares", []).append((int(dg), j))
+
+
+class CreditoCadena:
+    """F1 con posterior CONJUNTO: al terminar el episodio, el razonamiento calcula el
+    posterior sobre todas las asignaciones (cada dígito de cada columna y los acarreos)
+    dados todos los resultados observados, incluido el acarreo final
+    (`bioelastic.posterior.chain_posterior`, inferencia exacta hacia adelante y hacia
+    atrás por la cadena de acarreos), combinando con p(símbolo | imagen). La percepción
+    aprende cada imagen con su marginal: objetivo blando (q - p como tercer factor) o una
+    muestra de q (EM estocástico). regla="conocida": la suma (como DeepProbLog);
+    "aprendida": la del razonador `ChainRule`, que se aprende a la vez (abducción blanda,
+    como Abductive Learning)."""
+
+    def __init__(self, regla="conocida", modo="blando", gamma=1.0, seed=0):
+        self.regla, self.modo, self.gamma = regla, modo, float(gamma)
+        self.rng = np.random.default_rng(20_000 + seed)
+        self.n = dict(episodios=0, ensenadas=0, verosimilitud_media=0.0)
+        self.cols = []
+
+    def empezar(self):
+        self.cols = []
+
+    def columna(self, th, per, imgs, syms, priors, y, alts, st, digitos):
+        th.feedback(target=y)
+        self.cols.append((imgs, priors, int(y), digitos, syms))
+
+    def fin(self, th, y, st=None):
+        from bioelastic.posterior import chain_posterior, known_sum_factor
+        th.feedback(target=y)
+        if not self.cols:
+            return
+        pa = [c[1][0] for c in self.cols]; pb = [c[1][1] for c in self.cols]
+        digs = [c[2] for c in self.cols]
+        if self.regla == "conocida":
+            qa, qb, _, _, lik = chain_posterior(pa, pb, [known_sum_factor(d) for d in digs], np.eye(2)[int(y)],
+                                                self.gamma)
+        else:
+            qa, qb, _, _, lik = th.learn(pa, pb, digs, int(y), self.gamma)
+        self.n["episodios"] += 1
+        self.n["verosimilitud_media"] += (lik - self.n["verosimilitud_media"]) / self.n["episodios"]
+        per = self._per
+        for (imgs, _, _, digitos, syms), xa, xb in zip(self.cols, qa, qb):
+            for img, q, dg in zip(imgs, (xa, xb), digitos):
+                if self.modo == "muestreo":
+                    j = int(self.rng.choice(10, p=q / q.sum()))
+                    per.ensenar(img, j)
+                else:
+                    j = int(np.argmax(q))
+                    per.ensenar_suave(img, q)
+                self.n["ensenadas"] += 1
+                if st is not None:
+                    st["creditos"] = st.get("creditos", 0) + 1
+                    st["creditos_bien"] = st.get("creditos_bien", 0) + int(j == int(dg))
+                    st.setdefault("pares", []).append((int(dg), j))
+        self.cols = []
 
 
 # ====================================================================== episodio L3
@@ -649,14 +715,22 @@ def construir(var_cfg, seed, tam):
     variante de F1-F5. var_cfg: dict(thinker="aprendido"|"oraculo", posterior=dict(...) o
     None, cred2=bool, refuerzo=bool, thinker_kw=dict, cortex_kw=dict)."""
     v = ei.Vista(seed, homeostasis=tam["homeostasis"])
-    if var_cfg.get("cortex_kw"):
+    if var_cfg.get("cortex_kw") or "h" in var_cfg:
         from exp_vision import CONFIGS
         from bioelastic import Cortex
-        v.net = Cortex((28, 28, 1), 10, seed=seed, homeostasis=tam["homeostasis"],
-                       **CONFIGS[v.config], **var_cfg["cortex_kw"])
+        v.net = Cortex((28, 28, 1), 10, seed=seed, homeostasis=var_cfg.get("h", tam["homeostasis"]),
+                       **CONFIGS[v.config], **var_cfg.get("cortex_kw", {}))
     per = Percepcion3(v, k=2)
-    th = ThinkerOraculo() if var_cfg.get("thinker") == "oraculo" else thinker_l3(seed, **var_cfg.get("thinker_kw", {}))
+    if var_cfg.get("thinker") == "oraculo":
+        th = ThinkerOraculo()
+    elif var_cfg.get("thinker") == "cadena":
+        from bioelastic.posterior import ChainRule
+        th = ChainRule(seed=seed, **var_cfg.get("regla_kw", {}))
+    else:
+        th = thinker_l3(seed, **var_cfg.get("thinker_kw", {}))
     cfg = dict(refuerzo=var_cfg.get("refuerzo", False), cred=var_cfg.get("cred2", False))
+    if var_cfg.get("cadena") is not None:
+        return v, per, th, dict(posterior=CreditoCadena(seed=seed, **var_cfg["cadena"]))
     if var_cfg.get("posterior") is not None:
         kw = dict(var_cfg["posterior"])
         cp = CreditoPosterior(refuerzo=var_cfg.get("refuerzo", False), fin=kw.pop("fin", False), seed=seed, **kw)
@@ -683,6 +757,32 @@ VARIANTES_F1 = {
     # el código s = d + 5 sobrevive porque el acarreo no le da crédito a la percepción)
     "b_post_muestreo+fin": dict(thinker="oraculo", posterior=dict(k=10, mode="sample", fin=True)),
 }
+
+
+VARIANTES_F1C = {
+    "conocida": dict(thinker="oraculo", cadena=dict(regla="conocida", modo="blando")),
+    "conocida_muestreo": dict(thinker="oraculo", cadena=dict(regla="conocida", modo="muestreo")),
+    "aprendida_muestreo": dict(thinker="cadena", cadena=dict(regla="aprendida", modo="muestreo")),
+    "aprendida_blando": dict(thinker="cadena", cadena=dict(regla="aprendida", modo="blando")),
+}
+
+
+def fase_f1c(seed, tam, out, variante, extra):
+    """F1 con posterior conjunto por episodio (ver `CreditoCadena`)."""
+    if CURRICULO[0] == "aleatorio":
+        return fase_f1(seed, tam, out, variante, extra, VARIANTES_F1C, "f1c")
+    datos, Xt, yt, Xc, yc = preparar(seed, tam)
+    from bioelastic.curriculum import Curriculum, sum_stages
+    for var in (list(VARIANTES_F1C) if variante is None else [variante]):
+        rng = np.random.default_rng(2000 + seed)
+        ei.muestra_test(datos, rng, tam["n_test_pureza"])
+        v, per, th, cfg = construir(VARIANTES_F1C[var], seed, tam)
+        cu = Curriculum(sum_stages(CURRICULO[0]), tam["columnas"])
+        t0 = time.time(); st: dict = {}; curva: list = []
+        entrenar_curriculo(th, per, datos, rng, cu, cfg, st, curva, tam["cada_col"], Xc, yc)
+        nom = f"{var} | {CURRICULO[0]}"
+        out("f1c", nom, "segundos entrenamiento", round(time.time() - t0, 1), "", f"{tam['columnas']} columnas")
+        medir(out, "f1c", nom, th, v, per, datos, rng, tam, st, extra, curva, seed, congelada=False)
 
 
 def fase_f1(seed, tam, out, variante, extra, variantes=None, fase="f1"):
@@ -806,6 +906,55 @@ def tabular_conjunto(curriculo: str, seed: int, columnas: int = 10000, lr: float
     C = np.array([P(d) for d in range(10)])
     r, c = linear_sum_assignment(-C)
     return dict(pureza=float(C[r, c].sum() / 10), columna_final=float(np.mean(hits[-1000:])))
+
+
+def tabular_cadena(conocida: bool, curriculo: str, seed: int, columnas: int = 10000, lr: float = 0.5,
+                   half_life: float = 0.0, modo: str = "blando") -> dict:
+    """Modelo tabular del crédito conjunto por episodio (F1): la percepción es una tabla
+    W[d] (softmax) y aprende con objetivo blando (W[d] += lr (q - p), la forma tabular del
+    tercer factor q - p); el posterior es el conjunto sobre todo el episodio (dígitos y
+    acarreos, `chain_posterior`). Regla conocida (suma) o aprendida a la vez
+    (`ChainRule`, acarreo latente). Mide la pureza (mejor biyección), la identidad y el
+    acierto por columna en las últimas 1000 columnas (test-then-train)."""
+    from scipy.optimize import linear_sum_assignment
+    from bioelastic.curriculum import Curriculum, sample_sum, sum_stages
+    from bioelastic.posterior import ChainRule, chain_posterior, known_sum_factor
+    rng = np.random.default_rng(seed)
+    W = rng.normal(0, 0.1, (10, 10))
+    regla = None if conocida else ChainRule(seed=seed, half_life=half_life)
+    cu = Curriculum(sum_stages(curriculo), columnas)
+    usado = 0; hits = []
+
+    def P(d):
+        e = np.exp(W[d] - W[d].max())
+        return e / e.sum()
+    while usado < columnas:
+        A, B = sample_sum(cu.params(usado), rng)
+        pa = [P(a) for a in A]; pb = [P(b) for b in B]
+        sa = [int(rng.choice(10, p=x)) for x in pa]; sb = [int(rng.choice(10, p=x)) for x in pb]
+        digs = []; c = 0
+        for a, b in zip(A, B):
+            s_ = int(a) + int(b) + c; digs.append(s_ % 10); c = s_ // 10
+        # respuestas (test-then-train)
+        if conocida:
+            cp = 0
+            for x, z, d in zip(sa, sb, digs):
+                s_ = x + z + cp; hits.append(s_ % 10 == d); cp = s_ // 10
+            qa, qb, _, _, _ = chain_posterior(pa, pb, [known_sum_factor(d) for d in digs], np.eye(2)[c])
+        else:
+            regla.reset()
+            for x, z, d in zip(sa, sb, digs):
+                hits.append(regla.answer((x, 10 + z)) == d)
+            qa, qb, _, _, _ = regla.learn(pa, pb, digs, c)
+        for d, q in list(zip(A, qa)) + list(zip(B, qb)):
+            if modo == "muestreo":                  # EM estocástico: un objetivo duro muestreado de q
+                q = np.eye(10)[int(rng.choice(10, p=q / q.sum()))]
+            W[int(d)] += lr * (q - P(int(d)))
+        usado += len(A)
+    C = np.array([P(d) for d in range(10)])
+    r, cc = linear_sum_assignment(-C)
+    return dict(pureza=float(C[r, cc].sum() / 10), identidad=float(np.mean(C.argmax(1) == np.arange(10))),
+                columna_final=float(np.mean(hits[-1000:])))
 
 
 def fase_f0s(seed, tam, out, variante, extra):
@@ -1252,7 +1401,7 @@ TAM = dict(
                 homeostasis=0.02, congelada=True, ep_f3=800, columnas=80, cada_col=20, col_tabular=300,
                 f0=["rep", "a_oraculo", "a_ruido_0.8", "b_refuerzo", "b_cred2", "c_barajadas"]),
 )
-FASES = dict(f0=fase_f0, f0s=fase_f0s, f1=fase_f1, f2=fase_f2, f3=fase_f3, f4=fase_f4, f5=fase_f5)
+FASES = dict(f0=fase_f0, f0s=fase_f0s, f1=fase_f1, f1c=fase_f1c, f2=fase_f2, f3=fase_f3, f4=fase_f4, f5=fase_f5)
 
 
 def resumen():

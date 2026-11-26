@@ -256,3 +256,85 @@ def test_consistencia_con_prev_io_conserva_el_estado_previo():
     th.reset(); th.answer((3, 15))
     st = th.consistency(8, [np.arange(10), np.arange(10, 20)])
     assert st.shape == (1, 10, 10) and set(np.unique(st)) <= {-1, 0, 1}
+
+
+# ---------------------------------------------------------------- objetivo blando y posterior conjunto
+def test_objetivo_blando_en_la_lectura_y_en_el_cortex():
+    from bioelastic.readout import Readout
+    r = Readout(3, consolidation=0.0)
+    r.add_input(None); r.add_input(None)
+    idx = np.array([0, 1]); h = np.array([0.5, 0.5], dtype=np.float32)
+    r.learn(idx, h, 0, soft=np.array([0.5, 0.5, 0.0]))
+    assert r.W[0, 0] > 0 and r.W[1, 0] > 0 and r.W[2, 0] < 0      # sube lo que el objetivo pide, baja el resto
+    r2 = Readout(3, consolidation=0.0); r2.add_input(None); r2.add_input(None)
+    r2.learn(idx, h, 1, soft=np.eye(3)[1])
+    r3 = Readout(3, consolidation=0.0); r3.add_input(None); r3.add_input(None)
+    r3.learn(idx, h, 1)
+    np.testing.assert_allclose(r2.W, r3.W)                        # one-hot blando == objetivo duro
+    X, y = _barras(150, seed=3)
+    net = Cortex((28, 28, 1), 3, seed=0, **D2)
+    for x, t in zip(X, y):                                        # sólo objetivos blandos (ruidosos)
+        net.forward(x)
+        q = np.full(3, 0.15); q[t] = 0.7
+        net.teach(soft=q)
+    assert np.mean([net.predict(x) == t for x, t in zip(*_barras(60, seed=4))]) > 0.8
+
+
+def test_hard_teach_es_igual_con_y_sin_la_ruta_blanda():
+    X, y = _barras(40, seed=5)
+    a = Cortex((28, 28, 1), 3, seed=0, **D2); b = Cortex((28, 28, 1), 3, seed=0, **D2)
+    for x, t in zip(X, y):
+        a.forward(x); a.teach(t)
+        b.forward(x); b.teach(target=t, soft=None)
+    np.testing.assert_array_equal(a.heads[0].readout.W, b.heads[0].readout.W)
+
+
+def test_familiaridad_baja_ante_lo_nunca_visto():
+    X, y = _barras(100, seed=6)
+    net = Cortex((28, 28, 1), 3, seed=0, **D2)
+    for x, t in zip(X, y):
+        net.step(x, t)
+    net.forward(X[0]); f_conocido = net.familiarity()
+    rara = np.zeros((28, 28, 1), dtype=np.float32); rara[::3, ::3] = 1.0
+    net.forward(rara)
+    assert net.familiarity() < f_conocido and "familiarity" in net.signals()
+
+
+def test_posterior_de_cadena_exacto_con_acarreo_final():
+    from bioelastic.posterior import chain_posterior, known_sum_factor
+    u = [np.ones(10) / 10] * 2
+    # 95 + 17 = 112 -> dígitos [2, 1], acarreo final 1; con percepción uniforme
+    qa, qb, Q, cin, lik = chain_posterior(u, u, [known_sum_factor(2), known_sum_factor(1)], np.array([0.0, 1.0]))
+    assert abs(sum(x.sum() for x in qa) - 2) < 1e-9 and lik > 0
+    # el acarreo final 1 obliga a a1 + b1 + c1 >= 10: con dígito 1, a1 + b1 + c1 = 11
+    assert all(Q[1][a, b] == 0 for a in range(10) for b in range(10) if a + b not in (10, 11))
+    # con percepción casi segura, la marginal recupera los dígitos
+    pa = [np.eye(10)[5] * 0.9 + 0.01, np.eye(10)[9] * 0.9 + 0.01]
+    pb = [np.eye(10)[7] * 0.9 + 0.01, np.eye(10)[1] * 0.9 + 0.01]
+    qa, qb, _, cin, _ = chain_posterior(pa, pb, [known_sum_factor(2), known_sum_factor(1)], np.array([0.0, 1.0]))
+    assert [int(np.argmax(x)) for x in qa] == [5, 9] and [int(np.argmax(x)) for x in qb] == [7, 1]
+    assert cin[1][1] > 0.99
+
+
+def test_regla_de_cadena_aprendida_con_percepcion_perfecta():
+    """Con símbolos perfectos, la regla con acarreo latente aprende la suma de varias cifras
+    sólo de los dígitos de cada columna y el acarreo final."""
+    from bioelastic.posterior import ChainRule
+    rng = np.random.default_rng(0)
+    r = ChainRule(seed=0)
+    oh = lambda d: np.eye(10)[d] * 0.999 + 0.0001  # noqa: E731
+    for _ in range(3000):
+        n = int(rng.integers(1, 4)); A = rng.integers(10, size=n); B = rng.integers(10, size=n)
+        digs = []; c = 0
+        for a, b in zip(A, B):
+            s = int(a + b + c); digs.append(s % 10); c = s // 10
+        r.learn([oh(a) for a in A], [oh(b) for b in B], digs, c)
+    ok = 0
+    for _ in range(200):
+        A = rng.integers(10, size=3); B = rng.integers(10, size=3)
+        r.reset(); c = 0; bien = True
+        for a, b in zip(A, B):
+            s = int(a + b + c); bien &= r.answer((int(a), 10 + int(b))) == s % 10; c = s // 10
+        bien &= r.answer(20) == c
+        ok += bien
+    assert ok / 200 > 0.9

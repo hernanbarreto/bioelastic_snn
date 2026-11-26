@@ -15,7 +15,12 @@ Variantes (ablación):
                 consolidación y habilita crecimiento ante errores
   ne_ach        + ACh: la incertidumbre esperada baja la tasa (no perseguir el ruido)
 
-Medidas (prequential: cada señal se lee antes de saber si acertó):
+Medidas (prequential: cada señal se lee antes de saber si acertó). El foco: separar
+«me equivoqué en algo conocido» (incertidumbre esperada) de «esto es nuevo o distinto»
+(novedad, cambio). AUROC por caso: (1) error entre entradas de (clase, contexto) ya vistas
+>= 100 veces; (2) entrada nueva (< 10 vistas) vs conocida; (3) entre los errores, nuevo vs
+conocido. Señales: 1 - confianza (cruda/calibrada), conflicto, -margen, 1 - familiaridad
+(`Cortex.familiarity`) y NE.
   AUROC         detección del propio error antes del feedback con 1 - confianza
                 (cruda / calibrada), conflicto entre votantes y margen
   ECE           error de calibración (10 bins) de la confianza cruda y calibrada, y la
@@ -45,6 +50,7 @@ from exp_continual import D2, load_data
 from exp_vision import encoder
 
 HEADER = ["prueba", "variante", "semilla", "metrica", "valor", "referencia", "nota"]
+N_NUEVO, N_CONOCIDO = 10, 100     # «nuevo»: < 10 vistas de (clase, contexto); «conocido»: >= 100
 MC = dict(lr=0.05)
 VARIANTES = {
     "base": {},
@@ -63,8 +69,11 @@ def correr(var: str, seed: int, scale: float, n_eval: int, data, out, extra):
     stream = ContinualStream(pools, scale=scale, seed=seed)
     bounds = stream.bounds(); T = len(stream)
     net = Cortex((28, 28, 1), 20, seed=seed, **D2, **VARIANTES[var])
-    rec = {k: np.zeros(T, dtype=np.float32) for k in ("ok", "conf", "raw", "conflict", "margin", "ne", "ach", "gain")}
+    rec = {k: np.zeros(T, dtype=np.float32) for k in ("ok", "conf", "raw", "conflict", "margin", "ne", "ach", "gain",
+                                                      "fam")}
     mode = np.zeros(T, dtype=np.int8)                      # 0 sup, 1 reward, 2 unlab
+    vistas = np.zeros(T, dtype=np.int32)                   # presentaciones previas de (clase, contexto)
+    cuenta: dict = {}
     t0 = time.time()
     for ev in stream:
         s = enc(ev.x)
@@ -85,8 +94,9 @@ def correr(var: str, seed: int, scale: float, n_eval: int, data, out, extra):
         rec["ok"][t] = a == ev.y; rec["conf"][t] = sg["confidence"]; rec["raw"][t] = sg["raw_confidence"]
         rec["conflict"][t] = sg["conflict"]; rec["margin"][t] = sg["margin"]
         rec["ne"][t] = net.unexpected_uncertainty; rec["ach"][t] = net.expected_uncertainty
-        rec["gain"][t] = net.lr_gain
+        rec["gain"][t] = net.lr_gain; rec["fam"][t] = sg["familiarity"]
         mode[t] = ("sup", "reward", "unlab").index(ev.mode)
+        k = (ev.y, ev.ctx); vistas[t] = cuenta.get(k, 0); cuenta[k] = vistas[t] + 1
     out("metacog", var, "segundos", round(time.time() - t0, 1), "", f"{T} pasos (scale {scale})")
     ok = rec["ok"].astype(bool)
     for nombre, m in (("sup", mode == 0), ("recompensa", mode == 1)):
@@ -96,6 +106,24 @@ def correr(var: str, seed: int, scale: float, n_eval: int, data, out, extra):
         for sen, sc in (("1-confianza cruda", 1 - rec["raw"]), ("1-confianza calibrada", 1 - rec["conf"]),
                         ("conflicto", rec["conflict"]), ("-margen", -rec["margin"])):
             out("metacog", var, f"AUROC error {nombre}: {sen}", auroc(sc[m], ~ok[m]), 0.5, "azar")
+    # F2: ¿la señal separa «me equivoqué en algo conocido» de «esto es nuevo o distinto»?
+    nuevo = vistas < N_NUEVO                               # primeras presentaciones de (clase, contexto)
+    conocido = vistas >= N_CONOCIDO
+    con_fb = mode < 2
+    senales = {"1-confianza cruda": 1 - rec["raw"], "1-confianza calibrada": 1 - rec["conf"],
+               "conflicto": rec["conflict"], "-margen": -rec["margin"], "1-familiaridad": 1 - rec["fam"],
+               "NE": rec["ne"]}
+    m1 = con_fb & conocido
+    m2 = con_fb & (nuevo | conocido)
+    m3 = con_fb & ~ok & (nuevo | conocido)
+    out("metacog", var, "error en lo conocido (tasa)", float(1 - ok[m1].mean()), "", f">= {N_CONOCIDO} vistas")
+    out("metacog", var, "pasos nuevos", int((con_fb & nuevo).sum()), "", f"< {N_NUEVO} vistas de (clase, contexto)")
+    for sen, sc in senales.items():
+        out("metacog", var, f"AUROC (1) error en lo conocido: {sen}", auroc(sc[m1], ~ok[m1]), 0.5, "azar")
+        out("metacog", var, f"AUROC (2) nuevo vs conocido: {sen}", auroc(sc[m2], nuevo[m2]), 0.5, "azar")
+        out("metacog", var, f"AUROC (3) entre errores, nuevo vs conocido: {sen}", auroc(sc[m3], nuevo[m3]), 0.5, "azar")
+    e1, _ = ece(rec["conf"][m1], ok[m1])
+    out("metacog", var, "ECE calibrada en lo conocido", e1, 0.0, "")
     ms = mode == 0
     half = np.arange(T) >= T // 2
     for nombre, c in (("cruda", rec["raw"]), ("calibrada", rec["conf"])):

@@ -300,6 +300,151 @@ def gamma_for(declared: float, actual: float, lo: float = 0.05, hi: float = 4.0)
     return 0.5 * (a + b)
 
 
+# ====================================================================== cadenas con acarreo
+def known_sum_factor(d: int, base: int = 10) -> np.ndarray:
+    """F[c, a, b, c'] = P(dígito d, acarreo c' | a, b, acarreo c) para la suma conocida."""
+    A = np.arange(base)
+    s = A[None, :, None] + A[None, None, :] + np.arange(2)[:, None, None]       # (c, a, b)
+    F = np.zeros((2, base, base, 2))
+    for c2 in (0, 1):
+        F[:, :, :, c2] = ((s % base) == int(d)) & ((s // base) == c2)
+    return F
+
+
+def chain_posterior(pa, pb, factors, end_lik, gamma: float = 1.0):
+    """Posterior conjunto sobre todas las asignaciones de un episodio de varias columnas
+    con acarreo (inferencia exacta hacia adelante y hacia atrás por la cadena de acarreos).
+
+    pa[i], pb[i]: distribución de la percepción sobre los símbolos de cada ranura de la
+    columna i. factors[i][c, a, b, c']: P(lo observado en la columna i, acarreo de salida
+    c' | a, b, acarreo de entrada c) según la regla (conocida, `known_sum_factor`, o
+    aprendida, `ChainRule.factor`). end_lik[c]: P(lo observado al final | acarreo final).
+    El acarreo de la primera columna es 0. Devuelve (marginales de a, marginales de b,
+    q conjunto por columna, P(acarreo de entrada) por columna, verosimilitud total)."""
+    n = len(factors)
+    P = []
+    for x, z in zip(pa, pb):
+        x = np.maximum(np.asarray(x, dtype=np.float64), 1e-12) ** gamma
+        z = np.maximum(np.asarray(z, dtype=np.float64), 1e-12) ** gamma
+        P.append((x / x.sum())[:, None] * (z / z.sum())[None, :])
+    alpha = [np.array([1.0, 0.0])]
+    for i in range(n):
+        a = np.einsum("c,ab,cabd->d", alpha[i], P[i], factors[i])
+        z = a.sum()
+        alpha.append(a / z if z > 0 else np.full(2, 0.5))
+    beta = [None] * (n + 1)
+    beta[n] = np.asarray(end_lik, dtype=np.float64)
+    for i in range(n - 1, -1, -1):
+        b = np.einsum("ab,cabd,d->c", P[i], factors[i], beta[i + 1])
+        z = b.sum()
+        beta[i] = b / z if z > 0 else np.full(2, 0.5)
+    qa, qb, Q, cin = [], [], [], []
+    for i in range(n):
+        q = P[i] * np.einsum("c,cabd,d->ab", alpha[i], factors[i], beta[i + 1])
+        z = q.sum()
+        q = P[i] / P[i].sum() if z <= 0 else q / z
+        Q.append(q); qa.append(q.sum(1)); qb.append(q.sum(0))
+        ci = alpha[i] * beta[i]
+        cin.append(ci / ci.sum() if ci.sum() > 0 else np.full(2, 0.5))
+    lik = float(alpha[n] @ beta[n])
+    return qa, qb, Q, cin, lik
+
+
+class ChainRule:
+    """Regla aprendida para operaciones columna por columna con un acarreo latente (la
+    regla es desconocida: se aprende a la vez que la percepción, como en Abductive
+    Learning, Dai et al., 2019, pero con abducción blanda).
+
+    Conocimiento: conteos con decaimiento T[a, b, c, d, c'] (con el símbolo a y b
+    percibidos y el acarreo latente c, la columna respondió d y dejó el acarreo c') y
+    E[c, y] (con acarreo final c, la respuesta final fue y). Todo se aprende de
+    co-ocurrencias ponderadas por el posterior del episodio (EM online: lo que cada
+    episodio ambiguo dice se acumula entre episodios). El acarreo no tiene significado
+    dado: su convención (0/1) es la que el aprendizaje termine usando; un poco de ruido
+    inicial rompe la simetría.
+
+    Responde como un razonador: `reset()`, `answer((a, 10 + b))` -> dígito más probable
+    dado lo percibido y su creencia sobre el acarreo (filtrado hacia adelante), y
+    `answer(END)` -> respuesta final más probable. `learn(pa, pb, digitos, final)` hace
+    la inferencia conjunta del episodio y devuelve las marginales para la percepción."""
+
+    def __init__(self, base: int = 10, alpha: float = 0.1, half_life: float = 0.0, noise: float = 0.05,
+                 end_token: int = 20, offset: int = 10, seed: int = 0):
+        self.base = int(base); self.alpha = float(alpha)
+        self.dec = 1.0 if half_life <= 0 else float(0.5 ** (1.0 / half_life))
+        rng = np.random.default_rng(seed)
+        B = self.base
+        self.T = rng.random((B, B, 2, B, 2)) * noise
+        self.E = rng.random((2, 2)) * noise
+        self.end_token = int(end_token); self.offset = int(offset)
+        self.plastic = True
+        self.reset()
+
+    def reset(self):
+        self.c = np.array([1.0, 0.0])                          # creencia sobre el acarreo
+        self._out = -1
+
+    def factor(self, d: int) -> np.ndarray:
+        """F[c, a, b, c'] = P(d, c' | a, b, c) según los conteos (con suavizado)."""
+        T = self.T + self.alpha
+        P = T / T.sum(axis=(3, 4), keepdims=True)
+        return np.transpose(P[:, :, :, int(d), :], (2, 0, 1, 3))
+
+    def end_lik(self, y: int) -> np.ndarray:
+        E = self.E + self.alpha
+        return (E / E.sum(1, keepdims=True))[:, int(y)]
+
+    def answer(self, tokens, cue=0, explore=False, certainty=1.0, probe=None) -> int:
+        if tokens == self.end_token or tokens == (self.end_token,):
+            E = self.E + self.alpha
+            self._out = int(np.argmax(self.c @ (E / E.sum(1, keepdims=True))))
+            return self._out
+        a, b = int(tokens[0]), int(tokens[1]) - self.offset
+        T = self.T[a, b] + self.alpha                          # (c, d, c')
+        P = T / T.sum(axis=(1, 2), keepdims=True)
+        pd = self.c @ P.sum(2)
+        self._out = int(np.argmax(pd))
+        nxt = self.c @ P[:, self._out, :]                       # acarreo dado lo que respondió
+        self.c = nxt / nxt.sum()
+        return self._out
+
+    def feedback(self, target=None, reward=None, alternatives=None, trust=None):
+        self.input_credit = []                                 # aprende al final del episodio (`learn`)
+
+    def learn(self, pa, pb, digits, final: int, gamma: float = 1.0):
+        """Inferencia conjunta del episodio y aprendizaje de la regla (cuentas esperadas)."""
+        factors = [self.factor(d) for d in digits]
+        qa, qb, Q, cin, lik = chain_posterior(pa, pb, factors, self.end_lik(final), gamma)
+        if self.plastic:
+            self.T *= self.dec; self.E *= self.dec
+            # cuentas esperadas de (a, b, c, c') por columna: alpha_i, factor y beta_{i+1}
+            n = len(digits)
+            alpha = [np.array([1.0, 0.0])]
+            for i in range(n):
+                a = np.einsum("c,ab,cabd->d", alpha[i], _prior2(pa[i], pb[i], gamma), factors[i])
+                alpha.append(a / max(a.sum(), 1e-300))
+            beta = [None] * (n + 1); beta[n] = self.end_lik(final)
+            for i in range(n - 1, -1, -1):
+                b = np.einsum("ab,cabd,d->c", _prior2(pa[i], pb[i], gamma), factors[i], beta[i + 1])
+                beta[i] = b / max(b.sum(), 1e-300)
+            for i, d in enumerate(digits):
+                xi = np.einsum("c,ab,cabd,d->abcd", alpha[i], _prior2(pa[i], pb[i], gamma), factors[i], beta[i + 1])
+                xi /= max(xi.sum(), 1e-300)
+                self.T[:, :, :, int(d), :] += xi
+            cf = alpha[n] * beta[n]
+            self.E[:, int(final)] += cf / max(cf.sum(), 1e-300)
+        return qa, qb, Q, cin, lik
+
+    def stats(self) -> dict:
+        return dict(evidence=float(self.T.sum()))
+
+
+def _prior2(x, z, gamma=1.0):
+    x = np.maximum(np.asarray(x, dtype=np.float64), 1e-12) ** gamma
+    z = np.maximum(np.asarray(z, dtype=np.float64), 1e-12) ** gamma
+    return (x / x.sum())[:, None] * (z / z.sum())[None, :]
+
+
 def entropy(p: np.ndarray) -> float:
     p = np.asarray(p, dtype=np.float64)
     p = p[p > 0]
@@ -307,4 +452,5 @@ def entropy(p: np.ndarray) -> float:
 
 
 __all__ = ["CoOccurrence", "PosteriorCredit", "top_candidates", "joint_posterior",
-           "status_likelihood", "predictive_conflict", "state_key", "gamma_for", "entropy", "product"]
+           "status_likelihood", "predictive_conflict", "state_key", "gamma_for", "entropy", "product",
+           "known_sum_factor", "chain_posterior", "ChainRule"]
