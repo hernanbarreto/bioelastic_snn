@@ -213,6 +213,7 @@ class Thinker:
                  consolidate: str = "explicacion", capture: int = 2,
                  replay: int = 2, replay_size: int = 32, gate: bool = False,
                  model: str = "aprendido", confidence: bool = True, reactive: bool = True,
+                 replacing: bool = True,
                  decay: float = 1e-2, mixed: bool | str = "solo", clock: bool = False,
                  lookahead: bool = False, search: str = "guiada", credit: str = "eslabon",
                  seed: int = 0, say: dict | None = None):
@@ -250,13 +251,18 @@ class Thinker:
         self.decay = float(decay)              # contracción L1 del control: gana la explicación más simple
         self.search = str(search)              # "guiada" (mejor primero, acotada) o "amplitud" (exhaustiva)
         # a quién se enseña si falta conocimiento: "eslabon" (al primer paso que se apoyó en
-        # conocimiento no establecido), "estricto" (ídem, pero si ese paso es intermedio no se
-        # enseña nada) o "percepcion" (siempre a lo percibido, como la versión anterior)
+        # conocimiento no establecido, aunque sea intermedio, con el objetivo final),
+        # "estricto" (ídem, pero si ese paso es intermedio no se enseña nada: el objetivo
+        # final no dice qué debía dar un eslabón intermedio) o "percepcion" (siempre a lo
+        # percibido). "estricto" evita las marcas basura que en orden adverso rompieron f en
+        # 1 de 5 semillas, pero si el control empieza por pasos intermedios no aprende nada
+        # (la transitiva de test_thinker cae a 0.44); por eso no es el valor por defecto.
         self.credit = str(credit)
         self.gate = bool(gate)
         self.model = str(model)                # "aprendido" (SelfModel) o "perfecto" (ejecuta la red)
         self.confidence = bool(confidence)     # el control ve la confianza del modelo interno
         self.reactive = bool(reactive)         # la búsqueda sólo acepta caminos que un control reactivo puede seguir
+        self.replacing = bool(replacing)       # la traza del crítico se reemplaza
         self.M = SelfModel(say_sure)
         self.blame = np.zeros(2, dtype=np.int64)       # errores atribuidos a [estrategia, conocimiento]
         self.expanded = 0                              # nodos expandidos por la búsqueda (costo)
@@ -432,7 +438,15 @@ class Thinker:
             self._r = 0.0; self._V = V
             decay = self.gamma * self.lam
             self.Ec *= decay; self.Er *= decay; self.ev *= decay
-            self.ev[s_idx] += s_val
+            # la traza del crítico se reemplaza en vez de acumularse (Singh y Sutton, 1996):
+            # con un control reactivo el mismo estado se repite (seguir una cadena) y la
+            # traza acumulada hacía divergir TD (|w| del crítico llegó a ~3000 en orden
+            # adverso). Reemplazar también la del actor hizo caer la transitiva en 1 de 10
+            # semillas; la del actor queda acumulativa.
+            if self.replacing:
+                self.ev[s_idx] = s_val
+            else:
+                self.ev[s_idx] += s_val
         p = self._policy(s_idx, s_val, allowed)
         if explore:
             q = (1.0 - self.epsilon) * p + self.epsilon / len(allowed)
@@ -618,9 +632,11 @@ class Thinker:
     def _adjudicate(self, mod, new, old):
         """Dos consignas sostienen respuestas distintas para los mismos contenidos. Cada una
         es una hipótesis sobre el conocimiento compartido: gana la que, dada por cierta,
-        deja explicada por estrategia (con la búsqueda) más evidencia de la otra. Si gana la
-        nueva se reescribe el conocimiento; en cualquier caso se enseña el control con los
-        caminos que explican a la perdedora."""
+        deja explicada por estrategia (con la búsqueda) más evidencia de la otra. Sólo si
+        gana la nueva se reescribe el conocimiento (reconsolidación) y se enseña el control
+        con los caminos que explican a la vieja; si no, nada cambia (cambio mínimo).
+        (Reescribir sólo los contenidos cuya evidencia quedó explicada, en vez de todo el
+        conjunto, empeoró el orden adverso: 2 de 5 semillas rotas en vez de 1.)"""
         S = [(k, cl) for k, cl in self._claims.items()
              if k[0] == mod and new in cl and old in cl and cl[new][0] != cl[old][0]]
         if not S:
@@ -647,17 +663,16 @@ class Thinker:
                         break
                     self._teach(mod, c, t)
                 cl[new][3] = True
-                self._remember(cl[old][1], cl[old][0])     # la evidencia de la perdedora: a repetir
+                self._remember(cl[old][1], cl[old][0])     # la evidencia vieja: a repetir
                 del cl[old]
             for p in p_new:
                 self._teach_control([p])
         elif len(p_old) > len(p_new):
+            # gana lo que ya estaba: no se revisa nada. No se enseñan esos caminos ni se
+            # borra la evidencia nueva: con poca evidencia suelen ser coincidencias (en
+            # orden adverso, enseñarlos rompía el control de f(x)), y la próxima
+            # contradicción consistente vuelve a abrir la comparación.
             self.revised[2] += 1
-            for _, cl in S:
-                self._remember(cl[new][1], cl[new][0])
-                del cl[new]
-            for p in p_old:
-                self._teach_control([p])
 
     # ------------------------------------------------------------------ percibir y responder
     def observe(self, tokens=None):
