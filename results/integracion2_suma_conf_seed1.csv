@@ -1,0 +1,35 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+suma,oraculo R=2,1,exacta n=1,1.0000,,símbolos perfectos
+suma,oraculo R=2,1,exacta n=3,0.9820,,símbolos perfectos
+suma,oraculo R=2,1,exacta n=6,0.9640,,símbolos perfectos
+suma,oraculo R=2,1,exacta n=10,0.9460,,símbolos perfectos
+suma,conf,1,vista antes (test),0.9696,,depth2
+suma,conf,1,segundos entrenamiento,71.0000,,
+suma,conf,1,vista después (test),0.9696,0.9696,antes
+suma,conf,1,umbral de duda,0.9943,,cuantil 0.2 de la certeza
+suma,conf,1,abstenciones,9293,,respuestas de las que no aprendió
+suma,conf,1,créditos a la percepción,0,,
+suma,conf,1,exacta n=1,0.8920,0.9401,cota indep. p^2n*oráculo
+suma,conf,1,columna n=1,0.9420,,
+suma,conf,1,todas las imágenes bien n=1,0.9420,0.9401,p^2n
+suma,conf,1,exacta | todas bien n=1,0.9469,1.0000,oráculo
+suma,conf,1,exacta n=3,0.6820,0.8160,cota indep. p^2n*oráculo
+suma,conf,1,columna n=3,0.8940,,
+suma,conf,1,todas las imágenes bien n=3,0.8380,0.8309,p^2n
+suma,conf,1,exacta | todas bien n=3,0.8138,0.9820,oráculo
+romper,conf | ruido sigma=0.5,1,exactitud imagen,0.8872,,
+romper,conf | ruido sigma=0.5,1,exacta,0.4133,0.4790,cota indep. p^2n*oráculo(n)
+romper,conf | ruido sigma=0.5,1,exacta | todas bien,0.8552,0.9820,oráculo(n)
+romper,conf | ruido sigma=0.7,1,exactitud imagen,0.7172,,
+romper,conf | ruido sigma=0.7,1,exacta,0.1067,0.1337,cota indep. p^2n*oráculo(n)
+romper,conf | ruido sigma=0.7,1,exacta | todas bien,0.7500,0.9820,oráculo(n)
+romper,conf | estilo no visto (tipográficos),1,exactitud imagen,0.9378,,
+romper,conf | estilo no visto (tipográficos),1,exacta,0.5400,0.6679,cota indep. p^2n*oráculo(n)
+romper,conf | estilo no visto (tipográficos),1,exacta | todas bien,0.8173,0.9820,oráculo(n)
+romper,conf | más columnas n=6,1,exactitud imagen,0.9694,,
+romper,conf | más columnas n=6,1,exacta,0.4933,0.6643,cota indep. p^2n*oráculo(n)
+romper,conf | más columnas n=6,1,exacta | todas bien,0.6981,0.9640,oráculo(n)
+romper,conf | más columnas n=10,1,exactitud imagen,0.9733,,
+romper,conf | más columnas n=10,1,exacta,0.2967,0.5510,cota indep. p^2n*oráculo(n)
+romper,conf | más columnas n=10,1,exacta | todas bien,0.5207,0.9460,oráculo(n)
+suma,total,1,segundos,147.5000,,

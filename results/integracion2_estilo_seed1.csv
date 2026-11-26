@@ -1,0 +1,30 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+estilo,antes,1,vista: tipográficos (test),0.9400,,nunca vio este estilo
+estilo,antes,1,vista: MNIST (test),0.9690,,
+estilo,antes,1,suma exacta n=3 con oráculo,0.9540,,
+estilo,control: nadie aprende,1,vista: tipográficos (test),0.9400,0.9400,antes
+estilo,control: nadie aprende,1,vista: MNIST (test),0.9690,0.9690,antes
+estilo,control: nadie aprende,1,suma exacta n=3 con tipográficos (test),0.7067,0.6915,cota indep. p^6*oráculo
+estilo,control: nadie aprende,1,suma exacta n=3 con oráculo,0.9460,0.9540,antes
+estilo,control: nadie aprende,1,créditos a la percepción,0,,
+estilo,control: nadie aprende,1,segundos,7.8000,,
+estilo,refuerzo (ronda 1),1,vista: tipográficos (test),1.0000,0.9400,antes
+estilo,refuerzo (ronda 1),1,vista: MNIST (test),0.9670,0.9690,antes
+estilo,refuerzo (ronda 1),1,suma exacta n=3 con tipográficos (test),0.9600,0.9540,cota indep. p^6*oráculo
+estilo,refuerzo (ronda 1),1,suma exacta n=3 con oráculo,0.9720,0.9540,antes
+estilo,refuerzo (ronda 1),1,créditos a la percepción,0,,
+estilo,refuerzo (ronda 1),1,segundos,43.1000,,
+estilo,cred2,1,vista: tipográficos (test),1.0000,0.9400,antes
+estilo,cred2,1,vista: MNIST (test),0.9725,0.9690,antes
+estilo,cred2,1,suma exacta n=3 con tipográficos (test),0.9467,0.9540,cota indep. p^6*oráculo
+estilo,cred2,1,suma exacta n=3 con oráculo,0.9560,0.9540,antes
+estilo,cred2,1,créditos a la percepción,74,,
+estilo,cred2,1,precisión del crédito,0.9595,,
+estilo,cred2,1,segundos,25.1000,,
+estilo,cred,1,vista: tipográficos (test),0.9400,0.9400,antes
+estilo,cred,1,vista: MNIST (test),0.9690,0.9690,antes
+estilo,cred,1,suma exacta n=3 con tipográficos (test),0.5667,0.6699,cota indep. p^6*oráculo
+estilo,cred,1,suma exacta n=3 con oráculo,0.7640,0.9540,antes
+estilo,cred,1,créditos a la percepción,0,,
+estilo,cred,1,segundos,26.1000,,
+estilo,total,1,segundos,122.0000,,
