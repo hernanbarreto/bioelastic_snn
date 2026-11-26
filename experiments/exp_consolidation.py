@@ -42,6 +42,46 @@ MLP = "mlp_replay"                          # MLP 784-256-20 + repaso balanceado
 ERACE = "erace+bytes=8600000+iters=3"       # ER-ACE con reservorio igualado en bytes a c2
 
 
+# ====================================================================== reanudación
+CACHE = RESULTS / "consolidacion_cache"
+_PHASE = {"name": "sin_fase"}
+
+
+def cached(key: dict, compute):
+    """Fila ya medida (misma fase y misma clave) o la mide y la agrega al registro
+    results/consolidacion_cache/<fase>.jsonl. Así una corrida cortada por un reinicio
+    retoma donde quedó sin repetir lo hecho."""
+    CACHE.mkdir(parents=True, exist_ok=True)
+    path = CACHE / f"{_PHASE['name']}.jsonl"
+    k = json.dumps(key, sort_keys=True, default=str)
+    if path.exists():
+        for line in path.read_text().splitlines():
+            d = json.loads(line)
+            if d["key"] == k:
+                return d["row"]
+    row = compute()
+    with path.open("a") as f:
+        f.write(json.dumps({"key": k, "row": row}, default=float) + "\n")
+    return row
+
+
+# ====================================================================== validación
+VAL_N = 500                                  # imágenes por clase reservadas del split de entrenamiento
+
+
+def split_data(data, val_n: int = VAL_N):
+    """{"val": (entrenamiento, validación), "test": (entrenamiento, test)}. La validación
+    son `val_n` imágenes por clase del split de entrenamiento (permutación fija, igual para
+    todas las semillas) que nunca entran al flujo; el test es el split oficial de test.
+    Los hiperparámetros se eligen con "val"; los números que se informan, con "test"."""
+    pools, test = data
+    train, val = {}, {}
+    for c, P in pools.items():
+        perm = np.random.default_rng([1234, c]).permutation(len(P))
+        val[c] = P[perm[:val_n]]; train[c] = P[perm[val_n:]]
+    return {"val": (train, val), "test": (train, test)}
+
+
 # ====================================================================== utilidades
 def agg(rows: list[dict], by: tuple, keys: list[str]) -> list[dict]:
     """Media y desvío muestral (ddof=1) de `keys` por grupo `by`."""
@@ -87,7 +127,7 @@ def _parts(net):
 
 # ====================================================================== interferencia
 def run_scenario(sc: str, spec: str, seed: int, data, n_eval: int = 100, phases=None,
-                 timing: bool = False, on_step=None, factory=None, extra_evals=()):
+                 timing: bool = False, on_step=None, factory=None, extra_evals=(), keep_agent=False):
     """Escenario de exp_interference con el mismo flujo y los mismos conjuntos de prueba
     (mismo consumo del generador), registrando además la precisión del sistema lento y del
     rápido por separado y, con `timing`, la latencia de cada paso.
@@ -158,8 +198,12 @@ def run_scenario(sc: str, spec: str, seed: int, data, n_eval: int = 100, phases=
                preq_last500=float(np.mean(hits[t_last:t_last + 500])))
     if net is not None:
         out["counters"] = counters(net)
+        out["causes"] = {k: int(sum(getattr(h, k, 0) for h in net.heads))
+                         for k in ("relabeled", "protected", "new_causes")}
     if timing:
         out["latency"] = latency(lat_f, lat_t)
+    if keep_agent:
+        out["agent"] = agent
     return out
 
 
@@ -220,12 +264,14 @@ INTERF_KEYS = ["old", "new", "all", "min", "drop", "mid_old", "slow_old", "slow_
                "fast_old", "fast_new", "fast_all", "neurons", "bytes", "seconds", "replays"]
 
 
-def interference(scenarios, specs, seeds, data, *, tag: str, log_rows: list, phases=None, **kw):
+def interference(scenarios, specs, seeds, data, *, tag: str, log_rows: list, phases=None, split="full", **kw):
     for sc in scenarios:
         for spec in specs:
             for seed in seeds:
-                r = run_scenario(sc, spec, seed, data, phases=phases, **kw)
-                row = scenario_row(sc, spec, seed, r, phases)
+                key = dict(b="interf", sc=sc, spec=spec, seed=seed, split=split, phases=str(phases),
+                           kw=str(sorted(kw.items())))
+                row = cached(key, lambda sc=sc, spec=spec, seed=seed: scenario_row(
+                    sc, spec, seed, run_scenario(sc, spec, seed, data, phases=phases, **kw), phases))
                 log_rows.append(row)
                 print(f"[{tag}] {sc} {spec} s{seed}: " +
                       " ".join(f"{k}={row[k]:.3f}" for k in ("old", "new", "all", "min", "slow_all", "fast_all")
@@ -240,13 +286,15 @@ CONT_KEYS = ["final_clean_known", "preprobe_clean_known", "final_rot90", "final_
              "D_after_D", "sim_final", "neurons_end", "bytes_end", "train_seconds"]
 
 
-def continual(specs, seeds, data, *, scale: float, n_eval: int, log_rows: list, tag: str):
+def continual(specs, seeds, data, *, scale: float, n_eval: int, log_rows: list, tag: str, split="full"):
     for spec in specs:
         for seed in seeds:
-            r = continual_run(spec, seed, scale, n_eval, data)
-            m = continual_metrics(r)
-            row = dict(bench="continual", scenario=f"x{scale:g}", model=spec, seed=seed)
-            row.update({k: float(m[k]) for k in CONT_KEYS if k in m})
+            def go(spec=spec, seed=seed):
+                m = continual_metrics(continual_run(spec, seed, scale, n_eval, data))
+                row = dict(bench="continual", scenario=f"x{scale:g}", model=spec, seed=seed)
+                row.update({k: float(m[k]) for k in CONT_KEYS if k in m})
+                return row
+            row = cached(dict(b="continual", spec=spec, seed=seed, scale=scale, n_eval=n_eval, split=split), go)
             log_rows.append(row)
             print(f"[{tag}] continual {spec} s{seed}: " + fmt({k: [row[k], 0] for k in CONT_KEYS[:6] if k in row},
                                                               CONT_KEYS[:6]), flush=True)
@@ -650,9 +698,152 @@ def phase_f5(a, data):
     finish("f5", rows, {}, cfg)
 
 
+MECH = {        # variante de cada mecanismo que entra en «todo»: la mejor medida en su fase
+    "F1": STORED + OWN + GATE + "+top.recall_source=readout",     # f1b: 0,762
+    "F2": "+top.schema=gate",                                     # f2: 0,744
+    "F3": "+proj.recon_lock=50",                                  # f3: 0,764
+    "F4": UNI + EQUAL + "+top.replay_contrast=true",              # f4: iguales 0,776 + contraste
+    "F5": MICRO + "+top.sleep_downscale=0.1",                     # f5
+}
+BEST = C2 + STORED + OWN + "+top.replay_contrast=true"            # sólo lo que no empeoró solo
+CHOICE = ("cada mecanismo en la variante con mayor «all» en CD de su fase, aunque empeore "
+          "solo; «mejores» junta sólo los que no empeoraron solos")
+
+
+def f6_spec(base: str, drop: str | None = None) -> str:
+    spec = base
+    for k, m in MECH.items():
+        if k != drop:
+            spec += m
+    return spec
+
+
+def phase_f6(a, data):
+    """Todos los mecanismos a la vez y ablaciones quitando uno por vez (CD), y «todo» y
+    «mejores» en el flujo continuo reducido. Sin F5 el repaso despierto vuelve a 2 por
+    paso (mismo presupuesto)."""
+    rows: list = []
+    variants = {"todo": f6_spec(C2)}
+    for k in MECH:
+        variants[f"todo - {k}"] = f6_spec(C2, k)
+    variants["mejores"] = BEST
+    for name, spec in variants.items():
+        for seed in a.seeds:
+            row = cached(dict(b="interf", sc="CD", spec=spec, seed=seed, split="full", timing=True),
+                         lambda spec=spec, seed=seed: scenario_row(
+                             "CD", spec, seed, run_scenario("CD", spec, seed, data, timing=True)))
+            row = dict(row, variant=name)
+            rows.append(row)
+            print(f"[f6] CD {name} s{seed}: " + " ".join(f"{k}={row[k]:.3f}" for k in
+                  ("old", "new", "all", "min", "slow_all", "fast_all", "lat_step_p99") if k in row), flush=True)
+    cont = [variants["todo"].replace(C2, CONT, 1), BEST.replace(C2, CONT, 1)]
+    continual(cont, a.seeds, data, scale=0.1, n_eval=30, log_rows=rows, tag="f6")
+    cfg = dict(seeds=a.seeds, mechanisms=MECH, best=BEST, choice=CHOICE, variants=variants,
+               reference="c2 y referencias en consolidacion_f0.json (mismos flujos y semillas)",
+               reductions="CD para todo, las 5 ablaciones y «mejores»; flujo continuo x0,1 sólo para "
+                          "todo y «mejores» (los mecanismos se rehacen en f7)")
+    finish("f6", rows, {}, cfg)
+
+
+# ====================================================================== referencia externa
+SPLIT = {"mnist": [(0, 1), (2, 3), (4, 5), (6, 7), (8, 9)],
+         "fashion": [(10, 11), (12, 13), (14, 15), (16, 17), (18, 19)]}
+PUBLISHED = {
+    "mnist": dict(source="van de Ven, Tuytelaars y Tolias 2022, Nat. Mach. Intell. 4:1185, tabla 2 (Class-IL)",
+                  protocol="MLP 2x400, 2000 iteraciones x lote 128 por contexto (~21 pasadas por tarea, no "
+                           "un solo pase); repaso con 100 ejemplos por clase; 20 semillas; media ± e.e.m.",
+                  values=dict(EWC=20.64, SI=21.20, ER=88.79, **{"A-GEM": 65.10}, Ninguno=19.89, Conjunto=98.17)),
+    "fashion": dict(source="Sokar, Mocanu y Pechenizkiy 2021 (SpaceNet), Neural Networks, tabla 3",
+                    protocol="MLP 2x400, 20 épocas por tarea (no un solo pase), cabeza única; no se encontró "
+                             "una cifra publicada de ER ni de A-GEM en Split Fashion-MNIST por clases con un "
+                             "protocolo comparable: la referencia de repaso es nuestra ER / ER-ACE con los "
+                             "mismos bytes",
+                    values=dict(EWC=19.47, SI=19.93, iCaRL=80.70)),
+}
+
+
+def split_run(ds: str, spec: str, seed: int, D, n_small: int = 100) -> dict:
+    """Split-MNIST / Split-Fashion-MNIST por clases (van de Ven et al. 2022): 5 tareas de 2
+    clases, un solo pase online por todas las imágenes de entrenamiento de cada tarea
+    (sin las de validación), sin identidad de tarea en la prueba: la respuesta es el
+    argmax entre las 10 clases del conjunto. Acierto final sobre todo el test de las 10
+    clases y olvido (máximo previo - final, por tarea, con 100 imágenes por clase)."""
+    pools, test = D
+    enc = encoder()
+    tasks = SPLIT[ds]; cls = np.array([c for t in tasks for c in t])
+    rng = np.random.default_rng([seed, 555])
+    small = {c: [enc(test[c][i].astype(np.float32) / 255) for i in rng.choice(len(test[c]), n_small, replace=False)]
+             for c in cls}
+    agent = build(spec)(seed)
+    agent.on_phase(0)
+    pred = lambda s: int(cls[int(np.argmax(np.asarray(agent.scores(s))[cls]))])
+    hist = []
+    t0 = time.time()
+    for k, t in enumerate(tasks):
+        items = [(c, i) for c in t for i in range(len(pools[c]))]
+        for o in rng.permutation(len(items)):
+            c, i = items[o]
+            agent.sup(enc(pools[c][i].astype(np.float32) / 255), int(c))
+        seen = [c for tt in tasks[:k + 1] for c in tt]
+        hist.append({int(c): float(np.mean([pred(s) == c for s in small[c]])) for c in seen})
+    secs = time.time() - t0
+    hits = []; per_task = []
+    for t in tasks:
+        h = [pred(enc(x.astype(np.float32) / 255)) == c for c in t for x in test[c]]
+        per_task.append(float(np.mean(h))); hits += h
+    task_acc = lambda d, t: float(np.mean([d[c] for c in t]))
+    forget = [max(task_acc(h, t) for h in hist[k:-1]) - task_acc(hist[-1], t) for k, t in enumerate(tasks[:-1])]
+    row = dict(bench="split", scenario=ds, model=spec, seed=seed, acc=float(np.mean(hits)),
+               forgetting=float(np.mean(forget)), seconds=secs, bytes=agent.stats()["bytes"],
+               neurons=agent.stats()["neurons"])
+    row.update({f"task{k + 1}": v for k, v in enumerate(per_task)})
+    return row
+
+
+def split_bench(specs, seeds, D, *, rows, tag, split="test", match=None):
+    """Corre los modelos de `specs`; `match`: referencias (er, erace) igualadas en bytes al
+    promedio del primer modelo."""
+    for ds in SPLIT:
+        for spec in specs:
+            for seed in seeds:
+                row = cached(dict(b="split", ds=ds, spec=spec, seed=seed, split=split),
+                             lambda ds=ds, spec=spec, seed=seed: split_run(ds, spec, seed, D))
+                rows.append(row)
+                print(f"[{tag}] split {ds} {spec[:60]} s{seed}: acc={row['acc']:.4f} olvido={row['forgetting']:.3f} "
+                      f"bytes={row['bytes']} {row['seconds']:.0f}s", flush=True)
+        if match:
+            nb = int(np.mean([r["bytes"] for r in rows if r["bench"] == "split" and r["scenario"] == ds
+                              and r["model"] == specs[0]]))
+            for base in match:
+                sp = f"{base}+bytes={nb}+iters=3"
+                for seed in seeds:
+                    row = cached(dict(b="split", ds=ds, spec=sp, seed=seed, split=split),
+                                 lambda ds=ds, sp=sp, seed=seed: split_run(ds, sp, seed, D))
+                    rows.append(row)
+                    print(f"[{tag}] split {ds} {sp} s{seed}: acc={row['acc']:.4f} olvido={row['forgetting']:.3f}",
+                          flush=True)
+
+
+def phase_f6s(a, data):
+    """F6, referencia externa: Split-MNIST y Split-Fashion-MNIST por clases, un solo pase."""
+    D = split_data(data)["test"]
+    rows: list = []
+    split_bench([C2], a.seeds, D, rows=rows, tag="f6s", match=("erace", "er"))
+    keys = ["acc", "forgetting", "task1", "task2", "task3", "task4", "task5", "bytes", "neurons", "seconds"]
+    summary = agg(rows, ("bench", "scenario", "model"), keys)
+    for d in summary:
+        print(f"  {d['scenario']:8s} {d['model']:45s} " + fmt(d, ["acc", "forgetting"]), flush=True)
+    cfg = dict(seeds=a.seeds, tasks=SPLIT, published=PUBLISHED,
+               protocol="un solo pase online por las imágenes de entrenamiento de cada tarea (sin las 500 por "
+                        "clase de validación), test oficial completo; argmax entre las 10 clases del conjunto",
+               note="ER y ER-ACE nuestras: MLP 784-256-20 con reservorio igualado en bytes a c2, lotes de 10, "
+                    "3 iteraciones por lote; las cifras publicadas usan más pasadas (ver protocol)")
+    save("f6_split", dict(phase="f6s", config=cfg, summary=summary, rows=rows), rows, keys)
+
+
 SCEN_STEPS = {k: sum(p[1] for p in v) for k, v in SCENARIOS.items()}
 
-PHASES = {"f0": phase_f0, "f1": phase_f1, "f1b": phase_f1b, "f2": phase_f2, "f3": phase_f3, "f4": phase_f4, "f5": phase_f5}
+PHASES = {"f0": phase_f0, "f1": phase_f1, "f1b": phase_f1b, "f2": phase_f2, "f3": phase_f3, "f4": phase_f4, "f5": phase_f5, "f6": phase_f6, "f6s": phase_f6s}
 
 
 def main():
@@ -661,6 +852,7 @@ def main():
     ap.add_argument("phase", choices=sorted(PHASES))
     ap.add_argument("--seeds", nargs="+", type=int, default=[0, 1, 2])
     a = ap.parse_args()
+    _PHASE["name"] = a.phase
     PHASES[a.phase](a, load_data())
 
 
