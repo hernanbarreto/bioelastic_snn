@@ -47,7 +47,7 @@ class BioElasticNet:
                  tau: float = 0.0, grow_on_error: bool = True, rho_sup: float = 0.98,
                  anti: float = 0.3, grow_per_error: int = 4, maintain_every: int = 500,
                  protect: bool = False, vote_tau: float = 0.0, episodic: bool = False,
-                 separation: float = 0.0, separation_relax: float = 0.0,
+                 separation: float = 0.0, separation_relax: float = 0.0, recon_lock: int = 0,
                  layer: dict | None = None, readout: dict | None = None, seed: int = 0):
         self._config = dict(n_inputs=int(n_inputs), n_outputs=int(n_outputs), context=int(context),
                             delay=float(delay), tau=float(tau), grow_on_error=bool(grow_on_error),
@@ -55,6 +55,7 @@ class BioElasticNet:
                             grow_per_error=int(grow_per_error), maintain_every=int(maintain_every),
                             protect=bool(protect), vote_tau=float(vote_tau), episodic=bool(episodic),
                             separation=float(separation), separation_relax=float(separation_relax),
+                            recon_lock=int(recon_lock),
                             layer=dict(layer or {}), readout=dict(readout or {}), seed=int(seed))
         self.N = int(n_inputs)
         self.tau = float(tau)
@@ -73,6 +74,11 @@ class BioElasticNet:
         # se separa con todo el margen y una ya establecida, con menos.
         self.separation_relax = float(separation_relax)
         self._uses = np.zeros(int(n_outputs), dtype=np.float64)
+        # > 0: reconsolidación de los prototipos: una neurona que ganó (LTP) `recon_lock`
+        # veces queda bloqueada; sólo vuelve a moverse si el área se equivocó en ese paso
+        # (error de predicción al recuperarla). Ver Readout `recon_lock` para la lectura.
+        self.recon_lock = int(recon_lock)
+        self.locked_skips = 0
         self.rng = np.random.default_rng(seed)
         self.layer = ElasticLayer(self.N * self.context, **(layer or {}))
         self.readout = Readout(n_outputs, **(readout or {}))
@@ -310,7 +316,11 @@ class BioElasticNet:
         elif len(wn):
             if len(agree):                                    # la más temprana que acierta: LTP
                 j = int(wn[agree[0]])
-                L.stdp(j, v, +1.0); L.credit(j)
+                if self.recon_lock and pred == target and L.wins[j] >= self.recon_lock:
+                    self.locked_skips += 1                    # consolidada y sin error: no cambia
+                else:
+                    L.stdp(j, v, +1.0)
+                L.credit(j)
             if pref[0] >= 0 and pref[0] != target and not guard[0]:   # la primera, si se equivoca: anti-STDP
                 L.stdp(int(wn[0]), v, -self.anti)
         self._after_learning()

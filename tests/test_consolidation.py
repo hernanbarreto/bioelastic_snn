@@ -221,3 +221,81 @@ def test_adaptive_separation_relaxes_with_class_use():
         net.vig_new = net.layer.vig[n0] if net.layer.vig is not None and net.layer.n > n0 else 0.0
     assert nets[5.0].vig_new < nets[0.0].vig_new
 
+
+# ---------------------------------------------------------------- F3: reconsolidación
+def _consolidated(lock=5.0, **kw):
+    r = Readout(3, consolidation=0.0, recon_lock=lock, **kw)
+    for c in range(3):
+        r.add_input(cls=c)
+    h = np.ones(1, dtype=np.float32)
+    for _ in range(int(lock) + 3):                     # cada entrada aprende su clase hasta bloquearse
+        for c in range(3):
+            r.learn(np.array([c]), h, c)
+    assert (r.count[:3] >= lock).all()
+    return r
+
+
+def test_reconsolidation_without_prediction_error_changes_nothing():
+    r = _consolidated()
+    W0 = r.W.copy(); o0 = r.opened
+    idx = np.array([0]); h = np.ones(1, dtype=np.float32)
+    for _ in range(20):                                # recuperación correcta y sin sorpresa
+        p = r.probs(r.potentials(idx, h))
+        assert int(np.argmax(p)) == 0
+        r.learn(idx, h, 0)
+    assert np.array_equal(r.W, W0) and r.opened == o0 and r.blocked >= 20
+
+
+def test_reconsolidation_with_error_updates_only_the_retrieved_memory_and_relocks():
+    r = _consolidated(recon_window=1, recon_rate=1.0)
+    W0 = r.W.copy()
+    idx = np.array([0]); h = np.ones(1, dtype=np.float32)
+    r.learn(idx, h, 1)                                 # error: la entrada 0 predice 0, el objetivo es 1
+    assert r.opened == 1 and r.relearned == 1
+    d = r.W - W0
+    assert d[1, 0] > 0 and d[0, 0] < 0 and d[2, 0] == 0.0   # sólo filas del error (objetivo y predicha)
+    assert np.array_equal(r.W[:, 1:], W0[:, 1:])       # lo vecino (otras entradas) no cambia
+    W1 = r.W.copy()
+    p = r.probs(r.potentials(idx, h))
+    if int(np.argmax(p)) == 1:                         # si ya predice 1 y sin sorpresa: re-consolidada
+        r.learn(idx, h, 1)
+        assert np.array_equal(r.W, W1)
+
+
+def test_free_inputs_learn_normally_and_surprise_opens_the_window():
+    r = Readout(2, consolidation=0.0, recon_lock=3.0, recon_kappa=1.5)
+    r.add_input(cls=0)
+    h = np.ones(1, dtype=np.float32); idx = np.array([0])
+    plain = Readout(2, consolidation=0.0); plain.add_input(cls=0)
+    for _ in range(3):                                 # antes del bloqueo: igual que sin reconsolidación
+        r.learn(idx, h, 0); plain.learn(idx, h, 0)
+    assert np.array_equal(r.W[:, :1], plain.W[:, :1])
+    for _ in range(30):                                # media de sorpresa baja
+        r.learn(idx, h, 0)
+    o = r.opened
+    p = np.array([0.55, 0.45])                         # acierta pero con mucha más sorpresa que su media
+    r.learn(idx, h, 0, p=p)
+    assert r.opened == o + 1
+
+
+def test_labile_state_follows_swap_remove():
+    r = Readout(2, recon_lock=1.0)
+    for c in (0, 1, 0):
+        r.add_input(cls=c)
+    r.labile_until[:3] = [5, 6, 7]
+    r.remove_input(0, 2)
+    assert r.labile_until[0] == 7 and r.n == 2
+
+
+def test_prototype_lock_skips_ltp_only_when_the_area_was_right():
+    rng = np.random.default_rng(9)
+    net = BioElasticNet(20, 2, recon_lock=3)
+    a = np.zeros(20, dtype=np.float32); a[:6] = 1.0
+    for _ in range(10):
+        net.step(np.clip(a + 0.05 * rng.random(20), 0, 1).astype(np.float32), 0)
+    assert net.locked_skips > 0
+    j = 0
+    w0 = net.layer.w[j].copy()
+    net.step(np.clip(a + 0.05 * rng.random(20), 0, 1).astype(np.float32), 0)
+    assert np.array_equal(net.layer.w[j], w0)          # acierto: el prototipo consolidado no se mueve
+

@@ -440,7 +440,88 @@ def phase_f2(a, data):
     finish("f2", irows, dict(tse_rows=rows, tse_summary=tse), cfg)
 
 
-PHASES = {"f0": phase_f0, "f1": phase_f1, "f1b": phase_f1b, "f2": phase_f2}
+DRIFT = [((10, 11, 12, 13), 3000), ((10, 11, 12, 13), 1500, {10: 12, 12: 10})]
+RECON = {                                    # lectura de la memoria / proyección
+    "fija/nada (c2)": C2,
+    "nada/nada": C2 + "+no_consol",
+    "recon/nada": C2 + "+readout.recon_lock=20",
+    "fija/fija": C2 + "+proj.consolidation=5",
+    "fija/recon": C2 + "+proj.recon_lock=50",
+    "recon/recon+proto": C2 + "+readout.recon_lock=20+proj.recon_lock=50+head.recon_lock=20",
+}
+
+
+def recon_counters(net) -> dict:
+    rs = [h.readout for h in net.heads] + ([net.proj] if net.proj is not None else [])
+    return dict(opened=sum(r.opened for r in rs), relearned=sum(r.relearned for r in rs),
+                blocked=sum(r.blocked for r in rs), locked_skips=sum(getattr(h, "locked_skips", 0) for h in net.heads),
+                proj_locked_frac=float((net.proj.count[:net.proj.n] >= net.proj.recon_lock).mean())
+                if net.proj is not None and net.proj.recon_lock > 0 else float("nan"))
+
+
+def drift_row(spec, seed, r) -> dict:
+    """Cambio de etiqueta (10 <-> 12) después de aprender C: ¿se actualiza lo que cambió
+    sin destruir lo vecino (11, 13)?"""
+    h0 = r["hist"][0][2]; hm = r["hist"][1][2]; hf = r["hist"][-1][2]
+    row = dict(bench="drift", scenario="swap10_12", model=spec, seed=seed)
+    for part in ("full", "slow", "fast"):
+        if not hf[part]:
+            continue
+        row[f"{part}_swapped_end"] = float(np.mean([hf[part][c] for c in (10, 12)]))
+        row[f"{part}_swapped_mid"] = float(np.mean([hm[part][c] for c in (10, 12)]))
+        row[f"{part}_kept_end"] = float(np.mean([hf[part][c] for c in (11, 13)]))
+        row[f"{part}_kept_drop"] = float(np.mean([h0[part][c] - hf[part][c] for c in (11, 13)]))
+        row[f"{part}_before"] = float(np.mean(list(h0[part].values())))
+    row.update(r.get("counters", {}), seconds=r["seconds"])
+    return row
+
+
+def phase_f3(a, data):
+    rows: list = []
+    extra = {}
+    for name, spec in RECON.items():
+        for seed in a.seeds:
+            res = {}
+
+            def grab(agent, k, t, step, res=res):
+                if step == SCEN_STEPS["CD"]:
+                    res.update(recon_counters(agent.net))
+            r = run_scenario("CD", spec, seed, data, on_step=grab)
+            row = scenario_row("CD", spec, seed, r); row["variant"] = name; row.update(res)
+            rows.append(row)
+            print(f"[f3] CD {name} s{seed}: " + " ".join(f"{k}={row[k]:.3f}" for k in
+                  ("old", "new", "all", "min", "slow_all", "fast_all")) + f" abiertas={row.get('opened')}", flush=True)
+    drows: list = []
+    for name, spec in RECON.items():
+        for seed in a.seeds:
+            res = {}
+
+            def grab(agent, k, t, step, res=res):
+                if step == 4500:
+                    res.update(recon_counters(agent.net))
+            r = run_scenario("drift", spec, seed, data, phases=DRIFT, on_step=grab)
+            row = drift_row(spec, seed, r); row["variant"] = name; row.update(res)
+            drows.append(row)
+            print(f"[f3] drift {name} s{seed}: " + " ".join(f"{k}={row[k]:.3f}" for k in
+                  ("full_swapped_mid", "full_swapped_end", "full_kept_end", "full_kept_drop", "slow_swapped_end"))
+                  + f" abiertas={row.get('opened')}", flush=True)
+    dkeys = sorted({k for r in drows for k in r if isinstance(r[k], (int, float)) and k != "seed"})
+    extra["drift_rows"] = drows
+    extra["drift_summary"] = agg(drows, ("bench", "scenario", "model"), dkeys)
+    for d in extra["drift_summary"]:
+        print(f"  drift {d['model']:70s} " + fmt(d, ["full_swapped_mid", "full_swapped_end", "full_kept_end",
+                                                      "full_kept_drop", "slow_swapped_end", "slow_kept_drop"]))
+    cfg = dict(seeds=a.seeds, variants=RECON, interference=SCENARIOS["CD"], drift=DRIFT,
+               recon=dict(readout_lock=20, proj_lock=50, proto_lock=20, window=1, kappa=2.0, beta=0.01, rate=1.0),
+               note="«fija» = consolidación por conteo actual (consolidation=5); «nada» = consolidation=0; "
+                    "umbrales de bloqueo elegidos a priori, sin barrido",
+               reductions="sólo CD en interferencia; el cambio de etiqueta usa las clases de C")
+    finish("f3", rows, extra, cfg)
+
+
+SCEN_STEPS = {k: sum(p[1] for p in v) for k, v in SCENARIOS.items()}
+
+PHASES = {"f0": phase_f0, "f1": phase_f1, "f1b": phase_f1b, "f2": phase_f2, "f3": phase_f3}
 
 
 def main():
