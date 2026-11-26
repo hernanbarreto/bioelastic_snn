@@ -47,14 +47,14 @@ class BioElasticNet:
                  tau: float = 0.0, grow_on_error: bool = True, rho_sup: float = 0.98,
                  anti: float = 0.3, grow_per_error: int = 4, maintain_every: int = 500,
                  protect: bool = False, vote_tau: float = 0.0, episodic: bool = False,
-                 separation: float = 0.0,
+                 separation: float = 0.0, separation_relax: float = 0.0,
                  layer: dict | None = None, readout: dict | None = None, seed: int = 0):
         self._config = dict(n_inputs=int(n_inputs), n_outputs=int(n_outputs), context=int(context),
                             delay=float(delay), tau=float(tau), grow_on_error=bool(grow_on_error),
                             rho_sup=float(rho_sup), anti=float(anti),
                             grow_per_error=int(grow_per_error), maintain_every=int(maintain_every),
                             protect=bool(protect), vote_tau=float(vote_tau), episodic=bool(episodic),
-                            separation=float(separation),
+                            separation=float(separation), separation_relax=float(separation_relax),
                             layer=dict(layer or {}), readout=dict(readout or {}), seed=int(seed))
         self.N = int(n_inputs)
         self.tau = float(tau)
@@ -68,6 +68,11 @@ class BioElasticNet:
         self.protect = bool(protect)        # no tocar neuronas de clases ausentes (ver `teach`)
         self.vote_tau = float(vote_tau)     # > 0: voto por orden de llegada (ver `_votes`)
         self.separation = float(separation) # > 0: separación de patrones al reclutar (ver `_separate`)
+        # > 0: separación adaptativa (propuesta de Continuo 2): el margen al reclutar para la
+        # clase c es separation x relax / (relax + usos de c); una clase que recién llega
+        # se separa con todo el margen y una ya establecida, con menos.
+        self.separation_relax = float(separation_relax)
+        self._uses = np.zeros(int(n_outputs), dtype=np.float64)
         self.rng = np.random.default_rng(seed)
         self.layer = ElasticLayer(self.N * self.context, **(layer or {}))
         self.readout = Readout(n_outputs, **(readout or {}))
@@ -266,11 +271,14 @@ class BioElasticNet:
         if self.maintain_every and self.layer.t % self.maintain_every == 0:
             self.layer.maintain()
 
-    def teach(self, target: int, pred: int | None = None, p: np.ndarray | None = None):
+    def teach(self, target: int, pred: int | None = None, p: np.ndarray | None = None,
+              grow: bool | None = None):
         """Supervisado: corrige la decisión y adapta/crea neuronas ocultas.
 
         `pred` y `p` permiten que varias áreas compartan una misma decisión y un mismo
         error (el neuromodulador es global): los pasa `Cortex`.
+        `grow=False` impide la neurogénesis en este paso (lo que el sistema lento ya
+        asimiló no necesita una neurona nueva, ver Cortex `schema`).
 
         Con `protect` (y una lectura con `active_window`), las ganadoras comprometidas con
         una clase ausente no cambian ni su lectura ni sus pesos: el error de lo que se
@@ -280,6 +288,7 @@ class BioElasticNet:
         st = self._last; v = st.v; L = self.layer; R = self.readout
         pred = st.pred if pred is None else pred
         L.tick()
+        self._uses[target] += 1.0
         wn = v.winners
         pref = R.preferred(wn)
         guard = np.zeros(len(wn), dtype=bool)
@@ -293,7 +302,8 @@ class BioElasticNet:
                 R.learn(wn, st.h, target, st.V, p)
         agree = np.flatnonzero(pref == target)
         best_agree = float(v.cos[agree[0]]) if len(agree) and not v.novel else 0.0
-        grow = v.novel or (self.grow_on_error and pred != target and best_agree < self.rho_sup)
+        allow = grow is None or grow
+        grow = allow and (v.novel or (self.grow_on_error and pred != target and best_agree < self.rho_sup))
         if grow and self._recruit(v, target) >= 0:
             if self.separation > 0.0 and not v.novel:
                 self._separate(L.n - 1, v, pref, target)
@@ -338,7 +348,10 @@ class BioElasticNet:
         L = self.layer
         c_other = float(np.max(v.cos[other]))
         own = float(L._cos_at(np.array([j]), v.idx, v.val, v.norm, L._fan_max())[0])
-        th = min(c_other + self.separation, own - self.separation)
+        sep = self.separation
+        if self.separation_relax > 0.0:
+            sep *= self.separation_relax / (self.separation_relax + float(self._uses[target]))
+        th = min(c_other + sep, own - sep)
         if th > L.theta:
             L.set_threshold(j, th)
 

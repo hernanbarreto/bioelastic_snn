@@ -59,6 +59,8 @@ class Cortex:
                  recall: str = "off", recall_k: int = 8, recall_margin: float = 0.2,
                  recall_gain: float = 1.0, recall_tau: float = 0.05, recall_source: str = "episodes",
                  stored_labels: bool = False, slow_error: str = "joint",
+                 schema: str = "off", schema_fit: float = 0.5, schema_boost: float = 4.0,
+                 schema_misfit_lr: float = 1.0, schema_beta: float = 0.02, schema_known: int = 20,
                  seed: int = 0, workers: int = 1, homeostasis: float = 0.0):
         self._config = dict(input_shape=input_shape, n_outputs=int(n_outputs),
                             areas=[dict(a) for a in areas], heads=[],
@@ -71,6 +73,9 @@ class Cortex:
                             recall_gain=float(recall_gain), recall_tau=float(recall_tau),
                             recall_source=str(recall_source), stored_labels=bool(stored_labels),
                             slow_error=str(slow_error),
+                            schema=str(schema), schema_fit=float(schema_fit),
+                            schema_boost=float(schema_boost), schema_misfit_lr=float(schema_misfit_lr),
+                            schema_beta=float(schema_beta), schema_known=int(schema_known),
                             seed=int(seed))
         self.arbiter = float(arbiter)
         self.beta = None                                      # pesos del árbitro (uno por votante)
@@ -111,6 +116,16 @@ class Cortex:
         self.slow_error = slow_error
         self.recalls = 0                                      # inferencias que consultaron el almacén
         self._slow = None; self._fast = None; self._recalled = False
+        # Esquemas (ver `_schema_fit`).
+        if schema not in ("off", "measure", "gate", "always"):
+            raise ValueError(f"schema desconocido: {schema}")
+        self.schema = schema; self.schema_fit = float(schema_fit); self.schema_boost = float(schema_boost)
+        self.schema_misfit_lr = float(schema_misfit_lr); self.schema_beta = float(schema_beta)
+        self.schema_known = int(schema_known)
+        self.reliability = 0.0                                # acierto reciente del lento en clases conocidas
+        self.fit = float("nan"); self.fit_parts = (float("nan"),) * 3
+        self.assimilated = 0
+        self._taught = np.zeros(self.C, dtype=np.int64)       # enseñanzas por clase
         self.rng = np.random.default_rng(seed)
         self.areas: list[FeatureArea] = []
         shape = self.input_shape
@@ -414,23 +429,32 @@ class Cortex:
         if (self.replay_focus == "confusion" and self.replay > 0.0 and self.proj is not None) or \
                 (self.rehearse_focus == "confusion" and self.rehearse > 0.0):
             conf = self._confusion(target, p)                 # antes de que la memoria cambie
+        grow, slow_lr = None, 1.0
+        if self.schema != "off":                              # antes de que las áreas aprendan
+            grow, slow_lr = self._schema_route(target)
+        store = self._store() if grow is not None else None
 
         def one(i):
+            g = {} if grow is None or self.heads[i] is not store else dict(grow=grow)
             if self.joint and not arb:
-                self.heads[i].teach(target, pred=self.pred, p=p)
+                self.heads[i].teach(target, pred=self.pred, p=p, **g)
             else:                                             # cada área aprende de su propio error
-                self.heads[i].teach(target)
+                self.heads[i].teach(target, **g)
         done = self._learn_areas_and(one, target)
         for i in range(len(self.heads)):
             if i not in done:
                 one(i)
+        self._taught[target] += 1
         if self.proj is not None:
             pp = None if arb else p
             if self.slow_error == "own" and not arb:
                 S = self._slow if self._slow is not None else self._slow_part(
                     self._store(), self.proj.potentials(*self._pv))
                 e = np.exp((S - S.max()) / self.temperature); pp = e / e.sum()
-            self.proj.learn(*self._pv, target, p=pp)
+            if slow_lr == 1.0:
+                self.proj.learn(*self._pv, target, p=pp)
+            else:
+                self.proj.learn(*self._pv, target, p=pp, lr_scale=slow_lr)
             if self.replay > 0.0:
                 self._replay_debt += self.replay
                 aimed = conf is not None and self.replay_focus == "confusion"
@@ -453,6 +477,71 @@ class Cortex:
                     self._rehearse_one()
         if conf is not None:
             conf[2].watch = -1
+
+    # ------------------------------------------------------------------ esquemas
+    def _coverage(self) -> float:
+        """Qué parte de la entrada explican las áreas sensoriales: fracción de la energía de
+        los parches válidos cuyo mejor rasgo supera el umbral del área (promedio entre
+        áreas). Usa la última codificación (antes de que las áreas aprendan)."""
+        covs = []
+        for a in self.areas:
+            if a._cache is None:
+                continue
+            Pm, norms, vr, act = a._cache[:4]
+            if act is None or len(vr) == 0:
+                covs.append(0.0); continue
+            w = norms[vr]
+            covs.append(float((w * (act.max(axis=1) >= a.theta)).sum() / max(float(w.sum()), 1e-12)))
+        return float(np.mean(covs)) if covs else 1.0
+
+    def _schema_fit(self, target: int) -> float:
+        """Encaje de (entrada, etiqueta) con el conocimiento del sistema lento (esquema, Tse
+        et al. 2007; su lectura computacional, McClelland 2013):
+
+            encaje = cobertura x fiabilidad x (1 - conflicto)
+
+          cobertura   cuánto de la entrada explican los diccionarios de las áreas
+          fiabilidad  acierto reciente (media móvil, tasa `schema_beta`) del sistema lento
+                      en clases ya enseñadas >= `schema_known` veces: si lo conocido no se
+                      predice bien, no hay esquema
+          conflicto   probabilidad de la clase equivocada más fuerte según el lento: un
+                      ítem que contradice lo que el lento cree con seguridad exigiría
+                      reestructurarlo (interferencia)
+        """
+        store = self._store()
+        S = self._slow if self._slow is not None else self._slow_part(
+            store, self.proj.potentials(*self._pv) if self.proj is not None else None)
+        e = np.exp((S - S.max()) / self.temperature); q = e / e.sum()
+        conflict = float(np.max(np.delete(q, target))) if self.C > 1 else 0.0
+        cov = self._coverage()
+        rel = self.reliability
+        fit = cov * rel * (1.0 - conflict)
+        if self._taught[target] >= self.schema_known:         # la fiabilidad se mide en lo conocido
+            ok = float(int(np.argmax(S)) == target)
+            self.reliability += self.schema_beta * (ok - self.reliability)
+        self.fit = fit; self.fit_parts = (cov, rel, conflict)
+        return fit
+
+    def _schema_route(self, target: int):
+        """(neurogénesis permitida en el almacén, factor de tasa del sistema lento).
+
+          schema="measure"  sólo mide el encaje (diagnóstico, sin efecto)
+          schema="gate"     encaja (>= `schema_fit`): asimilación rápida en el lento (tasa
+                            x `schema_boost`) y sin neurona nueva en el almacén; no encaja:
+                            queda en el almacén (neurogénesis habilitada) y el lento aprende
+                            con tasa x `schema_misfit_lr` (0 = sólo desde el repaso)
+          schema="always"   asimilación rápida de todo (ablación: sin medir el encaje)
+        """
+        fit = self._schema_fit(target)
+        if self.schema == "gate":
+            if fit >= self.schema_fit:
+                self.assimilated += 1
+                return False, self.schema_boost
+            return None, self.schema_misfit_lr
+        if self.schema == "always":
+            self.assimilated += 1
+            return None, self.schema_boost
+        return None, 1.0
 
     def _confusion(self, target: int, p):
         """Repaso dirigido a la confusión (cf. MIR, Aljundi et al. 2019; ASER, Shim et al.
@@ -631,7 +720,7 @@ class Cortex:
             synapses=sum(a["synapses"] for a in areas) + sum(h["synapses"] for h in heads)
                      + sum(h["neurons"] for h in heads) * self.C
                      + (self.proj.n * self.C if self.proj is not None else 0),
-            replays=self.replays, recalls=self.recalls,
+            replays=self.replays, recalls=self.recalls, assimilated=self.assimilated,
         )
 
     def cost(self) -> dict:

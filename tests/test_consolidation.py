@@ -146,3 +146,78 @@ def test_cortex_with_two_systems_saves_and_loads(tmp_path):
     x = _blob(rng, 2)
     assert back.forward(x) == net.forward(x) and np.allclose(back._V, net._V)
 
+
+# ---------------------------------------------------------------- F2: esquemas
+def test_schema_measure_has_no_effect_and_fit_is_a_fraction():
+    rng = np.random.default_rng(7)
+    a, b = _cortex(), _cortex(schema="measure", schema_known=5)
+    fits = []
+    for _ in range(200):
+        c = int(rng.integers(4)); x = _blob(rng, c)
+        assert a.step(x, c) == b.step(x, c)
+        fits.append(b.fit)
+    assert np.array_equal(a.proj.W, b.proj.W) and a.heads[0].layer.n == b.heads[0].layer.n
+    f = np.array(fits[50:])
+    assert np.all((f >= 0) & (f <= 1)) and b.reliability > 0.5 and b.assimilated == 0
+    cov, rel, conf = b.fit_parts
+    assert 0 <= cov <= 1 and 0 <= conf <= 1
+
+
+def test_schema_gate_assimilates_fitting_items_without_neurogenesis():
+    rng = np.random.default_rng(8)
+    net = _cortex(schema="gate", schema_fit=0.3, schema_boost=4.0, schema_known=5)
+    for _ in range(300):
+        c = int(rng.integers(3)); net.step(_blob(rng, c), c)     # esquema: clases 0-2
+    assert net.reliability > 0.6 and net.assimilated > 0
+    mem = net.heads[0]
+    # un ítem que encaja: se asimila con tasa x4 y no crea neurona
+    for _ in range(50):
+        c = int(rng.integers(3)); x = _blob(rng, c)
+        net.forward(x)
+        W0 = net.proj.W.copy(); n0 = mem.layer.n; a0 = net.assimilated
+        replay, net.replay = net.replay, 0.0                       # aislar el aprendizaje directo
+        net.teach(c)
+        net.replay = replay
+        if net.assimilated > a0:
+            assert mem.layer.n == n0
+            break
+    else:
+        raise AssertionError("ningún ítem encajó")
+    assert np.abs(net.proj.W - W0).sum() > 0                     # el lento sí aprendió (x4, ver abajo)
+    # sin esquema fiable no se asimila: la clase nueva queda en el almacén
+    net.reliability = 0.0
+    n0 = mem.layer.n; a0 = net.assimilated
+    for _ in range(20):
+        net.step(_blob(rng, 3), 3)
+    assert net.assimilated == a0 and mem.layer.n > n0
+
+
+def test_lr_scale_multiplies_the_readout_update():
+    idx = np.array([0, 1]); h = np.array([0.6, 0.8], dtype=np.float32)
+    a, b = Readout(3, consolidation=0.0), Readout(3, consolidation=0.0)
+    for r in (a, b):
+        r.add_input(cls=0); r.add_input(cls=1)
+    p = np.array([0.5, 0.3, 0.2])
+    a.learn(idx, h, 2, p=p); b.learn(idx, h, 2, p=p, lr_scale=4.0)
+    W0 = np.zeros((3, 2), dtype=np.float32); W0[0, 0] = 1.0; W0[1, 1] = 1.0
+    assert np.allclose(b.W[:, :2] - W0, 4.0 * (a.W[:, :2] - W0), atol=1e-6)
+    c = Readout(3, consolidation=0.0); c.add_input(cls=0)
+    c.learn(np.array([0]), np.ones(1, dtype=np.float32), 1, lr_scale=0.0)
+    assert c.W[1, 0] == 0.0 and c.t == 1                         # sin cambio, pero cuenta como actividad
+
+
+def test_adaptive_separation_relaxes_with_class_use():
+    a = np.zeros(60, dtype=np.float32); a[:20] = 1.0
+    b = a.copy(); b[14:20] = 0.0; b[20:26] = 1.0
+    rng = np.random.default_rng(0)
+    nets = {r: BioElasticNet(60, 2, separation=0.05, separation_relax=r, layer=dict(theta=0.6))
+            for r in (0.0, 5.0)}
+    for net in nets.values():
+        for _ in range(20):
+            net.step(np.clip(a + 0.05 * rng.random(60), 0, 1).astype(np.float32), 0)
+        net._uses[1] = 50.0                            # la clase 1 ya está establecida
+        n0 = net.layer.n
+        net.step(np.clip(b + 0.05 * rng.random(60), 0, 1).astype(np.float32), 1)
+        net.vig_new = net.layer.vig[n0] if net.layer.vig is not None and net.layer.n > n0 else 0.0
+    assert nets[5.0].vig_new < nets[0.0].vig_new
+

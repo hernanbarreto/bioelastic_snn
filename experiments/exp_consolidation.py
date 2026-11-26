@@ -318,7 +318,129 @@ def phase_f1b(a, data):
     finish("f1b", rows, {}, cfg)
 
 
-PHASES = {"f0": phase_f0, "f1": phase_f1, "f1b": phase_f1b}
+def tse_run(seed: int, data, prior: str, kind: str, modes=("measure", "gate", "always"),
+            n_prior: int = 3000, session: int = 200, n_items: int = 5, trials: int = 3,
+            spec: str = C2 + STORED + "+top.schema=measure"):
+    """Prueba tipo Tse et al. (2007) sobre dígitos.
+
+    Esquema: 3000 pasos con los dígitos 0-7. «consistent»: etiquetas verdaderas;
+    «inconsistent»: la asignación imagen -> etiqueta se permuta al azar entre 0-7 cada
+    `session` pasos (como la arena donde los pares sabor-lugar cambian).
+    Ítems nuevos (`kind`): «new»: 5 imágenes de entrenamiento de cada dígito nuevo (8 y 9)
+    con su etiqueta; «conflict» (control de McClelland 2013): 5 imágenes de 3 etiquetadas
+    8 y 5 de 5 etiquetadas 9, que contradicen lo que el sistema ya sabe. Cada ensayo
+    presenta los 10 ítems una vez. La red después del esquema se copia para cada modo
+    (mismo estado previo): measure (= sin mecanismo), gate, always.
+
+    Después de cada ensayo: acierto en los propios ítems y en imágenes de test de las
+    clases nuevas (o de 3 y 5 con su etiqueta verdadera para «conflict»), del sistema
+    completo y del lento solo (la «lesión» del almacén rápido), y acierto en lo viejo."""
+    import copy
+    pools, test = data
+    enc = encoder()
+    rng = np.random.default_rng([seed, 777])
+    OLD, NEW = list(range(8)), [8, 9]
+    ev_old = {c: [enc(test[c][i].astype(np.float32) / 255) for i in rng.choice(len(test[c]), 50, replace=False)]
+              for c in OLD}
+    ev_new = {c: [enc(test[c][i].astype(np.float32) / 255) for i in rng.choice(len(test[c]), 100, replace=False)]
+              for c in NEW}
+    src = {8: 8, 9: 9} if kind == "new" else {8: 3, 9: 5}
+    items = [(enc(pools[src[y]][i].astype(np.float32) / 255), y)
+             for y in NEW for i in rng.choice(len(pools[src[y]]), n_items, replace=False)]
+    agent = build(spec)(seed)
+    net = agent.net
+    perm = np.arange(10)
+    t0 = time.time()
+    for t in range(n_prior):
+        if prior == "inconsistent" and t % session == 0:
+            perm[OLD] = rng.permutation(OLD)
+        c = int(rng.choice(OLD)); i = int(rng.integers(len(pools[c])))
+        agent.sup(enc(pools[c][i].astype(np.float32) / 255), int(perm[c]))
+    prior_s = time.time() - t0
+    rel = net.reliability
+
+    def acc(model, S, y):
+        hf, hs = [], []
+        for s in S:
+            hf.append(int(np.argmax(model.scores(s))) == y)
+            hs.append(int(np.argmax(model.net.parts()["slow"])) == y)
+        return float(np.mean(hf)), float(np.mean(hs))
+
+    def evaluate(model):
+        out = {}
+        f, s = zip(*[acc(model, [x], y) for x, y in items])
+        out["items_full"], out["items_slow"] = float(np.mean(f)), float(np.mean(s))
+        if kind == "new":
+            r = [acc(model, ev_new[c], c) for c in NEW]
+        else:                                        # 3 y 5 con su etiqueta verdadera
+            r = [acc(model, ev_old[c], c) for c in (3, 5)]
+        out["probe_full"], out["probe_slow"] = (float(np.mean(v)) for v in zip(*r))
+        r = [acc(model, ev_old[c], c) for c in OLD]
+        out["old_full"], out["old_slow"] = (float(np.mean(v)) for v in zip(*r))
+        return out
+
+    base = evaluate(agent)
+    res = []
+    order_rng = np.random.default_rng([seed, 778])
+    orders = [order_rng.permutation(len(items)) for _ in range(trials)]
+    for mode in modes:
+        a = copy.deepcopy(agent)
+        a.net.schema = mode
+        n0 = a.net.heads[0].layer.n; as0 = a.net.assimilated
+        fits, parts = [], []
+        for k in range(trials):
+            for j in orders[k]:
+                x, y = items[j]
+                a.sup(x, y)
+                fits.append(a.net.fit); parts.append(a.net.fit_parts)
+            row = dict(bench="tse", scenario=f"{prior}/{kind}", model=mode, seed=seed, trial=k + 1,
+                       reliability=rel, prior_seconds=prior_s,
+                       neurons_added=a.net.heads[0].layer.n - n0, assimilated=a.net.assimilated - as0,
+                       fit_mean=float(np.nanmean(fits)), cov_mean=float(np.nanmean([p[0] for p in parts])),
+                       conflict_mean=float(np.nanmean([p[2] for p in parts])),
+                       **evaluate(a))
+            for key in ("old_full", "old_slow", "probe_full", "probe_slow"):
+                row[f"d_{key}"] = row[key] - base[key]
+            res.append(row)
+            print(f"[f2] tse {prior}/{kind} {mode} s{seed} ensayo {k + 1}: " +
+                  " ".join(f"{key}={row[key]:.3f}" for key in ("items_full", "items_slow", "probe_full",
+                                                                "probe_slow", "old_full", "fit_mean")) +
+                  f" asim={row['assimilated']} +n={row['neurons_added']}", flush=True)
+    return res
+
+
+TSE_KEYS = ["items_full", "items_slow", "probe_full", "probe_slow", "old_full", "old_slow", "d_old_full",
+            "d_old_slow", "d_probe_full", "d_probe_slow", "reliability", "fit_mean", "cov_mean",
+            "conflict_mean", "assimilated", "neurons_added"]
+
+
+def phase_f2(a, data):
+    rows: list = []
+    for seed in a.seeds:
+        for prior, kind in (("consistent", "new"), ("inconsistent", "new"), ("consistent", "conflict")):
+            rows += tse_run(seed, data, prior, kind)
+    tse = agg(rows, ("bench", "scenario", "model", "trial"), TSE_KEYS)
+    for d in tse:
+        print(f"  {d['scenario']:22s} {d['model']:8s} ensayo {d['trial']} " +
+              fmt(d, ["items_full", "items_slow", "probe_full", "probe_slow", "d_old_full", "d_old_slow",
+                      "reliability", "fit_mean", "assimilated", "neurons_added"]), flush=True)
+    irows: list = []
+    specs = [C2 + STORED + "+top.schema=measure", C2 + STORED + "+top.schema=gate",
+             C2 + STORED + "+top.schema=gate+top.schema_misfit_lr=0", C2 + STORED + "+top.schema=always",
+             C2 + STORED + "+head.separation_relax=200"]     # separación adaptativa (Continuo 2)
+    interference(("CD",), specs, a.seeds, data, tag="f2", log_rows=irows)
+    cfg = dict(seeds=a.seeds,
+               tse=dict(prior_steps=3000, session=200, old=list(range(8)), new=[8, 9], items_per_class=5,
+                        trials=3, conflict_sources={8: 3, 9: 5}, eval_old_per_class=50, eval_new_per_class=100,
+                        spec=C2 + STORED + "+top.schema=measure", schema_fit=0.5, schema_boost=4.0,
+                        note="el estado tras el esquema se copia para cada modo (comparación pareada)"),
+               interference=dict(scenario=SCENARIOS["CD"]),
+               adaptive_separation="head.separation_relax=200: margen x 200 / (200 + usos de la clase)",
+               reductions="sólo CD en interferencia; dígitos 0-7 / 8-9 para la prueba tipo Tse")
+    finish("f2", irows, dict(tse_rows=rows, tse_summary=tse), cfg)
+
+
+PHASES = {"f0": phase_f0, "f1": phase_f1, "f1b": phase_f1b, "f2": phase_f2}
 
 
 def main():

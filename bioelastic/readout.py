@@ -141,12 +141,13 @@ class Readout:
         return pre.astype(np.float32)
 
     def learn(self, idx: np.ndarray, h: np.ndarray, target: int, V: np.ndarray | None = None,
-              p: np.ndarray | None = None, replay: bool = False):
+              p: np.ndarray | None = None, replay: bool = False, lr_scale: float = 1.0):
         """`p` externo: la competencia entre salidas la resolvió la red completa.
-        `replay`: el ejemplo es un recuerdo (error completo, no cuenta como actividad)."""
+        `replay`: el ejemplo es un recuerdo (error completo, no cuenta como actividad).
+        `lr_scale`: factor sobre la tasa (asimilación rápida de un esquema, ver Cortex)."""
         if not replay:
             self.mark(target)
-        if len(idx) == 0:
+        if len(idx) == 0 or lr_scale == 0.0:
             return
         if self.rule == "mean":
             self._learn_mean(idx, h, target)
@@ -157,7 +158,8 @@ class Readout:
         if self.active_window > 0 and not replay:
             err = np.where(self.active(), err, 0.0)
         err[target] += 1.0
-        self.W[:, idx] += (self.lr * err)[:, None].astype(np.float32) * self._plasticity(idx, h)[None, :]
+        lr = self.lr if lr_scale == 1.0 else self.lr * float(lr_scale)
+        self.W[:, idx] += (lr * err)[:, None].astype(np.float32) * self._plasticity(idx, h)[None, :]
         self._scale_rows(err != 0)
 
     def _learn_mean(self, idx, h, target: int):
