@@ -1,0 +1,17 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+conjunta,L3,1,curva columna ep=1000,0.2242,0.1000,azar
+conjunta,L3,1,curva pureza ep=1000,0.1880,0.1000,símbolos usados=3
+conjunta,L3,1,curva columna ep=2000,0.2217,0.1000,azar
+conjunta,L3,1,curva pureza ep=2000,0.1920,0.1000,símbolos usados=2
+conjunta,L3,1,curva columna ep=3000,0.2113,0.1000,azar
+conjunta,L3,1,curva pureza ep=3000,0.1320,0.1000,símbolos usados=2
+conjunta,L3,1,curva columna ep=4000,0.2181,0.1000,azar
+conjunta,L3,1,curva pureza ep=4000,0.1360,0.1000,símbolos usados=2
+conjunta,L3,1,pureza percepción (test),0.1250,0.1000,azar
+conjunta,L3,1,exactitud identidad (test),0.0985,0.1000,azar
+conjunta,L3,1,símbolos distintos usados,2,10,
+conjunta,L3,1,exacta n=3 (test),0.0000,0.0001,azar
+conjunta,L3,1,columna n=3 (test),0.1053,0.1000,azar
+conjunta,L3,1,exacta n=3: cota con la pureza medida,,0.0000,pureza^6 (Thinker perfecto)
+conjunta,L3,1,segundos,389.0000,,
+conjunta,total,1,segundos,389.2000,,

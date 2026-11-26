@@ -25,9 +25,9 @@ tareas y para medir; dónde las recibe la red está dicho en cada prueba.
                       L1 a+b, b símbolo una imagen y un símbolo perfecto -> (a+b) mod 10
                       L2 a+b imágenes   dos imágenes -> (a+b) mod 10 (sin acarreo)
                       L3 suma completa  varias columnas con acarreo (subcomando `conjunta`)
-                  `escalera_h` repite R0-L2 con un cambio mínimo de arquitectura, la
-                  homeostasis de las salidas (`CortexHomeostatico`), contra el colapso de
-                  símbolos que aparece en la escalera.
+                  `escalera_h` y `conjunta_h` repiten R0-L3 con un cambio mínimo de
+                  arquitectura, la homeostasis de las salidas (`CortexHomeostatico`), contra
+                  el colapso de símbolos que aparece en la escalera.
                   La percepción se mide con la mejor biyección símbolo -> dígito (pureza),
                   porque al Thinker le sirve cualquier código consistente.
   ligadura        (2) en cada episodio se ligan 4 pares (imagen de clave, imagen de valor)
@@ -404,15 +404,27 @@ def episodio_ligadura(th, ver, datos, split, rng, learn, ligada=None, F=None):
     return out == y, bool(ok_perc)
 
 
+def _fraccion(antes: dict, despues: dict, accion: str) -> float:
+    """Fracción de las decisiones del control tomadas entre dos `stats()` que fueron
+    `accion` (nan si esta versión del Thinker no las informa)."""
+    nombres = ("decir", "copiar", "seguir", "hablar")
+    tot = sum(despues.get(a, 0) - antes.get(a, 0) for a in nombres)
+    if accion not in despues or tot <= 0:
+        return float("nan")
+    return float((despues[accion] - antes[accion]) / tot)
+
+
 def evaluar_ligadura(th, ver, datos, rng, F, episodios):
     plasticidad(th, False)
     res = {}
     for lig in (True, False):
+        antes = dict(th.stats())
         r = [episodio_ligadura(th, ver, datos, "test", rng, False, lig, F) for _ in range(episodios)]
         hit = np.array([x[0] for x in r]); ok = np.array([x[1] for x in r])
         res[lig] = dict(acierto=float(hit.mean()), todas_bien=float(ok.mean()),
                         si_bien=float(hit[ok].mean()) if ok.any() else float("nan"),
-                        si_mal=float(hit[~ok].mean()) if (~ok).any() else float("nan"))
+                        si_mal=float(hit[~ok].mean()) if (~ok).any() else float("nan"),
+                        copiar=_fraccion(antes, th.stats(), "copiar"))
     plasticidad(th, True)
     return res
 
@@ -427,6 +439,7 @@ def prueba_ligadura(seed, tam, out):
     ref = evaluar_ligadura(th_o, oraculo, datos, rng, F, tam["ep_eval"])
     for lig, name in ((True, "ligadas"), (False, "no ligadas")):
         out("ligadura", "oraculo", f"acierto {name}", ref[lig]["acierto"], 0.1, "azar")
+        out("ligadura", "oraculo", f"fracción COPIAR {name}", ref[lig]["copiar"], "", "")
     Xt, yt = muestra_test(datos, rng, tam["n_test"])
     vistas = [("vista fuerte", vista_entrenada(datos, seed, tam["n_pre"])),
               ("vista débil", vista_entrenada(datos, seed, tam["n_debil"], "depth1"))]
@@ -445,6 +458,7 @@ def prueba_ligadura(seed, tam, out):
                     cota_independiente(p, k, ref[lig]["acierto"]), f"p^{k}*oráculo")
                 out("ligadura", var, f"acierto {name} | 9 imágenes bien", m["si_bien"], ref[lig]["acierto"], "oráculo")
                 out("ligadura", var, f"acierto {name} | alguna mal", m["si_mal"], "", "")
+                out("ligadura", var, f"fracción COPIAR {name}", m["copiar"], ref[lig]["copiar"], "oráculo")
 
 
 # ====================================================================== 3. asociación entre modalidades
@@ -637,6 +651,7 @@ PRUEBAS = dict(suma=prueba_suma,
                escalera=lambda s, t, o: prueba_conjunta(s, t, o, t["escalera"]),
                conjunta=lambda s, t, o: prueba_conjunta(s, t, o, ("L3",)),
                escalera_h=lambda s, t, o: prueba_conjunta(s, t, o, t["escalera_h"]),
+               conjunta_h=lambda s, t, o: prueba_conjunta(s, t, o, ("L3+H",)),
                ligadura=prueba_ligadura, modal=prueba_modal,
                interf_percepcion=prueba_interferencia_percepcion,
                interf_razonamiento=prueba_interferencia_razonamiento)
