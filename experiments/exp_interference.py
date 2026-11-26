@@ -75,10 +75,24 @@ def run(scenario: str, model: str, seed: int, data, n_eval: int = 100):
     agent = build(model)(seed)
     agent.on_phase(0)
 
+    net = getattr(agent, "net", None)
+    comp = {}                                    # sólo Cortex: precisión de cada parte al final
+
     def evaluate():
         out = {}
+        hm = {}; hp = {}
         for key, S in ev.items():
-            out[key] = float(np.mean([np.argmax(agent.scores(s)) == key[0] for s in S]))
+            hits = []
+            for s in S:
+                V = agent.scores(s)
+                hits.append(np.argmax(V) == key[0])
+                if net is not None and net.proj is not None:
+                    Vm = net.heads[0]._last.V
+                    hm.setdefault(key, []).append(np.argmax(Vm) == key[0])
+                    hp.setdefault(key, []).append(np.argmax(V - Vm) == key[0])
+            out[key] = float(np.mean(hits))
+        comp["mem"] = {k: float(np.mean(v)) for k, v in hm.items()}
+        comp["proj"] = {k: float(np.mean(v)) for k, v in hp.items()}
         return out
 
     hist = []
@@ -97,7 +111,7 @@ def run(scenario: str, model: str, seed: int, data, n_eval: int = 100):
             if t == MID and k > 0:
                 hist.append((k, t, evaluate()))
         hist.append((k, steps, evaluate()))
-    return hist, agent.stats(), time.time() - t0
+    return hist, dict(agent.stats(), **comp), time.time() - t0
 
 
 def summarize(scenario, hist):
@@ -137,7 +151,8 @@ def main():
     a = ap.parse_args()
     data = load_data()
     keys = ["old", "new", "all", "min", "drop", "mid_old", "c10", "c12"]
-    log = CsvLog(f"interference{a.tag}", ["scenario", "model", "seed"] + keys + ["neurons", "bytes", "seconds"])
+    log = CsvLog(f"interference{a.tag}", ["scenario", "model", "seed"] + keys +
+                 ["mem_old", "mem_new", "proj_old", "proj_new", "neurons", "features", "bytes", "seconds"])
     detail = CsvLog(f"interference{a.tag}_classes", ["scenario", "model", "seed", "phase", "step", "class", "part", "acc"])
     for sc in a.scenarios:
         for model in a.models:
@@ -148,7 +163,14 @@ def main():
                         detail._w.writerow([sc, model, seed, k, t, c, part, f"{v:.4f}"])   # sin imprimir
                 detail._f.flush()
                 m = summarize(sc, hist)
-                log.row(sc, model, seed, *[float(m.get(k, np.nan)) for k in keys], st["neurons"], st["bytes"], sec)
+                first = set(SCENARIOS[sc][0][0]); last = set(SCENARIOS[sc][-1][0])
+                part = lambda d, cs: float(np.mean([v for (c, p), v in d.items() if c in cs])) if d else np.nan
+                if sc == "shift":
+                    part = lambda d, cs, p0=None: np.nan
+                log.row(sc, model, seed, *[float(m.get(k, np.nan)) for k in keys],
+                        part(st.get("mem"), first), part(st.get("mem"), last),
+                        part(st.get("proj"), first), part(st.get("proj"), last),
+                        st["neurons"], st.get("features", 0), st["bytes"], sec)
     log.close(); detail.close()
 
 
