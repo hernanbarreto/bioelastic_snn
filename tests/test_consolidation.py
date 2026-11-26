@@ -436,3 +436,128 @@ def test_idle_advances_the_pending_sleep_without_touching_the_last_input():
     caches = [a._cache for a in net.areas]
     done = sum(net.idle(5) for _ in range(5))
     assert done > 0 and all(a._cache is c for a, c in zip(net.areas, caches))
+
+
+# ---------------------------------------------------------------- F7: causas latentes
+def _cause_stream(seed=0):
+    """Clase 0: 15 de las dimensiones 0-29 activas al azar (muchas neuronas por clase)."""
+    rng = np.random.default_rng(seed)
+
+    def sample(lo, hi):
+        x = np.zeros(60, dtype=np.float32)
+        d = rng.choice(np.arange(lo, hi), 15, replace=False)
+        x[d] = rng.uniform(0.5, 1.0, 15)
+        return x
+    net = BioElasticNet(60, 3, episodic=True, causes=True, cause_active=5, cause_n=10,
+                        layer=dict(theta=0.75), readout=dict(consolidation=5.0))
+    for _ in range(300):
+        net.step(sample(0, 30), 0)
+    for _ in range(10):                                    # la clase 0 deja de confirmarse
+        net.layer.tick()
+    return net, sample
+
+
+def test_same_key_with_a_new_label_updates_the_old_memory():
+    acc = {}
+    for causes in (True, False):
+        net, sample = _cause_stream()
+        net.causes = causes
+        for _ in range(150):                               # las mismas claves, ahora con etiqueta 1
+            net.step(sample(0, 30), 1)
+        acc[causes] = np.mean([net.predict(sample(0, 30)) == 1 for _ in range(100)])
+        if causes:
+            assert net._pairs[(0, 1)][4] is True           # misma causa: la diferencia promedia cero
+            assert net.relabeled > 0
+            flipped = int((net.labels(True) == 1).sum())
+    assert acc[True] > acc[False] + 0.1                    # se actualiza más rápido que sin inferencia
+
+
+def test_neighbouring_keys_with_a_new_label_create_a_new_cause_and_protect_the_old():
+    net, sample = _cause_stream()
+    n0 = net.layer.n
+    W0 = net.readout.W[:, :n0].copy()
+    for _ in range(150):                                   # claves vecinas (desplazadas) con etiqueta 1
+        net.step(sample(4, 34), 1)
+    assert net._pairs[(0, 1)][4] is False                  # causa nueva
+    assert net.protected > 0 and net.relabeled <= 2 and net.layer.n > n0
+    changed = (np.abs(net.readout.W[:, :n0] - W0).sum(axis=0) > 0).sum()
+    assert changed <= 2                                    # lo viejo intacto (salvo <= 2 dudosas)
+    assert np.mean([net.predict(sample(0, 30)) == 0 for _ in range(50)]) > 0.8
+
+
+def test_without_causes_the_head_behaves_as_before():
+    rng = np.random.default_rng(1)
+    x = [np.clip(rng.random(60).astype(np.float32) * (rng.random(60) < 0.3), 0, 1) for _ in range(120)]
+    y = rng.integers(3, size=120)
+    nets = [BioElasticNet(60, 3, episodic=True, layer=dict(theta=0.5)) for _ in range(2)]
+    nets[1].causes = False
+    for xi, yi in zip(x, y):
+        for n in nets:
+            n.step(xi, int(yi))
+    assert np.array_equal(nets[0].readout.W[:, :nets[0].layer.n], nets[1].readout.W[:, :nets[1].layer.n])
+    assert nets[0].relabeled == 0 and nets[0].protected == 0
+
+
+def test_protected_classes_are_not_depressed_in_the_slow_system():
+    rng = np.random.default_rng(18)
+    net = Cortex((8, 8, 1), 4, areas=[dict(rf=3, pool=2, max_features=16, theta=0.8)],
+                 heads=[dict(source="input", episodic=True, causes=True, cause_active=5, cause_n=3)],
+                 projection=dict(source="all"), replay=0.0, joint=False)
+    for _ in range(200):
+        c = int(rng.integers(3)); net.step(_blob(rng, c), c)
+    mem = net.heads[0]
+    for _ in range(200):
+        x = np.clip(_blob(rng, 0) * 0.7 + _blob(rng, 3) * 0.7, 0, 1)
+        net.forward(x)
+        W0 = net.proj.W.copy()
+        net.teach(3)
+        prot = [c for c in mem.protect_classes.tolist() if c != 3]
+        if prot:
+            assert np.array_equal(net.proj.W[prot], W0[prot])   # la clase vieja no se deprime
+            return
+    raise AssertionError("ninguna causa nueva protegida")
+
+
+def test_fallback_recall_never_drops_the_memory_vote():
+    rng = np.random.default_rng(19)
+    net = _cortex(recall="fallback", recall_margin=0.3, stored_labels=True)
+    for _ in range(200):
+        c = int(rng.integers(4)); net.step(_blob(rng, c), c)
+    for _ in range(30):
+        net.forward(_blob(rng, int(rng.integers(4))))
+        S = net.parts()["slow"]; F = S + net.heads[0]._last.V
+        if not net._recalled:
+            assert np.array_equal(net._V, F)
+        else:
+            assert np.allclose(net._V, F + net._fast)
+
+
+def test_frozen_schema_does_not_follow_the_learning_slow_system():
+    rng = np.random.default_rng(20)
+    net = _cortex(schema="measure", schema_frozen=10 ** 6, schema_known=5)
+    for _ in range(100):
+        c = int(rng.integers(3)); net.step(_blob(rng, c), c)
+    Wf = net._Wf.copy()
+    for _ in range(50):
+        c = int(rng.integers(4)); net.step(_blob(rng, c), c)
+    assert np.array_equal(net._Wf, Wf) and not np.array_equal(net.proj.W[:, :net.proj.n], Wf)
+
+
+def test_weak_sleep_replays_the_least_consolidated_and_redundant_release_keeps_unique_memories():
+    rng = np.random.default_rng(21)
+    net = Cortex((8, 8, 1), 4, areas=[dict(rf=3, pool=2, max_features=16, theta=0.8)],
+                 heads=[dict(source="input", episodic=True, layer=dict(theta=0.995))],
+                 projection=dict(source="all"), replay=1.0, joint=False, stored_labels=True,
+                 sleep_replays=200, sleep_focus="weak", sleep_release=0.3, sleep_keep=1,
+                 sleep_release_check="redundant")
+    for _ in range(300):
+        c = int(rng.integers(4)); net.step(_blob(rng, c), c)
+    mem = net.heads[0]
+    net.sleep()
+    n = mem.layer.n
+    assert (mem.ep["m_t"][:n] >= net._sleep_start).mean() > 0.5        # repasó casi todo
+    assert 0 <= net.released <= 64
+    lab = mem.labels(True)
+    for j in range(n):                                   # lo que quedó sigue cubierto
+        assert lab[j] >= 0
+    assert set(np.unique(lab)) == set(range(4))

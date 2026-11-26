@@ -841,9 +841,300 @@ def phase_f6s(a, data):
     save("f6_split", dict(phase="f6s", config=cfg, summary=summary, rows=rows), rows, keys)
 
 
+# ====================================================================== F7
+VAL_SEEDS = (10, 11)
+CAUSES = "+head.causes=true+head.cause_tau=500"
+F7_BASE = C2 + STORED + OWN
+
+
+def pair_rows(spec, seeds, data, *, tag, split, rows, cd=True, swap=True, chain=False):
+    """CD y cambio de etiqueta (y chainF) con el mismo modelo y el split pedido (reanudable)."""
+    def cd_row(spec, seed):
+        r = run_scenario("CD", spec, seed, data)
+        row = scenario_row("CD", spec, seed, r); row["split"] = split
+        row.update({f"c_{k}": v for k, v in cause_counters(r).items()})
+        return row
+
+    def sw_row(spec, seed):
+        r = run_scenario("drift", spec, seed, data, phases=DRIFT)
+        row = drift_row(spec, seed, r); row["split"] = split
+        row.update({f"c_{k}": v for k, v in cause_counters(r).items()})
+        return row
+
+    def ch_row(spec, seed):
+        r = run_scenario("chainF", spec, seed, data)
+        row = scenario_row("chainF", spec, seed, r); row["split"] = split
+        return row
+
+    for seed in seeds:
+        if cd:
+            row = cached(dict(b="interf", sc="CD", spec=spec, seed=seed, split=split), lambda: cd_row(spec, seed))
+            rows.append(row)
+            print(f"[{tag}] {split} CD {spec[len(C2):]} s{seed}: " + " ".join(
+                f"{k}={row[k]:.3f}" for k in ("old", "new", "all", "min", "slow_all")) +
+                f" causas={[row.get('c_' + k) for k in ('relabeled', 'protected', 'new_causes')]}", flush=True)
+        if swap:
+            row = cached(dict(b="drift", sc="swap", spec=spec, seed=seed, split=split), lambda: sw_row(spec, seed))
+            rows.append(row)
+            print(f"[{tag}] {split} cambio {spec[len(C2):]} s{seed}: " + " ".join(
+                f"{k}={row[k]:.3f}" for k in ("full_swapped_mid", "full_swapped_end", "full_kept_end",
+                                                "full_kept_drop")) +
+                f" causas={[row.get('c_' + k) for k in ('relabeled', 'protected', 'new_causes')]}", flush=True)
+        if chain:
+            row = cached(dict(b="interf", sc="chainF", spec=spec, seed=seed, split=split), lambda: ch_row(spec, seed))
+            rows.append(row)
+            print(f"[{tag}] {split} chainF {spec[len(C2):]} s{seed}: " + " ".join(
+                f"{k}={row[k]:.3f}" for k in ("old", "new", "all", "min")), flush=True)
+
+
+def cause_counters(r) -> dict:
+    return {k: r.get("causes", {}).get(k, 0) for k in ("relabeled", "protected", "new_causes")}
+
+
+def val_score(rows, spec) -> float:
+    """Criterio fijado antes de mirar resultados: media de cinco números de validación,
+    CD (todas, viejas) y cambio de etiqueta (a los 200 pasos, al final, vecinos al final)."""
+    cd = [r for r in rows if r["bench"] == "interf" and r["model"] == spec]
+    sw = [r for r in rows if r["bench"] == "drift" and r["model"] == spec]
+    vals = [np.mean([r["all"] for r in cd]), np.mean([r["old"] for r in cd]),
+            np.mean([r["full_swapped_mid"] for r in sw]), np.mean([r["full_swapped_end"] for r in sw]),
+            np.mean([r["full_kept_end"] for r in sw])]
+    return float(np.mean(vals))
+
+
+SWEEP_A = {"sin causas": "",
+           "causas n=10 T=2": CAUSES,
+           "causas n=20 T=2": CAUSES + "+head.cause_n=20",
+           "causas n=10 T=1.7": CAUSES + "+head.cause_T=1.7",
+           "causas n=10 T=2.5": CAUSES + "+head.cause_T=2.5",
+           "causas n=10 T=2 activa=30": CAUSES + "+head.cause_active=30",
+           "causas n=10 T=2 sin proteger el lento": CAUSES + "+top.cause_slow=false"}
+SWEEP_B = {
+    "recuerdo de respaldo (F1)": "+top.recall=fallback+top.recall_gain=0.5",
+    "esquema congelado (F2)": "+top.schema=gate+top.schema_frozen=500",
+    "autoexamen con margen (F4)": UNI + EQUAL + "+top.active_margin=0.5",
+    "contraste (F4)": "+top.replay_contrast=true",
+    "sueño micro priorizado (F5)": MICRO + "+top.sleep_focus=weak",
+}
+
+
+def phase_f7a(a, data):
+    """Selección en validación (semillas 10 y 11, split de validación): primero la
+    variante de causas latentes, después cada arreglo encima de la mejor, y por último
+    la suma de los arreglos que mejoraron el criterio."""
+    D = split_data(data)["val"]
+    rows: list = []
+    scores = {}
+    for name, mod in SWEEP_A.items():
+        pair_rows(F7_BASE + mod, VAL_SEEDS, D, tag="f7a", split="val", rows=rows)
+        scores[F7_BASE + mod] = val_score(rows, F7_BASE + mod)
+        print(f"[f7a] puntaje {name}: {scores[F7_BASE + mod]:.4f}", flush=True)
+    best_a = max((F7_BASE + m for m in SWEEP_A.values()), key=lambda sp: scores[sp])
+    good = []
+    for name, mod in SWEEP_B.items():
+        sp = best_a + mod
+        pair_rows(sp, VAL_SEEDS, D, tag="f7a", split="val", rows=rows)
+        scores[sp] = val_score(rows, sp)
+        print(f"[f7a] puntaje {name}: {scores[sp]:.4f} (base {scores[best_a]:.4f})", flush=True)
+        if scores[sp] > scores[best_a]:
+            good.append(mod)
+    chosen = best_a
+    if len(good) > 1:
+        sp = best_a + "".join(good)
+        pair_rows(sp, VAL_SEEDS, D, tag="f7a", split="val", rows=rows)
+        scores[sp] = val_score(rows, sp)
+        print(f"[f7a] puntaje combinado: {scores[sp]:.4f}", flush=True)
+        cands = [best_a + m for m in good] + [sp]
+        chosen = max(cands, key=lambda c: scores[c])
+    elif good:
+        chosen = best_a + good[0]
+    keys = sorted({k for r in rows for k in r if isinstance(r[k], (int, float)) and k != "seed"})
+    summary = agg(rows, ("bench", "scenario", "model"), keys)
+    out = dict(phase="f7a", chosen=chosen, best_causes=best_a, improving_fixes=good, scores=scores,
+               score_definition="media de: CD todas, CD viejas, cambio a los 200 pasos, cambio al final, "
+                                "vecinos al final (todo en validación)",
+               config=dict(val_seeds=VAL_SEEDS, val_per_class=VAL_N, sweep_a=SWEEP_A, sweep_b=SWEEP_B,
+                           base=F7_BASE),
+               summary=summary, rows=rows)
+    (RESULTS / "consolidacion_f7_validacion.json").write_text(json.dumps(out, indent=1, default=float))
+    print(f"[f7a] elegido: {chosen}", flush=True)
+
+
+def overlap(net, test, pairs=((10, 16), (12, 14), (10, 12), (14, 16), (10, 13)), n=200, seed=0) -> dict:
+    """¿La representación superpone clases parecidas? Coseno entre las medias de clase
+    (vectores normalizados) en píxeles y en el código de V1, y redundancia del diccionario
+    de V1 (coseno máximo medio de cada rasgo con otro). Nota cruzada de la ronda de
+    predicción: V1 muy redundante."""
+    enc = encoder()
+    rng = np.random.default_rng([seed, 99])
+    cls = sorted({c for p in pairs for c in p})
+    mp, mv = {}, {}
+    for c in cls:
+        P, Vv = [], []
+        for i in rng.choice(len(test[c]), n, replace=False):
+            x = enc(test[c][i].astype(np.float32) / 255)
+            p = x.ravel(); P.append(p / max(np.linalg.norm(p), 1e-9))
+            code = net.areas[0].encode(np.asarray(x, dtype=np.float32).reshape(net.input_shape)).ravel()
+            net.areas[0]._cache = None
+            Vv.append(code / max(np.linalg.norm(code), 1e-9))
+        mp[c] = np.mean(P, axis=0); mv[c] = np.mean(Vv, axis=0)
+    cosm = lambda a, b: float(a @ b / max(np.linalg.norm(a) * np.linalg.norm(b), 1e-9))
+    out = {f"pix_{a}_{b}": cosm(mp[a], mp[b]) for a, b in pairs}
+    out.update({f"v1_{a}_{b}": cosm(mv[a], mv[b]) for a, b in pairs})
+    A = net.areas[0]; W = A.W[:A.n][A.alive[:A.n]]
+    if len(W) > 1:
+        S = W @ W.T; np.fill_diagonal(S, -1.0)
+        out["v1_redundancy"] = float(S.max(axis=1).mean())
+    return out
+
+
+def chosen_spec() -> str:
+    return json.loads((RESULTS / "consolidacion_f7_validacion.json").read_text())["chosen"]
+
+
+def ablations(spec: str) -> dict:
+    """Quitar de a uno los componentes que el elegido agrega sobre c2."""
+    mods = spec[len(C2):].split("+")[1:]
+    groups = {"etiquetas guardadas": ["top.stored_labels=true"], "error propio del lento": ["top.slow_error=own"]}
+    causes = [m for m in mods if m.startswith("head.cause") or m.startswith("top.cause_")]
+    if causes:
+        groups["causas latentes"] = causes
+    for name, mod in SWEEP_B.items():
+        parts = mod.split("+")[1:]
+        if parts and all(p in mods for p in parts):
+            groups[name] = parts
+    out = {}
+    for name, parts in groups.items():
+        keep = [m for m in mods if m not in parts]
+        if len(keep) < len(mods):
+            out[f"sin {name}"] = C2 + "".join("+" + m for m in keep)
+    return out
+
+
+def phase_f7b(a, data):
+    """Prueba (split oficial de test, semillas 0-2) de la configuración elegida en
+    validación, contra c2 y ER-ACE con los mismos bytes, con ablaciones: interferencia CD,
+    cambio de etiqueta 10 <-> 12 y chainF con la misma configuración."""
+    D = split_data(data)["test"]
+    spec = chosen_spec()
+    rows: list = []
+    for sp in (spec, C2):
+        pair_rows(sp, a.seeds, D, tag="f7b", split="test", rows=rows, chain=True)
+    nb = int(np.mean([r["bytes"] for r in rows if r["bench"] == "interf" and r["scenario"] == "CD"
+                      and r["model"] == spec]))
+    er = f"erace+bytes={nb}+iters=3"
+    pair_rows(er, a.seeds, D, tag="f7b", split="test", rows=rows, chain=True)
+    abl = ablations(spec)
+    for name, sp in abl.items():
+        pair_rows(sp, a.seeds, D, tag="f7b", split="test", rows=rows)
+    ov = []
+    for sp in (spec, C2):                            # diagnóstico de representación (semilla 0)
+        def go(sp=sp):
+            r = run_scenario("CD", sp, 0, D, keep_agent=True)
+            return dict(bench="overlap", scenario="CD", model=sp, seed=0, **overlap(r["agent"].net, D[1]))
+        ov.append(cached(dict(b="overlap", spec=sp, seed=0, split="test"), go))
+        print(f"[f7b] superposición {sp[len(C2):]}: " + " ".join(f"{k}={v:.3f}" for k, v in ov[-1].items()
+                                                                if isinstance(v, float)), flush=True)
+    for r in rows:
+        r.setdefault("split", "test")
+    rows += ov
+    cfg = dict(seeds=a.seeds, chosen=spec, erace=er, ablations=abl,
+               protocol="entrenamiento sin las 500 imágenes por clase de validación; evaluación en test",
+               drift=DRIFT, interference={k: SCENARIOS[k] for k in ("CD", "chainF")})
+    finish("f7b", rows, {}, cfg)
+
+
+def phase_f7x(a, data):
+    """Referencia externa para el elegido: Split-MNIST y Split-Fashion-MNIST por clases
+    (las de c2, ER y ER-ACE están en consolidacion_f6_split.json)."""
+    D = split_data(data)["test"]
+    spec = chosen_spec()
+    rows: list = []
+    split_bench([spec], a.seeds, D, rows=rows, tag="f7x", match=("erace",))
+    keys = ["acc", "forgetting", "task1", "task2", "task3", "task4", "task5", "bytes", "neurons", "seconds"]
+    summary = agg(rows, ("bench", "scenario", "model"), keys)
+    for d in summary:
+        print(f"  {d['scenario']:8s} {d['model'][-60:]:60s} " + fmt(d, ["acc", "forgetting"]), flush=True)
+    cfg = dict(seeds=a.seeds, chosen=spec, tasks=SPLIT, published=PUBLISHED,
+               protocol="un solo pase online por tarea (sin las 500 por clase de validación), test oficial "
+                        "completo; argmax entre las 10 clases del conjunto")
+    save("f7_split", dict(phase="f7x", config=cfg, summary=summary, rows=rows), rows, keys)
+
+
+def phase_f7k(a, data):
+    """Flujo continuo reducido (escala 0,1): elegido contra c2 y ER-ACE con los mismos bytes."""
+    D = split_data(data)["test"]
+    spec = chosen_spec()
+    rows: list = []
+    cont = spec.replace(C2, CONT, 1)
+    continual((cont, CONT), a.seeds, D, scale=0.1, n_eval=30, log_rows=rows, tag="f7k", split="test")
+    nbc = int(np.mean([r["bytes_end"] for r in rows if r["bench"] == "continual" and r["model"] == cont]))
+    continual((f"erace+bytes={nbc}+iters=3",), a.seeds, D, scale=0.1, n_eval=30, log_rows=rows, tag="f7k",
+              split="test")
+    cfg = dict(seeds=a.seeds, chosen=cont, erace_bytes=nbc,
+               reductions="flujo continuo a escala 0,1 con tc=0.1 y presupuesto 500 (como en f0); "
+                          "entrenamiento sin las imágenes de validación")
+    finish("f7k", rows, {}, cfg)
+
+
+def _with_mod(spec: str, key: str, value) -> str:
+    """spec con la opción `key` (p. ej. "top.replay" o "budget") reemplazada por `value`."""
+    mods = [m for m in spec.split("+")[1:] if m.split("=")[0] != key]
+    return "+".join([spec.split("+")[0]] + mods + [f"{key}={value}"])
+
+
+def phase_f7s(a, data):
+    """Escalado (regla del proyecto: «límite de hardware» sólo si la exactitud sigue
+    subiendo con los recursos): CD con el elegido variando neuronas del almacén, repasos
+    por paso y datos por fase (4 escalas cada uno, 3 semillas, test)."""
+    D = split_data(data)["test"]
+    spec = chosen_spec()
+    rows: list = []
+    axes = {"neuronas": [("budget", n, None) for n in (250, 500, 1000, 2000)],
+            "repasos": [("top.replay", r, None) for r in (0.5, 1, 2, 4)],
+            "datos": [(None, n, n) for n in (750, 1500, 3000, 6000)]}
+    for axis, pts in axes.items():
+        for key, val, steps in pts:
+            sp = _with_mod(spec, key, val) if key else spec
+            phases = [(cls, steps) for cls, _ in SCENARIOS["CD"]] if steps else None
+            for seed in a.seeds:
+                def go(sp=sp, seed=seed, phases=phases):
+                    r = run_scenario("CD", sp, seed, D, phases=phases)
+                    return scenario_row("CD", sp, seed, r, phases)
+                row = cached(dict(b="scale", axis=axis, spec=sp, steps=steps, seed=seed, split="test"), go)
+                row = dict(row, axis=axis, scale_value=val)
+                rows.append(row)
+                print(f"[f7s] {axis}={val} s{seed}: " + " ".join(f"{k}={row[k]:.3f}" for k in
+                      ("all", "old", "new", "slow_all") if k in row) + f" n={row.get('neurons')}", flush=True)
+    keys = ["all", "old", "new", "min", "slow_all", "fast_all", "neurons", "replays", "seconds"]
+    summary = agg(rows, ("axis", "scale_value"), keys)
+    for d in summary:
+        print(f"  {d['axis']:8s} {d['scale_value']:>6} " + fmt(d, ["all", "old", "new", "slow_all", "neurons"]), flush=True)
+    cfg = dict(seeds=a.seeds, chosen=spec, axes={k: [p[1] for p in v] for k, v in axes.items()},
+               rule="si la curva sigue subiendo en la última escala, el límite es de recursos; si se aplana, "
+                    "es de arquitectura",
+               note="datos = pasos por fase de CD (750 a 6000); repasos por paso; presupuesto de neuronas del almacén")
+    save("f7_escalado", dict(phase="f7s", config=cfg, summary=summary, rows=rows), rows, keys)
+
+
+def phase_f7c(a, data):
+    """Criterio del proyecto: flujo completo de 200 000 pasos, elegido contra ER-ACE con
+    los mismos bytes (3 semillas)."""
+    D = split_data(data)["test"]
+    spec = chosen_spec()
+    rows: list = []
+    continual((spec,), a.seeds, D, scale=1.0, n_eval=30, log_rows=rows, tag="f7c", split="test")
+    nb = int(np.mean([r["bytes_end"] for r in rows if r["model"] == spec]))
+    continual((f"erace+bytes={nb}+iters=3",), a.seeds, D, scale=1.0, n_eval=30, log_rows=rows, tag="f7c", split="test")
+    cfg = dict(seeds=a.seeds, chosen=spec, erace_bytes=nb, scale=1.0, steps=200000,
+               protocol="entrenamiento sin las 500 imágenes por clase de validación; evaluación en test "
+                        "(30 imágenes por clase y contexto)")
+    finish("f7c", rows, {}, cfg)
+
+
 SCEN_STEPS = {k: sum(p[1] for p in v) for k, v in SCENARIOS.items()}
 
-PHASES = {"f0": phase_f0, "f1": phase_f1, "f1b": phase_f1b, "f2": phase_f2, "f3": phase_f3, "f4": phase_f4, "f5": phase_f5, "f6": phase_f6, "f6s": phase_f6s}
+PHASES = {"f0": phase_f0, "f1": phase_f1, "f1b": phase_f1b, "f2": phase_f2, "f3": phase_f3, "f4": phase_f4, "f5": phase_f5, "f6": phase_f6, "f6s": phase_f6s, "f7a": phase_f7a, "f7b": phase_f7b, "f7x": phase_f7x, "f7k": phase_f7k, "f7s": phase_f7s, "f7c": phase_f7c}
 
 
 def main():

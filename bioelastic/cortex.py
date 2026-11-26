@@ -61,12 +61,14 @@ class Cortex:
                  stored_labels: bool = False, slow_error: str = "joint",
                  schema: str = "off", schema_fit: float = 0.5, schema_boost: float = 4.0,
                  schema_misfit_lr: float = 1.0, schema_beta: float = 0.02, schema_known: int = 20,
+                 schema_frozen: int = 0,
                  replay_mode: str = "passive", spacing: str = "none", space_base: float = 200.0,
                  space_factor: float = 2.0, active_margin: float = 0.0, fail_weight: float = 4.0,
                  sleep_every: int = 0, sleep_trigger: str = "steps", sleep_load: int = 200,
                  sleep_replays: int = 0, sleep_micro: int = 0, sleep_downscale: float = 0.0,
                  sleep_scope: str = "proj", sleep_prune: float = 0.0, sleep_release: float = 0.0,
-                 sleep_keep: int = 10, replay_contrast: bool = False,
+                 sleep_keep: int = 10, replay_contrast: bool = False, sleep_focus: str = "uniform",
+                 sleep_release_check: str = "margin", cause_slow: bool = True,
                  seed: int = 0, workers: int = 1, homeostasis: float = 0.0):
         self._config = dict(input_shape=input_shape, n_outputs=int(n_outputs),
                             areas=[dict(a) for a in areas], heads=[],
@@ -82,6 +84,7 @@ class Cortex:
                             schema=str(schema), schema_fit=float(schema_fit),
                             schema_boost=float(schema_boost), schema_misfit_lr=float(schema_misfit_lr),
                             schema_beta=float(schema_beta), schema_known=int(schema_known),
+                            schema_frozen=int(schema_frozen),
                             replay_mode=str(replay_mode), spacing=str(spacing), space_base=float(space_base),
                             space_factor=float(space_factor), active_margin=float(active_margin),
                             fail_weight=float(fail_weight),
@@ -90,7 +93,8 @@ class Cortex:
                             sleep_micro=int(sleep_micro), sleep_downscale=float(sleep_downscale),
                             sleep_scope=str(sleep_scope), sleep_prune=float(sleep_prune),
                             sleep_release=float(sleep_release), sleep_keep=int(sleep_keep),
-                            replay_contrast=bool(replay_contrast),
+                            replay_contrast=bool(replay_contrast), sleep_focus=str(sleep_focus),
+                            sleep_release_check=str(sleep_release_check), cause_slow=bool(cause_slow),
                             seed=int(seed))
         self.arbiter = float(arbiter)
         self.beta = None                                      # pesos del árbitro (uno por votante)
@@ -115,7 +119,7 @@ class Cortex:
         self.directed = 0                                     # repasos y ensayos dirigidos a la confusión
         self.joint = bool(joint)
         # Dos sistemas explícitos (ver `forward` y `_recall_vote`).
-        if recall not in ("off", "gate", "always"):
+        if recall not in ("off", "gate", "always", "fallback"):
             raise ValueError(f"recall desconocido: {recall}")
         if recall_source not in ("episodes", "readout"):
             raise ValueError(f"recall_source desconocido: {recall_source}")
@@ -137,6 +141,9 @@ class Cortex:
         self.schema = schema; self.schema_fit = float(schema_fit); self.schema_boost = float(schema_boost)
         self.schema_misfit_lr = float(schema_misfit_lr); self.schema_beta = float(schema_beta)
         self.schema_known = int(schema_known)
+        # > 0: el encaje se mide contra una foto congelada del sistema lento (se renueva cada
+        # `schema_frozen` pasos y al terminar cada sueño), no contra el que se está modificando.
+        self.schema_frozen = int(schema_frozen); self._Wf = None; self._Wf_t = 0
         self.reliability = 0.0                                # acierto reciente del lento en clases conocidas
         self.fit = float("nan"); self.fit_parts = (float("nan"),) * 3
         self.assimilated = 0
@@ -162,6 +169,18 @@ class Cortex:
         self.sleep_micro = int(sleep_micro); self.sleep_downscale = float(sleep_downscale)
         self.sleep_scope = sleep_scope; self.sleep_prune = float(sleep_prune)
         self.sleep_release = float(sleep_release); self.sleep_keep = int(sleep_keep)
+        if sleep_focus not in ("uniform", "weak"):
+            raise ValueError(f"sleep_focus desconocido: {sleep_focus}")
+        if sleep_release_check not in ("margin", "redundant"):
+            raise ValueError(f"sleep_release_check desconocido: {sleep_release_check}")
+        # "weak": el sueño repasa primero lo que el lento resuelve peor (margen más bajo
+        # medido; lo nunca medido, antes), entre 64 candidatos al azar (repaso priorizado).
+        # "redundant": un episodio sólo deja el almacén si, además, los demás recuerdos del
+        # almacén lo siguen reconociendo con su etiqueta (no se pierde lo único que lo cubría).
+        self.sleep_focus = sleep_focus; self.sleep_release_check = sleep_release_check
+        # Con un área que infiere causas latentes: lo que ella protege (causa nueva junto a
+        # un recuerdo dormido) tampoco se deprime en el sistema lento.
+        self.cause_slow = bool(cause_slow)
         self.sleeps = 0; self.sleep_replays = 0; self.released = 0; self.pruned_synapses = 0
         self.sleeping = False; self._sleep_debt = 0; self._sleep_start = 0
         self._last_sleep = 0; self._created_at_sleep = 0
@@ -358,6 +377,11 @@ class Cortex:
           recall="gate"    se consulta el almacén sólo si el margen p1 - p2 del sistema
                            lento (softmax a la temperatura de la red) es < `recall_margin`
           recall="always"  siempre lento + almacén (sin compuerta)
+          recall="fallback" lento + lectura del almacén siempre (como sin `recall`); los
+                           episodios recuperados se suman sólo si esa decisión conjunta
+                           duda (margen < `recall_margin`). Corrige la compuerta, que
+                           dejaba afuera a la memoria cuando el lento estaba seguro y
+                           equivocado (ver results/consolidacion_f1.json).
           recall_source="episodes"  voto de los episodios recuperados con su etiqueta
                            guardada, pesos softmax(coseno / `recall_tau`)
           recall_source="readout"   voto de la lectura aprendida del almacén (sólo compuerta)
@@ -367,6 +391,16 @@ class Cortex:
             return V
         S = self._slow_part(store, Vp)
         self._slow = S
+        if self.recall == "fallback":                         # el almacén vota siempre (ya está calculado);
+            F = S + store._last.V                             # los episodios, sólo si los dos dudan
+            e = np.exp((F - F.max()) / self.temperature)
+            q = np.sort(e / e.sum())
+            if (q[-1] - (q[-2] if len(q) > 1 else 0.0)) >= self.recall_margin:
+                return F
+            self._fast = self._recall_vote(store)
+            self._recalled = True
+            self.recalls += 1
+            return F + np.float32(self.recall_gain) * self._fast
         use = True
         if self.recall == "gate":
             e = np.exp((S - S.max()) / self.temperature)
@@ -406,6 +440,8 @@ class Cortex:
         slow = self._slow if self._slow is not None else self._slow_part(store, Vp)
         if self.recall == "off" or store is None or store.episodes is None:
             fast = store._last.V if store is not None else np.zeros(self.C, dtype=np.float32)
+        elif self.recall == "fallback":
+            fast = store._last.V + (np.float32(self.recall_gain) * self._fast if self._recalled else 0.0)
         else:
             fast = self._fast if self._fast is not None else self._recall_vote(store)
         return dict(slow=slow, fast=fast, recalled=self._recalled)
@@ -487,10 +523,14 @@ class Cortex:
         self._steps += 1
         if self.proj is not None:
             pp = None if arb else p
+            prot = [c for h in self.heads if self.cause_slow and getattr(h, "causes", False)
+                    for c in h.protect_classes.tolist() if c != target]
             if self.slow_error == "own" and not arb:
                 S = self._slow if self._slow is not None else self._slow_part(
                     self._store(), self.proj.potentials(*self._pv))
                 e = np.exp((S - S.max()) / self.temperature); pp = e / e.sum()
+            if prot and pp is not None:                       # causa nueva: el lento no deprime lo viejo
+                pp = np.array(pp, dtype=np.float64); pp[prot] = 0.0
             if slow_lr == 1.0:
                 self.proj.learn(*self._pv, target, p=pp)
             else:
@@ -556,7 +596,10 @@ class Cortex:
             self._start_sleep(self.sleep_replays_n)
         k = self._sleep_debt if budget is None else min(int(budget), self._sleep_debt)
         for _ in range(k):
-            self._replay_one()
+            if self.sleep_focus == "weak":
+                self._replay_weak()
+            else:
+                self._replay_one()
         self.sleep_replays += k; self._sleep_debt -= k
         if self._sleep_debt <= 0:
             self._end_sleep()
@@ -564,6 +607,8 @@ class Cortex:
 
     def _end_sleep(self):
         self.sleeping = False; self.sleeps += 1
+        if self.schema_frozen > 0 and self.proj is not None:
+            self._freeze()                                    # lo consolidado en el sueño
         d = self.sleep_downscale
         if d > 0.0:
             f = np.float32(1.0 - d)
@@ -584,6 +629,34 @@ class Cortex:
         if store is not None:
             self._created_at_sleep = store.layer.created
 
+    def _replay_weak(self):
+        """Repaso priorizado del sueño: entre 64 episodios al azar, el de menor margen del
+        lento medido (los nunca medidos tienen -1: primero)."""
+        mem, space = self._replay_source()
+        if mem is None or mem.ep is None:
+            self._replay_one(passive=True)
+            return
+        lab = self._labels(mem)
+        ok = np.flatnonzero(lab >= 0)
+        if len(ok) == 0:
+            return
+        cand = ok if len(ok) <= 64 else self.rng.choice(ok, 64, replace=False)
+        j = int(cand[int(np.argmin(mem.ep["m"][cand]))])
+        self._replay_pattern(mem.episode(j), int(lab[j]), space, mem, j)
+
+    def _redundant(self, store, j: int, y: int) -> bool:
+        """¿Los demás recuerdos del almacén reconocen el episodio j con su etiqueta?"""
+        x = store.episode(j)
+        idx = np.flatnonzero(x > 0)
+        v = store.layer.forward(idx, x[idx])
+        if v.novel:
+            return False
+        others = v.winners[v.winners != j]
+        if len(others) == 0:
+            return False
+        lab = self._labels(store)
+        return int(lab[int(others[0])]) == y
+
     def _release(self, store):
         """Los episodios que el sistema lento ya resuelve (margen medido en este sueño >=
         `sleep_release`) dejan el almacén rápido; quedan al menos `sleep_keep` por clase."""
@@ -594,9 +667,16 @@ class Cortex:
             return
         cnt = np.bincount(lab[lab >= 0], minlength=self.C)
         out = []
+        checked = 0
         for j in cand[np.argsort(-ep["m"][cand], kind="stable")]:   # primero lo mejor consolidado
             c = int(lab[j])
             if c >= 0 and cnt[c] > self.sleep_keep:
+                if self.sleep_release_check == "redundant":
+                    if checked >= 64:                         # costo acotado por sueño
+                        break
+                    checked += 1
+                    if not self._redundant(store, int(j), c):
+                        continue
                 cnt[c] -= 1; out.append(int(j))
         for j in sorted(out, reverse=True):                   # descendente: seguro con swap-remove
             store.layer.remove(j)
@@ -655,8 +735,14 @@ class Cortex:
                       reestructurarlo (interferencia)
         """
         store = self._store()
-        S = self._slow if self._slow is not None else self._slow_part(
-            store, self.proj.potentials(*self._pv) if self.proj is not None else None)
+        if self.schema_frozen > 0 and self.proj is not None:  # lo consolidado, no lo que está cambiando
+            if self._Wf is None or self._steps - self._Wf_t >= self.schema_frozen:
+                self._freeze()
+            idx, h = self._pv
+            S = self._Wf[:, idx] @ h
+        else:
+            S = self._slow if self._slow is not None else self._slow_part(
+                store, self.proj.potentials(*self._pv) if self.proj is not None else None)
         e = np.exp((S - S.max()) / self.temperature); q = e / e.sum()
         conflict = float(np.max(np.delete(q, target))) if self.C > 1 else 0.0
         cov = self._coverage()
@@ -667,6 +753,9 @@ class Cortex:
             self.reliability += self.schema_beta * (ok - self.reliability)
         self.fit = fit; self.fit_parts = (cov, rel, conflict)
         return fit
+
+    def _freeze(self):
+        self._Wf = self.proj.W[:, :self.proj.n].copy(); self._Wf_t = self._steps
 
     def _schema_route(self, target: int):
         """(neurogénesis permitida en el almacén, factor de tasa del sistema lento).

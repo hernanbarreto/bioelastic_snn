@@ -43,13 +43,15 @@ class _State:
 class BioElasticNet:
     _EP_FIELDS = (("y", np.int16), ("t", np.int64), ("ctx", np.int32), ("norm", np.float32),
                   ("due", np.int64), ("gap", np.float32), ("fail", np.float32), ("ok", np.int8),
-                  ("tests", np.int32), ("m", np.float32), ("m_t", np.int64))
+                  ("tests", np.int32), ("m", np.float32), ("m_t", np.int64), ("ag_t", np.int64))
 
     def __init__(self, n_inputs: int, n_outputs: int, *, context: int = 1, delay: float = 0.15,
                  tau: float = 0.0, grow_on_error: bool = True, rho_sup: float = 0.98,
                  anti: float = 0.3, grow_per_error: int = 4, maintain_every: int = 500,
                  protect: bool = False, vote_tau: float = 0.0, episodic: bool = False,
                  separation: float = 0.0, separation_relax: float = 0.0, recon_lock: int = 0,
+                 causes: bool = False, cause_n: float = 10.0, cause_T: float = 2.0,
+                 cause_tau: float = 2000.0, cause_rate: float = 1.0, cause_active: int = 100,
                  layer: dict | None = None, readout: dict | None = None, seed: int = 0):
         self._config = dict(n_inputs=int(n_inputs), n_outputs=int(n_outputs), context=int(context),
                             delay=float(delay), tau=float(tau), grow_on_error=bool(grow_on_error),
@@ -57,7 +59,9 @@ class BioElasticNet:
                             grow_per_error=int(grow_per_error), maintain_every=int(maintain_every),
                             protect=bool(protect), vote_tau=float(vote_tau), episodic=bool(episodic),
                             separation=float(separation), separation_relax=float(separation_relax),
-                            recon_lock=int(recon_lock),
+                            recon_lock=int(recon_lock), causes=bool(causes), cause_n=float(cause_n),
+                            cause_T=float(cause_T), cause_tau=float(cause_tau), cause_rate=float(cause_rate),
+                            cause_active=int(cause_active),
                             layer=dict(layer or {}), readout=dict(readout or {}), seed=int(seed))
         self.N = int(n_inputs)
         self.tau = float(tau)
@@ -81,6 +85,15 @@ class BioElasticNet:
         # (error de predicción al recuperarla). Ver Readout `recon_lock` para la lectura.
         self.recon_lock = int(recon_lock)
         self.locked_skips = 0
+        # Inferencia de causas latentes (ver `_causes`).
+        self.causes = bool(causes); self.cause_n = float(cause_n); self.cause_T = float(cause_T)
+        self.cause_tau = float(cause_tau); self.cause_rate = float(cause_rate)
+        self.cause_active = int(cause_active)
+        if self.causes and not episodic:
+            raise ValueError("causes necesita la huella episódica (episodic=True)")
+        self._pairs: dict = {}                           # (a, b) -> (media de d, media de |d|^2, n, t, decisión)
+        self.relabeled = 0; self.protected = 0; self.new_causes = 0
+        self.protect_classes = np.empty(0, dtype=np.int64)
         self.rng = np.random.default_rng(seed)
         self.layer = ElasticLayer(self.N * self.context, **(layer or {}))
         self.readout = Readout(n_outputs, **(readout or {}))
@@ -139,6 +152,7 @@ class BioElasticNet:
             ep["norm"][j] = np.float32(np.sqrt(e @ e) / 255.0)
             ep["due"][j] = self.layer.t; ep["gap"][j] = 0.0; ep["fail"][j] = 0.0
             ep["ok"][j] = -1; ep["tests"][j] = 0; ep["m"][j] = -1.0; ep["m_t"][j] = -1
+            ep["ag_t"][j] = self.layer.t
 
     def _on_remove(self, j: int, last: int):
         self.readout.remove_input(j, last)
@@ -307,15 +321,28 @@ class BioElasticNet:
         if self.protect and R.active_window > 0:
             act = R.active()
             guard = (pref >= 0) & (pref != target) & ~act[np.maximum(pref, 0)]
+        relabel = np.zeros(len(wn), dtype=bool)
+        self.protect_classes = np.empty(0, dtype=np.int64)
+        if self.causes and not v.novel and len(wn):
+            relabel, prot = self._causes(v, st, target, pref)
+            guard |= prot | relabel                           # lo protegido y lo que se reconsolida aparte
+            self.protect_classes = np.unique(pref[prot])
         if not v.novel:                                       # sin spike presináptico no hay plasticidad
             if guard.any():
-                R.learn(wn[~guard], st.h[~guard], target, st.V, p)
+                if (~guard).any():
+                    R.learn(wn[~guard], st.h[~guard], target, st.V, p)
+                else:
+                    R.mark(target)
             else:
                 R.learn(wn, st.h, target, st.V, p)
+            if relabel.any():
+                self._reconsolidate(wn[relabel], st, target, p)
         agree = np.flatnonzero(pref == target)
         best_agree = float(v.cos[agree[0]]) if len(agree) and not v.novel else 0.0
-        allow = grow is None or grow
+        allow = (grow is None or grow) and not relabel[:1].any()   # la primera se actualizó: no hace falta otra
         grow = allow and (v.novel or (self.grow_on_error and pred != target and best_agree < self.rho_sup))
+        if grow and self.causes and not v.novel:
+            self.new_causes += 1
         if grow and self._recruit(v, target) >= 0:
             if self.separation > 0.0 and not v.novel:
                 self._separate(L.n - 1, v, pref, target)
@@ -330,6 +357,106 @@ class BioElasticNet:
             if pref[0] >= 0 and pref[0] != target and not guard[0]:   # la primera, si se equivoca: anti-STDP
                 L.stdp(int(wn[0]), v, -self.anti)
         self._after_learning()
+
+    # ------------------------------------------------------------------ causas latentes
+    def _unit(self, v: Volley) -> np.ndarray:
+        x = np.zeros(self.layer.D, dtype=np.float32)
+        x[v.idx] = v.val / np.float32(max(v.norm, 1e-12))
+        return x
+
+    def _causes(self, v: Volley, st, target: int, pref: np.ndarray):
+        """Inferencia de causas latentes (Gershman, Monfils, Norman y Niv 2017): ante un
+        error, ¿la entrada viene de la misma causa que el recuerdo recuperado (su etiqueta
+        cambió: se modifica) o de una causa nueva parecida (memoria nueva, la vieja se
+        protege)?
+
+        Medido: el parecido de UNA entrada con el recuerdo (el coseno con la primera
+        ganadora, la misma señal que `Cortex.familiarity()` de la ronda de integración 3)
+        no separa los dos casos: un pulóver reetiquetado da 0,747 con las neuronas de
+        pulóver y un abrigo, 0,751 (validación, semilla 10). Como verosimilitud de una sola
+        observación no alcanza; sí como estadístico acumulado.
+        Lo que los separa es la consistencia a lo largo de las repeticiones: si es la misma
+        causa, las entradas en conflicto se distribuyen como los recuerdos que recuperan
+        (la diferencia entrada - huella recuperada promedia cero); si es una causa vecina,
+        la diferencia apunta siempre hacia el mismo lado. Para cada par «a -> b» (una
+        ganadora de la clase a, dormida: no confirmó su etiqueta en `cause_active` pasos;
+        el objetivo es b) se acumula, con olvido de constante `cause_tau` (contexto
+        temporal), la media m de d = x - e (entrada y huella episódica de la ganadora de a
+        más temprana, ambas normalizadas) y la media s2 de |d|^2. Es una prueba de
+        Hotelling isotrópica secuencial:
+
+            T = n |m|^2 / (s2 - |m|^2)          (~1 si es la misma causa)
+
+        Con al menos `cause_n` conflictos: T < `cause_T` -> la misma causa con otra
+        etiqueta: reconsolidar las ganadoras de a (`_reconsolidate`); si no, causa nueva:
+        neurogénesis, y lo de a queda protegido (sin cambio de lectura ni anti-STDP;
+        `protect_classes` lo protege también en el sistema lento). Mientras la evidencia
+        no alcanza, se trata como causa nueva (provisoria). Las ganadoras de causas activas
+        (dos clases que conviven) aprenden como siempre.
+        Devuelve (máscara de reconsolidación, máscara de protección) sobre las ganadoras."""
+        ep = self.ep; t = self.layer.t; wn = v.winners
+        n = len(wn)
+        relabel = np.zeros(n, dtype=bool); prot = np.zeros(n, dtype=bool)
+        if pref[0] == target:                                 # confirma su causa
+            ep["ag_t"][int(wn[0])] = t
+        conf = np.flatnonzero((pref >= 0) & (pref != target))
+        if len(conf) == 0:
+            return relabel, prot
+        dormant = np.array([t - int(ep["ag_t"][int(wn[k])]) > self.cause_active for k in conf])
+        if not dormant.any():
+            return relabel, prot
+        x = self._unit(v)
+        verdicts = {}
+        for i, k in enumerate(conf):
+            a = int(pref[k])
+            if not dormant[i] or a in verdicts:
+                continue                                      # una vez por causa: la más temprana
+            e = self.episode(int(wn[k]))
+            e /= np.float32(max(float(np.sqrt(e @ e)), 1e-12))
+            d = x - e
+            key = (a, int(target))
+            md, s2, nab, tl, _ = self._pairs.get(key, (np.zeros_like(x), 0.0, 0.0, t, None))
+            nab = nab * float(np.exp(-(t - tl) / self.cause_tau)) + 1.0
+            r = 1.0 / min(nab, 50.0)
+            md = md + np.float32(r) * (d - md)
+            s2 = s2 + r * (float(d @ d) - s2)
+            same = None                                       # None: aún sin evidencia
+            if nab >= self.cause_n:
+                mm = float(md @ md)
+                same = min(nab, 50.0) * mm / max(s2 - mm, 1e-9) < self.cause_T
+            self._pairs[key] = (md, s2, nab, t, same)
+            verdicts[a] = same
+        for i, k in enumerate(conf):
+            if not dormant[i]:
+                continue                                      # causa activa: discriminación común
+            if verdicts.get(int(pref[k])):
+                relabel[k] = True
+            else:
+                prot[k] = True
+        self.relabeled += int(relabel.sum()); self.protected += int(prot.sum())
+        return relabel, prot
+
+    def _reconsolidate(self, cols, st, target: int, p):
+        """Reconsolidación de las causas inferidas como la misma: el recuerdo recuperado se
+        vuelve lábil y su asociación con la etiqueta se reescribe en un ensayo: el peso que
+        tenía hacia su etiqueta vieja pasa a la nueva (fracción `cause_rate`; 1 = se
+        intercambian). El contenido del recuerdo (su prototipo y su huella) no cambia; la
+        etiqueta guardada del episodio sí."""
+        R = self.readout
+        rho = np.float32(min(max(self.cause_rate, 0.0), 1.0))
+        old = R.preferred(cols)
+        for j, a in zip(cols.tolist(), old.tolist()):
+            if a < 0 or a == target:
+                continue
+            d = R.W[a, j] - R.W[target, j]
+            R.W[target, j] += rho * d
+            R.W[a, j] -= rho * d
+        rows = np.zeros(R.C, dtype=bool); rows[target] = True; rows[np.unique(old[old >= 0])] = True
+        R._scale_rows(rows)
+        new = R.preferred(cols)
+        flip = cols[new == target]
+        if len(flip):
+            self.ep["y"][flip] = target
 
     def reinforce(self, reward: float, pred: int | None = None, p: np.ndarray | None = None):
         """Recompensa escalar (sin etiqueta): R-STDP con baseline."""
