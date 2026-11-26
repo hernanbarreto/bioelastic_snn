@@ -186,6 +186,18 @@ class SelfModel:
         return (-1, False) if e is None else (e[0], self._is_sure(e))
 
 
+class _Held(frozenset):
+    """Lo sostenido, con la copia eferente de la compuerta que lo guardó: qué ítem de la
+    pregunta era (el primero o uno posterior). El control no ve el ítem, sólo eso."""
+    origin = 0
+
+
+def _held(item, origin):
+    h = _Held(item)
+    h.origin = int(origin)
+    return h
+
+
 def _key(c) -> bytes:
     return np.sort(c[0]).tobytes()
 
@@ -273,7 +285,8 @@ class Thinker:
         self.o_sreg = o; o += 2 * self.R
         self.o_clock = o; o += (self.max_steps + 1) if self.clock else 0
         self.o_look = o; o += 2 if self.lookahead else 0
-        self.o_gate = o; o += 5 if self.gate else 0   # compuerta: [es compuerta] ¿foco vacío? ¿sostén vacío?
+        # compuerta: [es compuerta] ¿foco vacío? ¿sostén vacío? | sostén: nada / 1.er ítem / posterior
+        self.o_gate = o; o += 8 if self.gate else 0
         self.o_conf = o; o += 4 if self.confidence else 0   # confianza: ¿juicio fiable? ¿conocimiento fiable?
         self.D_base = o
         self.mixed = mixed if (mixed and self.n_cues > 1) else False
@@ -347,6 +360,8 @@ class Thinker:
         if hold:
             idx.append(self.o_match + int(any(t in hold for t in focus)))
             idx.append(self.o_match + 2 + int(best in hold))
+        if self.gate:                                      # qué ítem de la pregunta se sostuvo
+            idx.append(self.o_gate + 5 + (0 if not hold else 1 + min(getattr(hold, "origin", 0), 1)))
         for b in range(self.R):
             idx.append(self.o_sreg + 2 * b + int(reg[b]))
         if self.clock:
@@ -357,6 +372,8 @@ class Thinker:
             return self._finish_state(idx, cue)
         # confianza (metacognición): ¿daría por fiable un juicio sobre este estado? ¿y lo que
         # sabe del foco? Sale del modelo interno; el control no ve el juicio ni el contenido.
+        # (Sin la segunda señal, la compuerta aprendida en la transitiva generalizó en 2 de
+        # 5 semillas en vez de 4 de 5.)
         conf = []
         if self.judge is not None:
             conf.append(self.o_conf + int(self._sim("judge", self._finish_state(idx, cue), over)[1]))
@@ -380,10 +397,10 @@ class Thinker:
         return self._finish_state(idx, cue)
 
     @staticmethod
-    def _gated(a, item, focus, hold):
+    def _gated(a, item, focus, hold, i=0):
         if a == FOCUS:
             return tuple(focus) + tuple(t for t in item if t not in focus), hold
-        return focus, frozenset(item)
+        return focus, _held(item, i)
 
     def _allowed(self, clock):
         if clock >= self.max_steps:
@@ -663,12 +680,12 @@ class Thinker:
         last = -1
         if self.gate:                                         # compuerta de la memoria de trabajo
             focus, hold = (), frozenset()
-            for it in items:
+            for i, it in enumerate(items):
                 s_idx, s_val = self._gate_state(cue, last, focus, hold)
                 a = self._decide(s_idx, s_val, _GATE, explore)
                 self.decisions[a] += 1
                 self._path.append(a)
-                focus, hold = self._gated(a, it, focus, hold)
+                focus, hold = self._gated(a, it, focus, hold, i)
                 last = a
         else:
             focus, hold = items[0], given
@@ -919,7 +936,7 @@ class Thinker:
                 q = (1.0 - self.epsilon) * self._policy(*s, _GATE) + self.epsilon / 2
                 for k, a in enumerate(_GATE):
                     a = int(a)
-                    f, h = self._gated(a, items[clock], focus, hold)
+                    f, h = self._gated(a, items[clock], focus, hold, clock)
                     step = path + [(s, _GATE, a)]
                     cst = cost - float(np.log(q[k]))
                     if clock + 1 < len(items):
@@ -967,12 +984,12 @@ class Thinker:
     def _search_bfs(self, target, items, cue, reg, given, rec, over):
         if self.gate:                                       # la compuerta, enumerada
             roots = [((), frozenset(), -1, [])]
-            for it in items:
+            for i, it in enumerate(items):
                 nxt = []
                 for focus, hold, last, path in roots:
                     s = self._gate_state(cue, last, focus, hold)
                     for a in _GATE:
-                        f, h = self._gated(int(a), it, focus, hold)
+                        f, h = self._gated(int(a), it, focus, hold, i)
                         nxt.append((f, h, int(a), path + [(s, _GATE, int(a))]))
                 roots = nxt
         else:

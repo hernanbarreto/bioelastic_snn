@@ -1,6 +1,6 @@
 import numpy as np
 
-from bioelastic.thinker import COPY, EMIT, FOLLOW, JUDGE, SAY, SPEAK, FastMemory, Thinker
+from bioelastic.thinker import COPY, EMIT, FOCUS, FOLLOW, HOLD, JUDGE, SAY, SPEAK, FastMemory, Thinker
 
 
 def test_fast_memory_binds_successors_and_silence_breaks_adjacency():
@@ -345,3 +345,29 @@ def test_replay_propagates_new_knowledge_to_an_old_task():
     assert np.mean([_f4_episode(net, f, rng, False, x, 0) for x in range(16)]) == 1.0
     assert np.mean([_f4_episode(net, f, rng, False, x, 1) for x in range(8, 16)]) == 1.0
     assert net.replayed > 0
+
+
+def test_learned_gate_decides_what_to_hold():
+    """Compuerta aprendida (sin `probe` privilegiado): la pregunta «¿X > Y?» llega como dos
+    ítems y la red aprende cuál enfocar y cuál sostener. (En 5 semillas generaliza en 4;
+    ver experiments/exp_thinking_r2.py.)"""
+    rng = np.random.default_rng(0)
+    net = Thinker(34, memory=True, judge=True, speak=True, max_steps=10, gate=True, seed=0)
+    for _ in range(3000):
+        _ti_episode(net, rng, True, int(rng.integers(3, 5)))
+    net.reset(); net.plastic = False
+    assert np.mean([_ti_episode(net, rng, False, 8, 4) for _ in range(200)]) > 0.97
+    held = net.decisions[HOLD]
+    assert held > 0 and net.decisions[FOCUS] > 0
+    _ti_episode(net, rng, False, 8, 4)
+    assert sorted(net._path[:2]) == [FOCUS, HOLD]          # uno al foco y otro al sostén
+
+
+def test_learned_gate_focuses_single_item_questions():
+    rng = np.random.default_rng(1)
+    net = Thinker(32, memory=True, gate=True, seed=1)
+    for _ in range(3000):
+        _chain_episode(net, rng, True, int(rng.integers(1, 3)))
+    net.reset(); net.plastic = False
+    assert np.mean([_chain_episode(net, rng, False, 4) for _ in range(200)]) > 0.97
+    assert net._path[0] == FOCUS
