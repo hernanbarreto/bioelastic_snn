@@ -161,6 +161,8 @@ Qué explica cada mejora, según las ablaciones:
 | **Suma con imágenes, regla conocida (MNIST-addition): crédito conjunto entre lo que ve y la suma; 27 500 pares, una pasada, test, 3 semillas** | **97.6 ± 0.2 % de sumas, 98.8 ± 0.1 % por dígito.** Error del dígito: AUROC 0.984, ECE 0.002. Publicado, con 30 000 pares y backprop: DeepProbLog 97.2 ± 0.5, A-NeSI 97.66, DeepStochLog 97.9 (citado en la tabla 1 de A-NeSI). Queda por encima de DeepProbLog, a la par de A-NeSI y por debajo de DeepStochLog |
 | Atajo de razonamiento con 3 000 pares (8 semillas, test) | sin la compuerta de fiabilidad caen 4 de 8 (dígito ≈ 0.01); con ella, 0 de 8: suma 93.8 ± 0.6 %, dígito 96.8 ± 0.3 %. DeepProbLog con 3 000 pares, otro protocolo: 92.2 ± 1.6 |
 | L3 por etapas: categorías sin etiquetas y después ligadura, regla desconocida (validación, 1 semilla) | las categorías llegan a una pureza de 0.79 (hace falta ≥ 0.965); después de ligar, símbolos 0.33 y 0.2 % exacta |
+| **L3 con 10 imágenes nombradas por dígito y la regla desconocida** (test, 3 semillas, 8 000 episodios) | **75.7 ± 20.9 % exacta** (87.6, 88.0 y 51.6 %); pureza de los símbolos 0.950; con 4 000 episodios, 67.6 ± 20.0 %. Con 0, 1, 3 y 5 nombradas no llega (validación: 0.2, 0.0, 6.4 y 0.4 %). En la semilla floja, la regla aprendida da 73.8 % aun con los dígitos correctos |
+| El Thinker sabe cuándo se equivoca al razonar (3 semillas) | AUROC de sus errores de cálculo 0.923 con percepción perfecta y 0.831 con percepción de 80 %; de los símbolos mal percibidos que recibe, solo 0.627. ECE calibrada 0.04 |
 
 ### Saber cuándo se equivoca (`Cortex` con `metacog`, flujo continuo, 3 semillas)
 
@@ -212,6 +214,7 @@ no hay un «porcentaje humano» global: un promedio no sería informativo.
 | Split-MNIST por clases, una pasada | 96.6 % | publicado, con otros presupuestos de memoria (van de Ven, Tuytelaars & Tolias 2022): entrenamiento conjunto 98.2, BI-R 94.4, iCaRL 92.5, ER 88.8, EWC 20.6. Línea base local con los mismos bytes: ER-ACE 95.0 | — |
 | Split-Fashion por clases, una pasada | 80.9 % | sin cifra publicada verificada. Línea base local con los mismos bytes: ER-ACE 84.3, ER 85.2 | — |
 | Texto no visto, 600 KB de habla dirigida a niños; 1 corrida, porque la red es determinista dado el corpus | 2.96 bits/byte (2.54 con la temperatura elegida en validación) | línea base local: n-grama Kneser-Ney de orden 8 con los mismos datos, 1.43 | — |
+| Curva de escalado del texto: 0.2, 0.6 y 1.8 MB, últimos 60 000 bytes del corpus | 3.97, 3.68 y 3.75 bits/byte | línea base local, Kneser-Ney con los mismos datos: 2.13, 1.97 y 1.88. Brecha pareada 1.84 [1.82; 1.87], 1.70 y 1.86 (IC 95 % por bootstrap de bloques) | — |
 
 En igual/distinto, la red transfiere la identidad de los píxeles, no un concepto robusto.
 
@@ -244,6 +247,10 @@ En igual/distinto, la red transfiere la identidad de los píxeles, no un concept
   - **El mecanismo de ligadura se aplana:** con 3 prototipos por dígito da 0.60, 0.73 y 0.71 con
     10 000, 40 000 y 160 000 columnas. Es un límite de diseño, no de datos.
   - **Salir de un atajo ya consolidado es lento:** la identidad llega a 0.47 en 7 500 pares.
+  - **Con 10 imágenes nombradas por dígito sí funciona, pero no siempre:** 75.7 ± 20.9 % en test
+    (2 de 3 semillas pasan el 80 %). Lo que decide es cuán buena es la percepción cuando empieza
+    el aprendizaje conjunto. Medido en el Cortex: desde cero, enseñar una imagen generaliza igual
+    a su dígito que a los demás (g = h = 1); con 10 anclas, g = 0.335 contra h = 0.153.
 - **La profundidad no escala sola.** En Fashion el tercer nivel no suma. En CIFAR-10 (exploratorio,
   5 000 muestras, 1 semilla, en validación; es otra corrida que la de la tabla de comparación) el segundo nivel rinde menos que el primero (45 % contra
   47 % de la sonda local; la CNN, 44–46 %). Hipótesis en prueba: a las capas altas no les llega ninguna señal
@@ -254,11 +261,12 @@ En igual/distinto, la red transfiere la identidad de los píxeles, no un concept
   referencia, y usa más sinapsis que un MLP.
 - **Desplazamientos.** La CNN de 2 capas tolera mejor un desplazamiento de 3 px (56.0 % contra
   51.1 % en Fashion).
-- **Texto.** Con los mismos 600 KB de habla dirigida a niños, predice peor que un n-grama de
-  Kneser-Ney (línea base local): 2.96 bits por byte (2.54 con la temperatura elegida en validación)
-  contra 1.43, y 0.677 contra 0.707 de próximo byte. Ya usa
-  29 241 de sus 30 000 neuronas. Si con más neuronas y más datos tampoco lo supera, se cumple el
-  criterio de abandono F.
+- **Texto.** Predice peor que un n-grama de Kneser-Ney con los mismos datos (línea base local)
+  en las tres escalas medidas: la brecha es de 1.84, 1.70 y 1.86 bits por byte con 0.2, 0.6 y
+  1.8 MB. Ya en 0.2 MB, sin llegar al tope de neuronas, la brecha es la misma, y de 0.6 a 1.8 MB
+  no mejora (con 30 000 neuronas, el tope, y 50 628 desalojadas). Es evidencia contra el
+  mecanismo de secuencias (criterio F). Falta la serie con el tope triplicado para descartar la
+  capacidad.
 - **Razonamiento composicional con benchmarks externos: cero.** SCAN, MLC y la mitad de bAbI
   fallan (ver la tabla de comparación). Las causas medidas son de diseño:
   - no ajusta ni los comandos que vio;
@@ -328,12 +336,12 @@ sin calibrar.
 
 | Escalón | Qué tiene que lograr | Medida externa | Estado |
 |---|---|---|---|
-| A. Saber cuándo se equivoca | confianza calibrada; separar error de novedad | apuesta por confianza (ratas, Kepecs 2008); ECE ≤ 0.05; AUROC ≥ 0.85 | cumplido en el flujo continuo de `Cortex`, que no es equivalente: AUROC 0.855, 0.886 y 0.909 en tres escalas; ECE 0.010; firma de Kepecs; NE separa error de novedad (0.89). Con el protocolo equivalente de Fleming da 0.748, dentro del rango humano (0.55–0.75), donde el umbral de 0.85 no aplica. Falta llevarlo al Thinker |
-| B. Símbolos anclados en lo que ve | crédito conjunto entre percepción y razonamiento | MNIST-addition (DeepProbLog: 97.2 % con 30 000 pares); después con la regla desconocida | regla conocida: 97.6 ± 0.2 % en test (3 semillas, una pasada), a la par de lo publicado. Regla desconocida sin ancla: no funciona |
+| A. Saber cuándo se equivoca | confianza calibrada; separar error de novedad | apuesta por confianza (ratas, Kepecs 2008); ECE ≤ 0.05; AUROC ≥ 0.85 | cumplido en el flujo continuo de `Cortex`, que no es equivalente: AUROC 0.855, 0.886 y 0.909 en tres escalas; ECE 0.010; firma de Kepecs; NE separa error de novedad (0.89). Con el protocolo equivalente de Fleming da 0.748, dentro del rango humano (0.55–0.75), donde el umbral de 0.85 no aplica. En el Thinker: AUROC 0.83 de sus errores de cálculo, 0.63 de los símbolos mal percibidos que recibe |
+| B. Símbolos anclados en lo que ve | crédito conjunto entre percepción y razonamiento | MNIST-addition (DeepProbLog: 97.2 % con 30 000 pares); después con la regla desconocida | regla conocida: 97.6 ± 0.2 % en test (3 semillas, una pasada), a la par de lo publicado. Regla desconocida: sin ancla no funciona; con 10 imágenes nombradas por dígito, 75.7 ± 20.9 % (2 de 3 semillas ≥ 80 %) |
 | C. Abstracción por niveles | que cada nivel aporte; invariancia | CIFAR-10 contra Hebb local publicado (SoftHebb: 80.3 %, con otro protocolo); sonda por nivel; desplazamientos | abierto: el nivel 2 copia al 1 |
 | D. Memoria sin interferencia | actualizar o crear según la causa inferida | Split-MNIST y Split-Fashion incremental por clases; ER-ACE con los mismos bytes | en curso |
-| E. Razonamiento composicional | generalizar a combinaciones nuevas | SCAN, bAbI; datos de personas de Lake y Baroni 2023 | medido, falla: SCAN 0 %, MLC 0 %, bAbI 52.8 % de error. Rediseño de entrada, salida y memoria en curso (rama `agent/composicion`) |
-| F. Lenguaje | predecir y componer sobre secuencias | BabyLM (10 M de palabras, escala de un niño) a escala reducida | medido con 600 KB: peor que un n-grama con los mismos datos (2.96 bits/byte, o 2.54 con la temperatura de validación, contra 1.43); curva de escalado en curso |
+| E. Razonamiento composicional | generalizar a combinaciones nuevas | SCAN, bAbI; datos de personas de Lake y Baroni 2023 | medido, falla: SCAN 0 %, MLC 0 %, bAbI 52.8 % de error. Modo serial (rama `agent/composicion`, opción apagada): aprende el léxico y a decir FIN; en una gramática de juguete propia generaliza a comandos nuevos (84.8 ± 2.6 %), en SCAN al 1 % todavía no (0–10 % en validación, 1 semilla) |
+| F. Lenguaje | predecir y componer sobre secuencias | BabyLM (10 M de palabras, escala de un niño) a escala reducida | medido en 0.2, 0.6 y 1.8 MB: la red queda 1.7–1.9 bits/byte por encima de un n-grama con los mismos datos en las tres escalas. Ya en 0.2 MB, sin llegar al tope de neuronas (18 857 de 30 000), la brecha es 1.84, y de 0.6 a 1.8 MB no mejora (tope alcanzado). Criterio F: no supera a los n-gramas; falta la serie con tope triple para separar capacidad de mecanismo |
 | G. Razonar con neuronas | memoria de trabajo y ligadura en neuronas de spikes, no en estructuras programadas | las pruebas de E, sin pérdida | sin empezar |
 | H. Actuar y explorar | elegir qué mirar y qué preguntar; metas propias | pruebas de cognición animal (igual/distinto, inferencia transitiva, Harlow); BabyAI | las pruebas animales ya se miden en la batería (ver la comparación); el mecanismo de actuar y explorar, sin empezar |
 
