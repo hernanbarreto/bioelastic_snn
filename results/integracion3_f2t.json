@@ -1,0 +1,2796 @@
+{
+ "fase": "f2t",
+ "metricas": {
+  "oraculo": {
+   "AUROC error de razonamiento prequential: 1-p Thinker": {
+    "media": 0.7653666666666666,
+    "desvio": 0.03644342647629791,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.7324,
+     0.7592,
+     0.8045
+    ],
+    "referencia": "0.5000",
+    "nota": "todo el flujo"
+   },
+   "AUROC error de razonamiento test n=6: 1-p Thinker": {
+    "media": 0.9018,
+    "desvio": 0.09489272891006983,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9921,
+     0.8029,
+     0.9104
+    ],
+    "referencia": "0.5000",
+    "nota": "criterio >= 0.85"
+   },
+   "AUROC error de razonamiento test n=6: conflicto percepción-Thinker": {
+    "media": 0.1798,
+    "desvio": 0.08481090731739638,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.2206,
+     0.2365,
+     0.0823
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error de razonamiento test n=6: no establecido (Thinker)": {
+    "media": 0.7846666666666667,
+    "desvio": 0.09311338965655443,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.8797,
+     0.6936,
+     0.7807
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error de razonamiento test: 1-p Thinker": {
+    "media": 0.9234,
+    "desvio": 0.07855233923951595,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9873,
+     0.8357,
+     0.9472
+    ],
+    "referencia": "0.5000",
+    "nota": "criterio >= 0.85"
+   },
+   "AUROC error de razonamiento test: conflicto percepción-Thinker": {
+    "media": 0.16143333333333335,
+    "desvio": 0.09335611031600091,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.1872,
+     0.2392,
+     0.0579
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error de razonamiento test: no establecido (Thinker)": {
+    "media": 0.8072,
+    "desvio": 0.09624848050748647,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.8816,
+     0.6985,
+     0.8415
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error prequential (2.a mitad): 1-p Thinker": {
+    "media": 0.7012333333333333,
+    "desvio": 0.10570871928716821,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.5919,
+     0.7089,
+     0.8029
+    ],
+    "referencia": "0.5000",
+    "nota": ""
+   },
+   "AUROC error test n=6: 1-confianza calibrada (sistema)": {
+    "media": 0.9027999999999999,
+    "desvio": 0.0933883825751362,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9921,
+     0.8058,
+     0.9105
+    ],
+    "referencia": "0.5000",
+    "nota": ""
+   },
+   "AUROC error test n=6: 1-p Thinker": {
+    "media": 0.9018,
+    "desvio": 0.09489272891006983,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9921,
+     0.8029,
+     0.9104
+    ],
+    "referencia": "0.5000",
+    "nota": "criterio >= 0.85"
+   },
+   "AUROC error test n=6: conflicto percepción-Thinker": {
+    "media": 0.1798,
+    "desvio": 0.08481090731739638,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.2206,
+     0.2365,
+     0.0823
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error test n=6: no establecido (Thinker)": {
+    "media": 0.7846666666666667,
+    "desvio": 0.09311338965655443,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.8797,
+     0.6936,
+     0.7807
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error test: 1-confianza calibrada (sistema)": {
+    "media": 0.924,
+    "desvio": 0.07754798514468314,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9873,
+     0.8375,
+     0.9472
+    ],
+    "referencia": "0.5000",
+    "nota": ""
+   },
+   "AUROC error test: 1-p Thinker": {
+    "media": 0.9234,
+    "desvio": 0.07855233923951595,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9873,
+     0.8357,
+     0.9472
+    ],
+    "referencia": "0.5000",
+    "nota": "criterio >= 0.85"
+   },
+   "AUROC error test: conflicto percepción-Thinker": {
+    "media": 0.16143333333333335,
+    "desvio": 0.09335611031600091,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.1872,
+     0.2392,
+     0.0579
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error test: no establecido (Thinker)": {
+    "media": 0.8072,
+    "desvio": 0.09624848050748647,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.8816,
+     0.6985,
+     0.8415
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "ECE razonamiento prequential: p Thinker cruda": {
+    "media": 0.2067,
+    "desvio": 0.003051229260478478,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.2101,
+     0.2042,
+     0.2058
+    ],
+    "referencia": "0.0500",
+    "nota": ""
+   },
+   "ECE razonamiento test n=6: p Thinker cruda": {
+    "media": 0.2241,
+    "desvio": 0.004629254799641089,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.2198,
+     0.2235,
+     0.229
+    ],
+    "referencia": "0.0500",
+    "nota": "contra el acierto de razonamiento"
+   },
+   "ECE razonamiento test: p Thinker cruda": {
+    "media": 0.22160000000000002,
+    "desvio": 0.0051507281038703666,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.2215,
+     0.2165,
+     0.2268
+    ],
+    "referencia": "0.0500",
+    "nota": "contra el acierto de razonamiento"
+   },
+   "ECE test n=6: calibrada (sistema)": {
+    "media": 0.042133333333333335,
+    "desvio": 0.015291936873180367,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0597,
+     0.0349,
+     0.0318
+    ],
+    "referencia": "0.0500",
+    "nota": ""
+   },
+   "ECE test n=6: p Thinker cruda": {
+    "media": 0.2241,
+    "desvio": 0.004629254799641089,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.2198,
+     0.2235,
+     0.229
+    ],
+    "referencia": "0.0500",
+    "nota": "criterio <= 0.05"
+   },
+   "ECE test: calibrada (sistema)": {
+    "media": 0.04176666666666667,
+    "desvio": 0.010830666338380724,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0538,
+     0.0387,
+     0.0328
+    ],
+    "referencia": "0.0500",
+    "nota": ""
+   },
+   "ECE test: p Thinker cruda": {
+    "media": 0.22160000000000002,
+    "desvio": 0.0051507281038703666,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.2215,
+     0.2165,
+     0.2268
+    ],
+    "referencia": "0.0500",
+    "nota": "criterio <= 0.05"
+   },
+   "acierto columna (test n=6)": {
+    "media": 0.9748666666666667,
+    "desvio": 0.013966507556770666,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9863,
+     0.979,
+     0.9593
+    ],
+    "referencia": "0.1000",
+    "nota": ""
+   },
+   "acierto columna (test)": {
+    "media": 0.9795666666666666,
+    "desvio": 0.010012658654589857,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9907,
+     0.9767,
+     0.9713
+    ],
+    "referencia": "0.1000",
+    "nota": ""
+   },
+   "acierto de razonamiento (test n=6)": {
+    "media": 0.9748666666666667,
+    "desvio": 0.013966507556770666,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9863,
+     0.979,
+     0.9593
+    ],
+    "referencia": "",
+    "nota": "respuesta = suma de lo percibido"
+   },
+   "acierto de razonamiento (test)": {
+    "media": 0.9795666666666666,
+    "desvio": 0.010012658654589857,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9907,
+     0.9767,
+     0.9713
+    ],
+    "referencia": "",
+    "nota": "respuesta = suma de lo percibido"
+   },
+   "errores (test n=6, n)": {
+    "media": 75.33333333333333,
+    "desvio": 41.88476254359494,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     41.0,
+     63.0,
+     122.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "errores (test, n)": {
+    "media": 30.666666666666668,
+    "desvio": 14.977761292440647,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     14.0,
+     35.0,
+     43.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "errores de razonamiento (test n=6, n)": {
+    "media": 75.33333333333333,
+    "desvio": 41.88476254359494,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     41.0,
+     63.0,
+     122.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "errores de razonamiento (test, n)": {
+    "media": 30.666666666666668,
+    "desvio": 14.977761292440647,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     14.0,
+     35.0,
+     43.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "errores de razonamiento prequential (n)": {
+    "media": 1546.3333333333333,
+    "desvio": 141.5850745429522,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     1402.0,
+     1552.0,
+     1685.0
+    ],
+    "referencia": "",
+    "nota": "en todo el flujo"
+   }
+  },
+  "ruido 0.65": {
+   "AUROC error de razonamiento prequential: 1-p Thinker": {
+    "media": 0.677,
+    "desvio": 0.01692010638264429,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.6662,
+     0.6683,
+     0.6965
+    ],
+    "referencia": "0.5000",
+    "nota": "todo el flujo"
+   },
+   "AUROC error de razonamiento test n=6: 1-p Thinker": {
+    "media": 0.7245666666666667,
+    "desvio": 0.03547975948809877,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.7155,
+     0.6945,
+     0.7637
+    ],
+    "referencia": "0.5000",
+    "nota": "criterio >= 0.85"
+   },
+   "AUROC error de razonamiento test n=6: conflicto percepción-Thinker": {
+    "media": 0.47716666666666674,
+    "desvio": 0.02399694424991095,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.5047,
+     0.4661,
+     0.4607
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error de razonamiento test n=6: no establecido (Thinker)": {
+    "media": 0.5244333333333333,
+    "desvio": 0.014391780061317411,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.5214,
+     0.5118,
+     0.5401
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error de razonamiento test: 1-p Thinker": {
+    "media": 0.7532666666666668,
+    "desvio": 0.017552302792891144,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.7651,
+     0.7331,
+     0.7616
+    ],
+    "referencia": "0.5000",
+    "nota": "criterio >= 0.85"
+   },
+   "AUROC error de razonamiento test: conflicto percepción-Thinker": {
+    "media": 0.4758333333333333,
+    "desvio": 0.030894066312697203,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.5115,
+     0.4574,
+     0.4586
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error de razonamiento test: no establecido (Thinker)": {
+    "media": 0.5224666666666667,
+    "desvio": 0.00823670646152534,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.5188,
+     0.5167,
+     0.5319
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error prequential (2.a mitad): 1-p Thinker": {
+    "media": 0.6011666666666666,
+    "desvio": 0.004671545069175041,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.6065,
+     0.5978,
+     0.5992
+    ],
+    "referencia": "0.5000",
+    "nota": ""
+   },
+   "AUROC error test n=6: 1-confianza calibrada (sistema)": {
+    "media": 0.5900666666666666,
+    "desvio": 0.014918891826584645,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.5756,
+     0.5892,
+     0.6054
+    ],
+    "referencia": "0.5000",
+    "nota": ""
+   },
+   "AUROC error test n=6: 1-p Thinker": {
+    "media": 0.5896333333333333,
+    "desvio": 0.015067293497285222,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.575,
+     0.5888,
+     0.6051
+    ],
+    "referencia": "0.5000",
+    "nota": "criterio >= 0.85"
+   },
+   "AUROC error test n=6: conflicto percepción-Thinker": {
+    "media": 0.4847333333333334,
+    "desvio": 0.00915769257691769,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.4953,
+     0.4791,
+     0.4798
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error test n=6: no establecido (Thinker)": {
+    "media": 0.5087,
+    "desvio": 0.004450842616853571,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.5056,
+     0.5067,
+     0.5138
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error test: 1-confianza calibrada (sistema)": {
+    "media": 0.6095666666666667,
+    "desvio": 0.011923226632641575,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.6163,
+     0.5958,
+     0.6166
+    ],
+    "referencia": "0.5000",
+    "nota": ""
+   },
+   "AUROC error test: 1-p Thinker": {
+    "media": 0.6091333333333334,
+    "desvio": 0.011319157801415009,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.6148,
+     0.5961,
+     0.6165
+    ],
+    "referencia": "0.5000",
+    "nota": "criterio >= 0.85"
+   },
+   "AUROC error test: conflicto percepción-Thinker": {
+    "media": 0.4918666666666667,
+    "desvio": 0.01366174708202922,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.5067,
+     0.4891,
+     0.4798
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error test: no establecido (Thinker)": {
+    "media": 0.5101,
+    "desvio": 0.01023669868658841,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.5004,
+     0.5091,
+     0.5208
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "ECE razonamiento prequential: p Thinker cruda": {
+    "media": 0.12803333333333333,
+    "desvio": 0.011465309997262755,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.1243,
+     0.1409,
+     0.1189
+    ],
+    "referencia": "0.0500",
+    "nota": ""
+   },
+   "ECE razonamiento test n=6: p Thinker cruda": {
+    "media": 0.1389,
+    "desvio": 0.03656077132665557,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0969,
+     0.1562,
+     0.1636
+    ],
+    "referencia": "0.0500",
+    "nota": "contra el acierto de razonamiento"
+   },
+   "ECE razonamiento test: p Thinker cruda": {
+    "media": 0.20173333333333332,
+    "desvio": 0.043965933782115135,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.1517,
+     0.2193,
+     0.2342
+    ],
+    "referencia": "0.0500",
+    "nota": "contra el acierto de razonamiento"
+   },
+   "ECE test n=6: calibrada (sistema)": {
+    "media": 0.0182,
+    "desvio": 0.00219317121994613,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0187,
+     0.0158,
+     0.0201
+    ],
+    "referencia": "0.0500",
+    "nota": ""
+   },
+   "ECE test n=6: p Thinker cruda": {
+    "media": 0.14583333333333334,
+    "desvio": 0.005687119950672175,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.1444,
+     0.141,
+     0.1521
+    ],
+    "referencia": "0.0500",
+    "nota": "criterio <= 0.05"
+   },
+   "ECE test: calibrada (sistema)": {
+    "media": 0.026966666666666667,
+    "desvio": 0.003669241520169165,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0247,
+     0.025,
+     0.0312
+    ],
+    "referencia": "0.0500",
+    "nota": ""
+   },
+   "ECE test: p Thinker cruda": {
+    "media": 0.12480000000000001,
+    "desvio": 0.004813522618623494,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.1257,
+     0.1196,
+     0.1291
+    ],
+    "referencia": "0.0500",
+    "nota": "criterio <= 0.05"
+   },
+   "acierto columna (test n=6)": {
+    "media": 0.256,
+    "desvio": 0.016822603841260737,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.237,
+     0.262,
+     0.269
+    ],
+    "referencia": "0.1000",
+    "nota": ""
+   },
+   "acierto columna (test)": {
+    "media": 0.29200000000000004,
+    "desvio": 0.02079639391817726,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.268,
+     0.3033,
+     0.3047
+    ],
+    "referencia": "0.1000",
+    "nota": ""
+   },
+   "acierto de razonamiento (test n=6)": {
+    "media": 0.5372333333333333,
+    "desvio": 0.055844904273651796,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.4757,
+     0.5513,
+     0.5847
+    ],
+    "referencia": "",
+    "nota": "respuesta = suma de lo percibido"
+   },
+   "acierto de razonamiento (test)": {
+    "media": 0.6146666666666668,
+    "desvio": 0.06290169579060119,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.5453,
+     0.6307,
+     0.668
+    ],
+    "referencia": "",
+    "nota": "respuesta = suma de lo percibido"
+   },
+   "errores (test n=6, n)": {
+    "media": 2232.0,
+    "desvio": 50.46781152378217,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     2289.0,
+     2214.0,
+     2193.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "errores (test, n)": {
+    "media": 1062.0,
+    "desvio": 31.192947920964443,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     1098.0,
+     1045.0,
+     1043.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "errores de razonamiento (test n=6, n)": {
+    "media": 1388.3333333333333,
+    "desvio": 167.55993952413962,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     1573.0,
+     1346.0,
+     1246.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "errores de razonamiento (test, n)": {
+    "media": 578.0,
+    "desvio": 94.31860898041276,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     682.0,
+     554.0,
+     498.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "errores de razonamiento prequential (n)": {
+    "media": 5141.666666666667,
+    "desvio": 123.30585279431521,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     5274.0,
+     5030.0,
+     5121.0
+    ],
+    "referencia": "",
+    "nota": "en todo el flujo"
+   }
+  },
+  "ruido 0.8": {
+   "AUROC error de razonamiento prequential: 1-p Thinker": {
+    "media": 0.7484999999999999,
+    "desvio": 0.014292655456562301,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.7551,
+     0.7321,
+     0.7583
+    ],
+    "referencia": "0.5000",
+    "nota": "todo el flujo"
+   },
+   "AUROC error de razonamiento test n=6: 1-p Thinker": {
+    "media": 0.7851333333333333,
+    "desvio": 0.04550091574170054,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.7398,
+     0.7848,
+     0.8308
+    ],
+    "referencia": "0.5000",
+    "nota": "criterio >= 0.85"
+   },
+   "AUROC error de razonamiento test n=6: conflicto percepción-Thinker": {
+    "media": 0.26689999999999997,
+    "desvio": 0.028348015803579617,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.299,
+     0.2453,
+     0.2564
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error de razonamiento test n=6: no establecido (Thinker)": {
+    "media": 0.6374666666666667,
+    "desvio": 0.03143029324287848,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.6024,
+     0.6469,
+     0.6631
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error de razonamiento test: 1-p Thinker": {
+    "media": 0.8312333333333332,
+    "desvio": 0.029598704926623597,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.8134,
+     0.8149,
+     0.8654
+    ],
+    "referencia": "0.5000",
+    "nota": "criterio >= 0.85"
+   },
+   "AUROC error de razonamiento test: conflicto percepción-Thinker": {
+    "media": 0.19953333333333334,
+    "desvio": 0.018696612883978024,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.2211,
+     0.1879,
+     0.1896
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error de razonamiento test: no establecido (Thinker)": {
+    "media": 0.6751666666666667,
+    "desvio": 0.037260747890150214,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.6374,
+     0.6762,
+     0.7119
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error prequential (2.a mitad): 1-p Thinker": {
+    "media": 0.6235666666666667,
+    "desvio": 0.0055581771592252745,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.6255,
+     0.6279,
+     0.6173
+    ],
+    "referencia": "0.5000",
+    "nota": ""
+   },
+   "AUROC error test n=6: 1-confianza calibrada (sistema)": {
+    "media": 0.6056666666666667,
+    "desvio": 0.020772658311668548,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.5822,
+     0.6217,
+     0.6131
+    ],
+    "referencia": "0.5000",
+    "nota": ""
+   },
+   "AUROC error test n=6: 1-p Thinker": {
+    "media": 0.6048,
+    "desvio": 0.021361413810888057,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.5807,
+     0.6214,
+     0.6123
+    ],
+    "referencia": "0.5000",
+    "nota": "criterio >= 0.85"
+   },
+   "AUROC error test n=6: conflicto percepción-Thinker": {
+    "media": 0.40146666666666664,
+    "desvio": 0.020511541466533743,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.4231,
+     0.3823,
+     0.399
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error test n=6: no establecido (Thinker)": {
+    "media": 0.5502333333333334,
+    "desvio": 0.020563641052433582,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.5288,
+     0.5698,
+     0.5521
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error test: 1-confianza calibrada (sistema)": {
+    "media": 0.6277,
+    "desvio": 0.014045995870709944,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.625,
+     0.6429,
+     0.6152
+    ],
+    "referencia": "0.5000",
+    "nota": ""
+   },
+   "AUROC error test: 1-p Thinker": {
+    "media": 0.6274,
+    "desvio": 0.014091486791676704,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.6251,
+     0.6425,
+     0.6146
+    ],
+    "referencia": "0.5000",
+    "nota": "criterio >= 0.85"
+   },
+   "AUROC error test: conflicto percepción-Thinker": {
+    "media": 0.38473333333333337,
+    "desvio": 0.011300589955101168,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.3961,
+     0.3735,
+     0.3846
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error test: no establecido (Thinker)": {
+    "media": 0.5698666666666666,
+    "desvio": 0.006190584248141144,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.5659,
+     0.577,
+     0.5667
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "ECE razonamiento prequential: p Thinker cruda": {
+    "media": 0.1617,
+    "desvio": 0.0021000000000000046,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.1596,
+     0.1617,
+     0.1638
+    ],
+    "referencia": "0.0500",
+    "nota": ""
+   },
+   "ECE razonamiento test n=6: p Thinker cruda": {
+    "media": 0.17676666666666666,
+    "desvio": 0.03979200087119689,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.1548,
+     0.1528,
+     0.2227
+    ],
+    "referencia": "0.0500",
+    "nota": "contra el acierto de razonamiento"
+   },
+   "ECE razonamiento test: p Thinker cruda": {
+    "media": 0.2061666666666667,
+    "desvio": 0.03904130291541681,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.1998,
+     0.1707,
+     0.248
+    ],
+    "referencia": "0.0500",
+    "nota": "contra el acierto de razonamiento"
+   },
+   "ECE test n=6: calibrada (sistema)": {
+    "media": 0.0433,
+    "desvio": 0.016657730937915883,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0417,
+     0.0607,
+     0.0275
+    ],
+    "referencia": "0.0500",
+    "nota": ""
+   },
+   "ECE test n=6: p Thinker cruda": {
+    "media": 0.12616666666666668,
+    "desvio": 0.02061075770886003,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.1442,
+     0.1306,
+     0.1037
+    ],
+    "referencia": "0.0500",
+    "nota": "criterio <= 0.05"
+   },
+   "ECE test: calibrada (sistema)": {
+    "media": 0.0414,
+    "desvio": 0.016727522231340778,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0354,
+     0.0603,
+     0.0285
+    ],
+    "referencia": "0.0500",
+    "nota": ""
+   },
+   "ECE test: p Thinker cruda": {
+    "media": 0.11203333333333333,
+    "desvio": 0.011085726558657912,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.1073,
+     0.1247,
+     0.1041
+    ],
+    "referencia": "0.0500",
+    "nota": "criterio <= 0.05"
+   },
+   "acierto columna (test n=6)": {
+    "media": 0.4756666666666667,
+    "desvio": 0.009799149622968985,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.4737,
+     0.467,
+     0.4863
+    ],
+    "referencia": "0.1000",
+    "nota": ""
+   },
+   "acierto columna (test)": {
+    "media": 0.5051,
+    "desvio": 0.024358160850113473,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.5153,
+     0.4773,
+     0.5227
+    ],
+    "referencia": "0.1000",
+    "nota": ""
+   },
+   "acierto de razonamiento (test n=6)": {
+    "media": 0.7544666666666667,
+    "desvio": 0.016669233135730425,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.7497,
+     0.7407,
+     0.773
+    ],
+    "referencia": "",
+    "nota": "respuesta = suma de lo percibido"
+   },
+   "acierto de razonamiento (test)": {
+    "media": 0.8111,
+    "desvio": 0.0373486278195063,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.8133,
+     0.7727,
+     0.8473
+    ],
+    "referencia": "",
+    "nota": "respuesta = suma de lo percibido"
+   },
+   "errores (test n=6, n)": {
+    "media": 1573.0,
+    "desvio": 29.46183972531247,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     1579.0,
+     1599.0,
+     1541.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "errores (test, n)": {
+    "media": 742.3333333333334,
+    "desvio": 36.50114153466071,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     727.0,
+     784.0,
+     716.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "errores de razonamiento (test n=6, n)": {
+    "media": 736.6666666666666,
+    "desvio": 50.06329327294933,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     751.0,
+     778.0,
+     681.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "errores de razonamiento (test, n)": {
+    "media": 283.3333333333333,
+    "desvio": 56.074355398286414,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     280.0,
+     341.0,
+     229.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "errores de razonamiento prequential (n)": {
+    "media": 3378.6666666666665,
+    "desvio": 113.95759445220547,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     3335.0,
+     3508.0,
+     3293.0
+    ],
+    "referencia": "",
+    "nota": "en todo el flujo"
+   }
+  },
+  "total": {
+   "segundos": {
+    "media": 243.80000000000004,
+    "desvio": 9.700000000000003,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     253.5,
+     234.1,
+     243.8
+    ],
+    "referencia": "",
+    "nota": ""
+   }
+  }
+ },
+ "por_corrida": {
+  "integracion3_f2t_seed0": {
+   "f2t_oraculo_test": {
+    "confiabilidad_p_thinker_razonamiento": [
+     [
+      0.36610043392731595,
+      0.6538461538461539,
+      26
+     ],
+     [
+      0.4479114899168844,
+      0.9456521739130435,
+      92
+     ],
+     [
+      0.5554908417886303,
+      1.0,
+      62
+     ],
+     [
+      0.6542953886091709,
+      1.0,
+      160
+     ],
+     [
+      0.7473124268196397,
+      1.0,
+      236
+     ],
+     [
+      0.8501837897220264,
+      1.0,
+      889
+     ],
+     [
+      0.9046311872346061,
+      1.0,
+      35
+     ]
+    ],
+    "confiabilidad_calibrada": [
+     [
+      0.8867418402271323,
+      0.7971014492753623,
+      69
+     ],
+     [
+      0.9479055664586655,
+      1.0,
+      1431
+     ]
+    ]
+   },
+   "f2t_oraculo_test n=6": {
+    "confiabilidad_p_thinker_razonamiento": [
+     [
+      0.35905640125274657,
+      0.46,
+      50
+     ],
+     [
+      0.4505763003249574,
+      0.9084967320261438,
+      153
+     ],
+     [
+      0.5552337890949802,
+      1.0,
+      138
+     ],
+     [
+      0.6522836156759539,
+      1.0,
+      379
+     ],
+     [
+      0.7516538287998454,
+      1.0,
+      493
+     ],
+     [
+      0.8477928419769915,
+      1.0,
+      1728
+     ],
+     [
+      0.9053790912789813,
+      1.0,
+      59
+     ]
+    ],
+    "confiabilidad_calibrada": [
+     [
+      0.8861035373783255,
+      0.6639344262295082,
+      122
+     ],
+     [
+      0.9472159194143884,
+      1.0,
+      2878
+     ]
+    ]
+   },
+   "f2t_ruido 0.8_test": {
+    "confiabilidad_p_thinker_razonamiento": [
+     [
+      0.17932935059070587,
+      0.40625,
+      32
+     ],
+     [
+      0.25071455661309966,
+      0.44954128440366975,
+      109
+     ],
+     [
+      0.3619955279839733,
+      0.5026455026455027,
+      189
+     ],
+     [
+      0.45839994842723264,
+      0.6610169491525424,
+      118
+     ],
+     [
+      0.5546157589610319,
+      0.9192546583850931,
+      161
+     ],
+     [
+      0.6520412107731434,
+      0.9397163120567376,
+      282
+     ],
+     [
+      0.7630374625377857,
+      0.9257950530035336,
+      283
+     ],
+     [
+      0.8452466283839173,
+      0.950920245398773,
+      326
+     ]
+    ],
+    "confiabilidad_calibrada": [
+     [
+      0.2825552541985804,
+      0.2631578947368421,
+      19
+     ],
+     [
+      0.3526694527006332,
+      0.27439024390243905,
+      164
+     ],
+     [
+      0.44710318403311144,
+      0.4069400630914827,
+      317
+     ],
+     [
+      0.5589698563954306,
+      0.5905511811023622,
+      635
+     ],
+     [
+      0.6195579677464347,
+      0.6,
+      365
+     ]
+    ]
+   },
+   "f2t_ruido 0.8_test n=6": {
+    "confiabilidad_p_thinker_razonamiento": [
+     [
+      0.18110959005506733,
+      0.34177215189873417,
+      79
+     ],
+     [
+      0.25484848721903197,
+      0.45714285714285713,
+      245
+     ],
+     [
+      0.35822746727294297,
+      0.5034965034965035,
+      429
+     ],
+     [
+      0.45243781222188606,
+      0.6346863468634686,
+      271
+     ],
+     [
+      0.5498909019751235,
+      0.8369905956112853,
+      319
+     ],
+     [
+      0.651539614186784,
+      0.8803088803088803,
+      518
+     ],
+     [
+      0.7614901453256607,
+      0.8653846153846154,
+      520
+     ],
+     [
+      0.8443320545703413,
+      0.8869143780290791,
+      619
+     ]
+    ],
+    "confiabilidad_calibrada": [
+     [
+      0.28471699769303294,
+      0.2553191489361702,
+      47
+     ],
+     [
+      0.3558067101530713,
+      0.3231552162849873,
+      393
+     ],
+     [
+      0.44760655566328944,
+      0.403068340306834,
+      717
+     ],
+     [
+      0.5592843874179598,
+      0.5456110154905336,
+      1162
+     ],
+     [
+      0.6197269507727876,
+      0.527165932452276,
+      681
+     ]
+    ]
+   },
+   "f2t_ruido 0.65_test": {
+    "confiabilidad_p_thinker_razonamiento": [
+     [
+      0.17241700790649236,
+      0.23255813953488372,
+      172
+     ],
+     [
+      0.25069404362880093,
+      0.3028391167192429,
+      317
+     ],
+     [
+      0.3467647206177686,
+      0.5053475935828877,
+      374
+     ],
+     [
+      0.4464912350361164,
+      0.6730769230769231,
+      260
+     ],
+     [
+      0.5446364246308804,
+      0.775,
+      160
+     ],
+     [
+      0.6545003852536602,
+      0.9225806451612903,
+      155
+     ],
+     [
+      0.7544001204925671,
+      0.8245614035087719,
+      57
+     ],
+     [
+      0.8016610145568848,
+      0.8,
+      5
+     ]
+    ],
+    "confiabilidad_calibrada": [
+     [
+      0.17515458543814585,
+      0.12631578947368421,
+      285
+     ],
+     [
+      0.24974684454137744,
+      0.2743589743589744,
+      780
+     ],
+     [
+      0.3402220991810752,
+      0.34942528735632183,
+      435
+     ]
+    ]
+   },
+   "f2t_ruido 0.65_test n=6": {
+    "confiabilidad_p_thinker_razonamiento": [
+     [
+      0.16968519492733358,
+      0.2398989898989899,
+      396
+     ],
+     [
+      0.24765460092998498,
+      0.32373113854595337,
+      729
+     ],
+     [
+      0.34901530257586777,
+      0.42482758620689653,
+      725
+     ],
+     [
+      0.4466324878708964,
+      0.5481798715203426,
+      467
+     ],
+     [
+      0.5485906776500075,
+      0.7191780821917808,
+      292
+     ],
+     [
+      0.6542230948914577,
+      0.8284671532846716,
+      274
+     ],
+     [
+      0.7465819953768341,
+      0.8148148148148148,
+      108
+     ],
+     [
+      0.8016610145568848,
+      0.7777777777777778,
+      9
+     ]
+    ],
+    "confiabilidad_calibrada": [
+     [
+      0.1745691698617062,
+      0.16666666666666666,
+      678
+     ],
+     [
+      0.2478193111529925,
+      0.2244764397905759,
+      1528
+     ],
+     [
+      0.3401392438455146,
+      0.3211586901763224,
+      794
+     ]
+    ]
+   }
+  },
+  "integracion3_f2t_seed1": {
+   "f2t_oraculo_test": {
+    "confiabilidad_p_thinker_razonamiento": [
+     [
+      0.2690977185964584,
+      0.4666666666666667,
+      30
+     ],
+     [
+      0.3663092976616275,
+      0.8709677419354839,
+      31
+     ],
+     [
+      0.4505188384881386,
+      0.9871794871794872,
+      78
+     ],
+     [
+      0.5452080007459297,
+      1.0,
+      61
+     ],
+     [
+      0.6587535566753812,
+      0.9888888888888889,
+      180
+     ],
+     [
+      0.7520611078412701,
+      0.975103734439834,
+      241
+     ],
+     [
+      0.8554828254473692,
+      0.9930635838150289,
+      865
+     ],
+     [
+      0.9000767469406128,
+      1.0,
+      14
+     ]
+    ],
+    "confiabilidad_calibrada": [
+     [
+      0.7453715111041319,
+      0.4666666666666667,
+      30
+     ],
+     [
+      0.8558797179656656,
+      0.954954954954955,
+      111
+     ],
+     [
+      0.9611812158278604,
+      0.9896983075791023,
+      1359
+     ]
+    ]
+   },
+   "f2t_oraculo_test n=6": {
+    "confiabilidad_p_thinker_razonamiento": [
+     [
+      0.2669693222121587,
+      0.6507936507936508,
+      63
+     ],
+     [
+      0.3638402001424269,
+      0.8545454545454545,
+      55
+     ],
+     [
+      0.45235623235571876,
+      0.9863013698630136,
+      146
+     ],
+     [
+      0.5454288748332432,
+      0.9771428571428571,
+      175
+     ],
+     [
+      0.6585351163493102,
+      0.9848024316109423,
+      329
+     ],
+     [
+      0.7551903109801443,
+      0.9842105263157894,
+      570
+     ],
+     [
+      0.854653247620197,
+      0.99209726443769,
+      1645
+     ],
+     [
+      0.9000767469406128,
+      1.0,
+      17
+     ]
+    ],
+    "confiabilidad_calibrada": [
+     [
+      0.7431315002806168,
+      0.6507936507936508,
+      63
+     ],
+     [
+      0.8581163891946366,
+      0.9483568075117371,
+      213
+     ],
+     [
+      0.959709143814227,
+      0.9889867841409692,
+      2724
+     ]
+    ]
+   },
+   "f2t_ruido 0.8_test": {
+    "confiabilidad_p_thinker_razonamiento": [
+     [
+      0.18324312000047593,
+      0.19047619047619047,
+      21
+     ],
+     [
+      0.2556647667859463,
+      0.3049645390070922,
+      141
+     ],
+     [
+      0.3552974937868512,
+      0.6033057851239669,
+      121
+     ],
+     [
+      0.43983273218861585,
+      0.6187050359712231,
+      139
+     ],
+     [
+      0.5610487408108181,
+      0.7555555555555555,
+      270
+     ],
+     [
+      0.651437202451426,
+      0.8899082568807339,
+      218
+     ],
+     [
+      0.749993464763889,
+      0.9174041297935103,
+      339
+     ],
+     [
+      0.8415628289321504,
+      0.9721115537848606,
+      251
+     ]
+    ],
+    "confiabilidad_calibrada": [
+     [
+      0.27037854997278515,
+      0.20652173913043478,
+      92
+     ],
+     [
+      0.3495236927937225,
+      0.2822085889570552,
+      163
+     ],
+     [
+      0.4463202876120236,
+      0.385,
+      200
+     ],
+     [
+      0.5475506502663756,
+      0.4988814317673378,
+      447
+     ],
+     [
+      0.6531362139410777,
+      0.5869565217391305,
+      598
+     ]
+    ]
+   },
+   "f2t_ruido 0.8_test n=6": {
+    "confiabilidad_p_thinker_razonamiento": [
+     [
+      0.17959587557895765,
+      0.28378378378378377,
+      74
+     ],
+     [
+      0.2567241282091228,
+      0.30275229357798167,
+      327
+     ],
+     [
+      0.35037206430727824,
+      0.5776173285198556,
+      277
+     ],
+     [
+      0.44309266257113306,
+      0.6521739130434783,
+      276
+     ],
+     [
+      0.5635877069888084,
+      0.746268656716418,
+      469
+     ],
+     [
+      0.6530509887783377,
+      0.8828828828828829,
+      444
+     ],
+     [
+      0.7489592811949155,
+      0.8634294385432474,
+      659
+     ],
+     [
+      0.8420203081666165,
+      0.9514767932489452,
+      474
+     ]
+    ],
+    "confiabilidad_calibrada": [
+     [
+      0.26441576687326845,
+      0.25327510917030566,
+      229
+     ],
+     [
+      0.3439644649389437,
+      0.32707774798927614,
+      373
+     ],
+     [
+      0.44254385616859954,
+      0.40664961636828645,
+      391
+     ],
+     [
+      0.5491505118624206,
+      0.47769953051643194,
+      852
+     ],
+     [
+      0.6522760470953983,
+      0.5670995670995671,
+      1155
+     ]
+    ]
+   },
+   "f2t_ruido 0.65_test": {
+    "confiabilidad_p_thinker_razonamiento": [
+     [
+      0.1678768910210708,
+      0.42758620689655175,
+      145
+     ],
+     [
+      0.2493959031788643,
+      0.403954802259887,
+      354
+     ],
+     [
+      0.3509155489257162,
+      0.5402843601895735,
+      211
+     ],
+     [
+      0.45169905865111865,
+      0.6993243243243243,
+      296
+     ],
+     [
+      0.544362748512114,
+      0.7946127946127947,
+      297
+     ],
+     [
+      0.6475579313529555,
+      0.9147286821705426,
+      129
+     ],
+     [
+      0.7496454042773093,
+      0.967741935483871,
+      62
+     ],
+     [
+      0.8371291756629944,
+      1.0,
+      6
+     ]
+    ],
+    "confiabilidad_calibrada": [
+     [
+      0.18227519539451906,
+      0.22758620689655173,
+      145
+     ],
+     [
+      0.24867220257785788,
+      0.25972222222222224,
+      720
+     ],
+     [
+      0.33391124476519074,
+      0.3700787401574803,
+      635
+     ]
+    ]
+   },
+   "f2t_ruido 0.65_test n=6": {
+    "confiabilidad_p_thinker_razonamiento": [
+     [
+      0.16736630314133233,
+      0.4131944444444444,
+      288
+     ],
+     [
+      0.24917801467747222,
+      0.36341463414634145,
+      820
+     ],
+     [
+      0.3514148125523015,
+      0.47157894736842104,
+      475
+     ],
+     [
+      0.45111856881192697,
+      0.6304347826086957,
+      598
+     ],
+     [
+      0.5441433064591082,
+      0.7288503253796096,
+      461
+     ],
+     [
+      0.6448317182988956,
+      0.8405172413793104,
+      232
+     ],
+     [
+      0.7548450438653008,
+      0.8220338983050848,
+      118
+     ],
+     [
+      0.8371291756629944,
+      1.0,
+      8
+     ]
+    ],
+    "confiabilidad_calibrada": [
+     [
+      0.182033143673759,
+      0.20833333333333334,
+      288
+     ],
+     [
+      0.24788703677850968,
+      0.22352216748768472,
+      1624
+     ],
+     [
+      0.333816882960105,
+      0.3336397058823529,
+      1088
+     ]
+    ]
+   }
+  },
+  "integracion3_f2t_seed2": {
+   "f2t_oraculo_test": {
+    "confiabilidad_p_thinker_razonamiento": [
+     [
+      0.15597198690686906,
+      0.0,
+      7
+     ],
+     [
+      0.2641553795337677,
+      0.72,
+      25
+     ],
+     [
+      0.3367294589678446,
+      0.6,
+      30
+     ],
+     [
+      0.4521439617330378,
+      0.9090909090909091,
+      110
+     ],
+     [
+      0.5461965046430889,
+      0.9649122807017544,
+      114
+     ],
+     [
+      0.6548799565761765,
+      0.9884393063583815,
+      173
+     ],
+     [
+      0.7627218999124471,
+      0.99581589958159,
+      239
+     ],
+     [
+      0.8629051481976229,
+      1.0,
+      765
+     ],
+     [
+      0.9047280952737138,
+      1.0,
+      37
+     ]
+    ],
+    "confiabilidad_calibrada": [
+     [
+      0.426830868222749,
+      0.0,
+      6
+     ],
+     [
+      0.5560209668607964,
+      0.0,
+      4
+     ],
+     [
+      0.6565546828449795,
+      0.7894736842105263,
+      19
+     ],
+     [
+      0.7418248916521518,
+      0.6363636363636364,
+      33
+     ],
+     [
+      0.8589418243699682,
+      0.9281045751633987,
+      153
+     ],
+     [
+      0.9736341283016139,
+      0.9953307392996109,
+      1285
+     ]
+    ]
+   },
+   "f2t_oraculo_test n=6": {
+    "confiabilidad_p_thinker_razonamiento": [
+     [
+      0.1593073159456253,
+      0.0,
+      14
+     ],
+     [
+      0.2547647590438525,
+      0.65,
+      60
+     ],
+     [
+      0.35490430091939323,
+      0.5609756097560976,
+      82
+     ],
+     [
+      0.4517139556566121,
+      0.8815165876777251,
+      211
+     ],
+     [
+      0.5491880797503287,
+      0.9754385964912281,
+      285
+     ],
+     [
+      0.6575628545043903,
+      0.9863760217983651,
+      367
+     ],
+     [
+      0.7592277065042622,
+      0.9793388429752066,
+      484
+     ],
+     [
+      0.8588461740112701,
+      0.997229916897507,
+      1444
+     ],
+     [
+      0.9068188701035842,
+      1.0,
+      53
+     ]
+    ],
+    "confiabilidad_calibrada": [
+     [
+      0.4163483223063761,
+      0.0,
+      9
+     ],
+     [
+      0.5389014785336065,
+      0.0,
+      13
+     ],
+     [
+      0.6474103588706989,
+      0.7450980392156863,
+      51
+     ],
+     [
+      0.7642110610660494,
+      0.573170731707317,
+      82
+     ],
+     [
+      0.8594864156335936,
+      0.9016393442622951,
+      305
+     ],
+     [
+      0.9711607011348762,
+      0.9913385826771653,
+      2540
+     ]
+    ]
+   },
+   "f2t_ruido 0.8_test": {
+    "confiabilidad_p_thinker_razonamiento": [
+     [
+      0.1803948045708239,
+      0.5625,
+      32
+     ],
+     [
+      0.2442575559616089,
+      0.368,
+      125
+     ],
+     [
+      0.35431203790727606,
+      0.6548223350253807,
+      197
+     ],
+     [
+      0.44568182711731896,
+      0.7465753424657534,
+      146
+     ],
+     [
+      0.5487850990084654,
+      0.9447513812154696,
+      181
+     ],
+     [
+      0.6531015013995236,
+      0.9178082191780822,
+      146
+     ],
+     [
+      0.7547234295230163,
+      0.9894736842105263,
+      380
+     ],
+     [
+      0.8380093829972404,
+      0.9821428571428571,
+      280
+     ],
+     [
+      0.9010089039802551,
+      1.0,
+      13
+     ]
+    ],
+    "confiabilidad_calibrada": [
+     [
+      0.2779822332795273,
+      0.34782608695652173,
+      23
+     ],
+     [
+      0.34833970962453925,
+      0.3236994219653179,
+      173
+     ],
+     [
+      0.44623755674654997,
+      0.40460526315789475,
+      304
+     ],
+     [
+      0.5584517620593942,
+      0.5796019900497512,
+      402
+     ],
+     [
+      0.6350817310465459,
+      0.6086956521739131,
+      598
+     ]
+    ]
+   },
+   "f2t_ruido 0.8_test n=6": {
+    "confiabilidad_p_thinker_razonamiento": [
+     [
+      0.1798927617468396,
+      0.5204081632653061,
+      98
+     ],
+     [
+      0.243821716543449,
+      0.358695652173913,
+      368
+     ],
+     [
+      0.3547052831854671,
+      0.59375,
+      512
+     ],
+     [
+      0.44476649976340976,
+      0.7544378698224852,
+      338
+     ],
+     [
+      0.5490097209719792,
+      0.8558282208588958,
+      326
+     ],
+     [
+      0.6504648602046905,
+      0.9073482428115016,
+      313
+     ],
+     [
+      0.7544733040349584,
+      0.9665492957746479,
+      568
+     ],
+     [
+      0.8372851620504866,
+      0.974025974025974,
+      462
+     ],
+     [
+      0.9010089039802551,
+      1.0,
+      15
+     ]
+    ],
+    "confiabilidad_calibrada": [
+     [
+      0.28091246166684064,
+      0.30952380952380953,
+      84
+     ],
+     [
+      0.34849971666427887,
+      0.3326530612244898,
+      490
+     ],
+     [
+      0.44516518712251263,
+      0.41778975741239893,
+      742
+     ],
+     [
+      0.5576401368431185,
+      0.5521390374331551,
+      748
+     ],
+     [
+      0.6354220771822119,
+      0.5844017094017094,
+      936
+     ]
+    ]
+   },
+   "f2t_ruido 0.65_test": {
+    "confiabilidad_p_thinker_razonamiento": [
+     [
+      0.16436293915178649,
+      0.27218934911242604,
+      169
+     ],
+     [
+      0.2510675751801693,
+      0.3484848484848485,
+      198
+     ],
+     [
+      0.3537458335778799,
+      0.6224899598393574,
+      249
+     ],
+     [
+      0.4498339599952465,
+      0.8170731707317073,
+      410
+     ],
+     [
+      0.5493638546843278,
+      0.8086124401913876,
+      209
+     ],
+     [
+      0.6443978417210463,
+      0.823170731707317,
+      164
+     ],
+     [
+      0.7188062191009521,
+      0.875,
+      40
+     ],
+     [
+      0.8436762837112927,
+      0.9508196721311475,
+      61
+     ]
+    ],
+    "confiabilidad_calibrada": [
+     [
+      0.17531520330182263,
+      0.15454545454545454,
+      220
+     ],
+     [
+      0.2619883983780787,
+      0.29088277858176553,
+      691
+     ],
+     [
+      0.33912065682617676,
+      0.3769100169779287,
+      589
+     ]
+    ]
+   },
+   "f2t_ruido 0.65_test n=6": {
+    "confiabilidad_p_thinker_razonamiento": [
+     [
+      0.16644678907442229,
+      0.19484240687679083,
+      349
+     ],
+     [
+      0.2556101891879491,
+      0.3031496062992126,
+      508
+     ],
+     [
+      0.3520207523185516,
+      0.5663551401869159,
+      535
+     ],
+     [
+      0.44999894537503204,
+      0.7144866385372715,
+      711
+     ],
+     [
+      0.5439422018095559,
+      0.7303921568627451,
+      408
+     ],
+     [
+      0.6447142234707244,
+      0.8505747126436781,
+      261
+     ],
+     [
+      0.7188263157518898,
+      0.8617886178861789,
+      123
+     ],
+     [
+      0.8419700310343787,
+      0.9047619047619048,
+      105
+     ]
+    ],
+    "confiabilidad_calibrada": [
+     [
+      0.17600826572778622,
+      0.1172566371681416,
+      452
+     ],
+     [
+      0.2576465258429383,
+      0.2724161533196441,
+      1461
+     ],
+     [
+      0.3388120934170929,
+      0.32750689972401104,
+      1087
+     ]
+    ]
+   }
+  }
+ },
+ "tamanos": {
+  "n_pre": 10000,
+  "n_test_pureza": 2000,
+  "n_curva": 500,
+  "ep": 4000,
+  "cada": 500,
+  "ep_eval": 500,
+  "homeostasis": 0.02,
+  "congelada": true,
+  "ep_f3": 4000,
+  "columnas": 10000,
+  "cada_col": 1250,
+  "col_tabular": 10000,
+  "n_nosup": 10000,
+  "marcas_nosup": [
+   2500,
+   10000,
+   40000
+  ],
+  "cada_ancla": 10,
+  "g_ref": 20,
+  "g_sondas": 3,
+  "g_obs": 2000,
+  "f0": [
+   "rep",
+   "a_oraculo",
+   "a_ruido_0.65",
+   "a_ruido_0.8",
+   "a_ruido_0.9",
+   "b_refuerzo",
+   "b_cred2",
+   "c_barajadas",
+   "rep_v02"
+  ]
+ }
+}

@@ -401,6 +401,3406 @@
     "nota": "desvío en referencia"
    }
   },
+  "causa K=1 sin | 10000 columnas": {
+   "causa_es_codigo (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "causa_precision_pares (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "causa_recall_pares (media de 6)": {
+    "media": NaN,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     NaN
+    ],
+    "referencia": "",
+    "nota": "desvío en referencia"
+   },
+   "columna_final (media de 6)": {
+    "media": 0.9678,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.9678
+    ],
+    "referencia": "0.0670",
+    "nota": "desvío en referencia"
+   },
+   "digitos_repartidos (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "ligadura_es_codigo (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_precision_pares (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_recall_pares (media de 6)": {
+    "media": NaN,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     NaN
+    ],
+    "referencia": "",
+    "nota": "desvío en referencia"
+   },
+   "perfil_margen_distintos (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "perfil_max (media de 6)": {
+    "media": 0.7894,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.7894
+    ],
+    "referencia": "0.0882",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 6)": {
+    "media": 0.9989,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.9989
+    ],
+    "referencia": "0.0001",
+    "nota": "desvío en referencia"
+   },
+   "religadas (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "simbolos_compartidos (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   }
+  },
+  "causa K=10 ancla | 10000 columnas": {
+   "causa_es_codigo (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "causa_precision_pares (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "causa_recall_pares (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "columna_final (media de 6)": {
+    "media": 0.932,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.932
+    ],
+    "referencia": "0.0873",
+    "nota": "desvío en referencia"
+   },
+   "digitos_repartidos (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "ligadura_es_codigo (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_precision_pares (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_recall_pares (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "perfil_margen_distintos (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "perfil_max (media de 6)": {
+    "media": 0.7961,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.7961
+    ],
+    "referencia": "0.0862",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 6)": {
+    "media": 0.9889,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.9889
+    ],
+    "referencia": "0.0008",
+    "nota": "desvío en referencia"
+   },
+   "religadas (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "simbolos_compartidos (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   }
+  },
+  "causa K=10 cercanía 0.1 | 10000 columnas": {
+   "causa_es_codigo (media de 6)": {
+    "media": 0.7217,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.7217
+    ],
+    "referencia": "0.1932",
+    "nota": "desvío en referencia"
+   },
+   "causa_precision_pares (media de 6)": {
+    "media": 0.685,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.685
+    ],
+    "referencia": "0.1903",
+    "nota": "desvío en referencia"
+   },
+   "causa_recall_pares (media de 6)": {
+    "media": 0.8856,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.8856
+    ],
+    "referencia": "0.0754",
+    "nota": "desvío en referencia"
+   },
+   "columna_final (media de 6)": {
+    "media": 0.254,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.254
+    ],
+    "referencia": "0.1461",
+    "nota": "desvío en referencia"
+   },
+   "digitos_repartidos (media de 6)": {
+    "media": 0.4333,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.4333
+    ],
+    "referencia": "0.2749",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "ligadura_es_codigo (media de 6)": {
+    "media": 0.8133,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.8133
+    ],
+    "referencia": "0.1118",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_precision_pares (media de 6)": {
+    "media": 0.7222,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.7222
+    ],
+    "referencia": "0.1523",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_recall_pares (media de 6)": {
+    "media": 0.7952,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.7952
+    ],
+    "referencia": "0.1260",
+    "nota": "desvío en referencia"
+   },
+   "perfil_margen_distintos (media de 6)": {
+    "media": 0.0081,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0081
+    ],
+    "referencia": "0.0050",
+    "nota": "desvío en referencia"
+   },
+   "perfil_max (media de 6)": {
+    "media": 0.1331,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1331
+    ],
+    "referencia": "0.0285",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 6)": {
+    "media": 0.5814,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.5814
+    ],
+    "referencia": "0.1944",
+    "nota": "desvío en referencia"
+   },
+   "religadas (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "simbolos_compartidos (media de 6)": {
+    "media": 0.5611,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.5611
+    ],
+    "referencia": "0.3176",
+    "nota": "desvío en referencia"
+   }
+  },
+  "causa K=10 cercanía 0.3 | 10000 columnas": {
+   "causa_es_codigo (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "causa_precision_pares (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "causa_recall_pares (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "columna_final (media de 6)": {
+    "media": 0.8462,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.8462
+    ],
+    "referencia": "0.1129",
+    "nota": "desvío en referencia"
+   },
+   "digitos_repartidos (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "ligadura_es_codigo (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_precision_pares (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_recall_pares (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "perfil_margen_distintos (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "perfil_max (media de 6)": {
+    "media": 0.4766,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.4766
+    ],
+    "referencia": "0.0714",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 6)": {
+    "media": 0.9932,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.9932
+    ],
+    "referencia": "0.0019",
+    "nota": "desvío en referencia"
+   },
+   "religadas (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "simbolos_compartidos (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   }
+  },
+  "causa K=10 sin | 10000 columnas": {
+   "causa_es_codigo (media de 6)": {
+    "media": 0.1883,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1883
+    ],
+    "referencia": "0.0334",
+    "nota": "desvío en referencia"
+   },
+   "causa_precision_pares (media de 6)": {
+    "media": 0.166,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.166
+    ],
+    "referencia": "0.0333",
+    "nota": "desvío en referencia"
+   },
+   "causa_recall_pares (media de 6)": {
+    "media": 0.21,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.21
+    ],
+    "referencia": "0.0630",
+    "nota": "desvío en referencia"
+   },
+   "columna_final (media de 6)": {
+    "media": 0.1003,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1003
+    ],
+    "referencia": "0.0086",
+    "nota": "desvío en referencia"
+   },
+   "digitos_repartidos (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "ligadura_es_codigo (media de 6)": {
+    "media": 0.2417,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.2417
+    ],
+    "referencia": "0.0227",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_precision_pares (media de 6)": {
+    "media": 0.0939,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0939
+    ],
+    "referencia": "0.0099",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_recall_pares (media de 6)": {
+    "media": 0.097,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.097
+    ],
+    "referencia": "0.0103",
+    "nota": "desvío en referencia"
+   },
+   "perfil_margen_distintos (media de 6)": {
+    "media": 0.005,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.005
+    ],
+    "referencia": "0.0007",
+    "nota": "desvío en referencia"
+   },
+   "perfil_max (media de 6)": {
+    "media": 0.105,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.105
+    ],
+    "referencia": "0.0006",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 6)": {
+    "media": 0.2181,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.2181
+    ],
+    "referencia": "0.0131",
+    "nota": "desvío en referencia"
+   },
+   "religadas (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "simbolos_compartidos (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   }
+  },
+  "causa K=3 ancla + fuga 0.03 | 10000 columnas": {
+   "causa_es_codigo (media de 6)": {
+    "media": 0.1389,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1389
+    ],
+    "referencia": "0.0591",
+    "nota": "desvío en referencia"
+   },
+   "causa_precision_pares (media de 6)": {
+    "media": 0.074,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.074
+    ],
+    "referencia": "0.0203",
+    "nota": "desvío en referencia"
+   },
+   "causa_recall_pares (media de 6)": {
+    "media": 0.1222,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1222
+    ],
+    "referencia": "0.0416",
+    "nota": "desvío en referencia"
+   },
+   "columna_final (media de 6)": {
+    "media": 0.1012,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1012
+    ],
+    "referencia": "0.0135",
+    "nota": "desvío en referencia"
+   },
+   "digitos_repartidos (media de 6)": {
+    "media": 0.7,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.7
+    ],
+    "referencia": "0.2160",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "ligadura_es_codigo (media de 6)": {
+    "media": 0.4778,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.4778
+    ],
+    "referencia": "0.0598",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_precision_pares (media de 6)": {
+    "media": 0.2278,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.2278
+    ],
+    "referencia": "0.0466",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_recall_pares (media de 6)": {
+    "media": 0.4833,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.4833
+    ],
+    "referencia": "0.1619",
+    "nota": "desvío en referencia"
+   },
+   "perfil_margen_distintos (media de 6)": {
+    "media": 0.0029,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0029
+    ],
+    "referencia": "0.0002",
+    "nota": "desvío en referencia"
+   },
+   "perfil_max (media de 6)": {
+    "media": 0.1027,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1027
+    ],
+    "referencia": "0.0002",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 6)": {
+    "media": 0.1805,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1805
+    ],
+    "referencia": "0.0113",
+    "nota": "desvío en referencia"
+   },
+   "religadas (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "simbolos_compartidos (media de 6)": {
+    "media": 0.6853,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.6853
+    ],
+    "referencia": "0.0801",
+    "nota": "desvío en referencia"
+   }
+  },
+  "causa K=3 ancla + g, h del Cortex | 10000 columnas": {
+   "causa_es_codigo (media de 6)": {
+    "media": 0.0833,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0833
+    ],
+    "referencia": "0.0461",
+    "nota": "desvío en referencia"
+   },
+   "causa_precision_pares (media de 6)": {
+    "media": 0.0628,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0628
+    ],
+    "referencia": "0.0405",
+    "nota": "desvío en referencia"
+   },
+   "causa_recall_pares (media de 6)": {
+    "media": 0.1167,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1167
+    ],
+    "referencia": "0.0764",
+    "nota": "desvío en referencia"
+   },
+   "columna_final (media de 6)": {
+    "media": 0.1107,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1107
+    ],
+    "referencia": "0.0145",
+    "nota": "desvío en referencia"
+   },
+   "digitos_repartidos (media de 6)": {
+    "media": 0.6,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.6
+    ],
+    "referencia": "0.2000",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "ligadura_es_codigo (media de 6)": {
+    "media": 0.2611,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.2611
+    ],
+    "referencia": "0.0487",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_precision_pares (media de 6)": {
+    "media": 0.0978,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0978
+    ],
+    "referencia": "0.0232",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_recall_pares (media de 6)": {
+    "media": 0.5556,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.5556
+    ],
+    "referencia": "0.1583",
+    "nota": "desvío en referencia"
+   },
+   "perfil_margen_distintos (media de 6)": {
+    "media": 0.0017,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0017
+    ],
+    "referencia": "0.0002",
+    "nota": "desvío en referencia"
+   },
+   "perfil_max (media de 6)": {
+    "media": 0.1015,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1015
+    ],
+    "referencia": "0.0001",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 6)": {
+    "media": 0.1252,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1252
+    ],
+    "referencia": "0.0021",
+    "nota": "desvío en referencia"
+   },
+   "religadas (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "simbolos_compartidos (media de 6)": {
+    "media": 0.6409,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.6409
+    ],
+    "referencia": "0.1437",
+    "nota": "desvío en referencia"
+   }
+  },
+  "causa K=3 ancla | 10000 columnas": {
+   "causa_es_codigo (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "causa_precision_pares (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "causa_recall_pares (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "columna_final (media de 6)": {
+    "media": 0.9902,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.9902
+    ],
+    "referencia": "0.0035",
+    "nota": "desvío en referencia"
+   },
+   "digitos_repartidos (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "ligadura_es_codigo (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_precision_pares (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_recall_pares (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "perfil_margen_distintos (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "perfil_max (media de 6)": {
+    "media": 0.8573,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.8573
+    ],
+    "referencia": "0.0441",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 6)": {
+    "media": 0.9969,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.9969
+    ],
+    "referencia": "0.0001",
+    "nota": "desvío en referencia"
+   },
+   "religadas (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "simbolos_compartidos (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   }
+  },
+  "causa K=3 cercanía 0.05 | 10000 columnas": {
+   "causa_es_codigo (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "causa_precision_pares (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "causa_recall_pares (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "columna_final (media de 6)": {
+    "media": 0.8073,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.8073
+    ],
+    "referencia": "0.0638",
+    "nota": "desvío en referencia"
+   },
+   "digitos_repartidos (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 0.6667,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.6667
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "ligadura_es_codigo (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_precision_pares (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_recall_pares (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "perfil_margen_distintos (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "perfil_max (media de 6)": {
+    "media": 0.4402,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.4402
+    ],
+    "referencia": "0.0461",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 6)": {
+    "media": 0.9912,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.9912
+    ],
+    "referencia": "0.0032",
+    "nota": "desvío en referencia"
+   },
+   "religadas (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "simbolos_compartidos (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   }
+  },
+  "causa K=3 cercanía 0.05 | 40000 columnas": {
+   "causa_es_codigo (media de 3)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "causa_precision_pares (media de 3)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "causa_recall_pares (media de 3)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "columna_final (media de 3)": {
+    "media": 0.9563,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.9563
+    ],
+    "referencia": "0.0618",
+    "nota": "desvío en referencia"
+   },
+   "digitos_repartidos (media de 3)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "ligadura_es_codigo (media de 3)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_precision_pares (media de 3)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_recall_pares (media de 3)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "perfil_margen_distintos (media de 3)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "perfil_max (media de 3)": {
+    "media": 0.7874,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.7874
+    ],
+    "referencia": "0.0873",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 3)": {
+    "media": 0.9992,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.9992
+    ],
+    "referencia": "0.0001",
+    "nota": "desvío en referencia"
+   },
+   "religadas (media de 3)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "simbolos_compartidos (media de 3)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   }
+  },
+  "causa K=3 cercanía 0.1 | 10000 columnas": {
+   "causa_es_codigo (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "causa_precision_pares (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "causa_recall_pares (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "columna_final (media de 6)": {
+    "media": 0.8657,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.8657
+    ],
+    "referencia": "0.0849",
+    "nota": "desvío en referencia"
+   },
+   "digitos_repartidos (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 0.8333,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.8333
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "ligadura_es_codigo (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_precision_pares (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_recall_pares (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "perfil_margen_distintos (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "perfil_max (media de 6)": {
+    "media": 0.5177,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.5177
+    ],
+    "referencia": "0.0604",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 6)": {
+    "media": 0.9942,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.9942
+    ],
+    "referencia": "0.0021",
+    "nota": "desvío en referencia"
+   },
+   "religadas (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "simbolos_compartidos (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   }
+  },
+  "causa K=3 cercanía 0.3 fuga 0.15 | 10000 columnas": {
+   "causa_es_codigo (media de 6)": {
+    "media": 0.1167,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1167
+    ],
+    "referencia": "0.0811",
+    "nota": "desvío en referencia"
+   },
+   "causa_precision_pares (media de 6)": {
+    "media": 0.0566,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0566
+    ],
+    "referencia": "0.0248",
+    "nota": "desvío en referencia"
+   },
+   "causa_recall_pares (media de 6)": {
+    "media": 0.1,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1
+    ],
+    "referencia": "0.0471",
+    "nota": "desvío en referencia"
+   },
+   "columna_final (media de 6)": {
+    "media": 0.1027,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1027
+    ],
+    "referencia": "0.0135",
+    "nota": "desvío en referencia"
+   },
+   "digitos_repartidos (media de 6)": {
+    "media": 0.65,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.65
+    ],
+    "referencia": "0.2217",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "ligadura_es_codigo (media de 6)": {
+    "media": 0.2389,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.2389
+    ],
+    "referencia": "0.0524",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_precision_pares (media de 6)": {
+    "media": 0.0907,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0907
+    ],
+    "referencia": "0.0244",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_recall_pares (media de 6)": {
+    "media": 0.5056,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.5056
+    ],
+    "referencia": "0.1799",
+    "nota": "desvío en referencia"
+   },
+   "perfil_margen_distintos (media de 6)": {
+    "media": 0.0013,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0013
+    ],
+    "referencia": "0.0001",
+    "nota": "desvío en referencia"
+   },
+   "perfil_max (media de 6)": {
+    "media": 0.1012,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1012
+    ],
+    "referencia": "0.0001",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 6)": {
+    "media": 0.1239,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1239
+    ],
+    "referencia": "0.0021",
+    "nota": "desvío en referencia"
+   },
+   "religadas (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "simbolos_compartidos (media de 6)": {
+    "media": 0.6722,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.6722
+    ],
+    "referencia": "0.0780",
+    "nota": "desvío en referencia"
+   }
+  },
+  "causa K=3 cercanía 0.3 | 10000 columnas": {
+   "causa_es_codigo (media de 6)": {
+    "media": 0.9667,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.9667
+    ],
+    "referencia": "0.0745",
+    "nota": "desvío en referencia"
+   },
+   "causa_precision_pares (media de 6)": {
+    "media": 0.9615,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.9615
+    ],
+    "referencia": "0.0860",
+    "nota": "desvío en referencia"
+   },
+   "causa_recall_pares (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "columna_final (media de 6)": {
+    "media": 0.9037,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.9037
+    ],
+    "referencia": "0.1008",
+    "nota": "desvío en referencia"
+   },
+   "digitos_repartidos (media de 6)": {
+    "media": 0.0167,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0167
+    ],
+    "referencia": "0.0373",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 0.8333,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.8333
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "ligadura_es_codigo (media de 6)": {
+    "media": 0.9833,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.9833
+    ],
+    "referencia": "0.0373",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_precision_pares (media de 6)": {
+    "media": 0.9595,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.9595
+    ],
+    "referencia": "0.0907",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_recall_pares (media de 6)": {
+    "media": 0.9889,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.9889
+    ],
+    "referencia": "0.0248",
+    "nota": "desvío en referencia"
+   },
+   "perfil_margen_distintos (media de 6)": {
+    "media": 0.0154,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0154
+    ],
+    "referencia": "0.0345",
+    "nota": "desvío en referencia"
+   },
+   "perfil_max (media de 6)": {
+    "media": 0.6186,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.6186
+    ],
+    "referencia": "0.0763",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 6)": {
+    "media": 0.9743,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.9743
+    ],
+    "referencia": "0.0513",
+    "nota": "desvío en referencia"
+   },
+   "religadas (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "simbolos_compartidos (media de 6)": {
+    "media": 0.037,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.037
+    ],
+    "referencia": "0.0828",
+    "nota": "desvío en referencia"
+   }
+  },
+  "causa K=3 cercanía 0.5 fuga 0.3 | 10000 columnas": {
+   "causa_es_codigo (media de 6)": {
+    "media": 0.1056,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1056
+    ],
+    "referencia": "0.0524",
+    "nota": "desvío en referencia"
+   },
+   "causa_precision_pares (media de 6)": {
+    "media": 0.0858,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0858
+    ],
+    "referencia": "0.0184",
+    "nota": "desvío en referencia"
+   },
+   "causa_recall_pares (media de 6)": {
+    "media": 0.1667,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1667
+    ],
+    "referencia": "0.0544",
+    "nota": "desvío en referencia"
+   },
+   "columna_final (media de 6)": {
+    "media": 0.1035,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1035
+    ],
+    "referencia": "0.0112",
+    "nota": "desvío en referencia"
+   },
+   "digitos_repartidos (media de 6)": {
+    "media": 0.2833,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.2833
+    ],
+    "referencia": "0.2478",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "ligadura_es_codigo (media de 6)": {
+    "media": 0.1833,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1833
+    ],
+    "referencia": "0.1032",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_precision_pares (media de 6)": {
+    "media": 0.0888,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0888
+    ],
+    "referencia": "0.0361",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_recall_pares (media de 6)": {
+    "media": 0.8056,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.8056
+    ],
+    "referencia": "0.1747",
+    "nota": "desvío en referencia"
+   },
+   "perfil_margen_distintos (media de 6)": {
+    "media": 0.0017,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0017
+    ],
+    "referencia": "0.0002",
+    "nota": "desvío en referencia"
+   },
+   "perfil_max (media de 6)": {
+    "media": 0.1014,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1014
+    ],
+    "referencia": "0.0001",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 6)": {
+    "media": 0.1155,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1155
+    ],
+    "referencia": "0.0018",
+    "nota": "desvío en referencia"
+   },
+   "religadas (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "simbolos_compartidos (media de 6)": {
+    "media": 0.75,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.75
+    ],
+    "referencia": "0.2679",
+    "nota": "desvío en referencia"
+   }
+  },
+  "causa K=3 cercanía 1 fuga 1 | 10000 columnas": {
+   "causa_es_codigo (media de 6)": {
+    "media": 0.1056,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1056
+    ],
+    "referencia": "0.0487",
+    "nota": "desvío en referencia"
+   },
+   "causa_precision_pares (media de 6)": {
+    "media": 0.0491,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0491
+    ],
+    "referencia": "0.0232",
+    "nota": "desvío en referencia"
+   },
+   "causa_recall_pares (media de 6)": {
+    "media": 0.0833,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0833
+    ],
+    "referencia": "0.0461",
+    "nota": "desvío en referencia"
+   },
+   "columna_final (media de 6)": {
+    "media": 0.0923,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0923
+    ],
+    "referencia": "0.0086",
+    "nota": "desvío en referencia"
+   },
+   "digitos_repartidos (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "ligadura_es_codigo (media de 6)": {
+    "media": 0.1,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_precision_pares (media de 6)": {
+    "media": 0.069,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.069
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_recall_pares (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "perfil_margen_distintos (media de 6)": {
+    "media": 0.0028,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0028
+    ],
+    "referencia": "0.0007",
+    "nota": "desvío en referencia"
+   },
+   "perfil_max (media de 6)": {
+    "media": 0.1023,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1023
+    ],
+    "referencia": "0.0002",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 6)": {
+    "media": 0.1,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "religadas (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "simbolos_compartidos (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   }
+  },
+  "causa K=3 perfil de contexto | 10000 columnas": {
+   "causa_es_codigo (media de 6)": {
+    "media": 0.6389,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.6389
+    ],
+    "referencia": "0.0951",
+    "nota": "desvío en referencia"
+   },
+   "causa_precision_pares (media de 6)": {
+    "media": 0.5749,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.5749
+    ],
+    "referencia": "0.0579",
+    "nota": "desvío en referencia"
+   },
+   "causa_recall_pares (media de 6)": {
+    "media": 0.9056,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.9056
+    ],
+    "referencia": "0.0487",
+    "nota": "desvío en referencia"
+   },
+   "columna_final (media de 6)": {
+    "media": 0.3095,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.3095
+    ],
+    "referencia": "0.0622",
+    "nota": "desvío en referencia"
+   },
+   "digitos_repartidos (media de 6)": {
+    "media": 0.7833,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.7833
+    ],
+    "referencia": "0.0898",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "ligadura_es_codigo (media de 6)": {
+    "media": 0.6222,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.6222
+    ],
+    "referencia": "0.0533",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_precision_pares (media de 6)": {
+    "media": 0.371,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.371
+    ],
+    "referencia": "0.0712",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_recall_pares (media de 6)": {
+    "media": 0.4056,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.4056
+    ],
+    "referencia": "0.0870",
+    "nota": "desvío en referencia"
+   },
+   "perfil_margen_distintos (media de 6)": {
+    "media": 0.037,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.037
+    ],
+    "referencia": "0.0108",
+    "nota": "desvío en referencia"
+   },
+   "perfil_max (media de 6)": {
+    "media": 0.2,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.2
+    ],
+    "referencia": "0.0287",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 6)": {
+    "media": 0.5962,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.5962
+    ],
+    "referencia": "0.0531",
+    "nota": "desvío en referencia"
+   },
+   "religadas (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "simbolos_compartidos (media de 6)": {
+    "media": 0.85,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.85
+    ],
+    "referencia": "0.0957",
+    "nota": "desvío en referencia"
+   }
+  },
+  "causa K=3 perfil de contexto | 40000 columnas": {
+   "causa_es_codigo (media de 3)": {
+    "media": 0.7667,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.7667
+    ],
+    "referencia": "0.1089",
+    "nota": "desvío en referencia"
+   },
+   "causa_precision_pares (media de 3)": {
+    "media": 0.6439,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.6439
+    ],
+    "referencia": "0.0890",
+    "nota": "desvío en referencia"
+   },
+   "causa_recall_pares (media de 3)": {
+    "media": 0.9333,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.9333
+    ],
+    "referencia": "0.0544",
+    "nota": "desvío en referencia"
+   },
+   "columna_final (media de 3)": {
+    "media": 0.48,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.48
+    ],
+    "referencia": "0.0661",
+    "nota": "desvío en referencia"
+   },
+   "digitos_repartidos (media de 3)": {
+    "media": 0.5,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.5
+    ],
+    "referencia": "0.1414",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "ligadura_es_codigo (media de 3)": {
+    "media": 0.7444,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.7444
+    ],
+    "referencia": "0.0786",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_precision_pares (media de 3)": {
+    "media": 0.5535,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.5535
+    ],
+    "referencia": "0.1161",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_recall_pares (media de 3)": {
+    "media": 0.6222,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.6222
+    ],
+    "referencia": "0.1343",
+    "nota": "desvío en referencia"
+   },
+   "perfil_margen_distintos (media de 3)": {
+    "media": 0.0574,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0574
+    ],
+    "referencia": "0.0144",
+    "nota": "desvío en referencia"
+   },
+   "perfil_max (media de 3)": {
+    "media": 0.3466,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.3466
+    ],
+    "referencia": "0.0611",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 3)": {
+    "media": 0.7341,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.7341
+    ],
+    "referencia": "0.0871",
+    "nota": "desvío en referencia"
+   },
+   "religadas (media de 3)": {
+    "media": 37.3333,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     37.3333
+    ],
+    "referencia": "27.5237",
+    "nota": "desvío en referencia"
+   },
+   "simbolos_compartidos (media de 3)": {
+    "media": 0.6,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.6
+    ],
+    "referencia": "0.2160",
+    "nota": "desvío en referencia"
+   }
+  },
+  "causa K=3 recocido 0.5 | 10000 columnas": {
+   "causa_es_codigo (media de 6)": {
+    "media": 0.1333,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1333
+    ],
+    "referencia": "0.0694",
+    "nota": "desvío en referencia"
+   },
+   "causa_precision_pares (media de 6)": {
+    "media": 0.1348,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1348
+    ],
+    "referencia": "0.0203",
+    "nota": "desvío en referencia"
+   },
+   "causa_recall_pares (media de 6)": {
+    "media": 0.1944,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1944
+    ],
+    "referencia": "0.0299",
+    "nota": "desvío en referencia"
+   },
+   "columna_final (media de 6)": {
+    "media": 0.1028,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1028
+    ],
+    "referencia": "0.0094",
+    "nota": "desvío en referencia"
+   },
+   "digitos_repartidos (media de 6)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "ligadura_es_codigo (media de 6)": {
+    "media": 0.4056,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.4056
+    ],
+    "referencia": "0.0404",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_precision_pares (media de 6)": {
+    "media": 0.0835,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0835
+    ],
+    "referencia": "0.0334",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_recall_pares (media de 6)": {
+    "media": 0.0944,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0944
+    ],
+    "referencia": "0.0356",
+    "nota": "desvío en referencia"
+   },
+   "perfil_margen_distintos (media de 6)": {
+    "media": 0.0046,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0046
+    ],
+    "referencia": "0.0005",
+    "nota": "desvío en referencia"
+   },
+   "perfil_max (media de 6)": {
+    "media": 0.1045,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.1045
+    ],
+    "referencia": "0.0002",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 6)": {
+    "media": 0.197,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.197
+    ],
+    "referencia": "0.0193",
+    "nota": "desvío en referencia"
+   },
+   "religadas (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "simbolos_compartidos (media de 6)": {
+    "media": 0.9167,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.9167
+    ],
+    "referencia": "0.0898",
+    "nota": "desvío en referencia"
+   }
+  },
+  "causa K=3 sin | 10000 columnas": {
+   "causa_es_codigo (media de 6)": {
+    "media": 0.6389,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.6389
+    ],
+    "referencia": "0.0951",
+    "nota": "desvío en referencia"
+   },
+   "causa_precision_pares (media de 6)": {
+    "media": 0.5749,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.5749
+    ],
+    "referencia": "0.0579",
+    "nota": "desvío en referencia"
+   },
+   "causa_recall_pares (media de 6)": {
+    "media": 0.9056,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.9056
+    ],
+    "referencia": "0.0487",
+    "nota": "desvío en referencia"
+   },
+   "columna_final (media de 6)": {
+    "media": 0.3095,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.3095
+    ],
+    "referencia": "0.0622",
+    "nota": "desvío en referencia"
+   },
+   "digitos_repartidos (media de 6)": {
+    "media": 0.7833,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.7833
+    ],
+    "referencia": "0.0898",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "ligadura_es_codigo (media de 6)": {
+    "media": 0.6222,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.6222
+    ],
+    "referencia": "0.0533",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_precision_pares (media de 6)": {
+    "media": 0.371,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.371
+    ],
+    "referencia": "0.0712",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_recall_pares (media de 6)": {
+    "media": 0.4056,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.4056
+    ],
+    "referencia": "0.0870",
+    "nota": "desvío en referencia"
+   },
+   "perfil_margen_distintos (media de 6)": {
+    "media": 0.037,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.037
+    ],
+    "referencia": "0.0108",
+    "nota": "desvío en referencia"
+   },
+   "perfil_max (media de 6)": {
+    "media": 0.2,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.2
+    ],
+    "referencia": "0.0287",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 6)": {
+    "media": 0.5962,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.5962
+    ],
+    "referencia": "0.0531",
+    "nota": "desvío en referencia"
+   },
+   "religadas (media de 6)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "simbolos_compartidos (media de 6)": {
+    "media": 0.85,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.85
+    ],
+    "referencia": "0.0957",
+    "nota": "desvío en referencia"
+   }
+  },
+  "causa K=3 sin | 40000 columnas": {
+   "causa_es_codigo (media de 3)": {
+    "media": 0.7556,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.7556
+    ],
+    "referencia": "0.0416",
+    "nota": "desvío en referencia"
+   },
+   "causa_precision_pares (media de 3)": {
+    "media": 0.6498,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.6498
+    ],
+    "referencia": "0.0858",
+    "nota": "desvío en referencia"
+   },
+   "causa_recall_pares (media de 3)": {
+    "media": 0.9556,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.9556
+    ],
+    "referencia": "0.0314",
+    "nota": "desvío en referencia"
+   },
+   "columna_final (media de 3)": {
+    "media": 0.4373,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.4373
+    ],
+    "referencia": "0.0478",
+    "nota": "desvío en referencia"
+   },
+   "digitos_repartidos (media de 3)": {
+    "media": 0.6,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.6
+    ],
+    "referencia": "0.0816",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "ligadura_es_codigo (media de 3)": {
+    "media": 0.7111,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.7111
+    ],
+    "referencia": "0.0567",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_precision_pares (media de 3)": {
+    "media": 0.5053,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.5053
+    ],
+    "referencia": "0.0664",
+    "nota": "desvío en referencia"
+   },
+   "ligadura_recall_pares (media de 3)": {
+    "media": 0.5667,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.5667
+    ],
+    "referencia": "0.0720",
+    "nota": "desvío en referencia"
+   },
+   "perfil_margen_distintos (media de 3)": {
+    "media": 0.0705,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0705
+    ],
+    "referencia": "0.0235",
+    "nota": "desvío en referencia"
+   },
+   "perfil_max (media de 3)": {
+    "media": 0.3307,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.3307
+    ],
+    "referencia": "0.0523",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 3)": {
+    "media": 0.7018,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.7018
+    ],
+    "referencia": "0.0586",
+    "nota": "desvío en referencia"
+   },
+   "religadas (media de 3)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "simbolos_compartidos (media de 3)": {
+    "media": 0.6667,
+    "desvio": 0.0,
+    "semillas": [
+     1
+    ],
+    "valores": [
+     0.6667
+    ],
+    "referencia": "0.0943",
+    "nota": "desvío en referencia"
+   }
+  },
   "conjunto L2 map | aleatorio": {
    "columna_final (media de 20)": {
     "media": 0.4768,
@@ -1141,6 +4541,222 @@
     "nota": ""
    }
   },
+  "protos K=1 | 10000 columnas": {
+   "columna_final (media de 6)": {
+    "media": 0.9973,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9973
+    ],
+    "referencia": "0.0011",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 6)": {
+    "media": 0.9989,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9989
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   }
+  },
+  "protos K=1 | 40000 columnas": {
+   "columna_final (media de 6)": {
+    "media": 0.9997,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9997
+    ],
+    "referencia": "0.0007",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 6)": {
+    "media": 0.9998,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9998
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   }
+  },
+  "protos K=10 | 10000 columnas": {
+   "columna_final (media de 6)": {
+    "media": 0.1067,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.1067
+    ],
+    "referencia": "0.0068",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 6)": {
+    "media": 0.2179,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.2179
+    ],
+    "referencia": "0.0168",
+    "nota": "desvío en referencia"
+   }
+  },
+  "protos K=10 | 160000 columnas": {
+   "columna_final (media de 3)": {
+    "media": 0.2807,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.2807
+    ],
+    "referencia": "0.0678",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 3)": {
+    "media": 0.4856,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.4856
+    ],
+    "referencia": "0.1132",
+    "nota": "desvío en referencia"
+   }
+  },
+  "protos K=10 | 40000 columnas": {
+   "columna_final (media de 6)": {
+    "media": 0.1317,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.1317
+    ],
+    "referencia": "0.0087",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 6)": {
+    "media": 0.2932,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.2932
+    ],
+    "referencia": "0.0299",
+    "nota": "desvío en referencia"
+   }
+  },
+  "protos K=3 | 10000 columnas": {
+   "columna_final (media de 6)": {
+    "media": 0.3183,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     0
+    ],
+    "valores": [
+     0.3183,
+     0.3183
+    ],
+    "referencia": "0.0677",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 6)": {
+    "media": 0.5987,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     0
+    ],
+    "valores": [
+     0.5987,
+     0.5987
+    ],
+    "referencia": "0.0855",
+    "nota": "desvío en referencia"
+   }
+  },
+  "protos K=3 | 160000 columnas": {
+   "columna_final (media de 3)": {
+    "media": 0.497,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.497
+    ],
+    "referencia": "0.0337",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 3)": {
+    "media": 0.7102,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.7102
+    ],
+    "referencia": "0.0308",
+    "nota": "desvío en referencia"
+   }
+  },
+  "protos K=3 | 40000 columnas": {
+   "columna_final (media de 6)": {
+    "media": 0.5428,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     0
+    ],
+    "valores": [
+     0.5428,
+     0.5428
+    ],
+    "referencia": "0.1769",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 6)": {
+    "media": 0.7308,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     0
+    ],
+    "valores": [
+     0.7308,
+     0.7308
+    ],
+    "referencia": "0.1133",
+    "nota": "desvío en referencia"
+   }
+  },
   "refuerzo | aleatorio": {
    "biyeccion (media de 20)": {
     "media": 0.3,
@@ -1339,9 +4955,13 @@
   },
   "total": {
    "segundos": {
-    "media": 257.525,
-    "desvio": 263.30388495678017,
+    "media": 530.2874999999999,
+    "desvio": 557.049468020057,
     "semillas": [
+     0,
+     1,
+     1,
+     0,
      0,
      0,
      0,
@@ -1349,8 +4969,12 @@
     ],
     "valores": [
      649.5,
+     512.5,
+     1815.1,
      121.3,
      90.4,
+     443.1,
+     441.5,
      168.9
     ],
     "referencia": "",
@@ -3313,6 +6937,16 @@
   "columnas": 10000,
   "cada_col": 1250,
   "col_tabular": 10000,
+  "n_nosup": 10000,
+  "marcas_nosup": [
+   2500,
+   10000,
+   40000
+  ],
+  "cada_ancla": 10,
+  "g_ref": 20,
+  "g_sondas": 3,
+  "g_obs": 2000,
   "f0": [
    "rep",
    "a_oraculo",
