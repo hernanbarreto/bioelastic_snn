@@ -134,6 +134,7 @@ PRUEBAS = [
         id="deteccion_de_cambio", variante="dos_items", condicion="simbolos",
         metrica="capacidad K con el procedimiento publicado (dos ítems, tocar el que cambió)",
         protocolo="el de Elmore et al. (2011)", desviaciones=[], correr=correr_dos_items, version=1, semillas=(0,),
+        usa_thinker=True,
         equivalente=False, motivo_equivalencia="no se pudo correr",
     ),
 ]

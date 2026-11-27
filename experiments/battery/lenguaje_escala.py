@@ -375,6 +375,52 @@ def correr_tope_triple(semilla: int, escala: float = 1.0) -> dict:
     return correr(semilla, escala, tope=3 * L.CFG["layer"]["max_neurons"])
 
 
+N_EXPLORATORIO = 5_400_000
+
+
+def correr_tope_triple_exploratorio(semilla: int, escala: float = 1.0) -> dict:
+    """5,4 MB con el tope triplicado, continuando la pasada de la serie de tope triple desde
+    1,8 MB. Exploratorio y condicional: sólo si con 1,8 MB esa serie todavía baja los bits
+    por byte y no llegó al tope (si no, la prueba es «no aplicable hoy» con el motivo)."""
+    from .base import NoAplicable
+    if escala < 1.0:
+        raise NoAplicable("exploratorio: sólo a escala completa")
+    tope = 3 * L.CFG["layer"]["max_neurons"]
+    pares = L.pares_blimp(L.PARES)
+    n18 = ESCALAS[-1]
+    puntos = []
+    for n in ESCALAS[1:]:                                   # 0,6 y 1,8 MB de la serie, de las caches
+        net, clave = red_en(semilla, n, tope, log=L._log)
+        r = evaluar_red(net, clave, pares)
+        puntos.append(dict(bytes=n, bits=r["bits_prueba"], neuronas=r["neuronas"], clave=clave))
+        del net
+    baja = puntos[1]["bits"] < puntos[0]["bits"]
+    satura = puntos[1]["neuronas"] >= 0.99 * tope
+    if not baja or satura:
+        raise NoAplicable(f"con 1,8 MB la serie de tope triple {'ya no baja los bits por byte' if not baja else ''}"
+                          f"{' y ' if not baja and satura else ''}{'llegó al tope de neuronas' if satura else ''}: "
+                          f"no corresponde extenderla a 5,4 MB")
+    net, nombre = entrenar_serie(semilla, N_EXPLORATORIO, _cfg(tope), f"_tope{tope}_desde{n18}",
+                                 (puntos[1]["clave"], n18 - 1), L._log)
+    t0 = time.time()
+    r = evaluar_red(net, nombre, pares)
+    del net
+    k = kn_en(N_EXPLORATORIO, pares)
+    br = np.load(r.pop("bits_por_posicion")); bk_ = np.load(k["bits_por_posicion"])
+    med = {f"{c}_5.4MB": v for c, v in r.items()}
+    for c, x in (("bootstrap_red", br), ("bootstrap_kn", bk_), ("bootstrap_red_menos_kn", br - bk_)):
+        b = bootstrap_bloques(x, dict(bootstrap_red=1, bootstrap_kn=2, bootstrap_red_menos_kn=3)[c])
+        med[f"{c}_media_5.4MB"] = b["media"]; med[f"{c}_ic95_inf_5.4MB"] = b["ic95"][0]
+        med[f"{c}_ic95_sup_5.4MB"] = b["ic95"][1]
+    med.update({"kn_bits_prueba_5.4MB": k["bits_prueba"], "kn_orden_5.4MB": float(k["orden"]),
+                "kn_blimp_5.4MB": k["blimp"], "bits_prueba_1.8MB": puntos[1]["bits"],
+                "neuronas_1.8MB": puntos[1]["neuronas"]})
+    med.update(max_neuronas=float(tope),
+               sigue_bajando=bool(r["bits_prueba"] < puntos[1]["bits"]), satura=bool(r["neuronas"] >= 0.99 * tope),
+               red_menos_bits_que_kn=bool(r["bits_prueba"] < k["bits_prueba"]))
+    return dict(puntaje=r["bits_prueba"], medidas=med, segundos=time.time() - t0)
+
+
 _DESV = [
     "corpus de habla dirigida a niños, muy repetitivo: a estas escalas BLiMP no discrimina (los n-gramas quedan en "
     "el azar) y la comparación que decide es la de bits por byte",
@@ -406,5 +452,18 @@ PRUEBAS = [
         equivalente=False, motivo_equivalencia="diagnóstico del tope de capacidad", referencia=None, azar=8.0,
         azar_derivacion="8 bits por byte: distribución uniforme sobre 256 bytes", mayor_es_mejor=False,
         firmas={"curva_baja_bits": "los bits por byte bajan en las tres escalas", "satura": "llega al tope"},
+    ),
+    Prueba(
+        id="blimp", variante="curva_tope_triple_5_4MB_exploratorio", condicion="texto",
+        metrica="bits por byte con 5,4 MB y max_neurons triplicado (exploratorio, una semilla)",
+        protocolo=("la serie de tope triple sigue su pasada en línea de 1,8 a 5,4 MB; mismo tramo fijo, BLiMP y KN de "
+                   "bytes con los mismos 5,4 MB; sólo si con 1,8 MB esa serie todavía baja y no llegó al tope"),
+        desviaciones=_DESV + ["exploratorio: una semilla, un punto más, condicionado a lo que dio la serie de tope "
+                              "triple con 1,8 MB"],
+        correr=correr_tope_triple_exploratorio, version=1, semillas=(0,),
+        equivalente=False, motivo_equivalencia="exploratorio (hardware contra arquitectura)", referencia=None, azar=8.0,
+        azar_derivacion="8 bits por byte: distribución uniforme sobre 256 bytes", mayor_es_mejor=False,
+        firmas={"sigue_bajando": "los bits por byte bajan de 1,8 a 5,4 MB", "satura": "llega al tope",
+                "red_menos_bits_que_kn": "la red predice mejor que KN con los mismos 5,4 MB"},
     ),
 ]

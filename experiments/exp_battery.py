@@ -59,7 +59,7 @@ def _herencia(p, info, almacen, escala):
     otro commit con la misma huella de percepción (mismo código, mismo resultado). Sólo con las
     opciones por defecto: la comprobación de identidad no cubre perfiles como `metacog`."""
     from battery import almacen as alm
-    if p.perfiles or p.perfil != "defecto":
+    if p.perfiles or p.usa_thinker or p.perfil != "defecto":
         return None, None
     propia = version.huella_equivalente(version.huella_percepcion(info["sha"]))
     for d in sorted(almacen.dir.parent.iterdir()) if almacen.dir.parent.exists() else []:
