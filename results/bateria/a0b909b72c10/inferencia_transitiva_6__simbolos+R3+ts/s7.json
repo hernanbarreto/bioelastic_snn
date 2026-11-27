@@ -1,0 +1,19 @@
+{
+ "puntaje": 0.3333333333333333,
+ "medidas": {
+  "BD": 1.0,
+  "BE": 0.0,
+  "CE": 0.0,
+  "media_BD_BE_CE": 0.3333333333333333,
+  "validas": 1.0,
+  "correctas_entre_validas": 0.3333333333333333,
+  "sesiones_al_criterio": 1.0,
+  "llego_al_criterio": true,
+  "premisas_ultimas10": 0.8
+ },
+ "segundos": 0.08948731422424316,
+ "semilla": 7,
+ "version": 2,
+ "escala": 1.0,
+ "config": "defecto"
+}

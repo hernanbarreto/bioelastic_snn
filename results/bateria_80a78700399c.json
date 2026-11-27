@@ -4,12 +4,12 @@
   "sha": "80a78700399cd469f4da14a654ad1895de3ada06",
   "sucio": false,
   "escala": 1.0,
-  "fecha": "2026-11-27 03:20:57",
+  "fecha": "2026-11-27 03:53:07",
   "python": "3.13.18",
   "numpy": "2.5.3",
   "catalogo": {
-   "estado": "verificado para la corrida de la batería sobre v0.3-dev (80a7870); lo que falta está en `pendiente` de cada prueba",
-   "actualizado": "2026-11-26"
+   "estado": "verificado para las corridas de la batería sobre v0.3-dev 80a7870, 8fb949e, 332ce43, a0b909b y dbc5d4b; lo que falta está en `pendiente` de cada prueba",
+   "actualizado": "2026-11-27"
   },
   "convenciones": {
    "indice_normalizado": "(red - azar) / (referencia - azar), sin recortar a [0, 1]; la referencia es la entrada marcada en `referencia_indice`",

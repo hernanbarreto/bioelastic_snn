@@ -1,0 +1,21 @@
+{
+ "puntaje": 0.09999999999999998,
+ "medidas": {
+  "alfa_estable": 0.14,
+  "alfa_volatil": 0.24,
+  "beta": 2.0,
+  "nll": 170.81096123350315,
+  "orden": 1.0,
+  "recompensa": 0.5551724137931034,
+  "diferencia_alfa": 0.09999999999999998,
+  "firma_volatil_mayor": true,
+  "elige_mas_probable_estable": 0.525,
+  "elige_mas_probable_volatil": 0.5588235294117647,
+  "respuestas_invalidas": 0.10689655172413792
+ },
+ "segundos": 1.2887721061706543,
+ "semilla": 3,
+ "version": 1,
+ "escala": 1.0,
+ "config": "aprender_a_aprender"
+}
