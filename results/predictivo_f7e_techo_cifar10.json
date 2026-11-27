@@ -1,0 +1,24 @@
+[
+ {
+  "name": "cifar10",
+  "seed": 0,
+  "n_train": 45000,
+  "n_ridge": 5000,
+  "n_val": 2000,
+  "cnn_lr": 0.001,
+  "cnn_val": 0.6465,
+  "probe_pix": 0.3985,
+  "ridge_pix": 0.4035,
+  "probe_cnn1": 0.6145,
+  "ridge_cnn1": 0.547,
+  "probe_cnn2": 0.6445,
+  "ridge_cnn2": 0.5965,
+  "probe_pix2": 0.3985,
+  "ridge_pix2": 0.4035,
+  "probe_V1": 0.6205,
+  "ridge_V1": 0.5435,
+  "probe_V2": 0.0005,
+  "ridge_V2": 0.095,
+  "secs": 2995.08838224411
+ }
+]
