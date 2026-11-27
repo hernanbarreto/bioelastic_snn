@@ -752,11 +752,11 @@ def construir(var_cfg, seed, tam):
     variante de F1-F5. var_cfg: dict(thinker="aprendido"|"oraculo", posterior=dict(...) o
     None, cred2=bool, refuerzo=bool, thinker_kw=dict, cortex_kw=dict)."""
     v = ei.Vista(seed, homeostasis=tam["homeostasis"])
-    if var_cfg.get("cortex_kw") or "h" in var_cfg:
+    if var_cfg.get("cortex_kw") or "h" in var_cfg or var_cfg.get("config_kw"):
         from exp_vision import CONFIGS
         from bioelastic import Cortex
         v.net = Cortex((28, 28, 1), 10, seed=seed, homeostasis=var_cfg.get("h", tam["homeostasis"]),
-                       **CONFIGS[v.config], **var_cfg.get("cortex_kw", {}))
+                       **dict(CONFIGS[v.config], **var_cfg.get("config_kw", {})), **var_cfg.get("cortex_kw", {}))
     per = Percepcion3(v, k=2)
     if var_cfg.get("thinker") == "oraculo":
         th = ThinkerOraculo()
@@ -803,6 +803,13 @@ VARIANTES_F1C = {   # h = 0: sin homeostasis de salida (elegido en validación c
     "aprendida_blando": dict(thinker="cadena", h=0.0, cadena=dict(regla="aprendida", modo="blando")),
     # + prior de equipartición (beta = 1, elegido en el modelo tabular: 4/4 semillas sin fusiones)
     "aprendida_eq": dict(thinker="cadena", h=0.0, cadena=dict(regla="aprendida", modo="muestreo", equiparticion=1.0)),
+    # regla aprendida con una percepción sin memoria de ejemplares (sin área de asociación:
+    # los símbolos salen de la proyección lineal sobre los rasgos de V1 y del lector local):
+    # menos unidades independientes que coordinar en un código arbitrario
+    "aprendida_eq_proy": dict(thinker="cadena", h=0.0, config_kw=dict(heads=[], replay=0.0),
+                              cadena=dict(regla="aprendida", modo="muestreo", equiparticion=1.0)),
+    "aprendida_muestreo_proy": dict(thinker="cadena", h=0.0, config_kw=dict(heads=[], replay=0.0),
+                                    cadena=dict(regla="aprendida", modo="muestreo")),
     # regla conocida con la evidencia perceptiva pesada por su fiabilidad medida (contra los atajos)
     "conocida_fiab": dict(thinker="oraculo", h=0.0, cadena=dict(regla="conocida", modo="blando", fiabilidad=dict())),
 }
@@ -1002,12 +1009,64 @@ def tabular_cadena(conocida: bool, curriculo: str, seed: int, columnas: int = 10
                 columna_final=float(np.mean(hits[-1000:])))
 
 
+def tabular_protos(K: int, seed: int, columnas: int = 10000, lr: float = 0.5, balance: float = 1.0) -> dict:
+    """Como `tabular_cadena` con la regla aprendida, objetivo muestreado y equipartición,
+    pero con K prototipos independientes por dígito (cada ejemplar cae en uno al azar y
+    cada prototipo tiene su propia tabla de símbolos): el modelo mínimo de una percepción
+    que memoriza ejemplares. Sin ancla, todos los prototipos de un dígito tienen que caer
+    en el mismo símbolo arbitrario y la única presión es la estadística de las respuestas."""
+    from scipy.optimize import linear_sum_assignment
+    from bioelastic.posterior import ChainRule, Equipartition
+    rng = np.random.default_rng(seed)
+    W = rng.normal(0, 0.1, (10, K, 10))
+    regla = ChainRule(seed=seed); eq = Equipartition(10, balance) if balance > 0 else None
+
+    def P(d, j):
+        e = np.exp(W[d, j] - W[d, j].max())
+        return e / e.sum()
+    usado = 0; hits = []
+    while usado < columnas:
+        n = int(rng.integers(1, 5)); A = rng.integers(10, size=n); B = rng.integers(10, size=n)
+        JA = rng.integers(K, size=n); JB = rng.integers(K, size=n)
+        pa = [P(a, j) for a, j in zip(A, JA)]; pb = [P(b, j) for b, j in zip(B, JB)]
+        sa = [int(rng.choice(10, p=x)) for x in pa]; sb = [int(rng.choice(10, p=x)) for x in pb]
+        digs = []; c = 0
+        for a, b in zip(A, B):
+            s_ = int(a) + int(b) + c; digs.append(s_ % 10); c = s_ // 10
+        regla.reset()
+        for x, z, d in zip(sa, sb, digs):
+            hits.append(regla.answer((x, 10 + z)) == d)
+        qa, qb, _, _, _ = regla.learn([eq(x) for x in pa] if eq else pa, [eq(x) for x in pb] if eq else pb, digs, c)
+        for d, j, q in list(zip(A, JA, qa)) + list(zip(B, JB, qb)):
+            t = np.eye(10)[int(rng.choice(10, p=q / q.sum()))]
+            W[d, j] += lr * (t - P(d, j))
+        usado += n
+    C = np.zeros((10, 10))
+    for d in range(10):
+        for j in range(K):
+            C[d] += P(d, j) / K
+    r, cc = linear_sum_assignment(-C)
+    return dict(pureza=float(C[r, cc].sum() / 10), columna_final=float(np.mean(hits[-1000:])))
+
+
 def fase_f0s(seed, tam, out, variante, extra):
     """F0s: el modelo tabular de `tabular`, 20 semillas por condición (por cada semilla
     pedida se corren 20 sub-semillas; se reporta la media y la fracción que termina en la
     identidad, en +5 o en un código de desplazamientos que se compensan). Con
     `variante="conjunto"`, el modelo de co-adaptación `tabular_conjunto`; con "fin", el
     posterior que también usa el acarreo final."""
+    if variante == "protos":            # escalado: prototipos independientes por dígito x presupuesto
+        base = tam["col_tabular"]
+        for K in (1, 3, 10):
+            for mult, n_sub in ((1, 6), (4, 6), (16, 3)):
+                if mult == 16 and K == 1:
+                    continue
+                R = [tabular_protos(K, 100 * seed + k, base * mult) for k in range(n_sub)]
+                var = f"protos K={K} | {base * mult} columnas"
+                for m in ("pureza", "columna_final"):
+                    v = np.array([r[m] for r in R])
+                    out("f0s", var, f"{m} (media de {n_sub})", float(v.mean()), float(v.std()), "desvío en referencia")
+        return
     if variante == "cadena":
         conds = [("conocida blando", True, "blando", 0.0), ("aprendida blando", False, "blando", 0.0),
                  ("aprendida muestreo", False, "muestreo", 0.0), ("aprendida muestreo+equipartición", False, "muestreo", 1.0)]

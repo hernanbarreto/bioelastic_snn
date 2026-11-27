@@ -1,6 +1,406 @@
 {
  "fase": "f0s",
  "metricas": {
+  "cadena aprendida blando | aleatorio": {
+   "columna_final (media de 20)": {
+    "media": 0.1014,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.1014
+    ],
+    "referencia": "0.0142",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "identidad (media de 20)": {
+    "media": 0.13,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.13
+    ],
+    "referencia": "0.0843",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 20)": {
+    "media": 0.1209,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.1209
+    ],
+    "referencia": "0.0048",
+    "nota": "desvío en referencia"
+   }
+  },
+  "cadena aprendida blando | mas0": {
+   "columna_final (media de 20)": {
+    "media": 0.6323,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.6323
+    ],
+    "referencia": "0.0726",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "identidad (media de 20)": {
+    "media": 0.065,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.065
+    ],
+    "referencia": "0.0726",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 20)": {
+    "media": 0.834,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.834
+    ],
+    "referencia": "0.0653",
+    "nota": "desvío en referencia"
+   }
+  },
+  "cadena aprendida muestreo | aleatorio": {
+   "columna_final (media de 20)": {
+    "media": 0.5977,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.5977
+    ],
+    "referencia": "0.1704",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 0.1,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.1
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "identidad (media de 20)": {
+    "media": 0.07,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.07
+    ],
+    "referencia": "0.0714",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 20)": {
+    "media": 0.7592,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.7592
+    ],
+    "referencia": "0.1279",
+    "nota": "desvío en referencia"
+   }
+  },
+  "cadena aprendida muestreo | mas0": {
+   "columna_final (media de 20)": {
+    "media": 0.6885,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.6885
+    ],
+    "referencia": "0.1417",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 0.1,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.1
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "identidad (media de 20)": {
+    "media": 0.105,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.105
+    ],
+    "referencia": "0.1117",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 20)": {
+    "media": 0.8541,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.8541
+    ],
+    "referencia": "0.0739",
+    "nota": "desvío en referencia"
+   }
+  },
+  "cadena aprendida muestreo+equipartición | aleatorio": {
+   "columna_final (media de 20)": {
+    "media": 0.9854,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9854
+    ],
+    "referencia": "0.0497",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 0.95,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.95
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "identidad (media de 20)": {
+    "media": 0.09,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.09
+    ],
+    "referencia": "0.0995",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 20)": {
+    "media": 0.9936,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9936
+    ],
+    "referencia": "0.0235",
+    "nota": "desvío en referencia"
+   }
+  },
+  "cadena aprendida muestreo+equipartición | mas0": {
+   "columna_final (media de 20)": {
+    "media": 0.6877,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.6877
+    ],
+    "referencia": "0.0924",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 0.4,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.4
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "identidad (media de 20)": {
+    "media": 0.13,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.13
+    ],
+    "referencia": "0.1100",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 20)": {
+    "media": 0.9328,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9328
+    ],
+    "referencia": "0.0643",
+    "nota": "desvío en referencia"
+   }
+  },
+  "cadena conocida blando | aleatorio": {
+   "columna_final (media de 20)": {
+    "media": 0.998,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.998
+    ],
+    "referencia": "0.0013",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "identidad (media de 20)": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 20)": {
+    "media": 0.9991,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9991
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío en referencia"
+   }
+  },
+  "cadena conocida blando | mas0": {
+   "columna_final (media de 20)": {
+    "media": 0.9456,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9456
+    ],
+    "referencia": "0.1581",
+    "nota": "desvío en referencia"
+   },
+   "fracción con pureza >= 0.99": {
+    "media": 0.9,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "identidad (media de 20)": {
+    "media": 0.9,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9
+    ],
+    "referencia": "0.3000",
+    "nota": "desvío en referencia"
+   },
+   "pureza (media de 20)": {
+    "media": 0.9617,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9617
+    ],
+    "referencia": "0.1121",
+    "nota": "desvío en referencia"
+   }
+  },
   "conjunto L2 map | aleatorio": {
    "columna_final (media de 20)": {
     "media": 0.4768,
@@ -939,14 +1339,16 @@
   },
   "total": {
    "segundos": {
-    "media": 126.86666666666667,
-    "desvio": 39.544953323190725,
+    "media": 257.525,
+    "desvio": 263.30388495678017,
     "semillas": [
+     0,
      0,
      0,
      0
     ],
     "valores": [
+     649.5,
      121.3,
      90.4,
      168.9

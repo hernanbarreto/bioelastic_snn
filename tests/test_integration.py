@@ -321,3 +321,30 @@ def test_entrenar_con_curriculo_respeta_el_presupuesto_de_columnas():
                               {}, {}, curva, 20, None, None)
     etapas = [f["etapa"] for f in curva]
     assert n > 0 and curva[-1]["ep"] >= 60 and etapas == sorted(etapas) and etapas[-1] == 3
+
+
+# ---------------------------------------------------------------- MNIST-addition (exp_mnist_addition.py)
+def test_posterior_de_la_suma_y_anclas():
+    import exp_mnist_addition as ma
+    u = np.ones(10) / 10
+    q, q1, q2 = ma.posterior_suma(u, u, 0)                    # suma 0: sólo 0 + 0
+    assert q1[0] == 1.0 and q2[0] == 1.0
+    q, q1, q2 = ma.posterior_suma(u, u, 17)                   # suma 17: 8 + 9 o 9 + 8
+    assert abs(q1[8] - 0.5) < 1e-12 and abs(q1[9] - 0.5) < 1e-12
+    q, q1, q2 = ma.posterior_suma(np.eye(10)[3] * 0.9 + 0.01, u, 7, gamma=0.0)
+    np.testing.assert_allclose(q1[:8], 1 / 8)                 # gamma 0: sólo cuenta la suma
+    assert ma.suma_predicha(np.eye(10)[3], np.eye(10)[9]) == 12
+    assert abs(sum(((10 - abs(y - 9)) / 100) ** 2 for y in range(19)) - ma.AZAR_PAR) < 1e-3
+
+
+def test_fiabilidad_arranca_sin_creerle_a_la_percepcion_y_sube_si_acierta():
+    import exp_mnist_addition as ma
+    f = ma.Fiabilidad(modo="potencia", k=2.0, rate=0.05, lo=0.02, hi=1.0)
+    p3, p4 = np.eye(10)[3] * 0.9 + 0.01, np.eye(10)[4] * 0.9 + 0.01
+    assert f.actualizar(p3, p4, 7) == 0.02
+    for _ in range(150):
+        f.actualizar(p3, p4, 7)
+    assert f.gamma > 0.9
+    for _ in range(150):
+        f.actualizar(p3, p4, 9)                               # ahora el par más probable no da la suma
+    assert f.gamma < 0.1
