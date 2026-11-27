@@ -1074,18 +1074,23 @@ DIAG_KEYS = ["acc", "end_full_old", "end_slow_old", "end_fast_old", "learn_full_
              "end_full_t5", "end_slow_t5", "end_fast_t5", "neurons", "evicted", "seconds"]
 
 
+DIAG_SEEDS = (10, 11, 12)
+
+
 def phase_f6diag(a, data):
-    """Diagnóstico de la causa del olvido de c2 en Split-Fashion antes de tocar nada
-    (semillas de test 3-5; ver split_diag). Regla fijada antes de medir, sobre las tareas
+    """Diagnóstico de la causa del olvido de c2 en Split-Fashion antes de tocar nada (ver
+    split_diag). Corre en el split de validación (500 imágenes por clase fuera del
+    entrenamiento; semillas 10, 11 y 12), para que lo que se decida arreglar a partir de
+    acá no salga de mirar el test. Regla fijada antes de medir, sobre las tareas
     viejas (1-4): si la sonda sobre los rasgos finales conserva lo viejo (cae menos de 0,03
     respecto de la sonda justo después de aprenderlo) y la lectura queda muy por debajo de
     la sonda, el olvido es sesgo de la lectura hacia lo reciente; si la sonda también cae
     0,03 o más, es deriva de los rasgos. Se mira por separado el sistema lento (V1 +
     proyección) y el rápido (almacén + su lectura)."""
-    D = split_data(data)["test"]
+    D = split_data(data)["val"]
     rows: list = []
-    for seed in a.seeds:
-        row = cached(dict(b="diag", ds="fashion", spec=C2, seed=seed, split="test"),
+    for seed in DIAG_SEEDS:
+        row = cached(dict(b="diag", ds="fashion", spec=C2, seed=seed, split="val"),
                      lambda seed=seed: split_diag("fashion", C2, seed, D))
         rows.append(row)
         print(f"[f6diag] s{seed}: acc={row['acc']:.4f} " + " ".join(f"{k}={row[k]:.3f}" for k in DIAG_KEYS[1:18]),
@@ -1095,7 +1100,7 @@ def phase_f6diag(a, data):
     summary = agg(rows, ("bench", "scenario", "model"), keys)
     for d in summary:
         print("  " + fmt(d, DIAG_KEYS[:18]), flush=True)
-    cfg = dict(seeds=a.seeds, rule=phase_f6diag.__doc__, method=split_diag.__doc__,
+    cfg = dict(seeds=DIAG_SEEDS, split="val", rule=phase_f6diag.__doc__, method=split_diag.__doc__,
                probe="ridge dual con objetivos +-1, lambda en {1e-3..100} elegido con el 20 % del entrenamiento "
                      "de la sonda; 300 imágenes de entrenamiento por clase (las 10), 500 de test por clase",
                note="readout_head_end = la lectura del almacén sobre los mismos rasgos que su sonda (pase sin "
