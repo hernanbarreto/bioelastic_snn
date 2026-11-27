@@ -345,6 +345,24 @@ def test_ingesta_scan_experimento_1(tmp_path):
     assert ingesta.leer_scan_exp1(1, 3)(tmp_path / "scan.csv") == []             # sin esa corrida, sin filas
 
 
+def test_kneser_ney_compacto_igual_al_de_diccionarios():
+    from battery.lenguaje import KneserNey
+    from battery.lenguaje_escala import KneserNeyCompacto, bits_por_posicion_kn
+    rng = np.random.default_rng(0)
+    pal = [b"the", b"dog", b"cat", b"runs", b"sits", b"a", b"big", b"red", b"ball", b"?", b"."]
+    texto = b"\n".join(b" ".join(pal[j] for j in rng.integers(len(pal), size=rng.integers(2, 7)))
+                       for _ in range(400))
+    prueba = b"\nthe big dog runs .\nzebra sits ?\n" + texto[-300:]       # «z» y «e»+«b» no vistos juntos
+    a = KneserNey(6, 256).entrenar([texto]); b = KneserNeyCompacto(6, 256).entrenar([texto])
+    for K in (1, 2, 4, 6):
+        a.orden(K); b.orden(K)
+        assert b.secuencia(prueba) == pytest.approx(a.secuencia(prueba), rel=1e-12, abs=1e-9)
+        assert b.logp(b"the bi", ord("g")) == pytest.approx(a.logp(b"the bi", ord("g")), rel=1e-12)
+        assert b.logp(b"", ord("z")) == pytest.approx(a.logp(b"", ord("z")), rel=1e-12)
+        np.testing.assert_allclose(bits_por_posicion_kn(b, prueba), bits_por_posicion_kn(a, prueba), rtol=1e-12)
+    assert sum(np.exp(b.logp(b"th", y)) for y in range(256)) == pytest.approx(1.0, abs=1e-9)
+
+
 def test_no_aplicables_registrados():
     ids = {(p.id, p.variante) for p in registro.pruebas()}
     assert ("deteccion_de_cambio", "dos_items") in ids and ("auroc_tipo2", "apuesta_espera") in ids
