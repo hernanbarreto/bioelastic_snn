@@ -58,6 +58,7 @@ class Prueba:
     # el Thinker y se corre también con los otros perfiles; `perfil` es el de esta variante.
     perfil: str = "defecto"
     perfiles: bool = False
+    usa_thinker: bool = False                 # también sin perfiles (p. ej. una variante no aplicable)
     config_base: dict | None = None           # sin `configs`: la configuración que se le pasa a `correr`
     variabilidad: str = ""                    # de dónde sale el ± entre semillas (qué cambia la semilla)
 

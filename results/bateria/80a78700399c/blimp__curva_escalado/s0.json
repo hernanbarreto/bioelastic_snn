@@ -1,0 +1,330 @@
+{
+ "puntaje": 3.7453636803961676,
+ "medidas": {
+  "bits_prueba_0.2MB": 3.9722217863136056,
+  "acierto_byte_prueba_0.2MB": 0.556309271821197,
+  "bits_validacion_0.2MB": 3.9445387213311154,
+  "factor_temperatura_0.2MB": 1.0,
+  "bits_prueba_temperatura_validada_0.2MB": 3.9722217863136056,
+  "blimp_0.2MB": 0.48402985074626853,
+  "p_signo_blimp_0.2MB": 0.06698393158907631,
+  "neuronas_0.2MB": 18857.0,
+  "creadas_0.2MB": 60919.0,
+  "podadas_0.2MB": 42062.0,
+  "desalojadas_0.2MB": 0.0,
+  "bootstrap_red_media_0.2MB": 3.972221783108654,
+  "bootstrap_red_ic95_inf_0.2MB": 3.9173283734449322,
+  "bootstrap_red_ic95_sup_0.2MB": 4.0282300922442245,
+  "bootstrap_kn_media_0.2MB": 2.1278962222478826,
+  "bootstrap_kn_ic95_inf_0.2MB": 2.0832824720586856,
+  "bootstrap_kn_ic95_sup_0.2MB": 2.1761608885677246,
+  "bootstrap_red_menos_kn_media_0.2MB": 1.8443255608607716,
+  "bootstrap_red_menos_kn_ic95_inf_0.2MB": 1.8219632022812202,
+  "bootstrap_red_menos_kn_ic95_sup_0.2MB": 1.8663359457711393,
+  "kn_bits_prueba_0.2MB": 2.1278962222478826,
+  "kn_orden_0.2MB": 6.0,
+  "kn_blimp_0.2MB": 0.4986567164179104,
+  "kn_p_signo_blimp_0.2MB": 0.8900537408459195,
+  "bits_prueba_0.6MB": 3.6789473787215465,
+  "acierto_byte_prueba_0.6MB": 0.572726212103535,
+  "bits_validacion_0.6MB": 3.6342004894420494,
+  "factor_temperatura_0.6MB": 1.0,
+  "bits_prueba_temperatura_validada_0.6MB": 3.6789473787215465,
+  "blimp_0.6MB": 0.48194029850746267,
+  "p_signo_blimp_0.6MB": 0.03810122841096057,
+  "neuronas_0.6MB": 29241.0,
+  "creadas_0.6MB": 166883.0,
+  "podadas_0.6MB": 137642.0,
+  "desalojadas_0.6MB": 2320.0,
+  "bootstrap_red_media_0.6MB": 3.678947377965597,
+  "bootstrap_red_ic95_inf_0.6MB": 3.626483361922707,
+  "bootstrap_red_ic95_sup_0.6MB": 3.7341839284246277,
+  "bootstrap_kn_media_0.6MB": 1.9742057219181617,
+  "bootstrap_kn_ic95_inf_0.6MB": 1.9298391941632527,
+  "bootstrap_kn_ic95_sup_0.6MB": 2.021086116436475,
+  "bootstrap_red_menos_kn_media_0.6MB": 1.7047416560474353,
+  "bootstrap_red_menos_kn_ic95_inf_0.6MB": 1.68407060311369,
+  "bootstrap_red_menos_kn_ic95_sup_0.6MB": 1.726007777910352,
+  "kn_bits_prueba_0.6MB": 1.9742057219181615,
+  "kn_orden_0.6MB": 7.0,
+  "kn_blimp_0.6MB": 0.4986567164179104,
+  "kn_p_signo_blimp_0.6MB": 0.8900537408459195,
+  "bits_prueba_1.8MB": 3.7453636803961676,
+  "acierto_byte_prueba_1.8MB": 0.5627760462674378,
+  "bits_validacion_1.8MB": 3.6911540802614775,
+  "factor_temperatura_1.8MB": 1.0,
+  "bits_prueba_temperatura_validada_1.8MB": 3.7453636803961676,
+  "blimp_1.8MB": 0.4986567164179105,
+  "p_signo_blimp_1.8MB": 0.8900537408459195,
+  "neuronas_1.8MB": 30000.0,
+  "creadas_1.8MB": 474369.0,
+  "podadas_1.8MB": 444369.0,
+  "desalojadas_1.8MB": 50628.0,
+  "bootstrap_red_media_1.8MB": 3.7453636788840634,
+  "bootstrap_red_ic95_inf_1.8MB": 3.6818288387231046,
+  "bootstrap_red_ic95_sup_1.8MB": 3.8101622361924017,
+  "bootstrap_kn_media_1.8MB": 1.8847085405148238,
+  "bootstrap_kn_ic95_inf_1.8MB": 1.8434256297575387,
+  "bootstrap_kn_ic95_sup_1.8MB": 1.9309067022676925,
+  "bootstrap_red_menos_kn_media_1.8MB": 1.86065513836924,
+  "bootstrap_red_menos_kn_ic95_inf_1.8MB": 1.8275938138357284,
+  "bootstrap_red_menos_kn_ic95_sup_1.8MB": 1.8894732281847921,
+  "kn_bits_prueba_1.8MB": 1.8847085405148236,
+  "kn_orden_1.8MB": 7.0,
+  "kn_blimp_1.8MB": 0.5201492537313434,
+  "kn_p_signo_blimp_1.8MB": 0.02057113385577941,
+  "barajado1_bits_red_0.2MB": 3.7605255182256023,
+  "barajado1_bits_kn_0.2MB": 1.898164668059018,
+  "barajado1_red_menos_kn_0.2MB": 1.8623608462908992,
+  "barajado1_blimp_red_0.2MB": 0.4894029850746269,
+  "barajado1_blimp_kn_0.2MB": 0.5159701492537314,
+  "barajado1_neuronas_0.2MB": 17794.0,
+  "barajado2_bits_red_0.2MB": 3.7418168098241362,
+  "barajado2_bits_kn_0.2MB": 1.8892467055171926,
+  "barajado2_red_menos_kn_0.2MB": 1.8525700998983265,
+  "barajado2_blimp_red_0.2MB": 0.4789552238805971,
+  "barajado2_blimp_kn_0.2MB": 0.503731343283582,
+  "barajado2_neuronas_0.2MB": 17787.0,
+  "max_neuronas": 30000.0,
+  "satura_antes_del_final": false,
+  "satura": true,
+  "curva_baja_bits": false,
+  "red_menos_bits_que_kn_al_final": false,
+  "mejora_bits_ultimo_tramo": -0.06641630167462109,
+  "mejora_bits_kn_ultimo_tramo": 0.08949718140333784,
+  "curva_bits": [
+   3.9722217863136056,
+   3.6789473787215465,
+   3.7453636803961676
+  ],
+  "curva_bits_kn": [
+   2.1278962222478826,
+   1.9742057219181615,
+   1.8847085405148236
+  ],
+  "curva_bits_temperatura_validada": [
+   3.9722217863136056,
+   3.6789473787215465,
+   3.7453636803961676
+  ],
+  "curva_red_menos_kn": [
+   1.8443255608607716,
+   1.7047416560474353,
+   1.86065513836924
+  ],
+  "curva_red_menos_kn_ic95": [
+   [
+    1.8219632022812202,
+    1.8663359457711393
+   ],
+   [
+    1.68407060311369,
+    1.726007777910352
+   ],
+   [
+    1.8275938138357284,
+    1.8894732281847921
+   ]
+  ],
+  "red_menos_bits_que_kn_al_final_temperatura_validada": false,
+  "curva_blimp": [
+   0.48402985074626853,
+   0.48194029850746267,
+   0.4986567164179105
+  ],
+  "curva_blimp_kn": [
+   0.4986567164179104,
+   0.4986567164179104,
+   0.5201492537313434
+  ],
+  "curva_neuronas": [
+   18857.0,
+   29241.0,
+   30000.0
+  ]
+ },
+ "segundos": 3081.338446855545,
+ "curva": [
+  {
+   "bytes": 200000,
+   "red": {
+    "bits_prueba": 3.9722217863136056,
+    "acierto_byte_prueba": 0.556309271821197,
+    "bits_validacion": 3.9445387213311154,
+    "factor_temperatura": 1.0,
+    "bits_prueba_temperatura_validada": 3.9722217863136056,
+    "blimp": 0.48402985074626853,
+    "p_signo_blimp": 0.06698393158907631,
+    "neuronas": 18857.0,
+    "creadas": 60919.0,
+    "podadas": 42062.0,
+    "desalojadas": 0.0,
+    "bootstrap_red": {
+     "media": 3.972221783108654,
+     "ic95": [
+      3.9173283734449322,
+      4.0282300922442245
+     ],
+     "bloques": 59
+    },
+    "bootstrap_kn": {
+     "media": 2.1278962222478826,
+     "ic95": [
+      2.0832824720586856,
+      2.1761608885677246
+     ],
+     "bloques": 59
+    },
+    "bootstrap_red_menos_kn": {
+     "media": 1.8443255608607716,
+     "ic95": [
+      1.8219632022812202,
+      1.8663359457711393
+     ],
+     "bloques": 59
+    }
+   },
+   "kn": {
+    "orden": 6,
+    "bits_prueba": 2.1278962222478826,
+    "bits_por_posicion": "/home/claude/wt/medicion/ext_data/cache/kn_escala_n200000_p3350.npy",
+    "validacion": {
+     "1": 4.296617688341471,
+     "2": 3.2373209549393724,
+     "3": 2.546027366392742,
+     "4": 2.201911928683296,
+     "5": 2.117690523227132,
+     "6": 2.0965969006379663,
+     "7": 2.1011015403286786,
+     "8": 2.1139494629051545,
+     "9": 2.118540903914293,
+     "10": 2.1164215190040387
+    },
+    "blimp": 0.4986567164179104,
+    "p_signo_blimp": 0.8900537408459195
+   }
+  },
+  {
+   "bytes": 600000,
+   "red": {
+    "bits_prueba": 3.6789473787215465,
+    "acierto_byte_prueba": 0.572726212103535,
+    "bits_validacion": 3.6342004894420494,
+    "factor_temperatura": 1.0,
+    "bits_prueba_temperatura_validada": 3.6789473787215465,
+    "blimp": 0.48194029850746267,
+    "p_signo_blimp": 0.03810122841096057,
+    "neuronas": 29241.0,
+    "creadas": 166883.0,
+    "podadas": 137642.0,
+    "desalojadas": 2320.0,
+    "bootstrap_red": {
+     "media": 3.678947377965597,
+     "ic95": [
+      3.626483361922707,
+      3.7341839284246277
+     ],
+     "bloques": 59
+    },
+    "bootstrap_kn": {
+     "media": 1.9742057219181617,
+     "ic95": [
+      1.9298391941632527,
+      2.021086116436475
+     ],
+     "bloques": 59
+    },
+    "bootstrap_red_menos_kn": {
+     "media": 1.7047416560474353,
+     "ic95": [
+      1.68407060311369,
+      1.726007777910352
+     ],
+     "bloques": 59
+    }
+   },
+   "kn": {
+    "orden": 7,
+    "bits_prueba": 1.9742057219181615,
+    "bits_por_posicion": "/home/claude/wt/medicion/ext_data/cache/kn_escala_n600000_p3350.npy",
+    "validacion": {
+     "1": 4.28987890872316,
+     "2": 3.2246547784197137,
+     "3": 2.509913250658053,
+     "4": 2.1153184200738044,
+     "5": 1.991679503763598,
+     "6": 1.948914206050162,
+     "7": 1.9454167609095439,
+     "8": 1.9629779421436955,
+     "9": 1.9711769232455338,
+     "10": 1.9762044620225556
+    },
+    "blimp": 0.4986567164179104,
+    "p_signo_blimp": 0.8900537408459195
+   }
+  },
+  {
+   "bytes": 1800000,
+   "red": {
+    "bits_prueba": 3.7453636803961676,
+    "acierto_byte_prueba": 0.5627760462674378,
+    "bits_validacion": 3.6911540802614775,
+    "factor_temperatura": 1.0,
+    "bits_prueba_temperatura_validada": 3.7453636803961676,
+    "blimp": 0.4986567164179105,
+    "p_signo_blimp": 0.8900537408459195,
+    "neuronas": 30000.0,
+    "creadas": 474369.0,
+    "podadas": 444369.0,
+    "desalojadas": 50628.0,
+    "bootstrap_red": {
+     "media": 3.7453636788840634,
+     "ic95": [
+      3.6818288387231046,
+      3.8101622361924017
+     ],
+     "bloques": 59
+    },
+    "bootstrap_kn": {
+     "media": 1.8847085405148238,
+     "ic95": [
+      1.8434256297575387,
+      1.9309067022676925
+     ],
+     "bloques": 59
+    },
+    "bootstrap_red_menos_kn": {
+     "media": 1.86065513836924,
+     "ic95": [
+      1.8275938138357284,
+      1.8894732281847921
+     ],
+     "bloques": 59
+    }
+   },
+   "kn": {
+    "orden": 7,
+    "bits_prueba": 1.8847085405148236,
+    "bits_por_posicion": "/home/claude/wt/medicion/ext_data/cache/kn_escala_n1800000_p3350.npy",
+    "validacion": {
+     "1": 4.287126150141788,
+     "2": 3.2155894799525755,
+     "3": 2.4791881526865835,
+     "4": 2.065408805528415,
+     "5": 1.9097075153559877,
+     "6": 1.8486460568032164,
+     "7": 1.8339444198507953,
+     "8": 1.8434483149593932,
+     "9": 1.8551024619119323,
+     "10": 1.865705364412475
+    },
+    "blimp": 0.5201492537313434,
+    "p_signo_blimp": 0.02057113385577941
+   }
+  }
+ ],
+ "semilla": 0,
+ "version": 1,
+ "escala": 1.0,
+ "config": null
+}

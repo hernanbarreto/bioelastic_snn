@@ -29,6 +29,12 @@ def resolver(ref: str = "HEAD") -> str:
     return _git("rev-parse", "--verify", f"{ref}^{{commit}}")
 
 
+def arbol_bioelastic(ref: str) -> str:
+    """El hash git del árbol bioelastic/ del commit: igual si y sólo si el código medido es
+    idéntico byte a byte."""
+    return _git("rev-parse", f"{resolver(ref)}:bioelastic")
+
+
 def huella(contenidos) -> str:
     """Huella de los archivos de percepción a partir de (nombre, bytes)."""
     import hashlib

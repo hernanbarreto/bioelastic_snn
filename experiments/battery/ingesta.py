@@ -43,6 +43,7 @@ class Fuente:
     agregado: bool = False              # la fuente sólo publica media ± desvío (sin valores por semilla)
     patron: str = ""                    # archivos por semilla ({s}): todos cuentan para el commit
     variabilidad: str = ""              # de dónde sale el ± de la fuente
+    perfil: str = "defecto"             # perfil de opciones con que se midió (p. ej. «metacog»)
 
 
 def commit_de(archivos) -> str:
@@ -206,7 +207,7 @@ def fuentes() -> list[Fuente]:
                                "Kepecs: pendiente apuesta vs facilidad en aciertos": "pendiente_apuesta_aciertos",
                                "Kepecs: pendiente apuesta vs facilidad en errores": "pendiente_apuesta_errores"},
                               range(3)),
-        agente="integracion3", equivalente=False,
+        agente="integracion3", equivalente=False, perfil="metacog",
         motivo_equivalencia="dificultad no igualada y flujo con clases nuevas: otro procedimiento que Fleming et al.",
         variabilidad="semillas 0 a 2 de la rama integracion3: el flujo continuo (orden de las muestras) y la red",
     ))
@@ -267,13 +268,65 @@ def fuentes() -> list[Fuente]:
         comparar={"mlc": "puntaje"},
         pendiente="Lake y Baroni: todavía no hay resultados en la rama razonamiento3",
     ))
+    for pc, pasadas in ((1, 1), (2, 1), (4, 1), (8, 1), (1, 3)):
+        ref = f"lake2018_exp1_{pc}pc" if pc in (1, 2, 4) else None
+        out.append(Fuente(
+            prueba="scan", variante=f"exp1_{pc}pc" + (f"_{pasadas}pasadas" if pasadas > 1 else ""),
+            condicion="simbolos",
+            metrica=f"exactitud de secuencia exacta en una muestra de 1 000 comandos del test ({pc} % para entrenar)",
+            protocolo=(f"rama razonamiento3, F6a (exploratorio): Thinker con valores por defecto + contexto temporal; "
+                       f"{pasadas} pasada(s) en línea por el {pc} % de los comandos (división al azar del experimento 1 "
+                       f"de Lake & Baroni 2018) y prueba congelada en 1 000 de los comandos restantes"),
+            desviaciones=["una sola semilla (exploratorio, según la rama)",
+                          f"{pasadas} pasada(s) en línea por los comandos de entrenamiento; el seq2seq publicado ve "
+                          "100 000 presentaciones con reemplazo",
+                          "muestra de 1 000 comandos del test en lugar de todos los restantes",
+                          "palabras y acciones como símbolos, igual que en el seq2seq publicado"]
+                         + ([] if ref else ["con 8 % no hay cifra publicada verificada (sólo en la figura 3)"]),
+            archivo=r3 / "razonamiento3_f6_scan_exp1.csv", leer=leer_scan_exp1(pc, pasadas), agente="razonamiento3",
+            equivalente=False, variabilidad="una sola semilla: no hay ± entre semillas",
+            motivo_equivalencia=f"{pasadas} pasada(s) en línea contra 100 000 presentaciones; se compara con un sistema",
+            comparar={ref: "puntaje"} if ref else {},
+            pendiente="SCAN experimento 1: todavía no hay resultados en la rama razonamiento3",
+        ))
     out.append(Fuente(
-        prueba="scan", variante="thinker", condicion="simbolos", metrica="(la define la rama razonamiento3)",
-        protocolo="SCAN: lo corre la rama razonamiento3 (F6, curva en curso)", desviaciones=[],
-        archivo=r3 / "razonamiento3_f6_scan.csv", leer=None, agente="razonamiento3", equivalente=False,
-        pendiente="SCAN: la rama razonamiento3 tiene la curva en curso (sólo archivos parciales)",
+        prueba="scan", variante="jump", condicion="simbolos", metrica="exactitud de secuencia exacta (división jump)",
+        protocolo="SCAN, división jump: la rama razonamiento3 no la corrió todavía", desviaciones=[],
+        archivo=r3 / "razonamiento3_f6_scan.parts.json", leer=None, agente="razonamiento3", equivalente=False,
+        pendiente="SCAN división jump: todavía no hay resultados en la rama razonamiento3",
     ))
     return out
+
+
+def leer_scan_exp1(pc: int, pasadas: int):
+    """Una fila por semilla (la rama publica una, la 0) con la secuencia exacta en la muestra
+    de 1 000 comandos del test y los diagnósticos de la misma tabla."""
+    pre = f"{pc} % ("
+    suf = f"{pasadas} pasada(s)"
+
+    def leer(path: Path):
+        med = {}
+        puntaje = None
+        n = None
+        for r in _csv(path):
+            if not r["sistema"].startswith("Thinker") or not r["tramo"].startswith(pre) or suf not in r["tramo"]:
+                continue
+            tramo = r["tramo"].split(suf, 1)[1].strip(", ")
+            n = int(float(r["semillas"]))
+            if tramo == "test (muestra de 1000)":
+                if r["medida"] == "secuencia exacta":
+                    puntaje = _f(r["media"])
+                elif r["medida"] in ("símbolos en su posición", "primer símbolo", "largo correcto", "nunca dijo FIN"):
+                    med[f"test_{r['medida'].replace(' ', '_')}"] = _f(r["media"])
+            elif tramo == "comandos ya vistos" and r["medida"] == "secuencia exacta":
+                med["entrenamiento_secuencia_exacta"] = _f(r["media"])
+            elif tramo == "" and r["medida"].startswith("comandos del test con el mismo multiconjunto"):
+                med["test_ambiguos_como_bolsa_de_palabras"] = _f(r["media"])
+        if puntaje is None:
+            return []
+        assert n == 1, "la rama publicó más de una semilla: leer los valores por semilla"
+        return [dict(semilla=0, puntaje=puntaje, medidas=med)]
+    return leer
 
 
 def leer_babi(path: Path):
@@ -306,7 +359,8 @@ def fila_de(f: Fuente, catalogo: dict) -> dict:
     p = Prueba(id=f.prueba, variante=f.variante, condicion=f.condicion, metrica=f.metrica, protocolo=f.protocolo,
                desviaciones=list(f.desviaciones), correr=None, equivalente=f.equivalente,
                motivo_equivalencia=f.motivo_equivalencia, comparar=dict(f.comparar), referencia=f.referencia,
-               azar=f.azar, azar_derivacion=f.azar_derivacion, firmas=dict(f.firmas), variabilidad=f.variabilidad)
+               azar=f.azar, azar_derivacion=f.azar_derivacion, firmas=dict(f.firmas), variabilidad=f.variabilidad,
+               perfil=f.perfil)
     if not f.archivo.exists():
         fila = esquema.fila_resultado(p, [], catalogo, "")
         fila.update(estado="pendiente", motivo=f.pendiente or f"todavía no existe {f.archivo}",

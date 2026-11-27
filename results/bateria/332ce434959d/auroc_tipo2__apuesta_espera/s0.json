@@ -1,0 +1,8 @@
+{
+ "semilla": 0,
+ "version": 2,
+ "escala": 1.0,
+ "config": null,
+ "no_aplicable": "la apuesta de Kepecs y Lak (cuánto tiempo espera la rata el premio antes de abandonar) necesita una acción de esperar o abandonar y una escala de tiempo: la percepción decide en un paso y no tiene ninguna de las dos (tampoco con `metacog`, que da una confianza, no un tiempo de espera); las firmas de las ratas se miden con la confianza de la decisión (variante «imagenes»)",
+ "segundos": 3.600120544433594e-05
+}

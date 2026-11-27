@@ -48,8 +48,9 @@ def _acepta_config(fn) -> bool:
     return "config" in inspect.signature(fn).parameters
 
 
-def seleccionar(p, almacen, escala: float, log=print) -> dict | None:
-    """Elige la configuración de la red en validación (ver `base.Prueba.configs`)."""
+def seleccionar(p, almacen, escala: float, log=print, calcular: bool = True) -> dict | None:
+    """Elige la configuración de la red en validación (ver `base.Prueba.configs`). Con
+    `calcular=False` (el informe) sólo lee lo guardado: si falta una validación, no elige."""
     if not p.configs:
         return None
     if len(p.configs) == 1:                        # una sola configuración: no hay nada que elegir
@@ -62,6 +63,9 @@ def seleccionar(p, almacen, escala: float, log=print) -> dict | None:
         vals = []
         for s in p.semillas_validacion:
             c = almacen.cargar(clave, s, p.version, escala)
+            if c is None and not calcular:
+                return dict(elegida=None, puntajes=punt, criterio=p.criterio_validacion,
+                            semillas=list(p.semillas_validacion), incompleta=True)
             if c is None:
                 t0 = time.time()
                 try:

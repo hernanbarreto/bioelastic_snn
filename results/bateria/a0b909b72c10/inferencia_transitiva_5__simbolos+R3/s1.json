@@ -1,0 +1,17 @@
+{
+ "puntaje": 1.0,
+ "medidas": {
+  "eleccion_B_en_BD": 1.0,
+  "validas_BD": 1.0,
+  "eleccion_B_entre_validas": 1.0,
+  "eleccion_A_en_AE": 1.0,
+  "sesiones_al_criterio": 1.0,
+  "llego_al_criterio": true,
+  "premisas_ultimas10": 0.8500000000000001
+ },
+ "segundos": 0.3248589038848877,
+ "semilla": 1,
+ "version": 2,
+ "escala": 1.0,
+ "config": "defecto"
+}

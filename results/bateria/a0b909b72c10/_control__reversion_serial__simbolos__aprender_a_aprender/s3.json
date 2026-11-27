@@ -1,0 +1,32 @@
+{
+ "puntaje": 3.0,
+ "medidas": {
+  "errores_discriminacion": 3.0,
+  "errores_reversion1": 80.0,
+  "errores_ultimas3": 3.0,
+  "mejora_errores": 77.0,
+  "pendiente_errores": -4.727272727272727,
+  "ensayo2_tras_reversion": 0.5,
+  "fases_al_criterio": 1.0,
+  "mejora_con_reversiones": true,
+  "respuestas_invalidas": 0.0972644376899696,
+  "errores_por_fase": [
+   3,
+   80,
+   9,
+   12,
+   4,
+   2,
+   6,
+   2,
+   1,
+   6,
+   2
+  ]
+ },
+ "segundos": 0.16918396949768066,
+ "semilla": 3,
+ "version": 1,
+ "escala": 1.0,
+ "config": "aprender_a_aprender"
+}

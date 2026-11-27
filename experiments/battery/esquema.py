@@ -281,11 +281,26 @@ def validar_fila(f: dict) -> list[str]:
 
 
 # ---------------------------------------------------------------- perfil
-def perfil(filas: list[dict], catalogo: dict) -> dict:
+def perfiles_presentes(filas: list[dict]) -> list[str]:
+    """Los perfiles de opciones que aparecen en las filas, «defecto» primero."""
+    otros = sorted({f.get("perfil") or "defecto" for f in filas} - {"defecto"})
+    return ["defecto"] + otros
+
+
+def perfil(filas: list[dict], catalogo: dict, perfil_opciones: str = "defecto") -> dict:
     """Índice por prueba, promedio por dimensión y (como convención) promedio simple
     entre dimensiones. Dos versiones: con todas las condiciones de entrada y sólo con las
     equivalentes al protocolo publicado. Dentro de una prueba, las variantes que entran se
-    promedian primero (una prueba pesa una vez en su dimensión)."""
+    promedian primero (una prueba pesa una vez en su dimensión).
+
+    Un perfil de opciones a la vez: con «defecto» entran sólo las filas con las opciones por
+    defecto; con otro (p. ej. «R3»), cada prueba que tiene filas con ese perfil entra con
+    ellas y las demás con las de defecto. Los perfiles nunca se promedian entre sí."""
+    def de(f):
+        return f.get("perfil") or "defecto"
+    con = {f["prueba"] for f in filas if de(f) == perfil_opciones}
+    filas = [f for f in filas if de(f) == (perfil_opciones if f["prueba"] in con else "defecto")]
+
     def armar(filtro):
         por_prueba: dict = {}
         for f in filas:
@@ -308,7 +323,9 @@ def perfil(filas: list[dict], catalogo: dict) -> dict:
                         dimensiones=len(out), de=len(catalogo["dimensiones"]),
                         convencion=catalogo["convenciones"].get("indice_global"))
         return dict(por_dimension=out, global_=glob)
-    return dict(equivalentes=armar(lambda f: (f.get("equivalente") or {}).get("valor")),
+    return dict(perfil_opciones=perfil_opciones,
+                pruebas_con_el_perfil=sorted(con) if perfil_opciones != "defecto" else [],
+                equivalentes=armar(lambda f: (f.get("equivalente") or {}).get("valor")),
                 todas=dict(armar(lambda f: True), advertencia=ADVERTENCIA_TODAS),
                 sin_indice=sorted({f"{f['prueba']}/{f['variante']}" for f in filas
                                    if not f.get("indice_normalizado")}))
@@ -398,34 +415,41 @@ def _jsonable(x):
 
 ADVERTENCIA_TODAS = ("mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento "
                      "de prueba o memoria exacta por diseño): no leer como «porcentaje humano»")
-COLUMNAS_PERFIL = ("conjunto", "dimension", "nombre", "indice_min", "indice_max", "pruebas", "dimensiones_con_indice",
-                   "dimensiones_total", "advertencia")
+COLUMNAS_PERFIL = ("conjunto", "perfil", "dimension", "nombre", "indice_min", "indice_max", "pruebas",
+                   "dimensiones_con_indice", "dimensiones_total", "advertencia")
 
 
-def escribir_perfil_csv(pf: dict, path: Path):
+def escribir_perfil_csv(pf, path: Path):
     """El perfil por dimensión y el promedio entre dimensiones: primero el de las comparaciones
-    equivalentes y después el de todas, con su advertencia."""
+    equivalentes y después el de todas, con su advertencia. `pf` es un perfil o una lista de
+    perfiles (uno por perfil de opciones, «defecto» primero); cada uno va en sus filas."""
+    pfs = pf if isinstance(pf, list) else [pf]
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=COLUMNAS_PERFIL)
         w.writeheader()
         for conj in ("equivalentes", "todas"):
             adv = "" if conj == "equivalentes" else ADVERTENCIA_TODAS
-            g = pf[conj]["global_"]
-            if g:
-                w.writerow(dict(conjunto=conj, dimension="(promedio entre dimensiones, convención)", nombre="",
-                                indice_min=_num(g["min"]), indice_max=_num(g["max"]), pruebas="",
-                                dimensiones_con_indice=g["dimensiones"], dimensiones_total=g["de"], advertencia=adv))
-            for d, v in pf[conj]["por_dimension"].items():
-                w.writerow(dict(conjunto=conj, dimension=d, nombre=v["nombre"], indice_min=_num(v["min"]),
-                                indice_max=_num(v["max"]),
-                                pruebas="; ".join(f"{x['prueba']} ({', '.join(x['variantes'])})" for x in v["pruebas"]),
-                                dimensiones_con_indice="", dimensiones_total="", advertencia=adv))
+            for p in pfs:
+                po = p.get("perfil_opciones", "defecto")
+                g = p[conj]["global_"]
+                if g:
+                    w.writerow(dict(conjunto=conj, perfil=po, dimension="(promedio entre dimensiones, convención)",
+                                    nombre="", indice_min=_num(g["min"]), indice_max=_num(g["max"]), pruebas="",
+                                    dimensiones_con_indice=g["dimensiones"], dimensiones_total=g["de"],
+                                    advertencia=adv))
+                for d, v in p[conj]["por_dimension"].items():
+                    w.writerow(dict(conjunto=conj, perfil=po, dimension=d, nombre=v["nombre"],
+                                    indice_min=_num(v["min"]), indice_max=_num(v["max"]),
+                                    pruebas="; ".join(f"{x['prueba']} ({', '.join(x['variantes'])})"
+                                                      for x in v["pruebas"]),
+                                    dimensiones_con_indice="", dimensiones_total="", advertencia=adv))
 
 
 def escribir_perfiles_csv(filas: list[dict], path: Path):
-    """Las pruebas del Thinker con cada perfil de opciones, una al lado de la otra."""
-    perf = ("defecto", "R3", "R3+ts")
+    """Las pruebas medidas con más de un perfil de opciones (del Thinker o del Cortex), una al
+    lado de la otra: una columna por perfil presente en las filas."""
+    perf = tuple(perfiles_presentes([f for f in filas if f.get("estado") in ("medido", "no aplicable hoy")]))
     grupos: dict = {}
     for f in filas:
         if f.get("estado") not in ("medido", "no aplicable hoy"):

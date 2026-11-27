@@ -145,9 +145,9 @@ def validar(config: dict, semilla: int, escala: float = 1.0) -> float:
 
 def correr_espera(semilla: int, escala: float = 1.0) -> dict:
     raise NoAplicable("la apuesta de Kepecs y Lak (cuánto tiempo espera la rata el premio antes de abandonar) necesita "
-                      "una acción de esperar o abandonar y una escala de tiempo: en v0.3-dev la percepción decide en un "
-                      "paso y no tiene ninguna de las dos; las firmas se miden con la probabilidad de la decisión (variante "
-                      "«imagenes») y la rama integracion3 mide una apuesta con su API nueva")
+                      "una acción de esperar o abandonar y una escala de tiempo: la percepción decide en un paso y no "
+                      "tiene ninguna de las dos (tampoco con `metacog`, que da una confianza, no un tiempo de espera); "
+                      "las firmas de las ratas se miden con la confianza de la decisión (variante «imagenes»)")
 
 
 PRUEBAS = [
@@ -176,7 +176,7 @@ PRUEBAS = [
     Prueba(
         id="auroc_tipo2", variante="apuesta_espera", condicion="imagenes",
         metrica="firmas de la confianza en el tiempo de espera (ratas)",
-        protocolo="el de Kepecs et al. (2008) y Lak et al. (2014)", desviaciones=[], correr=correr_espera, version=1,
+        protocolo="el de Kepecs et al. (2008) y Lak et al. (2014)", desviaciones=[], correr=correr_espera, version=2,
         semillas=(0,), equivalente=False, motivo_equivalencia="no se pudo correr", referencia=None,
     ),
     Prueba(

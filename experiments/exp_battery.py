@@ -37,6 +37,9 @@ def _args(argv=None):
     ap.add_argument("--escala", type=float, default=1.0)
     ap.add_argument("--minutos", type=float, default=None)
     ap.add_argument("--resultados", default=None, help="carpeta de resultados (por defecto results/)")
+    ap.add_argument("--skip-existing", action="store_true",
+                    help="no rehace las semillas ya guardadas; es lo que hace siempre el almacén (se acepta por "
+                         "uniformidad con los otros experimentos)")
     return ap.parse_args(argv)
 
 
@@ -52,25 +55,43 @@ def _elegidas(todas, spec: str):
 
 
 def _herencia(p, info, almacen, escala):
-    """Para una prueba que no usa el Thinker y no se corrió en este commit: los resultados de
-    otro commit con la misma huella de percepción (mismo código, mismo resultado)."""
+    """Resultados de otro commit para una prueba que no se corrió en este. Dos casos:
+      * «arbol»: el árbol bioelastic/ es idéntico (mismo hash git): vale para toda prueba,
+        con su validación y sus controles, porque el código medido es el mismo;
+      * «percepcion»: misma huella de percepción (o equivalencia comprobada bit a bit) y la
+        prueba no usa el Thinker ni un perfil de opciones (la comprobación no los cubre).
+    Devuelve (crudos, carpeta del otro commit, caso) o (None, None, None)."""
     from battery import almacen as alm
-    if p.perfiles:
-        return None, None
-    propia = version.huella_percepcion(info["sha"])
-    for d in sorted(almacen.dir.parent.iterdir()) if almacen.dir.parent.exists() else []:
-        if d.name == almacen.dir.name or not (d / p.clave).exists():
-            continue
+    dirs = sorted(almacen.dir.parent.iterdir()) if almacen.dir.parent.exists() else []
+    otros = [d for d in dirs if d.is_dir() and d.name != almacen.dir.name and (d / p.clave).exists()]
+
+    def cargar(d):
+        otro = alm.Almacen(d.name, almacen.dir.parent.parent)
+        return [c for s in p.semillas if (c := otro.cargar(p.clave, s, p.version, escala)) is not None]
+    if not info.get("sucio"):
+        propio = version.arbol_bioelastic(info["sha"])
+        for d in otros:
+            if "+" in d.name:
+                continue
+            try:
+                if version.arbol_bioelastic(d.name) != propio:
+                    continue
+            except Exception:
+                continue
+            if crudos := cargar(d):
+                return crudos, d.name, "arbol"
+    if p.perfiles or p.usa_thinker or p.perfil != "defecto":
+        return None, None, None
+    propia = version.huella_equivalente(version.huella_percepcion(info["sha"]))
+    for d in otros:
         try:
-            if version.huella_percepcion(d.name.split("+")[0]) != propia:
+            if version.huella_equivalente(version.huella_percepcion(d.name.split("+")[0])) != propia:
                 continue
         except Exception:
             continue
-        otro = alm.Almacen(d.name, almacen.dir.parent.parent)
-        crudos = [c for s in p.semillas if (c := otro.cargar(p.clave, s, p.version, escala)) is not None]
-        if crudos:
-            return crudos, d.name
-    return None, None
+        if crudos := cargar(d):
+            return crudos, d.name, "percepcion"
+    return None, None, None
 
 
 def informe(info: dict, pruebas, almacen, catalogo, resultados: Path, escala: float, log=print) -> dict:
@@ -79,20 +100,27 @@ def informe(info: dict, pruebas, almacen, catalogo, resultados: Path, escala: fl
     for p in pruebas:
         crudos = [c for s in p.semillas
                   if (c := almacen.cargar(p.clave, s, p.version, escala)) is not None]
-        heredado = None
+        heredado = caso = None
         if not crudos:
-            crudos, heredado = _herencia(p, info, almacen, escala)
+            crudos, heredado, caso = _herencia(p, info, almacen, escala)
         if not crudos:
             continue
-        sel = registro.seleccionar(p, almacen, escala, log=lambda *a: None) if p.configs else None
+        from battery import almacen as alm
+        fuente = alm.Almacen(heredado, almacen.dir.parent.parent) if caso == "arbol" else almacen
+        sel = registro.seleccionar(p, fuente, escala, log=lambda *a: None, calcular=False) if p.configs else None
         ctrl = None
         if sel and sel.get("elegida"):
             crudos = [c for c in crudos if c.get("config") == sel["elegida"]]
-            ctrl = registro.controles(p, almacen, escala, sel, limite=0.0, log=lambda *a: None)
+            ctrl = registro.controles(p, fuente, escala, sel, limite=0.0, log=lambda *a: None)
         f = registro.fila(p, crudos, sel, catalogo, info["commit"], ctrl)
-        if heredado:
-            f["fuente_resultado"] = (f"medicion@{heredado} (heredado: los archivos de percepción son idénticos en "
-                                     f"{info['commit']}, y la prueba no usa el Thinker)")
+        if caso == "arbol":
+            f["fuente_resultado"] = (f"medicion@{heredado} (heredado: el árbol bioelastic/ de {info['commit']} es "
+                                     f"idéntico, mismo hash git)")
+            f["commit"] = heredado
+        elif caso == "percepcion":
+            f["fuente_resultado"] = (f"medicion@{heredado} (heredado: la percepción de {info['commit']} es la misma, "
+                                     f"por archivos idénticos o por la comprobación bit a bit de "
+                                     f"results/bateria/equivalencias.json, y la prueba no usa el Thinker)")
             f["commit"] = heredado
         filas.append(f)
     filas += ingesta.filas(catalogo)
@@ -101,32 +129,38 @@ def informe(info: dict, pruebas, almacen, catalogo, resultados: Path, escala: fl
         if err:
             raise RuntimeError(f"fila inválida {f['prueba']}/{f['variante']}: {err}")
     perfil = esquema.perfil(filas, catalogo)
+    otros = {po: esquema.perfil(filas, catalogo, po) for po in esquema.perfiles_presentes(filas)[1:]}
     import numpy
     out = dict(meta=dict(commit=info["commit"], sha=info["sha"], sucio=info["sucio"], escala=escala,
                          fecha=time.strftime("%Y-%m-%d %H:%M:%S"), python=platform.python_version(),
                          numpy=numpy.__version__, catalogo=dict(estado=catalogo.get("estado"),
                                                                 actualizado=catalogo.get("actualizado")),
                          convenciones=catalogo["convenciones"]),
-               perfil=perfil, filas=filas)
+               perfil=perfil, perfiles_de_opciones=otros, filas=filas)
     nombre = f"bateria_{info['commit']}"
     esquema.escribir_json(out, resultados / f"{nombre}.json")
     esquema.escribir_csv(filas, resultados / f"{nombre}.csv")
-    esquema.escribir_perfil_csv(perfil, resultados / f"{nombre}_perfil.csv")
+    esquema.escribir_perfil_csv([perfil, *otros.values()], resultados / f"{nombre}_perfil.csv")
     esquema.escribir_perfiles_csv(filas, resultados / f"{nombre}_perfiles_thinker.csv")
     log(esquema.tabla(filas))
     log("")
     for tipo in ("equivalentes", "todas"):
-        g = perfil[tipo]["global_"]
         log(f"perfil ({'sólo comparaciones equivalentes' if tipo == 'equivalentes' else 'todas las condiciones'}):")
         if tipo == "todas":
             log(f"  ADVERTENCIA: {esquema.ADVERTENCIA_TODAS}")
-        for d, v in perfil[tipo]["por_dimension"].items():
-            log(f"  {d:28s} {v['min']:.2f}" + ("" if abs(v['max'] - v['min']) < 0.005 else f" a {v['max']:.2f}")
-                + f"  ({', '.join(x['prueba'] for x in v['pruebas'])})")
-        if g:
-            log(f"  promedio entre dimensiones (convención): {g['min']:.2f}"
-                + ("" if abs(g['max'] - g['min']) < 0.005 else f" a {g['max']:.2f}")
-                + f", {g['dimensiones']} de {g['de']} dimensiones")
+        for pf in (perfil, *otros.values()):
+            po = pf["perfil_opciones"]
+            g = pf[tipo]["global_"]
+            if po != "defecto":
+                log(f"  con el perfil {po} (en {', '.join(pf['pruebas_con_el_perfil'])}; el resto con las opciones "
+                    f"por defecto):")
+            for d, v in pf[tipo]["por_dimension"].items():
+                log(f"  {d:28s} {v['min']:.2f}" + ("" if f"{v['max']:.2f}" == f"{v['min']:.2f}" else f" a {v['max']:.2f}")
+                    + f"  ({', '.join(x['prueba'] for x in v['pruebas'])})")
+            if g:
+                log(f"  promedio entre dimensiones (convención): {g['min']:.2f}"
+                    + ("" if f"{g['max']:.2f}" == f"{g['min']:.2f}" else f" a {g['max']:.2f}")
+                    + f", {g['dimensiones']} de {g['de']} dimensiones")
     log(f"\n-> {resultados / (nombre + '.json')}")
     return out
 

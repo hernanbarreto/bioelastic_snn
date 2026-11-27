@@ -2,6 +2,7 @@
 
   python experiments/battery/identidad.py <commit> <salida.npz>     (un commit por proceso)
   python experiments/battery/identidad.py comparar <a.npz> <b.npz>
+  python experiments/battery/identidad.py equivalencia <a.npz> <b.npz>   (escribe la equivalencia)
 
 Con la configuración por defecto, sobre una muestra: la red depth2 entrenada con 1 000
 imágenes de MNIST (sus decisiones y potenciales en 300 del test), V1 sin etiquetas con 500
@@ -65,9 +66,36 @@ def comparar(a: str, b: str) -> dict:
     return dict(identico=all(res.values()), por_parte=res, commits=[str(za["commit"]), str(zb["commit"])])
 
 
+def equivalencia(a_npz: str, b_npz: str) -> dict:
+    """Si las dos muestras son idénticas bit a bit y las huellas de percepción difieren,
+    registra en results/bateria/equivalencias.json que la del segundo commit equivale a la
+    del primero (el informe hereda entonces las pruebas de percepción con opciones por
+    defecto)."""
+    import json
+    import time
+    from battery import version
+    r = comparar(a_npz, b_npz)
+    ca, cb = r["commits"]
+    ha, hb = version.huella_percepcion(ca), version.huella_percepcion(cb)
+    r.update(huellas=[ha, hb], escrita=False)
+    if r["identico"] and ha != hb:
+        eq = json.loads(version.EQUIVALENCIAS.read_text()) if version.EQUIVALENCIAS.exists() else {}
+        eq.setdefault("percepcion", {})[hb] = dict(
+            igual_a=ha, commits=[ca, cb], comprobacion=r["por_parte"], fecha=time.strftime("%Y-%m-%d %H:%M"),
+            metodo="battery/identidad.py: depth2 con 1 000 imágenes de MNIST (decisiones y potenciales en 300 del "
+                   "test), V1 con 500 de Omniglot (códigos de 20) y red de texto con 5 000 bytes (decisiones y "
+                   "probabilidades en 1 000), configuración por defecto, idénticos bit a bit")
+        version.EQUIVALENCIAS.parent.mkdir(parents=True, exist_ok=True)
+        version.EQUIVALENCIAS.write_text(json.dumps(eq, indent=1, ensure_ascii=False) + "\n")
+        r["escrita"] = True
+    return r
+
+
 if __name__ == "__main__":
+    import json
     if sys.argv[1] == "comparar":
-        import json
         print(json.dumps(comparar(sys.argv[2], sys.argv[3]), indent=1))
+    elif sys.argv[1] == "equivalencia":
+        print(json.dumps(equivalencia(sys.argv[2], sys.argv[3]), indent=1))
     else:
         muestra(sys.argv[1], sys.argv[2])

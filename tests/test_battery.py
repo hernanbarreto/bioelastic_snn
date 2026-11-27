@@ -211,6 +211,33 @@ def test_perfil_promedio_simple_y_rangos(tmp_path):
     assert list(pf["equivalentes"]["por_dimension"]) == ["d1"]       # p2 no es equivalente
 
 
+def test_perfil_no_mezcla_perfiles_de_opciones(tmp_path):
+    """Con filas del Thinker en dos perfiles, el perfil por dimensión usa uno por vez: el de
+    defecto sólo filas de defecto; el de R3, las de R3 donde las hay y las de defecto en el
+    resto (una prueba que no usa el Thinker)."""
+    cat = _cat_falso()
+    alm = almacen.Almacen("c0", tmp_path)
+    p_def, _ = _prueba("p1")                                          # índice (0.6 - 0.5) / 0.4 = 0.25
+    import dataclasses
+    p_r3 = dataclasses.replace(_prueba("p1", fn=lambda s: dict(puntaje=0.9, medidas={}))[0], variante="v+R3",
+                               perfil="R3")
+    p_otra, _ = _prueba("p2", fn=lambda s: dict(puntaje=2.0, medidas={}))
+    filas = [registro.fila(p, registro.correr(p, alm, 1.0, log=lambda *a: None)[0], None, cat, "c0")
+             for p in (p_def, p_r3, p_otra)]
+    assert esquema.perfiles_presentes(filas) == ["defecto", "R3"]
+    d = esquema.perfil(filas, cat)
+    r3 = esquema.perfil(filas, cat, "R3")
+    assert d["todas"]["por_dimension"]["d1"]["min"] == pytest.approx(0.25)
+    assert [x["variantes"] for x in d["todas"]["por_dimension"]["d1"]["pruebas"]] == [["v"]]
+    assert r3["todas"]["por_dimension"]["d1"]["min"] == pytest.approx(1.0)
+    assert [x["variantes"] for x in r3["todas"]["por_dimension"]["d1"]["pruebas"]] == [["v+R3"]]
+    assert r3["todas"]["por_dimension"]["d2"] == d["todas"]["por_dimension"]["d2"]
+    assert r3["pruebas_con_el_perfil"] == ["p1"]
+    esquema.escribir_perfil_csv([d, r3], tmp_path / "perfil.csv")
+    lineas = (tmp_path / "perfil.csv").read_text().splitlines()
+    assert lineas[1].startswith("equivalentes,defecto") and any(x.startswith("equivalentes,R3") for x in lineas)
+
+
 # ---------------------------------------------------------------- reproducibilidad
 @pytest.mark.parametrize("modulo,fn", [("harlow", "correr"), ("reversion", "correr_serial"),
                                        ("reversion", "correr_volatil"), ("inferencia", "correr_7"),
@@ -301,6 +328,39 @@ def test_ingesta_por_semilla_y_lenguaje(tmp_path):
     assert ng.oracion(b"the dog runs .") > ng.oracion(b"the runs dog .")
     tot = sum(np.exp(ng.logp(b"th", y)) for y in range(256))           # distribución que suma 1
     assert tot == pytest.approx(1.0, abs=1e-9)
+
+
+def test_ingesta_scan_experimento_1(tmp_path):
+    from battery import ingesta
+    th = "Thinker (valores por defecto + contexto temporal), semilla 0 (exploratorio, 1 semilla)"
+    filas = ["prueba,sistema,tramo,medida,media,desvio,semillas"]
+    for pc, n, v in ((1, 209, 0.0), (2, 418, 0.25)):
+        filas += [f'"S","{th}","{pc} % ({n} comandos), 1 pasada(s), comandos ya vistos",secuencia exacta,0.5,0,1',
+                  f'"S","{th}","{pc} % ({n} comandos), 1 pasada(s), test (muestra de 1000)",secuencia exacta,{v},0,1',
+                  f'"S","{th}","{pc} % ({n} comandos), 1 pasada(s), test (muestra de 1000)",primer símbolo,0.4,0,1']
+    filas.append(f'"S","seq2seq, publicado","1 %",secuencia exacta,0.05,0,0')
+    (tmp_path / "scan.csv").write_text("\n".join(filas) + "\n")
+    c = ingesta.leer_scan_exp1(2, 1)(tmp_path / "scan.csv")
+    assert c == [dict(semilla=0, puntaje=0.25, medidas=dict(test_primer_símbolo=0.4, entrenamiento_secuencia_exacta=0.5))]
+    assert ingesta.leer_scan_exp1(1, 3)(tmp_path / "scan.csv") == []             # sin esa corrida, sin filas
+
+
+def test_kneser_ney_compacto_igual_al_de_diccionarios():
+    from battery.lenguaje import KneserNey
+    from battery.lenguaje_escala import KneserNeyCompacto, bits_por_posicion_kn
+    rng = np.random.default_rng(0)
+    pal = [b"the", b"dog", b"cat", b"runs", b"sits", b"a", b"big", b"red", b"ball", b"?", b"."]
+    texto = b"\n".join(b" ".join(pal[j] for j in rng.integers(len(pal), size=rng.integers(2, 7)))
+                       for _ in range(400))
+    prueba = b"\nthe big dog runs .\nzebra sits ?\n" + texto[-300:]       # «z» y «e»+«b» no vistos juntos
+    a = KneserNey(6, 256).entrenar([texto]); b = KneserNeyCompacto(6, 256).entrenar([texto])
+    for K in (1, 2, 4, 6):
+        a.orden(K); b.orden(K)
+        assert b.secuencia(prueba) == pytest.approx(a.secuencia(prueba), rel=1e-12, abs=1e-9)
+        assert b.logp(b"the bi", ord("g")) == pytest.approx(a.logp(b"the bi", ord("g")), rel=1e-12)
+        assert b.logp(b"", ord("z")) == pytest.approx(a.logp(b"", ord("z")), rel=1e-12)
+        np.testing.assert_allclose(bits_por_posicion_kn(b, prueba), bits_por_posicion_kn(a, prueba), rtol=1e-12)
+    assert sum(np.exp(b.logp(b"th", y)) for y in range(256)) == pytest.approx(1.0, abs=1e-9)
 
 
 def test_no_aplicables_registrados():

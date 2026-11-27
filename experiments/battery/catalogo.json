@@ -1,7 +1,7 @@
 {
   "esquema": 1,
-  "estado": "verificado para la corrida de la batería sobre v0.3-dev (80a7870); lo que falta está en `pendiente` de cada prueba",
-  "actualizado": "2026-11-26",
+  "estado": "verificado para las corridas de la batería sobre v0.3-dev 80a7870, 8fb949e, 332ce43, a0b909b y dbc5d4b; lo que falta está en `pendiente` de cada prueba",
+  "actualizado": "2026-11-27",
   "convenciones": {
     "indice_normalizado": "(red - azar) / (referencia - azar), sin recortar a [0, 1]; la referencia es la entrada marcada en `referencia_indice`",
     "verificacion": {
@@ -145,19 +145,22 @@
       "nombre": "SCAN: composición de instrucciones (divisiones simple, jump y longitud)",
       "dimension": "razonamiento_relacional",
       "corre": "razonamiento3",
-      "metrica": "exactitud de secuencia completa por división",
+      "metrica": "exactitud de secuencia completa por división (en el experimento 1, por proporción de comandos)",
       "azar": {"valor": 0.0, "derivacion": "salida exacta de una secuencia: el azar es despreciable"},
-      "protocolo_publicado": "Traducir una instrucción (por ejemplo «jump twice») a la secuencia de acciones. División simple: partición al azar. División jump: hay que componer «jump» con construcciones que en el entrenamiento sólo se vieron con otros verbos. Las redes publicadas se entrenan con 100 000 muestras del conjunto de entrenamiento.",
+      "protocolo_publicado": "Traducir una instrucción (por ejemplo «jump twice») a la secuencia de acciones. División simple: partición al azar. División jump: hay que componer «jump» con construcciones que en el entrenamiento sólo se vieron con otros verbos. Las redes publicadas se entrenan con 100 000 muestras del conjunto de entrenamiento. Experimento 1 (Lake & Baroni 2018): división al azar con 1, 2, 4, 8, 16, 32 y 64 % de los comandos para entrenar y el resto para el test.",
       "datos": {"fuente": "https://github.com/brendenlake/SCAN", "commit": "c4b756cbc010d75c912f16c42c8f15dc6b7e6c8f", "nota": "el commit es el que usa razonamiento3"},
       "referencia_indice": null,
       "humano": [],
       "animales": [],
       "maquinas": [
+        {"id": "lake2018_exp1_1pc", "sistema": "LSTM seq2seq de 2 capas (200 unidades, sin atención, dropout 0,5), el mejor en conjunto del experimento 1, con 1 % de los comandos", "valor": 0.05, "tipo_valor": "aproximado", "cita": "Lake & Baroni (2018), ICML, arXiv:1711.00350, experimento 1, texto («about 5% correct»)", "url": "https://ar5iv.labs.arxiv.org/html/1711.00350", "verificacion": "primaria", "protocolo": "división al azar de los 20 910 comandos; entrenamiento con 100 000 presentaciones con reemplazo; 5 corridas por configuración; test: todos los comandos restantes", "releida": "2026-11-26"},
+        {"id": "lake2018_exp1_2pc", "sistema": "LSTM seq2seq de 2 capas (200 unidades, sin atención, dropout 0,5), el mejor en conjunto del experimento 1, con 2 % de los comandos", "valor": 0.54, "tipo_valor": "aproximado", "cita": "Lake & Baroni (2018), ICML, arXiv:1711.00350, experimento 1, texto («about 54% correct»)", "url": "https://ar5iv.labs.arxiv.org/html/1711.00350", "verificacion": "primaria", "protocolo": "división al azar de los 20 910 comandos; entrenamiento con 100 000 presentaciones con reemplazo; 5 corridas por configuración; test: todos los comandos restantes", "releida": "2026-11-26"},
+        {"id": "lake2018_exp1_4pc", "sistema": "LSTM seq2seq de 2 capas (200 unidades, sin atención, dropout 0,5), el mejor en conjunto del experimento 1, con 4 % de los comandos", "valor": 0.93, "tipo_valor": "aproximado", "cita": "Lake & Baroni (2018), ICML, arXiv:1711.00350, experimento 1, texto («about 93% correct»)", "url": "https://ar5iv.labs.arxiv.org/html/1711.00350", "verificacion": "primaria", "protocolo": "división al azar de los 20 910 comandos; entrenamiento con 100 000 presentaciones con reemplazo; 5 corridas por configuración; test: todos los comandos restantes", "releida": "2026-11-26"},
         {"id": "lstm_simple", "sistema": "LSTM seq2seq, división simple", "valor": 0.998, "cita": "tabla 2 de Dessì & Baroni (2019), arXiv:1905.08527", "url": "https://arxiv.org/pdf/1905.08527", "verificacion": "secundaria", "nota": "la tabla reúne resultados de trabajos anteriores con LSTM y GRU", "releida": "2026-11-26"},
         {"id": "lstm_jump", "sistema": "LSTM seq2seq, división jump", "valor": 0.012, "cita": "ídem", "url": "https://arxiv.org/pdf/1905.08527", "verificacion": "secundaria", "releida": "2026-11-26"},
         {"id": "cnn_jump", "sistema": "CNN seq2seq, división jump", "valor": 0.692, "cita": "Dessì & Baroni (2019), arXiv:1905.08527", "url": "https://arxiv.org/pdf/1905.08527", "verificacion": "primaria", "nota": "más o menos 8,2 entre corridas", "releida": "2026-11-26"}
       ],
-      "pendiente": ["no hay datos de personas resolviendo SCAN mismo; los datos humanos son de la tarea de pocos ejemplos de Lake & Baroni (ver `instrucciones_pocos_ejemplos`)", "división de longitud: sin referencia verificada"]
+      "pendiente": ["no hay datos de personas resolviendo SCAN mismo; los datos humanos son de la tarea de pocos ejemplos de Lake & Baroni (ver `instrucciones_pocos_ejemplos`)", "división de longitud: sin referencia verificada", "experimento 1 con 8 % o más de los comandos: la cifra sólo está en la figura 3 de Lake & Baroni (2018): sin referencia verificada"]
     },
     "instrucciones_pocos_ejemplos": {
       "nombre": "Instrucciones en un pseudolenguaje con pocos ejemplos (Lake & Baroni 2023)",

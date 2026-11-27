@@ -1,0 +1,23 @@
+{
+ "puntaje": 0.0,
+ "medidas": {
+  "K": 0.0,
+  "exactitud_entrenamiento_ultimos500": 0.576,
+  "K_N2": 0.0,
+  "exactitud_N2": 0.4,
+  "K_N4": 0.0,
+  "exactitud_N4": 0.5,
+  "K_N6": 0.0,
+  "exactitud_N6": 0.5,
+  "K_N8": 0.0,
+  "exactitud_N8": 0.49,
+  "K_N10": 0.0,
+  "exactitud_N10": 0.46,
+  "techo_de_la_prueba": false
+ },
+ "segundos": 3.3362009525299072,
+ "semilla": 7,
+ "version": 1,
+ "escala": 1.0,
+ "config": "aprender_a_aprender"
+}
