@@ -72,7 +72,7 @@ def correr(var: str, seed: int, scale: float, n_eval: int, data, out, extra):
     bounds = stream.bounds(); T = len(stream)
     net = Cortex((28, 28, 1), 20, seed=seed, **D2, **VARIANTES[var])
     rec = {k: np.zeros(T, dtype=np.float32) for k in ("ok", "conf", "raw", "conflict", "margin", "ne", "ach", "gain",
-                                                      "fam")}
+                                                      "fam", "exp", "evi", "nov")}
     mode = np.zeros(T, dtype=np.int8)                      # 0 sup, 1 reward, 2 unlab
     vistas = np.zeros(T, dtype=np.int32)                   # presentaciones previas de (clase, contexto)
     cuenta: dict = {}
@@ -96,7 +96,8 @@ def correr(var: str, seed: int, scale: float, n_eval: int, data, out, extra):
         rec["ok"][t] = a == ev.y; rec["conf"][t] = sg["confidence"]; rec["raw"][t] = sg["raw_confidence"]
         rec["conflict"][t] = sg["conflict"]; rec["margin"][t] = sg["margin"]
         rec["ne"][t] = net.unexpected_uncertainty; rec["ach"][t] = net.expected_uncertainty
-        rec["gain"][t] = net.lr_gain; rec["fam"][t] = sg["familiarity"]
+        rec["gain"][t] = net.lr_gain; rec["fam"][t] = sg["familiarity"]; rec["exp"][t] = sg["experience"]
+        rec["evi"][t] = sg["evidence"]; rec["nov"][t] = sg["novelty"]
         mode[t] = ("sup", "reward", "unlab").index(ev.mode)
         k = (ev.y, ev.ctx); vistas[t] = cuenta.get(k, 0); cuenta[k] = vistas[t] + 1
     out("metacog", var, "segundos", round(time.time() - t0, 1), "", f"{T} pasos (scale {scale})")
@@ -114,6 +115,8 @@ def correr(var: str, seed: int, scale: float, n_eval: int, data, out, extra):
     con_fb = mode < 2
     senales = {"1-confianza cruda": 1 - rec["raw"], "1-confianza calibrada": 1 - rec["conf"],
                "conflicto": rec["conflict"], "-margen": -rec["margin"], "1-familiaridad": 1 - rec["fam"],
+               "-experiencia": -rec["exp"], "-evidencia": -rec["evi"],
+               "novedad (Cortex.novelty)": rec["nov"],
                "NE": rec["ne"]}
     m1 = con_fb & conocido
     m2 = con_fb & (nuevo | conocido)

@@ -346,6 +346,38 @@ f0,rep_v02,segundos,400.8667,43.5197,355.3000,442.0000,3,355.3000 442.0000 405.3
 f0,rep_v02,segundos entrenamiento,313.0667,26.6714,289.1000,341.8000,3,289.1000 341.8000 308.3000,,4000 episodios
 f0,rep_v02,símbolos usados,10.0000,0.0000,10.0000,10.0000,3,10.0000 10.0000 10.0000,10,
 f0,total,segundos,423.4208,462.9018,17.8000,2203.1000,24,24.5000 25.1000 17.8000 26.2000 24.6000 24.6000 21.2000 21.5000 608.8000 555.1000 533.6000 329.4000 544.0000 583.4000 348.9000 368.8000 533.3000 501.9000 861.7000 801.1000 355.6000 442.3000 405.6000 2203.1000,,
+f0s,cadena aprendida blando | aleatorio,columna_final (media de 20),0.1014,0.0000,0.1014,0.1014,1,0.1014,0.0142,desvío en referencia
+f0s,cadena aprendida blando | aleatorio,fracción con pureza >= 0.99,0.0000,0.0000,0.0000,0.0000,1,0.0000,,
+f0s,cadena aprendida blando | aleatorio,identidad (media de 20),0.1300,0.0000,0.1300,0.1300,1,0.1300,0.0843,desvío en referencia
+f0s,cadena aprendida blando | aleatorio,pureza (media de 20),0.1209,0.0000,0.1209,0.1209,1,0.1209,0.0048,desvío en referencia
+f0s,cadena aprendida blando | mas0,columna_final (media de 20),0.6323,0.0000,0.6323,0.6323,1,0.6323,0.0726,desvío en referencia
+f0s,cadena aprendida blando | mas0,fracción con pureza >= 0.99,0.0000,0.0000,0.0000,0.0000,1,0.0000,,
+f0s,cadena aprendida blando | mas0,identidad (media de 20),0.0650,0.0000,0.0650,0.0650,1,0.0650,0.0726,desvío en referencia
+f0s,cadena aprendida blando | mas0,pureza (media de 20),0.8340,0.0000,0.8340,0.8340,1,0.8340,0.0653,desvío en referencia
+f0s,cadena aprendida muestreo | aleatorio,columna_final (media de 20),0.5977,0.0000,0.5977,0.5977,1,0.5977,0.1704,desvío en referencia
+f0s,cadena aprendida muestreo | aleatorio,fracción con pureza >= 0.99,0.1000,0.0000,0.1000,0.1000,1,0.1000,,
+f0s,cadena aprendida muestreo | aleatorio,identidad (media de 20),0.0700,0.0000,0.0700,0.0700,1,0.0700,0.0714,desvío en referencia
+f0s,cadena aprendida muestreo | aleatorio,pureza (media de 20),0.7592,0.0000,0.7592,0.7592,1,0.7592,0.1279,desvío en referencia
+f0s,cadena aprendida muestreo | mas0,columna_final (media de 20),0.6885,0.0000,0.6885,0.6885,1,0.6885,0.1417,desvío en referencia
+f0s,cadena aprendida muestreo | mas0,fracción con pureza >= 0.99,0.1000,0.0000,0.1000,0.1000,1,0.1000,,
+f0s,cadena aprendida muestreo | mas0,identidad (media de 20),0.1050,0.0000,0.1050,0.1050,1,0.1050,0.1117,desvío en referencia
+f0s,cadena aprendida muestreo | mas0,pureza (media de 20),0.8541,0.0000,0.8541,0.8541,1,0.8541,0.0739,desvío en referencia
+f0s,cadena aprendida muestreo+equipartición | aleatorio,columna_final (media de 20),0.9854,0.0000,0.9854,0.9854,1,0.9854,0.0497,desvío en referencia
+f0s,cadena aprendida muestreo+equipartición | aleatorio,fracción con pureza >= 0.99,0.9500,0.0000,0.9500,0.9500,1,0.9500,,
+f0s,cadena aprendida muestreo+equipartición | aleatorio,identidad (media de 20),0.0900,0.0000,0.0900,0.0900,1,0.0900,0.0995,desvío en referencia
+f0s,cadena aprendida muestreo+equipartición | aleatorio,pureza (media de 20),0.9936,0.0000,0.9936,0.9936,1,0.9936,0.0235,desvío en referencia
+f0s,cadena aprendida muestreo+equipartición | mas0,columna_final (media de 20),0.6877,0.0000,0.6877,0.6877,1,0.6877,0.0924,desvío en referencia
+f0s,cadena aprendida muestreo+equipartición | mas0,fracción con pureza >= 0.99,0.4000,0.0000,0.4000,0.4000,1,0.4000,,
+f0s,cadena aprendida muestreo+equipartición | mas0,identidad (media de 20),0.1300,0.0000,0.1300,0.1300,1,0.1300,0.1100,desvío en referencia
+f0s,cadena aprendida muestreo+equipartición | mas0,pureza (media de 20),0.9328,0.0000,0.9328,0.9328,1,0.9328,0.0643,desvío en referencia
+f0s,cadena conocida blando | aleatorio,columna_final (media de 20),0.9980,0.0000,0.9980,0.9980,1,0.9980,0.0013,desvío en referencia
+f0s,cadena conocida blando | aleatorio,fracción con pureza >= 0.99,1.0000,0.0000,1.0000,1.0000,1,1.0000,,
+f0s,cadena conocida blando | aleatorio,identidad (media de 20),1.0000,0.0000,1.0000,1.0000,1,1.0000,0.0000,desvío en referencia
+f0s,cadena conocida blando | aleatorio,pureza (media de 20),0.9991,0.0000,0.9991,0.9991,1,0.9991,0.0000,desvío en referencia
+f0s,cadena conocida blando | mas0,columna_final (media de 20),0.9456,0.0000,0.9456,0.9456,1,0.9456,0.1581,desvío en referencia
+f0s,cadena conocida blando | mas0,fracción con pureza >= 0.99,0.9000,0.0000,0.9000,0.9000,1,0.9000,,
+f0s,cadena conocida blando | mas0,identidad (media de 20),0.9000,0.0000,0.9000,0.9000,1,0.9000,0.3000,desvío en referencia
+f0s,cadena conocida blando | mas0,pureza (media de 20),0.9617,0.0000,0.9617,0.9617,1,0.9617,0.1121,desvío en referencia
 f0s,conjunto L2 map | aleatorio,columna_final (media de 20),0.4768,0.0000,0.4768,0.4768,1,0.4768,0.0713,desvío en referencia
 f0s,conjunto L2 map | aleatorio,fracción con pureza >= 0.9,0.0000,0.0000,0.0000,0.0000,1,0.0000,,
 f0s,conjunto L2 map | aleatorio,pureza (media de 20),0.6495,0.0000,0.6495,0.6495,1,0.6495,0.0670,desvío en referencia
@@ -422,7 +454,124 @@ f0s,refuerzo | mas0,fracción que termina en la identidad,0.0500,0.0000,0.0500,0
 f0s,refuerzo | mas0,identidad (media de 20),0.0500,0.0000,0.0500,0.0500,1,0.0500,,
 f0s,refuerzo | mas0,mas5 (media de 20),0.1500,0.0000,0.1500,0.1500,1,0.1500,,
 f0s,refuerzo | mas0,vecinos (media de 20),0.2000,0.0000,0.2000,0.2000,1,0.2000,,
-f0s,total,segundos,126.8667,39.5450,90.4000,168.9000,3,121.3000 90.4000 168.9000,,
+f0s,total,segundos,257.5250,263.3039,90.4000,649.5000,4,649.5000 121.3000 90.4000 168.9000,,
+f1c,aprendida_eq,Thinker con código-oráculo: columna n=3,0.0840,0.0000,0.0840,0.0840,1,0.0840,0.1000,
+f1c,aprendida_eq,Thinker con código-oráculo: exacta n=3,0.0000,0.0000,0.0000,0.0000,1,0.0000,,símbolos = código final perfecto
+f1c,aprendida_eq,clases fundidas (símbolo mayoritario de >=2 dígitos),3.0000,0.0000,3.0000,3.0000,1,3.0000,0,
+f1c,aprendida_eq,columna n=3 (test),0.1147,0.0000,0.1147,0.1147,1,0.1147,0.1000,azar
+f1c,aprendida_eq,converge a una permutación (pureza - identidad),0.0345,0.0000,0.0345,0.0345,1,0.0345,,alto: código consistente pero permutado
+f1c,aprendida_eq,cota pureza^6 (Thinker perfecto),0.0000,0.0000,0.0000,0.0000,1,0.0000,,
+f1c,aprendida_eq,créditos a la percepción,20124.0000,0.0000,20124.0000,20124.0000,1,20124.0000,,
+f1c,aprendida_eq,curva columna ep=1000,0.2179,0.0000,0.2179,0.2179,1,0.2179,,
+f1c,aprendida_eq,curva columna ep=1500,0.2197,0.0000,0.2197,0.2197,1,0.2197,,
+f1c,aprendida_eq,curva columna ep=2000,0.2063,0.0000,0.2063,0.2063,1,0.2063,,
+f1c,aprendida_eq,curva columna ep=2500,0.2251,0.0000,0.2251,0.2251,1,0.2251,,
+f1c,aprendida_eq,curva columna ep=3000,0.2196,0.0000,0.2196,0.2196,1,0.2196,,
+f1c,aprendida_eq,curva columna ep=3500,0.1991,0.0000,0.1991,0.1991,1,0.1991,,
+f1c,aprendida_eq,curva columna ep=4000,0.2237,0.0000,0.2237,0.2237,1,0.2237,,
+f1c,aprendida_eq,curva columna ep=500,0.2201,0.0000,0.2201,0.2201,1,0.2201,,
+f1c,aprendida_eq,curva identidad ep=1000,0.0920,0.0000,0.0920,0.0920,1,0.0920,,
+f1c,aprendida_eq,curva identidad ep=1500,0.0880,0.0000,0.0880,0.0880,1,0.0880,,
+f1c,aprendida_eq,curva identidad ep=2000,0.0940,0.0000,0.0940,0.0940,1,0.0940,,
+f1c,aprendida_eq,curva identidad ep=2500,0.0960,0.0000,0.0960,0.0960,1,0.0960,,
+f1c,aprendida_eq,curva identidad ep=3000,0.0780,0.0000,0.0780,0.0780,1,0.0780,,
+f1c,aprendida_eq,curva identidad ep=3500,0.1260,0.0000,0.1260,0.1260,1,0.1260,,
+f1c,aprendida_eq,curva identidad ep=4000,0.0960,0.0000,0.0960,0.0960,1,0.0960,,
+f1c,aprendida_eq,curva identidad ep=500,0.1580,0.0000,0.1580,0.1580,1,0.1580,,
+f1c,aprendida_eq,curva pureza ep=1000,0.1940,0.0000,0.1940,0.1940,1,0.1940,,
+f1c,aprendida_eq,curva pureza ep=1500,0.1920,0.0000,0.1920,0.1920,1,0.1920,,
+f1c,aprendida_eq,curva pureza ep=2000,0.2300,0.0000,0.2300,0.2300,1,0.2300,,
+f1c,aprendida_eq,curva pureza ep=2500,0.1760,0.0000,0.1760,0.1760,1,0.1760,,
+f1c,aprendida_eq,curva pureza ep=3000,0.1880,0.0000,0.1880,0.1880,1,0.1880,,
+f1c,aprendida_eq,curva pureza ep=3500,0.2240,0.0000,0.2240,0.2240,1,0.2240,,
+f1c,aprendida_eq,curva pureza ep=4000,0.1720,0.0000,0.1720,0.1720,1,0.1720,,
+f1c,aprendida_eq,curva pureza ep=500,0.2400,0.0000,0.2400,0.2400,1,0.2400,,
+f1c,aprendida_eq,curva usados ep=1000,10.0000,0.0000,10.0000,10.0000,1,10.0000,,
+f1c,aprendida_eq,curva usados ep=1500,10.0000,0.0000,10.0000,10.0000,1,10.0000,,
+f1c,aprendida_eq,curva usados ep=2000,10.0000,0.0000,10.0000,10.0000,1,10.0000,,
+f1c,aprendida_eq,curva usados ep=2500,10.0000,0.0000,10.0000,10.0000,1,10.0000,,
+f1c,aprendida_eq,curva usados ep=3000,10.0000,0.0000,10.0000,10.0000,1,10.0000,,
+f1c,aprendida_eq,curva usados ep=3500,10.0000,0.0000,10.0000,10.0000,1,10.0000,,
+f1c,aprendida_eq,curva usados ep=4000,10.0000,0.0000,10.0000,10.0000,1,10.0000,,
+f1c,aprendida_eq,curva usados ep=500,10.0000,0.0000,10.0000,10.0000,1,10.0000,,
+f1c,aprendida_eq,código es identidad (dígitos),0.0000,0.0000,0.0000,0.0000,1,0.0000,10,dígitos cuyo símbolo en la mejor biyección es el propio dígito
+f1c,aprendida_eq,exacta n=1 (test),0.0600,0.0000,0.0600,0.0600,1,0.0600,0.0550,azar
+f1c,aprendida_eq,exacta n=3 (test),0.0020,0.0000,0.0020,0.0020,1,0.0020,0.0005,azar
+f1c,aprendida_eq,exacta n=3 | imágenes bien (código),nan,0.0000,nan,nan,1,nan,,
+f1c,aprendida_eq,fin (acarreo) n=3 (test),0.5400,0.0000,0.5400,0.5400,1,0.5400,0.5005,mejor constante
+f1c,aprendida_eq,fracción episodios con las 6 imágenes bien (código),0.0000,0.0000,0.0000,0.0000,1,0.0000,0.0000,pureza^6
+f1c,aprendida_eq,identidad percepción (test),0.1070,0.0000,0.1070,0.1070,1,0.1070,0.1000,símbolo == dígito
+f1c,aprendida_eq,masa en s = d (identidad),0.1070,0.0000,0.1070,0.1070,1,0.1070,0.1000,fracción de imágenes
+f1c,aprendida_eq,masa en s = d + 5,0.0860,0.0000,0.0860,0.0860,1,0.0860,0.1000,invisible para el dígito módulo 10
+f1c,aprendida_eq,masa en s = d +- 1 (vecinos),0.1995,0.0000,0.1995,0.1995,1,0.1995,0.2000,
+f1c,aprendida_eq,posterior: ensenadas,20124.0000,0.0000,20124.0000,20124.0000,1,20124.0000,,
+f1c,aprendida_eq,posterior: episodios,4000.0000,0.0000,4000.0000,4000.0000,1,4000.0000,,
+f1c,aprendida_eq,posterior: verosimilitud_media,0.5040,0.0000,0.5040,0.5040,1,0.5040,,
+f1c,aprendida_eq,precisión del crédito (código final),0.1106,0.0000,0.1106,0.1106,1,0.1106,0.1000,
+f1c,aprendida_eq,precisión del crédito (identidad),0.0995,0.0000,0.0995,0.0995,1,0.0995,0.1000,
+f1c,aprendida_eq,"precisión del crédito, 2.a mitad (código final)",0.1066,0.0000,0.1066,0.1066,1,0.1066,0.1000,
+f1c,aprendida_eq,pureza percepción (test),0.1415,0.0000,0.1415,0.1415,1,0.1415,0.1000,mejor biyección
+f1c,aprendida_eq,segundos,901.7000,0.0000,901.7000,901.7000,1,901.7000,,
+f1c,aprendida_eq,segundos entrenamiento,726.1000,0.0000,726.1000,726.1000,1,726.1000,,4000 episodios
+f1c,aprendida_eq,símbolos usados,10.0000,0.0000,10.0000,10.0000,1,10.0000,10,
+f1c,total,segundos,902.0000,0.0000,902.0000,902.0000,1,902.0000,,
+f3,ach,acierto columna al final de la regla nueva,0.3950,0.0000,0.3950,0.3950,1,0.3950,0.4517,antes del cambio
+f3,ach,acierto columna antes del cambio,0.4517,0.0000,0.4517,0.4517,1,0.4517,,últimas 600 columnas
+f3,ach,al volver a la regla vieja: primeras 200 col.,0.1300,0.0000,0.1300,0.1300,1,0.1300,0.4517,
+f3,ach,al volver: columnas hasta 0.9 x nivel previo,2462.0000,0.0000,2462.0000,2462.0000,1,2462.0000,2462,largo de la fase
+f3,ach,caída inmediata (primeras 200 col. tras el cambio),0.0350,0.0000,0.0350,0.0350,1,0.0350,0.4517,
+f3,ach,columnas hasta recuperar 0.9 x nivel previo,3134.0000,0.0000,3134.0000,3134.0000,1,3134.0000,5085,largo de la fase
+f3,ach,"final: regla nueva, columna n=3 (oráculo)",0.3540,0.0000,0.3540,0.3540,1,0.3540,,
+f3,ach,"final: regla vieja, columna n=3 (oráculo)",0.2487,0.0000,0.2487,0.2487,1,0.2487,,
+f3,ach,gamma final (ACh),0.4326,0.0000,0.4326,0.4326,1,0.4326,1.0000,1 = cree a la percepción lo que declara
+f3,ach,posterior: el Thinker no aprendió (desconfianza),84.0000,0.0000,84.0000,84.0000,1,84.0000,,
+f3,ach,reinicios NE,0.0000,0.0000,0.0000,0.0000,1,0.0000,,
+f3,ach,segundos,160.3000,0.0000,160.3000,160.3000,1,160.3000,,5000 episodios
+f3,ach+ne,acierto columna al final de la regla nueva,0.3333,0.0000,0.3333,0.3333,1,0.3333,0.4633,antes del cambio
+f3,ach+ne,acierto columna antes del cambio,0.4633,0.0000,0.4633,0.4633,1,0.4633,,últimas 600 columnas
+f3,ach+ne,al volver a la regla vieja: primeras 200 col.,0.1450,0.0000,0.1450,0.1450,1,0.1450,0.4633,
+f3,ach+ne,al volver: columnas hasta 0.9 x nivel previo,2462.0000,0.0000,2462.0000,2462.0000,1,2462.0000,2462,largo de la fase
+f3,ach+ne,caída inmediata (primeras 200 col. tras el cambio),0.0300,0.0000,0.0300,0.0300,1,0.0300,0.4633,
+f3,ach+ne,columnas hasta recuperar 0.9 x nivel previo,7547.0000,0.0000,7547.0000,7547.0000,1,7547.0000,5085,largo de la fase
+f3,ach+ne,"final: regla nueva, columna n=3 (oráculo)",0.4993,0.0000,0.4993,0.4993,1,0.4993,,
+f3,ach+ne,"final: regla vieja, columna n=3 (oráculo)",0.3260,0.0000,0.3260,0.3260,1,0.3260,,
+f3,ach+ne,gamma final (ACh),0.4310,0.0000,0.4310,0.4310,1,0.4310,1.0000,1 = cree a la percepción lo que declara
+f3,ach+ne,posterior: el Thinker no aprendió (desconfianza),22.0000,0.0000,22.0000,22.0000,1,22.0000,,
+f3,ach+ne,reinicios NE,12.0000,0.0000,12.0000,12.0000,1,12.0000,,
+f3,ach+ne,segundos,191.0000,0.0000,191.0000,191.0000,1,191.0000,,5000 episodios
+f3,base,acierto columna al final de la regla nueva,0.3467,0.0000,0.3467,0.3467,1,0.3467,0.4700,antes del cambio
+f3,base,acierto columna antes del cambio,0.4700,0.0000,0.4700,0.4700,1,0.4700,,últimas 600 columnas
+f3,base,al volver a la regla vieja: primeras 200 col.,0.1650,0.0000,0.1650,0.1650,1,0.1650,0.4700,
+f3,base,al volver: columnas hasta 0.9 x nivel previo,2462.0000,0.0000,2462.0000,2462.0000,1,2462.0000,2462,largo de la fase
+f3,base,caída inmediata (primeras 200 col. tras el cambio),0.0200,0.0000,0.0200,0.0200,1,0.0200,0.4700,
+f3,base,columnas hasta recuperar 0.9 x nivel previo,7547.0000,0.0000,7547.0000,7547.0000,1,7547.0000,5085,largo de la fase
+f3,base,"final: regla nueva, columna n=3 (oráculo)",0.4493,0.0000,0.4493,0.4493,1,0.4493,,
+f3,base,"final: regla vieja, columna n=3 (oráculo)",0.3587,0.0000,0.3587,0.3587,1,0.3587,,
+f3,base,reinicios NE,0.0000,0.0000,0.0000,0.0000,1,0.0000,,
+f3,base,segundos,17.6000,0.0000,17.6000,17.6000,1,17.6000,,5000 episodios
+f3,ne,acierto columna al final de la regla nueva,0.3700,0.0000,0.3700,0.3700,1,0.3700,0.4283,antes del cambio
+f3,ne,acierto columna antes del cambio,0.4283,0.0000,0.4283,0.4283,1,0.4283,,últimas 600 columnas
+f3,ne,al volver a la regla vieja: primeras 200 col.,0.1500,0.0000,0.1500,0.1500,1,0.1500,0.4283,
+f3,ne,al volver: columnas hasta 0.9 x nivel previo,2462.0000,0.0000,2462.0000,2462.0000,1,2462.0000,2462,largo de la fase
+f3,ne,caída inmediata (primeras 200 col. tras el cambio),0.0250,0.0000,0.0250,0.0250,1,0.0250,0.4283,
+f3,ne,columnas hasta recuperar 0.9 x nivel previo,4622.0000,0.0000,4622.0000,4622.0000,1,4622.0000,5085,largo de la fase
+f3,ne,"final: regla nueva, columna n=3 (oráculo)",0.4267,0.0000,0.4267,0.4267,1,0.4267,,
+f3,ne,"final: regla vieja, columna n=3 (oráculo)",0.2247,0.0000,0.2247,0.2247,1,0.2247,,
+f3,ne,reinicios NE,3.0000,0.0000,3.0000,3.0000,1,3.0000,,
+f3,ne,segundos,27.1000,0.0000,27.1000,27.1000,1,27.1000,,5000 episodios
+f3,post_fijo,acierto columna al final de la regla nueva,0.3600,0.0000,0.3600,0.3600,1,0.3600,0.4767,antes del cambio
+f3,post_fijo,acierto columna antes del cambio,0.4767,0.0000,0.4767,0.4767,1,0.4767,,últimas 600 columnas
+f3,post_fijo,al volver a la regla vieja: primeras 200 col.,0.1500,0.0000,0.1500,0.1500,1,0.1500,0.4767,
+f3,post_fijo,al volver: columnas hasta 0.9 x nivel previo,2462.0000,0.0000,2462.0000,2462.0000,1,2462.0000,2462,largo de la fase
+f3,post_fijo,caída inmediata (primeras 200 col. tras el cambio),0.0450,0.0000,0.0450,0.0450,1,0.0450,0.4767,
+f3,post_fijo,columnas hasta recuperar 0.9 x nivel previo,3991.0000,0.0000,3991.0000,3991.0000,1,3991.0000,5085,largo de la fase
+f3,post_fijo,"final: regla nueva, columna n=3 (oráculo)",0.4307,0.0000,0.4307,0.4307,1,0.4307,,
+f3,post_fijo,"final: regla vieja, columna n=3 (oráculo)",0.3220,0.0000,0.3220,0.3220,1,0.3220,,
+f3,post_fijo,gamma final (ACh),1.0000,0.0000,1.0000,1.0000,1,1.0000,1.0000,1 = cree a la percepción lo que declara
+f3,post_fijo,posterior: el Thinker no aprendió (desconfianza),0.0000,0.0000,0.0000,0.0000,1,0.0000,,
+f3,post_fijo,reinicios NE,0.0000,0.0000,0.0000,0.0000,1,0.0000,,
+f3,post_fijo,segundos,164.7000,0.0000,164.7000,164.7000,1,164.7000,,5000 episodios
+f3,total,segundos,575.3000,0.0000,575.3000,575.3000,1,575.3000,,
 f4,rep | aleatorio,Thinker con código-oráculo: columna n=3,0.1660,0.0201,0.1473,0.1873,3,0.1633 0.1873 0.1473,0.1000,
 f4,rep | aleatorio,Thinker con código-oráculo: exacta n=3,0.0027,0.0012,0.0020,0.0040,3,0.0020 0.0040 0.0020,,símbolos = código final perfecto
 f4,rep | aleatorio,abstenciones Thinker,0.0000,0.0000,0.0000,0.0000,3,0.0000 0.0000 0.0000,,
@@ -796,3 +945,1051 @@ f4,rep | mas0,segundos,415.2333,60.7604,357.6000,478.7000,3,409.4000 357.6000 47
 f4,rep | mas0,segundos entrenamiento,318.8000,25.2291,290.2000,337.9000,3,328.3000 290.2000 337.9000,,10000 columnas
 f4,rep | mas0,símbolos usados,9.6667,0.5774,9.0000,10.0000,3,10.0000 10.0000 9.0000,10,
 f4,total,segundos,404.5500,56.7324,325.6000,503.3000,12,352.2000 379.8000 377.8000 378.7000 325.6000 503.3000 472.7000 375.5000 442.7000 409.6000 357.8000 478.9000,,
+metacog,base,AUROC (1) error en lo conocido: -evidencia,0.6938,0.0081,0.6870,0.7028,3,0.6870 0.7028 0.6916,0.5000,azar
+metacog,base,AUROC (1) error en lo conocido: -experiencia,0.6251,0.0180,0.6046,0.6383,3,0.6325 0.6383 0.6046,0.5000,azar
+metacog,base,AUROC (1) error en lo conocido: -margen,0.8765,0.0028,0.8733,0.8787,3,0.8733 0.8774 0.8787,0.5000,azar
+metacog,base,AUROC (1) error en lo conocido: 1-confianza calibrada,0.8822,0.0047,0.8776,0.8869,3,0.8776 0.8869 0.8822,0.5000,azar
+metacog,base,AUROC (1) error en lo conocido: 1-confianza cruda,0.8822,0.0047,0.8776,0.8869,3,0.8776 0.8869 0.8822,0.5000,azar
+metacog,base,AUROC (1) error en lo conocido: 1-familiaridad,0.7309,0.0191,0.7098,0.7470,3,0.7470 0.7098 0.7360,0.5000,azar
+metacog,base,AUROC (1) error en lo conocido: NE,0.5000,0.0000,0.5000,0.5000,3,0.5000 0.5000 0.5000,0.5000,azar
+metacog,base,AUROC (1) error en lo conocido: conflicto,0.8884,0.0065,0.8817,0.8946,3,0.8817 0.8946 0.8888,0.5000,azar
+metacog,base,AUROC (1) error en lo conocido: novedad (Cortex.novelty),0.7309,0.0191,0.7098,0.7470,3,0.7470 0.7098 0.7360,0.5000,azar
+metacog,base,AUROC (2) nuevo vs conocido: -evidencia,0.8479,0.0108,0.8415,0.8604,3,0.8604 0.8415 0.8418,0.5000,azar
+metacog,base,AUROC (2) nuevo vs conocido: -experiencia,0.7768,0.0100,0.7681,0.7877,3,0.7681 0.7877 0.7747,0.5000,azar
+metacog,base,AUROC (2) nuevo vs conocido: -margen,0.7528,0.0039,0.7490,0.7567,3,0.7567 0.7490 0.7526,0.5000,azar
+metacog,base,AUROC (2) nuevo vs conocido: 1-confianza calibrada,0.7676,0.0062,0.7621,0.7744,3,0.7744 0.7621 0.7664,0.5000,azar
+metacog,base,AUROC (2) nuevo vs conocido: 1-confianza cruda,0.7676,0.0062,0.7621,0.7744,3,0.7744 0.7621 0.7664,0.5000,azar
+metacog,base,AUROC (2) nuevo vs conocido: 1-familiaridad,0.7743,0.0080,0.7691,0.7835,3,0.7703 0.7691 0.7835,0.5000,azar
+metacog,base,AUROC (2) nuevo vs conocido: NE,0.5000,0.0000,0.5000,0.5000,3,0.5000 0.5000 0.5000,0.5000,azar
+metacog,base,AUROC (2) nuevo vs conocido: conflicto,0.8036,0.0045,0.8006,0.8088,3,0.8088 0.8014 0.8006,0.5000,azar
+metacog,base,AUROC (2) nuevo vs conocido: novedad (Cortex.novelty),0.7743,0.0080,0.7691,0.7835,3,0.7703 0.7691 0.7835,0.5000,azar
+metacog,base,"AUROC (3) entre errores, nuevo vs conocido: -evidencia",0.7410,0.0142,0.7272,0.7556,3,0.7556 0.7401 0.7272,0.5000,azar
+metacog,base,"AUROC (3) entre errores, nuevo vs conocido: -experiencia",0.6954,0.0331,0.6580,0.7208,3,0.6580 0.7075 0.7208,0.5000,azar
+metacog,base,"AUROC (3) entre errores, nuevo vs conocido: -margen",0.4445,0.0154,0.4270,0.4556,3,0.4510 0.4556 0.4270,0.5000,azar
+metacog,base,"AUROC (3) entre errores, nuevo vs conocido: 1-confianza calibrada",0.4606,0.0233,0.4389,0.4852,3,0.4852 0.4576 0.4389,0.5000,azar
+metacog,base,"AUROC (3) entre errores, nuevo vs conocido: 1-confianza cruda",0.4606,0.0233,0.4389,0.4852,3,0.4852 0.4576 0.4389,0.5000,azar
+metacog,base,"AUROC (3) entre errores, nuevo vs conocido: 1-familiaridad",0.6764,0.0336,0.6443,0.7113,3,0.6443 0.6735 0.7113,0.5000,azar
+metacog,base,"AUROC (3) entre errores, nuevo vs conocido: NE",0.5000,0.0000,0.5000,0.5000,3,0.5000 0.5000 0.5000,0.5000,azar
+metacog,base,"AUROC (3) entre errores, nuevo vs conocido: conflicto",0.5185,0.0252,0.4973,0.5463,3,0.5463 0.5118 0.4973,0.5000,azar
+metacog,base,"AUROC (3) entre errores, nuevo vs conocido: novedad (Cortex.novelty)",0.6764,0.0336,0.6443,0.7113,3,0.6443 0.6735 0.7113,0.5000,azar
+metacog,base,AUROC error recompensa: -margen,0.8721,0.0058,0.8664,0.8779,3,0.8664 0.8720 0.8779,0.5000,azar
+metacog,base,AUROC error recompensa: 1-confianza calibrada,0.8847,0.0055,0.8787,0.8896,3,0.8787 0.8858 0.8896,0.5000,azar
+metacog,base,AUROC error recompensa: 1-confianza cruda,0.8847,0.0055,0.8787,0.8896,3,0.8787 0.8858 0.8896,0.5000,azar
+metacog,base,AUROC error recompensa: conflicto,0.8874,0.0092,0.8786,0.8969,3,0.8786 0.8969 0.8867,0.5000,azar
+metacog,base,AUROC error sup: -margen,0.8345,0.0043,0.8314,0.8394,3,0.8327 0.8394 0.8314,0.5000,azar
+metacog,base,AUROC error sup: 1-confianza calibrada,0.8371,0.0044,0.8340,0.8421,3,0.8352 0.8421 0.8340,0.5000,azar
+metacog,base,AUROC error sup: 1-confianza cruda,0.8371,0.0044,0.8340,0.8421,3,0.8352 0.8421 0.8340,0.5000,azar
+metacog,base,AUROC error sup: conflicto,0.8448,0.0060,0.8388,0.8507,3,0.8388 0.8507 0.8450,0.5000,azar
+metacog,base,ECE calibrada (sup),0.0808,0.0032,0.0771,0.0827,3,0.0827 0.0827 0.0771,0.0000,
+metacog,base,"ECE calibrada (sup, 2.a mitad)",0.0921,0.0031,0.0889,0.0950,3,0.0950 0.0923 0.0889,0.0000,
+metacog,base,ECE calibrada en lo conocido,0.0491,0.0065,0.0450,0.0566,3,0.0566 0.0450 0.0458,0.0000,
+metacog,base,ECE cruda (sup),0.0808,0.0032,0.0771,0.0827,3,0.0827 0.0827 0.0771,0.0000,
+metacog,base,"ECE cruda (sup, 2.a mitad)",0.0921,0.0031,0.0889,0.0950,3,0.0950 0.0923 0.0889,0.0000,
+metacog,base,Kepecs: AUROC de la apuesta (acierto vs error),0.8471,0.0117,0.8362,0.8595,3,0.8595 0.8362 0.8456,0.5000,
+metacog,base,Kepecs: ECE en las mezclas,0.0917,0.0184,0.0774,0.1125,3,0.0852 0.0774 0.1125,0.0000,
+metacog,base,Kepecs: acierto por facilidad,0.8186,0.0209,0.7958,0.8367,3,0.8233 0.8367 0.7958,,0.05:0.59 0.10:0.74 0.20:0.86 0.30:0.92 0.40:0.91 0.50:0.92
+metacog,base,Kepecs: apuesta media en aciertos,0.9413,0.0030,0.9380,0.9437,3,0.9422 0.9437 0.9380,0.7397,en errores en referencia
+metacog,base,Kepecs: ganancia media apostando por confianza,1.2828,0.0856,1.1875,1.3533,3,1.3075 1.3533 1.1875,1.2933,siempre alto en referencia
+metacog,base,Kepecs: pendiente apuesta vs facilidad en aciertos,0.2153,0.0152,0.1979,0.2256,3,0.2225 0.1979 0.2256,0.0000,"firma esperada: + en aciertos, - en errores"
+metacog,base,Kepecs: pendiente apuesta vs facilidad en errores,-0.0433,0.0712,-0.1179,0.0239,3,0.0239 -0.1179 -0.0360,0.0000,"firma esperada: + en aciertos, - en errores"
+metacog,base,NE medio / máximo,0.0000,0.0000,0.0000,0.0000,3,0.0000 0.0000 0.0000,0.0000,máximo en referencia
+metacog,base,acierto prequential recompensa,0.8441,0.0095,0.8378,0.8550,3,0.8394 0.8378 0.8550,,
+metacog,base,acierto prequential sup,0.8461,0.0026,0.8434,0.8485,3,0.8434 0.8465 0.8485,,
+metacog,base,error en lo conocido (tasa),0.1030,0.0060,0.0978,0.1096,3,0.1096 0.0978 0.1015,,>= 100 vistas
+metacog,base,final test grupo A,0.9300,0.0265,0.9000,0.9500,3,0.9000 0.9400 0.9500,,
+metacog,base,final test grupo B,0.9100,0.0361,0.8700,0.9400,3,0.9200 0.8700 0.9400,,
+metacog,base,final test grupo C,0.7125,0.1231,0.5750,0.8125,3,0.8125 0.5750 0.7500,,
+metacog,base,final test grupo D,0.7417,0.0617,0.7000,0.8125,3,0.7125 0.7000 0.8125,,
+metacog,base,ganancia media de la tasa,1.0000,0.0000,1.0000,1.0000,3,1.0000 1.0000 1.0000,1.0000,
+metacog,base,liberaciones de consolidación,0.0000,0.0000,0.0000,0.0000,3,0.0000 0.0000 0.0000,,
+metacog,base,pasos nuevos,470.0000,0.0000,470.0000,470.0000,3,470.0000 470.0000 470.0000,,"< 10 vistas de (clase, contexto)"
+metacog,base,recuperación AB_rot: acierto primeros 200,0.6033,0.0416,0.5700,0.6500,3,0.6500 0.5900 0.5700,,
+metacog,base,recuperación AB_rot: pasos hasta 0.7,155.0000,38.1576,111.0000,179.0000,3,111.0000 175.0000 179.0000,1000,largo de la fase
+metacog,base,recuperación AB_rot_back: acierto primeros 200,0.9100,0.0229,0.8850,0.9300,3,0.9150 0.8850 0.9300,,
+metacog,base,recuperación AB_rot_back: pasos hasta 0.7,50.0000,0.0000,50.0000,50.0000,3,50.0000 50.0000 50.0000,600,largo de la fase
+metacog,base,recuperación B: acierto primeros 200,0.6667,0.0115,0.6600,0.6800,3,0.6600 0.6800 0.6600,,
+metacog,base,recuperación B: pasos hasta 0.7,101.0000,15.0997,87.0000,117.0000,3,99.0000 117.0000 87.0000,800,largo de la fase
+metacog,base,recuperación B_back: acierto primeros 200,0.9250,0.0050,0.9200,0.9300,3,0.9250 0.9200 0.9300,,
+metacog,base,recuperación B_back: pasos hasta 0.7,50.0000,0.0000,50.0000,50.0000,3,50.0000 50.0000 50.0000,600,largo de la fase
+metacog,base,recuperación C: acierto primeros 200,0.8050,0.0150,0.7900,0.8200,3,0.8200 0.7900 0.8050,,
+metacog,base,recuperación C: pasos hasta 0.7,52.6667,1.5275,51.0000,54.0000,3,53.0000 54.0000 51.0000,800,largo de la fase
+metacog,base,recuperación CD_occl: acierto primeros 200,0.5850,0.0050,0.5800,0.5900,3,0.5900 0.5850 0.5800,,
+metacog,base,recuperación CD_occl: pasos hasta 0.7,287.0000,80.6164,194.0000,337.0000,3,337.0000 194.0000 330.0000,800,largo de la fase
+metacog,base,recuperación D: acierto primeros 200,0.6850,0.0229,0.6650,0.7100,3,0.6650 0.6800 0.7100,,
+metacog,base,recuperación D: pasos hasta 0.7,105.6667,25.4231,78.0000,128.0000,3,128.0000 111.0000 78.0000,800,largo de la fase
+metacog,base,recuperación D_back: acierto primeros 200,0.8467,0.0225,0.8250,0.8700,3,0.8700 0.8450 0.8250,,
+metacog,base,recuperación D_back: pasos hasta 0.7,50.0000,0.0000,50.0000,50.0000,3,50.0000 50.0000 50.0000,600,largo de la fase
+metacog,base,recuperación P_probe: acierto primeros 200,0.8033,0.0231,0.7900,0.8300,3,0.7900 0.7900 0.8300,,
+metacog,base,recuperación P_probe: pasos hasta 0.7,71.3333,9.0185,62.0000,80.0000,3,72.0000 80.0000 62.0000,600,largo de la fase
+metacog,base,recuperación media: acierto primeros 200,0.7589,0.0067,0.7517,0.7650,3,0.7650 0.7517 0.7600,,fases sup salvo la 1.a
+metacog,base,recuperación media: pasos hasta 0.7,102.5185,4.0739,97.8889,105.5556,3,105.5556 97.8889 104.1111,,
+metacog,base,segundos,81.5333,3.7434,78.8000,85.8000,3,80.0000 78.8000 85.8000,,10000 pasos (scale 0.05)
+metacog,cal,AUROC (1) error en lo conocido: -evidencia,0.6938,0.0081,0.6870,0.7028,3,0.6870 0.7028 0.6916,0.5000,azar
+metacog,cal,AUROC (1) error en lo conocido: -experiencia,0.6251,0.0180,0.6046,0.6383,3,0.6325 0.6383 0.6046,0.5000,azar
+metacog,cal,AUROC (1) error en lo conocido: -margen,0.8765,0.0028,0.8733,0.8787,3,0.8733 0.8774 0.8787,0.5000,azar
+metacog,cal,AUROC (1) error en lo conocido: 1-confianza calibrada,0.8895,0.0019,0.8878,0.8916,3,0.8890 0.8916 0.8878,0.5000,azar
+metacog,cal,AUROC (1) error en lo conocido: 1-confianza cruda,0.8822,0.0047,0.8776,0.8869,3,0.8776 0.8869 0.8822,0.5000,azar
+metacog,cal,AUROC (1) error en lo conocido: 1-familiaridad,0.7309,0.0191,0.7098,0.7470,3,0.7470 0.7098 0.7360,0.5000,azar
+metacog,cal,AUROC (1) error en lo conocido: NE,0.5000,0.0000,0.5000,0.5000,3,0.5000 0.5000 0.5000,0.5000,azar
+metacog,cal,AUROC (1) error en lo conocido: conflicto,0.8884,0.0065,0.8817,0.8946,3,0.8817 0.8946 0.8888,0.5000,azar
+metacog,cal,AUROC (1) error en lo conocido: novedad (Cortex.novelty),0.7792,0.0019,0.7773,0.7810,3,0.7773 0.7810 0.7794,0.5000,azar
+metacog,cal,AUROC (2) nuevo vs conocido: -evidencia,0.8479,0.0108,0.8415,0.8604,3,0.8604 0.8415 0.8418,0.5000,azar
+metacog,cal,AUROC (2) nuevo vs conocido: -experiencia,0.7768,0.0100,0.7681,0.7877,3,0.7681 0.7877 0.7747,0.5000,azar
+metacog,cal,AUROC (2) nuevo vs conocido: -margen,0.7528,0.0039,0.7490,0.7567,3,0.7567 0.7490 0.7526,0.5000,azar
+metacog,cal,AUROC (2) nuevo vs conocido: 1-confianza calibrada,0.7861,0.0050,0.7824,0.7918,3,0.7918 0.7824 0.7841,0.5000,azar
+metacog,cal,AUROC (2) nuevo vs conocido: 1-confianza cruda,0.7676,0.0062,0.7621,0.7744,3,0.7744 0.7621 0.7664,0.5000,azar
+metacog,cal,AUROC (2) nuevo vs conocido: 1-familiaridad,0.7743,0.0080,0.7691,0.7835,3,0.7703 0.7691 0.7835,0.5000,azar
+metacog,cal,AUROC (2) nuevo vs conocido: NE,0.5000,0.0000,0.5000,0.5000,3,0.5000 0.5000 0.5000,0.5000,azar
+metacog,cal,AUROC (2) nuevo vs conocido: conflicto,0.8036,0.0045,0.8006,0.8088,3,0.8088 0.8014 0.8006,0.5000,azar
+metacog,cal,AUROC (2) nuevo vs conocido: novedad (Cortex.novelty),0.8082,0.0049,0.8025,0.8112,3,0.8108 0.8025 0.8112,0.5000,azar
+metacog,cal,"AUROC (3) entre errores, nuevo vs conocido: -evidencia",0.7410,0.0142,0.7272,0.7556,3,0.7556 0.7401 0.7272,0.5000,azar
+metacog,cal,"AUROC (3) entre errores, nuevo vs conocido: -experiencia",0.6954,0.0331,0.6580,0.7208,3,0.6580 0.7075 0.7208,0.5000,azar
+metacog,cal,"AUROC (3) entre errores, nuevo vs conocido: -margen",0.4445,0.0154,0.4270,0.4556,3,0.4510 0.4556 0.4270,0.5000,azar
+metacog,cal,"AUROC (3) entre errores, nuevo vs conocido: 1-confianza calibrada",0.5266,0.0049,0.5215,0.5313,3,0.5313 0.5269 0.5215,0.5000,azar
+metacog,cal,"AUROC (3) entre errores, nuevo vs conocido: 1-confianza cruda",0.4606,0.0233,0.4389,0.4852,3,0.4852 0.4576 0.4389,0.5000,azar
+metacog,cal,"AUROC (3) entre errores, nuevo vs conocido: 1-familiaridad",0.6764,0.0336,0.6443,0.7113,3,0.6443 0.6735 0.7113,0.5000,azar
+metacog,cal,"AUROC (3) entre errores, nuevo vs conocido: NE",0.5000,0.0000,0.5000,0.5000,3,0.5000 0.5000 0.5000,0.5000,azar
+metacog,cal,"AUROC (3) entre errores, nuevo vs conocido: conflicto",0.5185,0.0252,0.4973,0.5463,3,0.5463 0.5118 0.4973,0.5000,azar
+metacog,cal,"AUROC (3) entre errores, nuevo vs conocido: novedad (Cortex.novelty)",0.7267,0.0108,0.7181,0.7388,3,0.7388 0.7233 0.7181,0.5000,azar
+metacog,cal,AUROC error recompensa: -margen,0.8721,0.0058,0.8664,0.8779,3,0.8664 0.8720 0.8779,0.5000,azar
+metacog,cal,AUROC error recompensa: 1-confianza calibrada,0.8916,0.0078,0.8835,0.8991,3,0.8835 0.8922 0.8991,0.5000,azar
+metacog,cal,AUROC error recompensa: 1-confianza cruda,0.8847,0.0055,0.8787,0.8896,3,0.8787 0.8858 0.8896,0.5000,azar
+metacog,cal,AUROC error recompensa: conflicto,0.8874,0.0092,0.8786,0.8969,3,0.8786 0.8969 0.8867,0.5000,azar
+metacog,cal,AUROC error sup: -margen,0.8345,0.0043,0.8314,0.8394,3,0.8327 0.8394 0.8314,0.5000,azar
+metacog,cal,AUROC error sup: 1-confianza calibrada,0.8553,0.0033,0.8516,0.8579,3,0.8516 0.8565 0.8579,0.5000,azar
+metacog,cal,AUROC error sup: 1-confianza cruda,0.8371,0.0044,0.8340,0.8421,3,0.8352 0.8421 0.8340,0.5000,azar
+metacog,cal,AUROC error sup: conflicto,0.8448,0.0060,0.8388,0.8507,3,0.8388 0.8507 0.8450,0.5000,azar
+metacog,cal,ECE calibrada (sup),0.0140,0.0008,0.0135,0.0150,3,0.0150 0.0136 0.0135,0.0000,
+metacog,cal,"ECE calibrada (sup, 2.a mitad)",0.0235,0.0053,0.0190,0.0293,3,0.0293 0.0221 0.0190,0.0000,
+metacog,cal,ECE calibrada en lo conocido,0.0228,0.0065,0.0155,0.0278,3,0.0278 0.0252 0.0155,0.0000,
+metacog,cal,ECE cruda (sup),0.0808,0.0032,0.0771,0.0827,3,0.0827 0.0827 0.0771,0.0000,
+metacog,cal,"ECE cruda (sup, 2.a mitad)",0.0921,0.0031,0.0889,0.0950,3,0.0950 0.0923 0.0889,0.0000,
+metacog,cal,Kepecs: AUROC de la apuesta (acierto vs error),0.8448,0.0166,0.8296,0.8625,3,0.8625 0.8296 0.8424,0.5000,
+metacog,cal,Kepecs: ECE en las mezclas,0.0551,0.0369,0.0297,0.0975,3,0.0382 0.0297 0.0975,0.0000,
+metacog,cal,Kepecs: acierto por facilidad,0.8186,0.0209,0.7958,0.8367,3,0.8233 0.8367 0.7958,,0.05:0.59 0.10:0.74 0.20:0.86 0.30:0.92 0.40:0.91 0.50:0.92
+metacog,cal,Kepecs: apuesta media en aciertos,0.9024,0.0182,0.8906,0.9234,3,0.8906 0.8932 0.9234,0.6885,en errores en referencia
+metacog,cal,Kepecs: ganancia media apostando por confianza,1.2805,0.0864,1.1858,1.3550,3,1.3008 1.3550 1.1858,1.2933,siempre alto en referencia
+metacog,cal,Kepecs: pendiente apuesta vs facilidad en aciertos,0.2552,0.0458,0.2023,0.2840,3,0.2792 0.2840 0.2023,0.0000,"firma esperada: + en aciertos, - en errores"
+metacog,cal,Kepecs: pendiente apuesta vs facilidad en errores,-0.1663,0.0587,-0.2331,-0.1229,3,-0.1229 -0.2331 -0.1428,0.0000,"firma esperada: + en aciertos, - en errores"
+metacog,cal,NE medio / máximo,0.0000,0.0000,0.0000,0.0000,3,0.0000 0.0000 0.0000,0.0000,máximo en referencia
+metacog,cal,acierto prequential recompensa,0.8441,0.0095,0.8378,0.8550,3,0.8394 0.8378 0.8550,,
+metacog,cal,acierto prequential sup,0.8461,0.0026,0.8434,0.8485,3,0.8434 0.8465 0.8485,,
+metacog,cal,error en lo conocido (tasa),0.1030,0.0060,0.0978,0.1096,3,0.1096 0.0978 0.1015,,>= 100 vistas
+metacog,cal,final test grupo A,0.9300,0.0265,0.9000,0.9500,3,0.9000 0.9400 0.9500,,
+metacog,cal,final test grupo B,0.9100,0.0361,0.8700,0.9400,3,0.9200 0.8700 0.9400,,
+metacog,cal,final test grupo C,0.7125,0.1231,0.5750,0.8125,3,0.8125 0.5750 0.7500,,
+metacog,cal,final test grupo D,0.7417,0.0617,0.7000,0.8125,3,0.7125 0.7000 0.8125,,
+metacog,cal,ganancia media de la tasa,1.0000,0.0000,1.0000,1.0000,3,1.0000 1.0000 1.0000,1.0000,
+metacog,cal,liberaciones de consolidación,0.0000,0.0000,0.0000,0.0000,3,0.0000 0.0000 0.0000,,
+metacog,cal,pasos nuevos,470.0000,0.0000,470.0000,470.0000,3,470.0000 470.0000 470.0000,,"< 10 vistas de (clase, contexto)"
+metacog,cal,recuperación AB_rot: acierto primeros 200,0.6033,0.0416,0.5700,0.6500,3,0.6500 0.5900 0.5700,,
+metacog,cal,recuperación AB_rot: pasos hasta 0.7,155.0000,38.1576,111.0000,179.0000,3,111.0000 175.0000 179.0000,1000,largo de la fase
+metacog,cal,recuperación AB_rot_back: acierto primeros 200,0.9100,0.0229,0.8850,0.9300,3,0.9150 0.8850 0.9300,,
+metacog,cal,recuperación AB_rot_back: pasos hasta 0.7,50.0000,0.0000,50.0000,50.0000,3,50.0000 50.0000 50.0000,600,largo de la fase
+metacog,cal,recuperación B: acierto primeros 200,0.6667,0.0115,0.6600,0.6800,3,0.6600 0.6800 0.6600,,
+metacog,cal,recuperación B: pasos hasta 0.7,101.0000,15.0997,87.0000,117.0000,3,99.0000 117.0000 87.0000,800,largo de la fase
+metacog,cal,recuperación B_back: acierto primeros 200,0.9250,0.0050,0.9200,0.9300,3,0.9250 0.9200 0.9300,,
+metacog,cal,recuperación B_back: pasos hasta 0.7,50.0000,0.0000,50.0000,50.0000,3,50.0000 50.0000 50.0000,600,largo de la fase
+metacog,cal,recuperación C: acierto primeros 200,0.8050,0.0150,0.7900,0.8200,3,0.8200 0.7900 0.8050,,
+metacog,cal,recuperación C: pasos hasta 0.7,52.6667,1.5275,51.0000,54.0000,3,53.0000 54.0000 51.0000,800,largo de la fase
+metacog,cal,recuperación CD_occl: acierto primeros 200,0.5850,0.0050,0.5800,0.5900,3,0.5900 0.5850 0.5800,,
+metacog,cal,recuperación CD_occl: pasos hasta 0.7,287.0000,80.6164,194.0000,337.0000,3,337.0000 194.0000 330.0000,800,largo de la fase
+metacog,cal,recuperación D: acierto primeros 200,0.6850,0.0229,0.6650,0.7100,3,0.6650 0.6800 0.7100,,
+metacog,cal,recuperación D: pasos hasta 0.7,105.6667,25.4231,78.0000,128.0000,3,128.0000 111.0000 78.0000,800,largo de la fase
+metacog,cal,recuperación D_back: acierto primeros 200,0.8467,0.0225,0.8250,0.8700,3,0.8700 0.8450 0.8250,,
+metacog,cal,recuperación D_back: pasos hasta 0.7,50.0000,0.0000,50.0000,50.0000,3,50.0000 50.0000 50.0000,600,largo de la fase
+metacog,cal,recuperación P_probe: acierto primeros 200,0.8033,0.0231,0.7900,0.8300,3,0.7900 0.7900 0.8300,,
+metacog,cal,recuperación P_probe: pasos hasta 0.7,71.3333,9.0185,62.0000,80.0000,3,72.0000 80.0000 62.0000,600,largo de la fase
+metacog,cal,recuperación media: acierto primeros 200,0.7589,0.0067,0.7517,0.7650,3,0.7650 0.7517 0.7600,,fases sup salvo la 1.a
+metacog,cal,recuperación media: pasos hasta 0.7,102.5185,4.0739,97.8889,105.5556,3,105.5556 97.8889 104.1111,,
+metacog,cal,segundos,84.4000,2.6851,82.0000,87.3000,3,83.9000 82.0000 87.3000,,10000 pasos (scale 0.05)
+metacog,hiper,AUROC (1) error en lo conocido: -evidencia,0.6838,0.0231,0.6601,0.7063,3,0.6601 0.7063 0.6849,0.5000,azar
+metacog,hiper,AUROC (1) error en lo conocido: -experiencia,0.6302,0.0252,0.6017,0.6497,3,0.6391 0.6497 0.6017,0.5000,azar
+metacog,hiper,AUROC (1) error en lo conocido: -margen,0.8790,0.0080,0.8743,0.8883,3,0.8743 0.8883 0.8745,0.5000,azar
+metacog,hiper,AUROC (1) error en lo conocido: 1-confianza calibrada,0.8893,0.0090,0.8817,0.8993,3,0.8870 0.8993 0.8817,0.5000,azar
+metacog,hiper,AUROC (1) error en lo conocido: 1-confianza cruda,0.8838,0.0091,0.8783,0.8943,3,0.8787 0.8943 0.8783,0.5000,azar
+metacog,hiper,AUROC (1) error en lo conocido: 1-familiaridad,0.7238,0.0176,0.7071,0.7422,3,0.7422 0.7071 0.7222,0.5000,azar
+metacog,hiper,AUROC (1) error en lo conocido: NE,0.5000,0.0000,0.5000,0.5000,3,0.5000 0.5000 0.5000,0.5000,azar
+metacog,hiper,AUROC (1) error en lo conocido: conflicto,0.8840,0.0065,0.8786,0.8913,3,0.8822 0.8913 0.8786,0.5000,azar
+metacog,hiper,AUROC (1) error en lo conocido: novedad (Cortex.novelty),0.7927,0.0079,0.7836,0.7974,3,0.7971 0.7974 0.7836,0.5000,azar
+metacog,hiper,AUROC (2) nuevo vs conocido: -evidencia,0.8398,0.0034,0.8378,0.8437,3,0.8437 0.8379 0.8378,0.5000,azar
+metacog,hiper,AUROC (2) nuevo vs conocido: -experiencia,0.7791,0.0091,0.7702,0.7883,3,0.7702 0.7883 0.7787,0.5000,azar
+metacog,hiper,AUROC (2) nuevo vs conocido: -margen,0.7560,0.0061,0.7495,0.7615,3,0.7570 0.7615 0.7495,0.5000,azar
+metacog,hiper,AUROC (2) nuevo vs conocido: 1-confianza calibrada,0.7783,0.0079,0.7692,0.7832,3,0.7832 0.7825 0.7692,0.5000,azar
+metacog,hiper,AUROC (2) nuevo vs conocido: 1-confianza cruda,0.7694,0.0062,0.7623,0.7735,3,0.7725 0.7735 0.7623,0.5000,azar
+metacog,hiper,AUROC (2) nuevo vs conocido: 1-familiaridad,0.7735,0.0081,0.7688,0.7828,3,0.7688 0.7688 0.7828,0.5000,azar
+metacog,hiper,AUROC (2) nuevo vs conocido: NE,0.5000,0.0000,0.5000,0.5000,3,0.5000 0.5000 0.5000,0.5000,azar
+metacog,hiper,AUROC (2) nuevo vs conocido: conflicto,0.7933,0.0062,0.7862,0.7969,3,0.7969 0.7969 0.7862,0.5000,azar
+metacog,hiper,AUROC (2) nuevo vs conocido: novedad (Cortex.novelty),0.8121,0.0052,0.8061,0.8151,3,0.8061 0.8150 0.8151,0.5000,azar
+metacog,hiper,"AUROC (3) entre errores, nuevo vs conocido: -evidencia",0.7278,0.0176,0.7119,0.7467,3,0.7467 0.7249 0.7119,0.5000,azar
+metacog,hiper,"AUROC (3) entre errores, nuevo vs conocido: -experiencia",0.6977,0.0461,0.6457,0.7337,3,0.6457 0.7137 0.7337,0.5000,azar
+metacog,hiper,"AUROC (3) entre errores, nuevo vs conocido: -margen",0.4457,0.0334,0.4109,0.4774,3,0.4487 0.4774 0.4109,0.5000,azar
+metacog,hiper,"AUROC (3) entre errores, nuevo vs conocido: 1-confianza calibrada",0.5148,0.0216,0.4955,0.5381,3,0.5107 0.5381 0.4955,0.5000,azar
+metacog,hiper,"AUROC (3) entre errores, nuevo vs conocido: 1-confianza cruda",0.4662,0.0291,0.4334,0.4888,3,0.4764 0.4888 0.4334,0.5000,azar
+metacog,hiper,"AUROC (3) entre errores, nuevo vs conocido: 1-familiaridad",0.6895,0.0450,0.6460,0.7358,3,0.6460 0.6866 0.7358,0.5000,azar
+metacog,hiper,"AUROC (3) entre errores, nuevo vs conocido: NE",0.5000,0.0000,0.5000,0.5000,3,0.5000 0.5000 0.5000,0.5000,azar
+metacog,hiper,"AUROC (3) entre errores, nuevo vs conocido: conflicto",0.5167,0.0226,0.4921,0.5364,3,0.5217 0.5364 0.4921,0.5000,azar
+metacog,hiper,"AUROC (3) entre errores, nuevo vs conocido: novedad (Cortex.novelty)",0.7235,0.0202,0.7066,0.7459,3,0.7066 0.7459 0.7181,0.5000,azar
+metacog,hiper,AUROC error recompensa: -margen,0.8671,0.0130,0.8521,0.8749,3,0.8749 0.8521 0.8744,0.5000,azar
+metacog,hiper,AUROC error recompensa: 1-confianza calibrada,0.8920,0.0083,0.8832,0.8997,3,0.8930 0.8832 0.8997,0.5000,azar
+metacog,hiper,AUROC error recompensa: 1-confianza cruda,0.8804,0.0129,0.8655,0.8880,3,0.8880 0.8655 0.8877,0.5000,azar
+metacog,hiper,AUROC error recompensa: conflicto,0.8896,0.0078,0.8809,0.8960,3,0.8920 0.8960 0.8809,0.5000,azar
+metacog,hiper,AUROC error sup: -margen,0.8421,0.0071,0.8371,0.8502,3,0.8371 0.8502 0.8389,0.5000,azar
+metacog,hiper,AUROC error sup: 1-confianza calibrada,0.8585,0.0054,0.8537,0.8644,3,0.8537 0.8644 0.8574,0.5000,azar
+metacog,hiper,AUROC error sup: 1-confianza cruda,0.8438,0.0073,0.8387,0.8522,3,0.8387 0.8522 0.8406,0.5000,azar
+metacog,hiper,AUROC error sup: conflicto,0.8448,0.0064,0.8383,0.8510,3,0.8383 0.8510 0.8450,0.5000,azar
+metacog,hiper,ECE calibrada (sup),0.0103,0.0008,0.0098,0.0112,3,0.0098 0.0099 0.0112,0.0000,
+metacog,hiper,"ECE calibrada (sup, 2.a mitad)",0.0213,0.0039,0.0186,0.0258,3,0.0186 0.0258 0.0194,0.0000,
+metacog,hiper,ECE calibrada en lo conocido,0.0195,0.0036,0.0171,0.0237,3,0.0178 0.0237 0.0171,0.0000,
+metacog,hiper,ECE cruda (sup),0.0803,0.0034,0.0764,0.0828,3,0.0818 0.0828 0.0764,0.0000,
+metacog,hiper,"ECE cruda (sup, 2.a mitad)",0.0880,0.0016,0.0869,0.0898,3,0.0898 0.0874 0.0869,0.0000,
+metacog,hiper,Kepecs: AUROC de la apuesta (acierto vs error),0.8492,0.0139,0.8353,0.8631,3,0.8631 0.8492 0.8353,0.5000,
+metacog,hiper,Kepecs: ECE en las mezclas,0.0588,0.0376,0.0327,0.1019,3,0.0327 0.0419 0.1019,0.0000,
+metacog,hiper,Kepecs: acierto por facilidad,0.8153,0.0246,0.7875,0.8342,3,0.8342 0.8242 0.7875,,0.05:0.62 0.10:0.77 0.20:0.89 0.30:0.91 0.40:0.91 0.50:0.91
+metacog,hiper,Kepecs: apuesta media en aciertos,0.9062,0.0138,0.8941,0.9213,3,0.8941 0.9032 0.9213,0.6763,en errores en referencia
+metacog,hiper,Kepecs: ganancia media apostando por confianza,1.2733,0.1024,1.1567,1.3483,3,1.3483 1.3150 1.1567,1.3367,siempre alto en referencia
+metacog,hiper,Kepecs: pendiente apuesta vs facilidad en aciertos,0.2560,0.0584,0.2216,0.3235,3,0.3235 0.2216 0.2230,0.0000,"firma esperada: + en aciertos, - en errores"
+metacog,hiper,Kepecs: pendiente apuesta vs facilidad en errores,-0.1948,0.1117,-0.3161,-0.0963,3,-0.1720 -0.3161 -0.0963,0.0000,"firma esperada: + en aciertos, - en errores"
+metacog,hiper,NE medio / máximo,0.0000,0.0000,0.0000,0.0000,3,0.0000 0.0000 0.0000,0.0000,máximo en referencia
+metacog,hiper,acierto prequential recompensa,0.8429,0.0107,0.8333,0.8544,3,0.8333 0.8411 0.8544,,
+metacog,hiper,acierto prequential sup,0.8475,0.0025,0.8450,0.8500,3,0.8450 0.8474 0.8500,,
+metacog,hiper,error en lo conocido (tasa),0.1020,0.0048,0.0978,0.1072,3,0.1072 0.0978 0.1009,,>= 100 vistas
+metacog,hiper,final test grupo A,0.9267,0.0115,0.9200,0.9400,3,0.9200 0.9200 0.9400,,
+metacog,hiper,final test grupo B,0.9200,0.0458,0.8700,0.9600,3,0.9300 0.8700 0.9600,,
+metacog,hiper,final test grupo C,0.6917,0.1348,0.5375,0.7875,3,0.7500 0.5375 0.7875,,
+metacog,hiper,final test grupo D,0.7458,0.0315,0.7125,0.7750,3,0.7125 0.7500 0.7750,,
+metacog,hiper,ganancia media de la tasa,1.1155,0.0036,1.1115,1.1184,3,1.1184 1.1167 1.1115,1.0000,
+metacog,hiper,liberaciones de consolidación,0.0000,0.0000,0.0000,0.0000,3,0.0000 0.0000 0.0000,,
+metacog,hiper,pasos nuevos,470.0000,0.0000,470.0000,470.0000,3,470.0000 470.0000 470.0000,,"< 10 vistas de (clase, contexto)"
+metacog,hiper,recuperación AB_rot: acierto primeros 200,0.6117,0.0462,0.5850,0.6650,3,0.6650 0.5850 0.5850,,
+metacog,hiper,recuperación AB_rot: pasos hasta 0.7,155.0000,38.1576,111.0000,179.0000,3,111.0000 175.0000 179.0000,1000,largo de la fase
+metacog,hiper,recuperación AB_rot_back: acierto primeros 200,0.9183,0.0247,0.8900,0.9350,3,0.9300 0.8900 0.9350,,
+metacog,hiper,recuperación AB_rot_back: pasos hasta 0.7,50.0000,0.0000,50.0000,50.0000,3,50.0000 50.0000 50.0000,600,largo de la fase
+metacog,hiper,recuperación B: acierto primeros 200,0.7033,0.0247,0.6750,0.7200,3,0.6750 0.7200 0.7150,,
+metacog,hiper,recuperación B: pasos hasta 0.7,98.3333,16.5025,82.0000,115.0000,3,98.0000 115.0000 82.0000,800,largo de la fase
+metacog,hiper,recuperación B_back: acierto primeros 200,0.9117,0.0029,0.9100,0.9150,3,0.9100 0.9150 0.9100,,
+metacog,hiper,recuperación B_back: pasos hasta 0.7,50.0000,0.0000,50.0000,50.0000,3,50.0000 50.0000 50.0000,600,largo de la fase
+metacog,hiper,recuperación C: acierto primeros 200,0.8050,0.0200,0.7850,0.8250,3,0.8250 0.7850 0.8050,,
+metacog,hiper,recuperación C: pasos hasta 0.7,51.6667,2.0817,50.0000,54.0000,3,51.0000 54.0000 50.0000,800,largo de la fase
+metacog,hiper,recuperación CD_occl: acierto primeros 200,0.5983,0.0176,0.5800,0.6150,3,0.6000 0.6150 0.5800,,
+metacog,hiper,recuperación CD_occl: pasos hasta 0.7,159.6667,60.6658,91.0000,206.0000,3,206.0000 182.0000 91.0000,800,largo de la fase
+metacog,hiper,recuperación D: acierto primeros 200,0.7133,0.0115,0.7000,0.7200,3,0.7000 0.7200 0.7200,,
+metacog,hiper,recuperación D: pasos hasta 0.7,74.0000,1.0000,73.0000,75.0000,3,75.0000 74.0000 73.0000,800,largo de la fase
+metacog,hiper,recuperación D_back: acierto primeros 200,0.8517,0.0247,0.8350,0.8800,3,0.8800 0.8400 0.8350,,
+metacog,hiper,recuperación D_back: pasos hasta 0.7,50.0000,0.0000,50.0000,50.0000,3,50.0000 50.0000 50.0000,600,largo de la fase
+metacog,hiper,recuperación P_probe: acierto primeros 200,0.8317,0.0225,0.8100,0.8550,3,0.8100 0.8300 0.8550,,
+metacog,hiper,recuperación P_probe: pasos hasta 0.7,55.3333,5.5076,50.0000,61.0000,3,61.0000 55.0000 50.0000,600,largo de la fase
+metacog,hiper,recuperación media: acierto primeros 200,0.7717,0.0053,0.7667,0.7772,3,0.7772 0.7667 0.7711,,fases sup salvo la 1.a
+metacog,hiper,recuperación media: pasos hasta 0.7,82.6667,7.2631,75.0000,89.4444,3,83.5556 89.4444 75.0000,,
+metacog,hiper,segundos,88.3667,6.4825,83.4000,95.7000,3,83.4000 86.0000 95.7000,,10000 pasos (scale 0.05)
+metacog,hiper_plano,AUROC (1) error en lo conocido: -evidencia,0.6771,0.0198,0.6571,0.6966,3,0.6571 0.6966 0.6775,0.5000,azar
+metacog,hiper_plano,AUROC (1) error en lo conocido: -experiencia,0.6290,0.0212,0.6045,0.6417,3,0.6408 0.6417 0.6045,0.5000,azar
+metacog,hiper_plano,AUROC (1) error en lo conocido: -margen,0.8816,0.0090,0.8716,0.8889,3,0.8843 0.8889 0.8716,0.5000,azar
+metacog,hiper_plano,AUROC (1) error en lo conocido: 1-confianza calibrada,0.8915,0.0101,0.8809,0.9010,3,0.8925 0.9010 0.8809,0.5000,azar
+metacog,hiper_plano,AUROC (1) error en lo conocido: 1-confianza cruda,0.8857,0.0098,0.8752,0.8946,3,0.8872 0.8946 0.8752,0.5000,azar
+metacog,hiper_plano,AUROC (1) error en lo conocido: 1-familiaridad,0.7171,0.0136,0.7015,0.7263,3,0.7235 0.7015 0.7263,0.5000,azar
+metacog,hiper_plano,AUROC (1) error en lo conocido: NE,0.5000,0.0000,0.5000,0.5000,3,0.5000 0.5000 0.5000,0.5000,azar
+metacog,hiper_plano,AUROC (1) error en lo conocido: conflicto,0.8846,0.0074,0.8771,0.8919,3,0.8849 0.8919 0.8771,0.5000,azar
+metacog,hiper_plano,AUROC (1) error en lo conocido: novedad (Cortex.novelty),0.7883,0.0150,0.7729,0.8028,3,0.8028 0.7893 0.7729,0.5000,azar
+metacog,hiper_plano,AUROC (2) nuevo vs conocido: -evidencia,0.8473,0.0016,0.8457,0.8488,3,0.8473 0.8457 0.8488,0.5000,azar
+metacog,hiper_plano,AUROC (2) nuevo vs conocido: -experiencia,0.7792,0.0106,0.7694,0.7904,3,0.7694 0.7904 0.7777,0.5000,azar
+metacog,hiper_plano,AUROC (2) nuevo vs conocido: -margen,0.7636,0.0016,0.7618,0.7650,3,0.7640 0.7650 0.7618,0.5000,azar
+metacog,hiper_plano,AUROC (2) nuevo vs conocido: 1-confianza calibrada,0.7812,0.0033,0.7775,0.7838,3,0.7838 0.7824 0.7775,0.5000,azar
+metacog,hiper_plano,AUROC (2) nuevo vs conocido: 1-confianza cruda,0.7756,0.0011,0.7744,0.7766,3,0.7766 0.7758 0.7744,0.5000,azar
+metacog,hiper_plano,AUROC (2) nuevo vs conocido: 1-familiaridad,0.7742,0.0079,0.7689,0.7833,3,0.7703 0.7689 0.7833,0.5000,azar
+metacog,hiper_plano,AUROC (2) nuevo vs conocido: NE,0.5000,0.0000,0.5000,0.5000,3,0.5000 0.5000 0.5000,0.5000,azar
+metacog,hiper_plano,AUROC (2) nuevo vs conocido: conflicto,0.7976,0.0038,0.7934,0.8009,3,0.7986 0.8009 0.7934,0.5000,azar
+metacog,hiper_plano,AUROC (2) nuevo vs conocido: novedad (Cortex.novelty),0.8141,0.0065,0.8073,0.8203,3,0.8073 0.8147 0.8203,0.5000,azar
+metacog,hiper_plano,"AUROC (3) entre errores, nuevo vs conocido: -evidencia",0.7385,0.0137,0.7281,0.7540,3,0.7540 0.7333 0.7281,0.5000,azar
+metacog,hiper_plano,"AUROC (3) entre errores, nuevo vs conocido: -experiencia",0.7023,0.0295,0.6693,0.7263,3,0.6693 0.7113 0.7263,0.5000,azar
+metacog,hiper_plano,"AUROC (3) entre errores, nuevo vs conocido: -margen",0.4540,0.0221,0.4376,0.4791,3,0.4452 0.4791 0.4376,0.5000,azar
+metacog,hiper_plano,"AUROC (3) entre errores, nuevo vs conocido: 1-confianza calibrada",0.5115,0.0085,0.5048,0.5210,3,0.5048 0.5210 0.5086,0.5000,azar
+metacog,hiper_plano,"AUROC (3) entre errores, nuevo vs conocido: 1-confianza cruda",0.4688,0.0167,0.4545,0.4871,3,0.4647 0.4871 0.4545,0.5000,azar
+metacog,hiper_plano,"AUROC (3) entre errores, nuevo vs conocido: 1-familiaridad",0.6958,0.0322,0.6694,0.7317,3,0.6694 0.6864 0.7317,0.5000,azar
+metacog,hiper_plano,"AUROC (3) entre errores, nuevo vs conocido: NE",0.5000,0.0000,0.5000,0.5000,3,0.5000 0.5000 0.5000,0.5000,azar
+metacog,hiper_plano,"AUROC (3) entre errores, nuevo vs conocido: conflicto",0.5188,0.0132,0.5070,0.5330,3,0.5165 0.5330 0.5070,0.5000,azar
+metacog,hiper_plano,"AUROC (3) entre errores, nuevo vs conocido: novedad (Cortex.novelty)",0.7315,0.0181,0.7139,0.7500,3,0.7139 0.7500 0.7305,0.5000,azar
+metacog,hiper_plano,AUROC error recompensa: -margen,0.8674,0.0100,0.8580,0.8779,3,0.8662 0.8779 0.8580,0.5000,azar
+metacog,hiper_plano,AUROC error recompensa: 1-confianza calibrada,0.8896,0.0109,0.8808,0.9018,3,0.8808 0.9018 0.8862,0.5000,azar
+metacog,hiper_plano,AUROC error recompensa: 1-confianza cruda,0.8779,0.0133,0.8686,0.8931,3,0.8720 0.8931 0.8686,0.5000,azar
+metacog,hiper_plano,AUROC error recompensa: conflicto,0.8870,0.0170,0.8674,0.8983,3,0.8952 0.8983 0.8674,0.5000,azar
+metacog,hiper_plano,AUROC error sup: -margen,0.8454,0.0092,0.8392,0.8560,3,0.8392 0.8560 0.8410,0.5000,azar
+metacog,hiper_plano,AUROC error sup: 1-confianza calibrada,0.8604,0.0085,0.8539,0.8700,3,0.8539 0.8700 0.8574,0.5000,azar
+metacog,hiper_plano,AUROC error sup: 1-confianza cruda,0.8472,0.0095,0.8405,0.8581,3,0.8405 0.8581 0.8430,0.5000,azar
+metacog,hiper_plano,AUROC error sup: conflicto,0.8485,0.0110,0.8372,0.8592,3,0.8372 0.8592 0.8490,0.5000,azar
+metacog,hiper_plano,ECE calibrada (sup),0.0116,0.0014,0.0101,0.0128,3,0.0128 0.0101 0.0120,0.0000,
+metacog,hiper_plano,"ECE calibrada (sup, 2.a mitad)",0.0251,0.0006,0.0244,0.0254,3,0.0254 0.0244 0.0254,0.0000,
+metacog,hiper_plano,ECE calibrada en lo conocido,0.0196,0.0066,0.0120,0.0241,3,0.0241 0.0227 0.0120,0.0000,
+metacog,hiper_plano,ECE cruda (sup),0.0828,0.0036,0.0788,0.0859,3,0.0837 0.0859 0.0788,0.0000,
+metacog,hiper_plano,"ECE cruda (sup, 2.a mitad)",0.0905,0.0015,0.0888,0.0917,3,0.0909 0.0888 0.0917,0.0000,
+metacog,hiper_plano,Kepecs: AUROC de la apuesta (acierto vs error),0.8425,0.0252,0.8272,0.8716,3,0.8716 0.8272 0.8286,0.5000,
+metacog,hiper_plano,Kepecs: ECE en las mezclas,0.0616,0.0315,0.0357,0.0966,3,0.0525 0.0357 0.0966,0.0000,
+metacog,hiper_plano,Kepecs: acierto por facilidad,0.8100,0.0271,0.7792,0.8300,3,0.8208 0.8300 0.7792,,0.05:0.62 0.10:0.73 0.20:0.86 0.30:0.91 0.40:0.90 0.50:0.91
+metacog,hiper_plano,Kepecs: apuesta media en aciertos,0.9037,0.0132,0.8885,0.9120,3,0.9105 0.8885 0.9120,0.7031,en errores en referencia
+metacog,hiper_plano,Kepecs: ganancia media apostando por confianza,1.2461,0.1051,1.1258,1.3200,3,1.2925 1.3200 1.1258,1.2833,siempre alto en referencia
+metacog,hiper_plano,Kepecs: pendiente apuesta vs facilidad en aciertos,0.2555,0.0117,0.2421,0.2634,3,0.2421 0.2634 0.2611,0.0000,"firma esperada: + en aciertos, - en errores"
+metacog,hiper_plano,Kepecs: pendiente apuesta vs facilidad en errores,-0.2000,0.1284,-0.3479,-0.1171,3,-0.1351 -0.3479 -0.1171,0.0000,"firma esperada: + en aciertos, - en errores"
+metacog,hiper_plano,NE medio / máximo,0.0000,0.0000,0.0000,0.0000,3,0.0000 0.0000 0.0000,0.0000,máximo en referencia
+metacog,hiper_plano,acierto prequential recompensa,0.8411,0.0097,0.8317,0.8511,3,0.8317 0.8406 0.8511,,
+metacog,hiper_plano,acierto prequential sup,0.8475,0.0023,0.8453,0.8499,3,0.8453 0.8473 0.8499,,
+metacog,hiper_plano,error en lo conocido (tasa),0.1024,0.0025,0.1006,0.1053,3,0.1053 0.1006 0.1013,,>= 100 vistas
+metacog,hiper_plano,final test grupo A,0.9333,0.0252,0.9100,0.9600,3,0.9100 0.9300 0.9600,,
+metacog,hiper_plano,final test grupo B,0.9167,0.0513,0.8600,0.9600,3,0.9300 0.8600 0.9600,,
+metacog,hiper_plano,final test grupo C,0.7208,0.0520,0.6625,0.7625,3,0.7625 0.6625 0.7375,,
+metacog,hiper_plano,final test grupo D,0.7500,0.0331,0.7125,0.7750,3,0.7125 0.7625 0.7750,,
+metacog,hiper_plano,ganancia media de la tasa,1.1199,0.0037,1.1160,1.1233,3,1.1233 1.1203 1.1160,1.0000,
+metacog,hiper_plano,liberaciones de consolidación,0.0000,0.0000,0.0000,0.0000,3,0.0000 0.0000 0.0000,,
+metacog,hiper_plano,pasos nuevos,470.0000,0.0000,470.0000,470.0000,3,470.0000 470.0000 470.0000,,"< 10 vistas de (clase, contexto)"
+metacog,hiper_plano,recuperación AB_rot: acierto primeros 200,0.6117,0.0257,0.5900,0.6400,3,0.6400 0.6050 0.5900,,
+metacog,hiper_plano,recuperación AB_rot: pasos hasta 0.7,132.0000,38.1969,102.0000,175.0000,3,119.0000 175.0000 102.0000,1000,largo de la fase
+metacog,hiper_plano,recuperación AB_rot_back: acierto primeros 200,0.9083,0.0208,0.8850,0.9250,3,0.9250 0.8850 0.9150,,
+metacog,hiper_plano,recuperación AB_rot_back: pasos hasta 0.7,50.0000,0.0000,50.0000,50.0000,3,50.0000 50.0000 50.0000,600,largo de la fase
+metacog,hiper_plano,recuperación B: acierto primeros 200,0.7000,0.0304,0.6650,0.7200,3,0.6650 0.7150 0.7200,,
+metacog,hiper_plano,recuperación B: pasos hasta 0.7,98.6667,16.5025,82.0000,115.0000,3,99.0000 115.0000 82.0000,800,largo de la fase
+metacog,hiper_plano,recuperación B_back: acierto primeros 200,0.9167,0.0029,0.9150,0.9200,3,0.9200 0.9150 0.9150,,
+metacog,hiper_plano,recuperación B_back: pasos hasta 0.7,50.0000,0.0000,50.0000,50.0000,3,50.0000 50.0000 50.0000,600,largo de la fase
+metacog,hiper_plano,recuperación C: acierto primeros 200,0.8050,0.0229,0.7850,0.8300,3,0.8300 0.7850 0.8000,,
+metacog,hiper_plano,recuperación C: pasos hasta 0.7,52.0000,2.0000,50.0000,54.0000,3,52.0000 54.0000 50.0000,800,largo de la fase
+metacog,hiper_plano,recuperación CD_occl: acierto primeros 200,0.5950,0.0173,0.5750,0.6050,3,0.6050 0.6050 0.5750,,
+metacog,hiper_plano,recuperación CD_occl: pasos hasta 0.7,157.6667,57.7350,91.0000,191.0000,3,191.0000 191.0000 91.0000,800,largo de la fase
+metacog,hiper_plano,recuperación D: acierto primeros 200,0.7067,0.0161,0.6950,0.7250,3,0.6950 0.7000 0.7250,,
+metacog,hiper_plano,recuperación D: pasos hasta 0.7,92.3333,23.8607,73.0000,119.0000,3,119.0000 85.0000 73.0000,800,largo de la fase
+metacog,hiper_plano,recuperación D_back: acierto primeros 200,0.8333,0.0275,0.8150,0.8650,3,0.8650 0.8150 0.8200,,
+metacog,hiper_plano,recuperación D_back: pasos hasta 0.7,50.0000,0.0000,50.0000,50.0000,3,50.0000 50.0000 50.0000,600,largo de la fase
+metacog,hiper_plano,recuperación P_probe: acierto primeros 200,0.8383,0.0202,0.8150,0.8500,3,0.8150 0.8500 0.8500,,
+metacog,hiper_plano,recuperación P_probe: pasos hasta 0.7,55.0000,7.0000,50.0000,63.0000,3,63.0000 50.0000 52.0000,600,largo de la fase
+metacog,hiper_plano,recuperación media: acierto primeros 200,0.7683,0.0047,0.7639,0.7733,3,0.7733 0.7639 0.7678,,fases sup salvo la 1.a
+metacog,hiper_plano,recuperación media: pasos hasta 0.7,81.9630,13.3316,66.6667,91.1111,3,88.1111 91.1111 66.6667,,
+metacog,hiper_plano,segundos,81.6333,2.2942,79.0000,83.2000,3,82.7000 83.2000 79.0000,,10000 pasos (scale 0.05)
+metacog,ne,AUROC (1) error en lo conocido: -evidencia,0.6881,0.0124,0.6743,0.6984,3,0.6743 0.6984 0.6917,0.5000,azar
+metacog,ne,AUROC (1) error en lo conocido: -experiencia,0.6758,0.0280,0.6459,0.7014,3,0.6802 0.7014 0.6459,0.5000,azar
+metacog,ne,AUROC (1) error en lo conocido: -margen,0.8736,0.0053,0.8689,0.8793,3,0.8793 0.8725 0.8689,0.5000,azar
+metacog,ne,AUROC (1) error en lo conocido: 1-confianza calibrada,0.8784,0.0067,0.8720,0.8854,3,0.8854 0.8779 0.8720,0.5000,azar
+metacog,ne,AUROC (1) error en lo conocido: 1-confianza cruda,0.8756,0.0061,0.8695,0.8817,3,0.8817 0.8757 0.8695,0.5000,azar
+metacog,ne,AUROC (1) error en lo conocido: 1-familiaridad,0.7160,0.0181,0.6968,0.7327,3,0.7327 0.6968 0.7185,0.5000,azar
+metacog,ne,AUROC (1) error en lo conocido: NE,0.6726,0.0052,0.6677,0.6781,3,0.6720 0.6677 0.6781,0.5000,azar
+metacog,ne,AUROC (1) error en lo conocido: conflicto,0.8704,0.0056,0.8665,0.8768,3,0.8768 0.8678 0.8665,0.5000,azar
+metacog,ne,AUROC (1) error en lo conocido: novedad (Cortex.novelty),0.7925,0.0100,0.7816,0.8011,3,0.8011 0.7948 0.7816,0.5000,azar
+metacog,ne,AUROC (2) nuevo vs conocido: -evidencia,0.7708,0.0147,0.7561,0.7855,3,0.7855 0.7561 0.7707,0.5000,azar
+metacog,ne,AUROC (2) nuevo vs conocido: -experiencia,0.8023,0.0097,0.7954,0.8134,3,0.7954 0.8134 0.7980,0.5000,azar
+metacog,ne,AUROC (2) nuevo vs conocido: -margen,0.7312,0.0032,0.7281,0.7344,3,0.7344 0.7311 0.7281,0.5000,azar
+metacog,ne,AUROC (2) nuevo vs conocido: 1-confianza calibrada,0.7503,0.0166,0.7394,0.7694,3,0.7694 0.7421 0.7394,0.5000,azar
+metacog,ne,AUROC (2) nuevo vs conocido: 1-confianza cruda,0.7388,0.0036,0.7359,0.7428,3,0.7428 0.7378 0.7359,0.5000,azar
+metacog,ne,AUROC (2) nuevo vs conocido: 1-familiaridad,0.7735,0.0058,0.7700,0.7802,3,0.7703 0.7700 0.7802,0.5000,azar
+metacog,ne,AUROC (2) nuevo vs conocido: NE,0.8753,0.0126,0.8609,0.8847,3,0.8847 0.8609 0.8802,0.5000,azar
+metacog,ne,AUROC (2) nuevo vs conocido: conflicto,0.7639,0.0071,0.7595,0.7721,3,0.7721 0.7595 0.7602,0.5000,azar
+metacog,ne,AUROC (2) nuevo vs conocido: novedad (Cortex.novelty),0.8127,0.0045,0.8077,0.8164,3,0.8140 0.8077 0.8164,0.5000,azar
+metacog,ne,"AUROC (3) entre errores, nuevo vs conocido: -evidencia",0.6665,0.0293,0.6425,0.6991,3,0.6991 0.6425 0.6578,0.5000,azar
+metacog,ne,"AUROC (3) entre errores, nuevo vs conocido: -experiencia",0.6832,0.0233,0.6646,0.7094,3,0.6646 0.6756 0.7094,0.5000,azar
+metacog,ne,"AUROC (3) entre errores, nuevo vs conocido: -margen",0.4685,0.0144,0.4593,0.4851,3,0.4593 0.4611 0.4851,0.5000,azar
+metacog,ne,"AUROC (3) entre errores, nuevo vs conocido: 1-confianza calibrada",0.4981,0.0271,0.4738,0.5274,3,0.4931 0.4738 0.5274,0.5000,azar
+metacog,ne,"AUROC (3) entre errores, nuevo vs conocido: 1-confianza cruda",0.4755,0.0168,0.4651,0.4949,3,0.4651 0.4666 0.4949,0.5000,azar
+metacog,ne,"AUROC (3) entre errores, nuevo vs conocido: 1-familiaridad",0.6881,0.0324,0.6583,0.7226,3,0.6583 0.6834 0.7226,0.5000,azar
+metacog,ne,"AUROC (3) entre errores, nuevo vs conocido: NE",0.8508,0.0183,0.8342,0.8704,3,0.8704 0.8342 0.8478,0.5000,azar
+metacog,ne,"AUROC (3) entre errores, nuevo vs conocido: conflicto",0.5272,0.0087,0.5175,0.5343,3,0.5175 0.5299 0.5343,0.5000,azar
+metacog,ne,"AUROC (3) entre errores, nuevo vs conocido: novedad (Cortex.novelty)",0.6938,0.0054,0.6877,0.6980,3,0.6956 0.6877 0.6980,0.5000,azar
+metacog,ne,AUROC error recompensa: -margen,0.8431,0.0130,0.8302,0.8562,3,0.8562 0.8429 0.8302,0.5000,azar
+metacog,ne,AUROC error recompensa: 1-confianza calibrada,0.8552,0.0114,0.8443,0.8670,3,0.8670 0.8543 0.8443,0.5000,azar
+metacog,ne,AUROC error recompensa: 1-confianza cruda,0.8504,0.0141,0.8361,0.8643,3,0.8643 0.8508 0.8361,0.5000,azar
+metacog,ne,AUROC error recompensa: conflicto,0.8368,0.0269,0.8068,0.8587,3,0.8587 0.8449 0.8068,0.5000,azar
+metacog,ne,AUROC error sup: -margen,0.8383,0.0047,0.8344,0.8436,3,0.8370 0.8436 0.8344,0.5000,azar
+metacog,ne,AUROC error sup: 1-confianza calibrada,0.8579,0.0021,0.8558,0.8599,3,0.8599 0.8580 0.8558,0.5000,azar
+metacog,ne,AUROC error sup: 1-confianza cruda,0.8384,0.0051,0.8341,0.8441,3,0.8371 0.8441 0.8341,0.5000,azar
+metacog,ne,AUROC error sup: conflicto,0.8492,0.0021,0.8468,0.8508,3,0.8468 0.8508 0.8499,0.5000,azar
+metacog,ne,ECE calibrada (sup),0.0107,0.0022,0.0081,0.0122,3,0.0117 0.0122 0.0081,0.0000,
+metacog,ne,"ECE calibrada (sup, 2.a mitad)",0.0151,0.0024,0.0131,0.0178,3,0.0145 0.0178 0.0131,0.0000,
+metacog,ne,ECE calibrada en lo conocido,0.0129,0.0043,0.0089,0.0174,3,0.0174 0.0089 0.0124,0.0000,
+metacog,ne,ECE cruda (sup),0.0902,0.0019,0.0882,0.0919,3,0.0919 0.0905 0.0882,0.0000,
+metacog,ne,"ECE cruda (sup, 2.a mitad)",0.0977,0.0015,0.0963,0.0992,3,0.0992 0.0963 0.0976,0.0000,
+metacog,ne,Kepecs: AUROC de la apuesta (acierto vs error),0.8438,0.0152,0.8277,0.8578,3,0.8578 0.8459 0.8277,0.5000,
+metacog,ne,Kepecs: ECE en las mezclas,0.0467,0.0336,0.0175,0.0834,3,0.0392 0.0175 0.0834,0.0000,
+metacog,ne,Kepecs: acierto por facilidad,0.8019,0.0230,0.7758,0.8192,3,0.8192 0.8108 0.7758,,0.05:0.56 0.10:0.72 0.20:0.85 0.30:0.92 0.40:0.94 0.50:0.93
+metacog,ne,Kepecs: apuesta media en aciertos,0.8870,0.0181,0.8663,0.9000,3,0.8947 0.8663 0.9000,0.6832,en errores en referencia
+metacog,ne,Kepecs: ganancia media apostando por confianza,1.2222,0.0903,1.1192,1.2875,3,1.2875 1.2600 1.1192,1.2767,siempre alto en referencia
+metacog,ne,Kepecs: pendiente apuesta vs facilidad en aciertos,0.2770,0.0108,0.2668,0.2884,3,0.2758 0.2884 0.2668,0.0000,"firma esperada: + en aciertos, - en errores"
+metacog,ne,Kepecs: pendiente apuesta vs facilidad en errores,-0.1328,0.0525,-0.1893,-0.0856,3,-0.1893 -0.1234 -0.0856,0.0000,"firma esperada: + en aciertos, - en errores"
+metacog,ne,NE al inicio de fase / resto,1.3420,0.0507,1.2862,1.3854,3,1.3544 1.2862 1.3854,0.2920,resto en referencia
+metacog,ne,NE medio / máximo,0.5349,0.0125,0.5220,0.5470,3,0.5470 0.5220 0.5358,7.0161,máximo en referencia
+metacog,ne,acierto prequential recompensa,0.8239,0.0082,0.8150,0.8311,3,0.8256 0.8150 0.8311,,
+metacog,ne,acierto prequential sup,0.8548,0.0021,0.8523,0.8561,3,0.8523 0.8559 0.8561,,
+metacog,ne,error en lo conocido (tasa),0.1065,0.0025,0.1041,0.1091,3,0.1064 0.1091 0.1041,,>= 100 vistas
+metacog,ne,final test grupo A,0.9167,0.0115,0.9100,0.9300,3,0.9100 0.9100 0.9300,,
+metacog,ne,final test grupo B,0.9167,0.0351,0.8800,0.9500,3,0.9200 0.8800 0.9500,,
+metacog,ne,final test grupo C,0.7083,0.0520,0.6500,0.7500,3,0.7250 0.6500 0.7500,,
+metacog,ne,final test grupo D,0.7250,0.0500,0.6750,0.7750,3,0.6750 0.7250 0.7750,,
+metacog,ne,ganancia media de la tasa,1.5428,0.0320,1.5059,1.5627,3,1.5597 1.5059 1.5627,1.0000,
+metacog,ne,liberaciones de consolidación,419.0000,25.3574,390.0000,437.0000,3,430.0000 390.0000 437.0000,,
+metacog,ne,pasos nuevos,470.0000,0.0000,470.0000,470.0000,3,470.0000 470.0000 470.0000,,"< 10 vistas de (clase, contexto)"
+metacog,ne,recuperación AB_rot: acierto primeros 200,0.6300,0.0087,0.6250,0.6400,3,0.6400 0.6250 0.6250,,
+metacog,ne,recuperación AB_rot: pasos hasta 0.7,119.0000,44.4410,84.0000,169.0000,3,104.0000 169.0000 84.0000,1000,largo de la fase
+metacog,ne,recuperación AB_rot_back: acierto primeros 200,0.9033,0.0076,0.8950,0.9100,3,0.8950 0.9050 0.9100,,
+metacog,ne,recuperación AB_rot_back: pasos hasta 0.7,50.0000,0.0000,50.0000,50.0000,3,50.0000 50.0000 50.0000,600,largo de la fase
+metacog,ne,recuperación B: acierto primeros 200,0.7500,0.0265,0.7300,0.7800,3,0.7400 0.7800 0.7300,,
+metacog,ne,recuperación B: pasos hasta 0.7,84.0000,8.8882,74.0000,91.0000,3,91.0000 74.0000 87.0000,800,largo de la fase
+metacog,ne,recuperación B_back: acierto primeros 200,0.9000,0.0087,0.8950,0.9100,3,0.8950 0.9100 0.8950,,
+metacog,ne,recuperación B_back: pasos hasta 0.7,50.0000,0.0000,50.0000,50.0000,3,50.0000 50.0000 50.0000,600,largo de la fase
+metacog,ne,recuperación C: acierto primeros 200,0.8083,0.0126,0.7950,0.8200,3,0.8100 0.7950 0.8200,,
+metacog,ne,recuperación C: pasos hasta 0.7,52.0000,1.7321,51.0000,54.0000,3,54.0000 51.0000 51.0000,800,largo de la fase
+metacog,ne,recuperación CD_occl: acierto primeros 200,0.5950,0.0050,0.5900,0.6000,3,0.6000 0.5950 0.5900,,
+metacog,ne,recuperación CD_occl: pasos hasta 0.7,250.6667,179.2661,50.0000,395.0000,3,395.0000 50.0000 307.0000,800,largo de la fase
+metacog,ne,recuperación D: acierto primeros 200,0.7150,0.0132,0.7050,0.7300,3,0.7050 0.7100 0.7300,,
+metacog,ne,recuperación D: pasos hasta 0.7,76.6667,15.5027,61.0000,92.0000,3,61.0000 92.0000 77.0000,800,largo de la fase
+metacog,ne,recuperación D_back: acierto primeros 200,0.8467,0.0293,0.8250,0.8800,3,0.8800 0.8250 0.8350,,
+metacog,ne,recuperación D_back: pasos hasta 0.7,50.0000,0.0000,50.0000,50.0000,3,50.0000 50.0000 50.0000,600,largo de la fase
+metacog,ne,recuperación P_probe: acierto primeros 200,0.8467,0.0176,0.8300,0.8650,3,0.8300 0.8650 0.8450,,
+metacog,ne,recuperación P_probe: pasos hasta 0.7,53.3333,4.9329,50.0000,59.0000,3,59.0000 50.0000 51.0000,600,largo de la fase
+metacog,ne,recuperación media: acierto primeros 200,0.7772,0.0017,0.7756,0.7789,3,0.7772 0.7789 0.7756,,fases sup salvo la 1.a
+metacog,ne,recuperación media: pasos hasta 0.7,87.2963,15.5803,70.6667,101.5556,3,101.5556 70.6667 89.6667,,
+metacog,ne,segundos,84.3000,5.1098,81.3000,90.2000,3,81.4000 90.2000 81.3000,,10000 pasos (scale 0.05)
+metacog,ne_ach,AUROC (1) error en lo conocido: -evidencia,0.6877,0.0137,0.6748,0.7021,3,0.6748 0.7021 0.6862,0.5000,azar
+metacog,ne_ach,AUROC (1) error en lo conocido: -experiencia,0.6611,0.0169,0.6447,0.6784,3,0.6602 0.6784 0.6447,0.5000,azar
+metacog,ne_ach,AUROC (1) error en lo conocido: -margen,0.8729,0.0012,0.8717,0.8741,3,0.8729 0.8717 0.8741,0.5000,azar
+metacog,ne_ach,AUROC (1) error en lo conocido: 1-confianza calibrada,0.8803,0.0009,0.8794,0.8811,3,0.8805 0.8794 0.8811,0.5000,azar
+metacog,ne_ach,AUROC (1) error en lo conocido: 1-confianza cruda,0.8773,0.0007,0.8766,0.8779,3,0.8779 0.8775 0.8766,0.5000,azar
+metacog,ne_ach,AUROC (1) error en lo conocido: 1-familiaridad,0.7115,0.0169,0.6927,0.7252,3,0.7167 0.6927 0.7252,0.5000,azar
+metacog,ne_ach,AUROC (1) error en lo conocido: NE,0.6617,0.0159,0.6442,0.6751,3,0.6751 0.6442 0.6658,0.5000,azar
+metacog,ne_ach,AUROC (1) error en lo conocido: conflicto,0.8699,0.0052,0.8639,0.8730,3,0.8728 0.8730 0.8639,0.5000,azar
+metacog,ne_ach,AUROC (1) error en lo conocido: novedad (Cortex.novelty),0.7955,0.0091,0.7853,0.8027,3,0.8027 0.7984 0.7853,0.5000,azar
+metacog,ne_ach,AUROC (2) nuevo vs conocido: -evidencia,0.7780,0.0239,0.7531,0.8008,3,0.8008 0.7531 0.7801,0.5000,azar
+metacog,ne_ach,AUROC (2) nuevo vs conocido: -experiencia,0.8030,0.0130,0.7921,0.8174,3,0.7921 0.8174 0.7996,0.5000,azar
+metacog,ne_ach,AUROC (2) nuevo vs conocido: -margen,0.7264,0.0133,0.7121,0.7385,3,0.7385 0.7121 0.7286,0.5000,azar
+metacog,ne_ach,AUROC (2) nuevo vs conocido: 1-confianza calibrada,0.7631,0.0217,0.7469,0.7878,3,0.7878 0.7469 0.7547,0.5000,azar
+metacog,ne_ach,AUROC (2) nuevo vs conocido: 1-confianza cruda,0.7356,0.0144,0.7204,0.7490,3,0.7490 0.7204 0.7375,0.5000,azar
+metacog,ne_ach,AUROC (2) nuevo vs conocido: 1-familiaridad,0.7729,0.0061,0.7683,0.7798,3,0.7683 0.7705 0.7798,0.5000,azar
+metacog,ne_ach,AUROC (2) nuevo vs conocido: NE,0.8796,0.0050,0.8764,0.8853,3,0.8764 0.8770 0.8853,0.5000,azar
+metacog,ne_ach,AUROC (2) nuevo vs conocido: conflicto,0.7677,0.0172,0.7525,0.7863,3,0.7863 0.7525 0.7643,0.5000,azar
+metacog,ne_ach,AUROC (2) nuevo vs conocido: novedad (Cortex.novelty),0.8116,0.0102,0.8002,0.8198,3,0.8198 0.8002 0.8148,0.5000,azar
+metacog,ne_ach,"AUROC (3) entre errores, nuevo vs conocido: -evidencia",0.6721,0.0329,0.6406,0.7063,3,0.7063 0.6406 0.6694,0.5000,azar
+metacog,ne_ach,"AUROC (3) entre errores, nuevo vs conocido: -experiencia",0.6876,0.0159,0.6714,0.7031,3,0.6714 0.6884 0.7031,0.5000,azar
+metacog,ne_ach,"AUROC (3) entre errores, nuevo vs conocido: -margen",0.4606,0.0281,0.4294,0.4839,3,0.4839 0.4294 0.4686,0.5000,azar
+metacog,ne_ach,"AUROC (3) entre errores, nuevo vs conocido: 1-confianza calibrada",0.5108,0.0465,0.4607,0.5525,3,0.5525 0.4607 0.5193,0.5000,azar
+metacog,ne_ach,"AUROC (3) entre errores, nuevo vs conocido: 1-confianza cruda",0.4660,0.0278,0.4372,0.4927,3,0.4927 0.4372 0.4680,0.5000,azar
+metacog,ne_ach,"AUROC (3) entre errores, nuevo vs conocido: 1-familiaridad",0.6882,0.0281,0.6603,0.7164,3,0.6603 0.6880 0.7164,0.5000,azar
+metacog,ne_ach,"AUROC (3) entre errores, nuevo vs conocido: NE",0.8668,0.0097,0.8559,0.8746,3,0.8559 0.8746 0.8699,0.5000,azar
+metacog,ne_ach,"AUROC (3) entre errores, nuevo vs conocido: conflicto",0.5251,0.0291,0.5016,0.5577,3,0.5577 0.5016 0.5161,0.5000,azar
+metacog,ne_ach,"AUROC (3) entre errores, nuevo vs conocido: novedad (Cortex.novelty)",0.6824,0.0318,0.6625,0.7191,3,0.7191 0.6625 0.6655,0.5000,azar
+metacog,ne_ach,AUROC error recompensa: -margen,0.8526,0.0040,0.8486,0.8565,3,0.8526 0.8565 0.8486,0.5000,azar
+metacog,ne_ach,AUROC error recompensa: 1-confianza calibrada,0.8687,0.0021,0.8664,0.8704,3,0.8693 0.8704 0.8664,0.5000,azar
+metacog,ne_ach,AUROC error recompensa: 1-confianza cruda,0.8651,0.0040,0.8605,0.8677,3,0.8677 0.8671 0.8605,0.5000,azar
+metacog,ne_ach,AUROC error recompensa: conflicto,0.8529,0.0158,0.8352,0.8654,3,0.8654 0.8582 0.8352,0.5000,azar
+metacog,ne_ach,AUROC error sup: -margen,0.8392,0.0027,0.8362,0.8416,3,0.8416 0.8362 0.8397,0.5000,azar
+metacog,ne_ach,AUROC error sup: 1-confianza calibrada,0.8569,0.0038,0.8530,0.8606,3,0.8606 0.8530 0.8572,0.5000,azar
+metacog,ne_ach,AUROC error sup: 1-confianza cruda,0.8400,0.0027,0.8372,0.8425,3,0.8425 0.8372 0.8402,0.5000,azar
+metacog,ne_ach,AUROC error sup: conflicto,0.8491,0.0014,0.8480,0.8507,3,0.8507 0.8480 0.8487,0.5000,azar
+metacog,ne_ach,ECE calibrada (sup),0.0086,0.0026,0.0068,0.0116,3,0.0075 0.0068 0.0116,0.0000,
+metacog,ne_ach,"ECE calibrada (sup, 2.a mitad)",0.0165,0.0050,0.0108,0.0200,3,0.0200 0.0187 0.0108,0.0000,
+metacog,ne_ach,ECE calibrada en lo conocido,0.0114,0.0037,0.0074,0.0147,3,0.0120 0.0147 0.0074,0.0000,
+metacog,ne_ach,ECE cruda (sup),0.0841,0.0025,0.0814,0.0863,3,0.0863 0.0814 0.0847,0.0000,
+metacog,ne_ach,"ECE cruda (sup, 2.a mitad)",0.0914,0.0032,0.0878,0.0941,3,0.0923 0.0878 0.0941,0.0000,
+metacog,ne_ach,Kepecs: AUROC de la apuesta (acierto vs error),0.8349,0.0177,0.8171,0.8524,3,0.8524 0.8171 0.8352,0.5000,
+metacog,ne_ach,Kepecs: ECE en las mezclas,0.0552,0.0147,0.0408,0.0701,3,0.0548 0.0408 0.0701,0.0000,
+metacog,ne_ach,Kepecs: acierto por facilidad,0.7992,0.0176,0.7825,0.8175,3,0.8175 0.7975 0.7825,,0.05:0.60 0.10:0.73 0.20:0.84 0.30:0.89 0.40:0.92 0.50:0.92
+metacog,ne_ach,Kepecs: apuesta media en aciertos,0.8873,0.0099,0.8765,0.8961,3,0.8892 0.8765 0.8961,0.7001,en errores en referencia
+metacog,ne_ach,Kepecs: ganancia media apostando por confianza,1.2122,0.0610,1.1542,1.2758,3,1.2758 1.2067 1.1542,1.2700,siempre alto en referencia
+metacog,ne_ach,Kepecs: pendiente apuesta vs facilidad en aciertos,0.2744,0.0111,0.2660,0.2870,3,0.2870 0.2703 0.2660,0.0000,"firma esperada: + en aciertos, - en errores"
+metacog,ne_ach,Kepecs: pendiente apuesta vs facilidad en errores,-0.0587,0.0199,-0.0715,-0.0357,3,-0.0357 -0.0715 -0.0688,0.0000,"firma esperada: + en aciertos, - en errores"
+metacog,ne_ach,NE al inicio de fase / resto,1.3261,0.0530,1.2651,1.3607,3,1.2651 1.3526 1.3607,0.2984,resto en referencia
+metacog,ne_ach,NE medio / máximo,0.5217,0.0076,0.5165,0.5304,3,0.5304 0.5181 0.5165,7.0176,máximo en referencia
+metacog,ne_ach,acierto prequential recompensa,0.8322,0.0106,0.8200,0.8383,3,0.8383 0.8200 0.8383,,
+metacog,ne_ach,acierto prequential sup,0.8538,0.0034,0.8504,0.8572,3,0.8504 0.8572 0.8539,,
+metacog,ne_ach,error en lo conocido (tasa),0.1037,0.0033,0.1002,0.1066,3,0.1002 0.1044 0.1066,,>= 100 vistas
+metacog,ne_ach,final test grupo A,0.9133,0.0231,0.9000,0.9400,3,0.9000 0.9000 0.9400,,
+metacog,ne_ach,final test grupo B,0.9200,0.0300,0.8900,0.9500,3,0.9200 0.8900 0.9500,,
+metacog,ne_ach,final test grupo C,0.6833,0.0764,0.6000,0.7500,3,0.7000 0.6000 0.7500,,
+metacog,ne_ach,final test grupo D,0.7458,0.0361,0.7250,0.7875,3,0.7250 0.7250 0.7875,,
+metacog,ne_ach,ganancia media de la tasa,1.1894,0.0170,1.1699,1.2010,3,1.2010 1.1699 1.1973,1.0000,
+metacog,ne_ach,liberaciones de consolidación,412.0000,31.5753,389.0000,448.0000,3,389.0000 448.0000 399.0000,,
+metacog,ne_ach,pasos nuevos,470.0000,0.0000,470.0000,470.0000,3,470.0000 470.0000 470.0000,,"< 10 vistas de (clase, contexto)"
+metacog,ne_ach,recuperación AB_rot: acierto primeros 200,0.6200,0.0050,0.6150,0.6250,3,0.6250 0.6200 0.6150,,
+metacog,ne_ach,recuperación AB_rot: pasos hasta 0.7,129.0000,35.6791,98.0000,168.0000,3,121.0000 168.0000 98.0000,1000,largo de la fase
+metacog,ne_ach,recuperación AB_rot_back: acierto primeros 200,0.9067,0.0236,0.8800,0.9250,3,0.9150 0.8800 0.9250,,
+metacog,ne_ach,recuperación AB_rot_back: pasos hasta 0.7,50.0000,0.0000,50.0000,50.0000,3,50.0000 50.0000 50.0000,600,largo de la fase
+metacog,ne_ach,recuperación B: acierto primeros 200,0.7350,0.0328,0.7050,0.7700,3,0.7300 0.7700 0.7050,,
+metacog,ne_ach,recuperación B: pasos hasta 0.7,83.3333,9.0185,74.0000,92.0000,3,92.0000 74.0000 84.0000,800,largo de la fase
+metacog,ne_ach,recuperación B_back: acierto primeros 200,0.9100,0.0087,0.9050,0.9200,3,0.9050 0.9050 0.9200,,
+metacog,ne_ach,recuperación B_back: pasos hasta 0.7,50.0000,0.0000,50.0000,50.0000,3,50.0000 50.0000 50.0000,600,largo de la fase
+metacog,ne_ach,recuperación C: acierto primeros 200,0.7950,0.0087,0.7900,0.8050,3,0.7900 0.7900 0.8050,,
+metacog,ne_ach,recuperación C: pasos hasta 0.7,55.3333,3.2146,53.0000,59.0000,3,59.0000 54.0000 53.0000,800,largo de la fase
+metacog,ne_ach,recuperación CD_occl: acierto primeros 200,0.5833,0.0275,0.5650,0.6150,3,0.5650 0.6150 0.5700,,
+metacog,ne_ach,recuperación CD_occl: pasos hasta 0.7,115.3333,78.2134,50.0000,202.0000,3,202.0000 50.0000 94.0000,800,largo de la fase
+metacog,ne_ach,recuperación D: acierto primeros 200,0.7283,0.0333,0.6900,0.7500,3,0.6900 0.7450 0.7500,,
+metacog,ne_ach,recuperación D: pasos hasta 0.7,81.0000,8.7178,75.0000,91.0000,3,75.0000 91.0000 77.0000,800,largo de la fase
+metacog,ne_ach,recuperación D_back: acierto primeros 200,0.8483,0.0404,0.8050,0.8850,3,0.8850 0.8550 0.8050,,
+metacog,ne_ach,recuperación D_back: pasos hasta 0.7,50.0000,0.0000,50.0000,50.0000,3,50.0000 50.0000 50.0000,600,largo de la fase
+metacog,ne_ach,recuperación P_probe: acierto primeros 200,0.8233,0.0247,0.7950,0.8400,3,0.7950 0.8400 0.8350,,
+metacog,ne_ach,recuperación P_probe: pasos hasta 0.7,57.0000,7.0000,50.0000,64.0000,3,64.0000 50.0000 57.0000,600,largo de la fase
+metacog,ne_ach,recuperación media: acierto primeros 200,0.7722,0.0069,0.7667,0.7800,3,0.7667 0.7800 0.7700,,fases sup salvo la 1.a
+metacog,ne_ach,recuperación media: pasos hasta 0.7,74.5556,8.9526,68.1111,84.7778,3,84.7778 70.7778 68.1111,,
+metacog,ne_ach,segundos,78.1333,10.7188,65.8000,85.2000,3,85.2000 83.4000 65.8000,,10000 pasos (scale 0.05)
+metacog,total,segundos,91.2444,6.1538,73.7000,103.4000,18,88.0000 86.6000 93.5000 92.9000 90.2000 97.7000 90.9000 91.1000 87.0000 92.1000 94.8000 103.4000 93.5000 90.6000 73.7000 89.7000 98.7000 88.0000,,
+suma_mnist,ach,AUROC error dígito (test): 1-confianza,0.8253,0.3128,0.2658,0.9670,5,0.9665 0.9670 0.9605 0.9666 0.2658,0.8500,criterio >= 0.85
+suma_mnist,ach,AUROC error suma (test): 1-confianza,0.8551,0.1901,0.5151,0.9459,5,0.9406 0.9459 0.9328 0.9412 0.5151,0.8500,criterio >= 0.85
+suma_mnist,ach,ECE dígito (test),0.1370,0.2952,0.0029,0.6650,5,0.0046 0.0065 0.0029 0.0059 0.6650,0.0500,criterio <= 0.05
+suma_mnist,ach,ECE suma (test),0.0366,0.0599,0.0081,0.1437,5,0.0081 0.0124 0.0087 0.0103 0.1437,0.0500,criterio <= 0.05
+suma_mnist,ach,curva gamma par=2500,0.9593,0.0189,0.9268,0.9724,5,0.9720 0.9724 0.9598 0.9656 0.9268,,ACh
+suma_mnist,ach,curva suma prequential par=2500,0.7652,0.1579,0.4868,0.8552,5,0.8552 0.8476 0.7884 0.8480 0.4868,,
+suma_mnist,ach,exactitud dígito (test),0.7822,0.4257,0.0207,0.9753,5,0.9753 0.9732 0.9697 0.9720 0.0207,0.9500,criterio del proyecto
+suma_mnist,ach,exactitud suma (test),0.8703,0.1706,0.5652,0.9516,5,0.9516 0.9480 0.9410 0.9456 0.5652,0.9720,DeepProbLog 30k pares: 0.972
+suma_mnist,ach,neuronas,1121.0000,597.4977,808.0000,2188.0000,5,808.0000 837.0000 901.0000 871.0000 2188.0000,,
+suma_mnist,ach,pureza dígito (test),0.9003,0.1616,0.6113,0.9753,5,0.9753 0.9732 0.9697 0.9720 0.6113,,mejor biyección
+suma_mnist,ach,segundos entrenamiento,87.1600,9.1084,73.5000,97.8000,5,90.8000 97.8000 83.8000 73.5000 89.9000,,3000 pares
+suma_mnist,base,AUROC error dígito (test): 1-confianza,0.6073,0.4186,0.1413,0.9840,11,0.9730 0.9840 0.1541 0.9639 0.9707 0.1413 0.9655 0.1607 0.9665 0.1431 0.2571,0.8500,criterio >= 0.85
+suma_mnist,base,AUROC error suma (test): 1-confianza,0.7420,0.2385,0.4828,0.9693,11,0.9547 0.9693 0.4828 0.9409 0.9498 0.4986 0.9408 0.4988 0.9409 0.4966 0.4889,0.8500,criterio >= 0.85
+suma_mnist,base,ECE dígito (test),0.3253,0.3703,0.0021,0.7610,11,0.0040 0.0021 0.7191 0.0037 0.0041 0.7610 0.0028 0.6876 0.0034 0.6867 0.7033,0.0500,criterio <= 0.05
+suma_mnist,base,ECE suma (test),0.0692,0.0717,0.0044,0.1543,11,0.0086 0.0044 0.1439 0.0074 0.0079 0.1543 0.0061 0.1427 0.0069 0.1457 0.1330,0.0500,criterio <= 0.05
+suma_mnist,base,curva suma prequential par=10000,0.8279,0.2323,0.5596,0.9628,3,0.9628 0.9612 0.5596,,
+suma_mnist,base,curva suma prequential par=12500,0.8321,0.2353,0.5604,0.9680,3,0.9680 0.9680 0.5604,,
+suma_mnist,base,curva suma prequential par=15000,0.8385,0.2274,0.5760,0.9712,3,0.9712 0.9684 0.5760,,
+suma_mnist,base,curva suma prequential par=17500,0.8431,0.2278,0.5800,0.9776,3,0.9716 0.9776 0.5800,,
+suma_mnist,base,curva suma prequential par=20000,0.8395,0.2327,0.5708,0.9768,3,0.9708 0.9768 0.5708,,
+suma_mnist,base,curva suma prequential par=22500,0.8400,0.2318,0.5724,0.9748,3,0.9728 0.9748 0.5724,,
+suma_mnist,base,curva suma prequential par=2500,0.6822,0.2057,0.4544,0.8712,11,0.8660 0.8552 0.4544 0.8660 0.8552 0.4544 0.8520 0.4880 0.8712 0.4560 0.4856,,
+suma_mnist,base,curva suma prequential par=25000,0.8427,0.2327,0.5740,0.9776,3,0.9776 0.9764 0.5740,,
+suma_mnist,base,curva suma prequential par=27500,0.8409,0.2263,0.5796,0.9716,3,0.9716 0.9716 0.5796,,
+suma_mnist,base,curva suma prequential par=5000,0.8044,0.2342,0.5340,0.9452,3,0.9340 0.9452 0.5340,,
+suma_mnist,base,curva suma prequential par=7500,0.8253,0.2340,0.5552,0.9644,3,0.9644 0.9564 0.5552,,
+suma_mnist,base,exactitud dígito (test),0.5373,0.5070,0.0035,0.9900,11,0.9900 0.9881 0.0049 0.9757 0.9742 0.0035 0.9701 0.0079 0.9729 0.0065 0.0160,0.9500,criterio del proyecto
+suma_mnist,base,exactitud suma (test),0.7781,0.2075,0.5360,0.9800,11,0.9800 0.9768 0.5916 0.9518 0.9494 0.5360 0.9416 0.5676 0.9480 0.5740 0.5420,0.9720,DeepProbLog 30k pares: 0.972
+suma_mnist,base,neuronas,2624.7273,3286.2576,788.0000,12315.0000,11,2067.0000 2056.0000 12315.0000 820.0000 817.0000 2346.0000 865.0000 2257.0000 788.0000 2270.0000 2271.0000,,
+suma_mnist,base,pureza dígito (test),0.8059,0.1994,0.5464,0.9900,11,0.9900 0.9881 0.5968 0.9757 0.9742 0.6046 0.9701 0.6223 0.9729 0.6242 0.5464,,mejor biyección
+suma_mnist,base,segundos entrenamiento,367.8364,534.2627,49.2000,1617.4000,11,873.6000 957.2000 1617.4000 89.5000 99.2000 74.9000 51.0000 49.2000 60.5000 93.4000 80.3000,,27500 pares
+suma_mnist,fiab,AUROC error dígito (test): 1-confianza,0.9606,0.0058,0.9492,0.9685,8,0.9620 0.9666 0.9612 0.9585 0.9595 0.9492 0.9685 0.9593,0.8500,criterio >= 0.85
+suma_mnist,fiab,AUROC error suma (test): 1-confianza,0.9330,0.0073,0.9236,0.9437,8,0.9328 0.9437 0.9345 0.9289 0.9298 0.9236 0.9434 0.9275,0.8500,criterio >= 0.85
+suma_mnist,fiab,ECE dígito (test),0.0050,0.0022,0.0018,0.0083,8,0.0039 0.0065 0.0042 0.0034 0.0083 0.0043 0.0075 0.0018,0.0500,criterio <= 0.05
+suma_mnist,fiab,ECE suma (test),0.0096,0.0040,0.0035,0.0156,8,0.0076 0.0129 0.0088 0.0079 0.0135 0.0069 0.0156 0.0035,0.0500,criterio <= 0.05
+suma_mnist,fiab,curva gamma par=2500,0.4213,0.0891,0.2811,0.5137,8,0.4974 0.4971 0.4036 0.4675 0.4028 0.3068 0.5137 0.2811,,ACh
+suma_mnist,fiab,curva suma prequential par=2500,0.5705,0.0782,0.4548,0.6564,8,0.6328 0.6496 0.5516 0.6004 0.5488 0.4696 0.6564 0.4548,,
+suma_mnist,fiab,exactitud dígito (test),0.9682,0.0031,0.9634,0.9728,8,0.9712 0.9705 0.9683 0.9672 0.9664 0.9634 0.9728 0.9657,0.9500,criterio del proyecto
+suma_mnist,fiab,exactitud suma (test),0.9381,0.0058,0.9294,0.9468,8,0.9438 0.9422 0.9376 0.9368 0.9350 0.9294 0.9468 0.9334,0.9720,DeepProbLog 30k pares: 0.972
+suma_mnist,fiab,neuronas,769.7500,41.9140,710.0000,836.0000,8,754.0000 816.0000 785.0000 836.0000 758.0000 710.0000 769.0000 730.0000,,
+suma_mnist,fiab,pureza dígito (test),0.9682,0.0031,0.9634,0.9728,8,0.9712 0.9705 0.9683 0.9672 0.9664 0.9634 0.9728 0.9657,,mejor biyección
+suma_mnist,fiab,segundos entrenamiento,87.3875,13.9484,68.7000,113.9000,8,68.7000 97.3000 113.9000 87.8000 88.4000 84.0000 85.6000 73.4000,,3000 pares
+suma_mnist,total,segundos,273.5958,418.2497,75.7000,1882.6000,24,143.3000 150.1000 120.3000 117.3000 144.6000 935.2000 1018.4000 1882.6000 128.3000 145.3000 122.2000 75.7000 90.0000 102.3000 128.6000 140.4000 125.4000 160.8000 163.2000 140.1000 139.2000 132.3000 136.8000 123.9000,,
+suma_mnistval,ach,AUROC error dígito (validación): 1-confianza,0.9723,0.0000,0.9723,0.9723,1,0.9723,0.8500,criterio >= 0.85
+suma_mnistval,ach,AUROC error suma (validación): 1-confianza,0.9577,0.0000,0.9577,0.9577,1,0.9577,0.8500,criterio >= 0.85
+suma_mnistval,ach,ECE dígito (validación),0.0027,0.0000,0.0027,0.0027,1,0.0027,0.0500,criterio <= 0.05
+suma_mnistval,ach,ECE suma (validación),0.0055,0.0000,0.0055,0.0055,1,0.0055,0.0500,criterio <= 0.05
+suma_mnistval,ach,curva gamma par=10000,0.9817,0.0000,0.9817,0.9817,1,0.9817,,ACh
+suma_mnistval,ach,curva gamma par=2500,0.9598,0.0000,0.9598,0.9598,1,0.9598,,ACh
+suma_mnistval,ach,curva gamma par=5000,0.9874,0.0000,0.9874,0.9874,1,0.9874,,ACh
+suma_mnistval,ach,curva gamma par=7500,0.9809,0.0000,0.9809,0.9809,1,0.9809,,ACh
+suma_mnistval,ach,curva suma prequential par=10000,0.9596,0.0000,0.9596,0.9596,1,0.9596,,
+suma_mnistval,ach,curva suma prequential par=2500,0.7884,0.0000,0.7884,0.7884,1,0.7884,,
+suma_mnistval,ach,curva suma prequential par=5000,0.9392,0.0000,0.9392,0.9392,1,0.9392,,
+suma_mnistval,ach,curva suma prequential par=7500,0.9532,0.0000,0.9532,0.9532,1,0.9532,,
+suma_mnistval,ach,exactitud dígito (validación),0.9878,0.0000,0.9878,0.9878,1,0.9878,0.9500,criterio del proyecto
+suma_mnistval,ach,exactitud suma (validación),0.9760,0.0000,0.9760,0.9760,1,0.9760,,DeepProbLog 30k pares: 0.972
+suma_mnistval,ach,neuronas,1764.0000,0.0000,1764.0000,1764.0000,1,1764.0000,,
+suma_mnistval,ach,pureza dígito (validación),0.9878,0.0000,0.9878,0.9878,1,0.9878,,mejor biyección
+suma_mnistval,ach,segundos entrenamiento,357.5000,0.0000,357.5000,357.5000,1,357.5000,,10000 pares
+suma_mnistval,base,AUROC error dígito (validación): 1-confianza,0.5857,0.4440,0.1670,0.9707,4,0.9707 0.9682 0.1670 0.2371,0.8500,criterio >= 0.85
+suma_mnistval,base,AUROC error suma (validación): 1-confianza,0.7132,0.2703,0.4657,0.9479,4,0.9479 0.9464 0.4930 0.4657,0.8500,criterio >= 0.85
+suma_mnistval,base,ECE dígito (validación),0.3684,0.4207,0.0035,0.7607,4,0.0035 0.0058 0.7607 0.7036,0.0500,criterio <= 0.05
+suma_mnistval,base,ECE suma (validación),0.0844,0.0869,0.0076,0.1620,4,0.0076 0.0109 0.1573 0.1620,0.0500,criterio <= 0.05
+suma_mnistval,base,curva suma prequential par=10000,0.7612,0.2851,0.5596,0.9628,2,0.9628 0.5596,,
+suma_mnistval,base,curva suma prequential par=2500,0.6992,0.2235,0.4544,0.8660,5,0.8660 0.8552 0.4544 0.8660 0.4544,,
+suma_mnistval,base,curva suma prequential par=5000,0.7340,0.2828,0.5340,0.9340,2,0.9340 0.5340,,
+suma_mnistval,base,curva suma prequential par=7500,0.7598,0.2893,0.5552,0.9644,2,0.9644 0.5552,,
+suma_mnistval,base,"diag anclas (0, 18) acumuladas par=1000",18.0000,5.0000,13.0000,23.0000,3,13.0000 23.0000 18.0000,35,"casi anclas (1, 17) en referencia"
+suma_mnistval,base,"diag anclas (0, 18) acumuladas par=1250",23.3333,3.0551,20.0000,26.0000,3,20.0000 26.0000 24.0000,43,"casi anclas (1, 17) en referencia"
+suma_mnistval,base,"diag anclas (0, 18) acumuladas par=1500",28.3333,3.5119,25.0000,32.0000,3,25.0000 32.0000 28.0000,52,"casi anclas (1, 17) en referencia"
+suma_mnistval,base,"diag anclas (0, 18) acumuladas par=1750",32.3333,5.1316,28.0000,38.0000,3,28.0000 38.0000 31.0000,62,"casi anclas (1, 17) en referencia"
+suma_mnistval,base,"diag anclas (0, 18) acumuladas par=2000",36.0000,3.6056,33.0000,40.0000,3,35.0000 40.0000 33.0000,70,"casi anclas (1, 17) en referencia"
+suma_mnistval,base,"diag anclas (0, 18) acumuladas par=2250",40.6667,5.1316,35.0000,45.0000,3,42.0000 45.0000 35.0000,84,"casi anclas (1, 17) en referencia"
+suma_mnistval,base,"diag anclas (0, 18) acumuladas par=250",3.0000,0.0000,3.0000,3.0000,3,3.0000 3.0000 3.0000,7,"casi anclas (1, 17) en referencia"
+suma_mnistval,base,"diag anclas (0, 18) acumuladas par=2500",47.0000,2.6458,44.0000,49.0000,3,48.0000 49.0000 44.0000,99,"casi anclas (1, 17) en referencia"
+suma_mnistval,base,"diag anclas (0, 18) acumuladas par=2750",49.6667,2.3094,47.0000,51.0000,3,51.0000 51.0000 47.0000,111,"casi anclas (1, 17) en referencia"
+suma_mnistval,base,"diag anclas (0, 18) acumuladas par=3000",52.0000,3.4641,48.0000,54.0000,3,54.0000 54.0000 48.0000,127,"casi anclas (1, 17) en referencia"
+suma_mnistval,base,"diag anclas (0, 18) acumuladas par=500",8.0000,2.0000,6.0000,10.0000,3,8.0000 10.0000 6.0000,17,"casi anclas (1, 17) en referencia"
+suma_mnistval,base,"diag anclas (0, 18) acumuladas par=750",12.6667,1.5275,11.0000,14.0000,3,11.0000 13.0000 14.0000,27,"casi anclas (1, 17) en referencia"
+suma_mnistval,base,diag certeza declarada par=1000,0.8634,0.1623,0.6762,0.9655,3,0.9484 0.9655 0.6762,,
+suma_mnistval,base,diag certeza declarada par=1250,0.8654,0.1636,0.6765,0.9615,3,0.9582 0.9615 0.6765,,
+suma_mnistval,base,diag certeza declarada par=1500,0.8849,0.1285,0.7365,0.9609,3,0.9609 0.9572 0.7365,,
+suma_mnistval,base,diag certeza declarada par=1750,0.8944,0.1267,0.7481,0.9709,3,0.9642 0.9709 0.7481,,
+suma_mnistval,base,diag certeza declarada par=2000,0.8886,0.1348,0.7330,0.9703,3,0.9625 0.9703 0.7330,,
+suma_mnistval,base,diag certeza declarada par=2250,0.9069,0.1153,0.7739,0.9766,3,0.9703 0.9766 0.7739,,
+suma_mnistval,base,diag certeza declarada par=250,0.7713,0.2123,0.5262,0.8969,3,0.8969 0.8907 0.5262,,
+suma_mnistval,base,diag certeza declarada par=2500,0.8652,0.1852,0.6513,0.9727,3,0.9716 0.9727 0.6513,,
+suma_mnistval,base,diag certeza declarada par=2750,0.8987,0.1191,0.7612,0.9699,3,0.9651 0.9699 0.7612,,
+suma_mnistval,base,diag certeza declarada par=3000,0.9028,0.1185,0.7660,0.9724,3,0.9724 0.9700 0.7660,,
+suma_mnistval,base,diag certeza declarada par=500,0.8549,0.1432,0.6896,0.9383,3,0.9368 0.9383 0.6896,,
+suma_mnistval,base,diag certeza declarada par=750,0.8738,0.1390,0.7133,0.9543,3,0.9539 0.9543 0.7133,,
+suma_mnistval,base,diag gamma par=1000,1.0000,0.0000,1.0000,1.0000,3,1.0000 1.0000 1.0000,,
+suma_mnistval,base,diag gamma par=1250,1.0000,0.0000,1.0000,1.0000,3,1.0000 1.0000 1.0000,,
+suma_mnistval,base,diag gamma par=1500,1.0000,0.0000,1.0000,1.0000,3,1.0000 1.0000 1.0000,,
+suma_mnistval,base,diag gamma par=1750,1.0000,0.0000,1.0000,1.0000,3,1.0000 1.0000 1.0000,,
+suma_mnistval,base,diag gamma par=2000,1.0000,0.0000,1.0000,1.0000,3,1.0000 1.0000 1.0000,,
+suma_mnistval,base,diag gamma par=2250,1.0000,0.0000,1.0000,1.0000,3,1.0000 1.0000 1.0000,,
+suma_mnistval,base,diag gamma par=250,1.0000,0.0000,1.0000,1.0000,3,1.0000 1.0000 1.0000,,
+suma_mnistval,base,diag gamma par=2500,1.0000,0.0000,1.0000,1.0000,3,1.0000 1.0000 1.0000,,
+suma_mnistval,base,diag gamma par=2750,1.0000,0.0000,1.0000,1.0000,3,1.0000 1.0000 1.0000,,
+suma_mnistval,base,diag gamma par=3000,1.0000,0.0000,1.0000,1.0000,3,1.0000 1.0000 1.0000,,
+suma_mnistval,base,diag gamma par=500,1.0000,0.0000,1.0000,1.0000,3,1.0000 1.0000 1.0000,,
+suma_mnistval,base,diag gamma par=750,1.0000,0.0000,1.0000,1.0000,3,1.0000 1.0000 1.0000,,
+suma_mnistval,base,diag identidad par=1000,0.6422,0.5418,0.0167,0.9633,3,0.9633 0.9467 0.0167,,
+suma_mnistval,base,diag identidad par=1250,0.6500,0.5371,0.0300,0.9733,3,0.9733 0.9467 0.0300,,
+suma_mnistval,base,diag identidad par=1500,0.6533,0.5600,0.0067,0.9800,3,0.9800 0.9733 0.0067,,
+suma_mnistval,base,diag identidad par=1750,0.6489,0.5562,0.0067,0.9733,3,0.9733 0.9667 0.0067,,
+suma_mnistval,base,diag identidad par=2000,0.6478,0.5610,0.0000,0.9733,3,0.9733 0.9700 0.0000,,
+suma_mnistval,base,diag identidad par=2250,0.6522,0.5620,0.0033,0.9767,3,0.9767 0.9767 0.0033,,
+suma_mnistval,base,diag identidad par=250,0.6311,0.5004,0.0533,0.9267,3,0.9133 0.9267 0.0533,,
+suma_mnistval,base,diag identidad par=2500,0.6833,0.5197,0.0833,0.9900,3,0.9900 0.9767 0.0833,,
+suma_mnistval,base,diag identidad par=2750,0.6589,0.5648,0.0067,0.9900,3,0.9900 0.9800 0.0067,,
+suma_mnistval,base,diag identidad par=3000,0.6578,0.5610,0.0100,0.9900,3,0.9900 0.9733 0.0100,,
+suma_mnistval,base,diag identidad par=500,0.6267,0.5342,0.0100,0.9467,3,0.9467 0.9233 0.0100,,
+suma_mnistval,base,diag identidad par=750,0.6311,0.5379,0.0100,0.9467,3,0.9367 0.9467 0.0100,,
+suma_mnistval,base,diag suma prequential par=1000,0.7613,0.2645,0.4560,0.9200,3,0.9080 0.9200 0.4560,,
+suma_mnistval,base,diag suma prequential par=1250,0.7573,0.2229,0.5000,0.8880,3,0.8880 0.8840 0.5000,,
+suma_mnistval,base,diag suma prequential par=1500,0.7560,0.2566,0.4600,0.9160,3,0.9160 0.8920 0.4600,,
+suma_mnistval,base,diag suma prequential par=1750,0.8040,0.2115,0.5600,0.9360,3,0.9160 0.9360 0.5600,,
+suma_mnistval,base,diag suma prequential par=2000,0.7907,0.2277,0.5280,0.9320,3,0.9320 0.9120 0.5280,,
+suma_mnistval,base,diag suma prequential par=2250,0.8067,0.2351,0.5360,0.9600,3,0.9240 0.9600 0.5360,,
+suma_mnistval,base,diag suma prequential par=250,0.3453,0.1831,0.1360,0.4760,3,0.4760 0.4240 0.1360,,
+suma_mnistval,base,diag suma prequential par=2500,0.8000,0.2404,0.5240,0.9640,3,0.9640 0.9120 0.5240,,
+suma_mnistval,base,diag suma prequential par=2750,0.7867,0.2310,0.5200,0.9240,3,0.9160 0.9240 0.5200,,
+suma_mnistval,base,diag suma prequential par=3000,0.8053,0.2367,0.5320,0.9440,3,0.9400 0.9440 0.5320,,
+suma_mnistval,base,diag suma prequential par=500,0.6813,0.2540,0.3880,0.8280,3,0.8280 0.8280 0.3880,,
+suma_mnistval,base,diag suma prequential par=750,0.7493,0.2543,0.4560,0.9080,3,0.9080 0.8840 0.4560,,
+suma_mnistval,base,diag vecinos d+-1 par=1000,0.3289,0.5437,0.0133,0.9567,3,0.0133 0.0167 0.9567,,
+suma_mnistval,base,diag vecinos d+-1 par=1250,0.3178,0.5331,0.0100,0.9333,3,0.0100 0.0100 0.9333,,
+suma_mnistval,base,diag vecinos d+-1 par=1500,0.3267,0.5571,0.0033,0.9700,3,0.0033 0.0067 0.9700,,
+suma_mnistval,base,diag vecinos d+-1 par=1750,0.3278,0.5533,0.0067,0.9667,3,0.0067 0.0100 0.9667,,
+suma_mnistval,base,diag vecinos d+-1 par=2000,0.3300,0.5543,0.0067,0.9700,3,0.0067 0.0133 0.9700,,
+suma_mnistval,base,diag vecinos d+-1 par=2250,0.3311,0.5591,0.0067,0.9767,3,0.0067 0.0100 0.9767,,
+suma_mnistval,base,diag vecinos d+-1 par=250,0.2778,0.4523,0.0133,0.8000,3,0.0133 0.0200 0.8000,,
+suma_mnistval,base,diag vecinos d+-1 par=2500,0.3067,0.5197,0.0033,0.9067,3,0.0033 0.0100 0.9067,,
+suma_mnistval,base,diag vecinos d+-1 par=2750,0.3278,0.5562,0.0033,0.9700,3,0.0033 0.0100 0.9700,,
+suma_mnistval,base,diag vecinos d+-1 par=3000,0.3244,0.5504,0.0033,0.9600,3,0.0033 0.0100 0.9600,,
+suma_mnistval,base,diag vecinos d+-1 par=500,0.3189,0.5264,0.0133,0.9267,3,0.0167 0.0133 0.9267,,
+suma_mnistval,base,diag vecinos d+-1 par=750,0.3244,0.5360,0.0133,0.9433,3,0.0167 0.0133 0.9433,,
+suma_mnistval,base,exactitud dígito (validación),0.5919,0.5350,0.0030,0.9876,5,0.9794 0.9808 0.0030 0.9876 0.0088,0.9500,criterio del proyecto
+suma_mnistval,base,exactitud suma (validación),0.8094,0.2150,0.5516,0.9756,5,0.9596 0.9624 0.5516 0.9756 0.5976,,DeepProbLog 30k pares: 0.972
+suma_mnistval,base,neuronas,2564.8000,2650.9334,817.0000,7166.0000,5,820.0000 817.0000 2346.0000 1675.0000 7166.0000,,
+suma_mnistval,base,pureza dígito (validación),0.8313,0.2073,0.5984,0.9876,5,0.9794 0.9808 0.6102 0.9876 0.5984,,mejor biyección
+suma_mnistval,base,segundos entrenamiento,207.1400,135.4582,105.2000,397.0000,5,109.3000 105.2000 119.0000 305.2000 397.0000,,3000 pares
+suma_mnistval,d1,curva suma prequential par=10000,0.9116,0.0000,0.9116,0.9116,1,0.9116,,
+suma_mnistval,d1,curva suma prequential par=2500,0.7572,0.0000,0.7572,0.7572,1,0.7572,,
+suma_mnistval,d1,curva suma prequential par=5000,0.8864,0.0000,0.8864,0.8864,1,0.8864,,
+suma_mnistval,d1,curva suma prequential par=7500,0.9012,0.0000,0.9012,0.9012,1,0.9012,,
+suma_mnistval,d1,exactitud dígito (validación),0.9688,0.0000,0.9688,0.9688,1,0.9688,0.9500,criterio del proyecto
+suma_mnistval,d1,exactitud suma (validación),0.9380,0.0000,0.9380,0.9380,1,0.9380,,DeepProbLog 30k pares: 0.972
+suma_mnistval,d1,neuronas,1676.0000,0.0000,1676.0000,1676.0000,1,1676.0000,,
+suma_mnistval,d1,pureza dígito (validación),0.9688,0.0000,0.9688,0.9688,1,0.9688,,mejor biyección
+suma_mnistval,d1,segundos entrenamiento,55.1000,0.0000,55.1000,55.1000,1,55.1000,,10000 pares
+suma_mnistval,duro,curva suma prequential par=10000,0.9644,0.0000,0.9644,0.9644,1,0.9644,,
+suma_mnistval,duro,curva suma prequential par=2500,0.8184,0.0000,0.8184,0.8184,1,0.8184,,
+suma_mnistval,duro,curva suma prequential par=5000,0.9336,0.0000,0.9336,0.9336,1,0.9336,,
+suma_mnistval,duro,curva suma prequential par=7500,0.9548,0.0000,0.9548,0.9548,1,0.9548,,
+suma_mnistval,duro,exactitud dígito (validación),0.9868,0.0000,0.9868,0.9868,1,0.9868,0.9500,criterio del proyecto
+suma_mnistval,duro,exactitud suma (validación),0.9740,0.0000,0.9740,0.9740,1,0.9740,,DeepProbLog 30k pares: 0.972
+suma_mnistval,duro,neuronas,1735.0000,0.0000,1735.0000,1735.0000,1,1735.0000,,
+suma_mnistval,duro,pureza dígito (validación),0.9868,0.0000,0.9868,0.9868,1,0.9868,,mejor biyección
+suma_mnistval,duro,segundos entrenamiento,224.4000,0.0000,224.4000,224.4000,1,224.4000,,10000 pares
+suma_mnistval,fiab,AUROC error dígito (validación): 1-confianza,0.9728,0.0056,0.9674,0.9786,3,0.9674 0.9786 0.9724,0.8500,criterio >= 0.85
+suma_mnistval,fiab,AUROC error suma (validación): 1-confianza,0.9538,0.0095,0.9434,0.9620,3,0.9434 0.9620 0.9561,0.8500,criterio >= 0.85
+suma_mnistval,fiab,ECE dígito (validación),0.0034,0.0012,0.0021,0.0044,3,0.0044 0.0038 0.0021,0.0500,criterio <= 0.05
+suma_mnistval,fiab,ECE suma (validación),0.0064,0.0024,0.0036,0.0080,3,0.0080 0.0076 0.0036,0.0500,criterio <= 0.05
+suma_mnistval,fiab,curva gamma par=10000,0.9187,0.0071,0.9137,0.9238,2,0.9238 0.9137,,ACh
+suma_mnistval,fiab,curva gamma par=2500,0.4349,0.0542,0.4036,0.4974,3,0.4036 0.4974 0.4036,,ACh
+suma_mnistval,fiab,curva gamma par=5000,0.8707,0.0069,0.8658,0.8756,2,0.8658 0.8756,,ACh
+suma_mnistval,fiab,curva gamma par=7500,0.9024,0.0119,0.8940,0.9108,2,0.9108 0.8940,,ACh
+suma_mnistval,fiab,curva suma prequential par=10000,0.9610,0.0025,0.9592,0.9628,2,0.9628 0.9592,,
+suma_mnistval,fiab,curva suma prequential par=2500,0.5787,0.0469,0.5516,0.6328,3,0.5516 0.6328 0.5516,,
+suma_mnistval,fiab,curva suma prequential par=5000,0.9386,0.0031,0.9364,0.9408,2,0.9364 0.9408,,
+suma_mnistval,fiab,curva suma prequential par=7500,0.9534,0.0065,0.9488,0.9580,2,0.9580 0.9488,,
+suma_mnistval,fiab,"diag anclas (0, 18) acumuladas par=1000",18.0000,0.0000,18.0000,18.0000,1,18.0000,39,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab,"diag anclas (0, 18) acumuladas par=1250",24.0000,0.0000,24.0000,24.0000,1,24.0000,48,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab,"diag anclas (0, 18) acumuladas par=1500",28.0000,0.0000,28.0000,28.0000,1,28.0000,52,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab,"diag anclas (0, 18) acumuladas par=1750",31.0000,0.0000,31.0000,31.0000,1,31.0000,61,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab,"diag anclas (0, 18) acumuladas par=2000",33.0000,0.0000,33.0000,33.0000,1,33.0000,75,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab,"diag anclas (0, 18) acumuladas par=2250",35.0000,0.0000,35.0000,35.0000,1,35.0000,87,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab,"diag anclas (0, 18) acumuladas par=250",3.0000,0.0000,3.0000,3.0000,1,3.0000,5,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab,"diag anclas (0, 18) acumuladas par=2500",44.0000,0.0000,44.0000,44.0000,1,44.0000,93,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab,"diag anclas (0, 18) acumuladas par=2750",47.0000,0.0000,47.0000,47.0000,1,47.0000,113,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab,"diag anclas (0, 18) acumuladas par=3000",48.0000,0.0000,48.0000,48.0000,1,48.0000,124,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab,"diag anclas (0, 18) acumuladas par=500",6.0000,0.0000,6.0000,6.0000,1,6.0000,18,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab,"diag anclas (0, 18) acumuladas par=750",14.0000,0.0000,14.0000,14.0000,1,14.0000,28,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab,diag certeza declarada par=1000,0.2133,0.0000,0.2133,0.2133,1,0.2133,,
+suma_mnistval,fiab,diag certeza declarada par=1250,0.2692,0.0000,0.2692,0.2692,1,0.2692,,
+suma_mnistval,fiab,diag certeza declarada par=1500,0.6726,0.0000,0.6726,0.6726,1,0.6726,,
+suma_mnistval,fiab,diag certeza declarada par=1750,0.9543,0.0000,0.9543,0.9543,1,0.9543,,
+suma_mnistval,fiab,diag certeza declarada par=2000,0.9563,0.0000,0.9563,0.9563,1,0.9563,,
+suma_mnistval,fiab,diag certeza declarada par=2250,0.9624,0.0000,0.9624,0.9624,1,0.9624,,
+suma_mnistval,fiab,diag certeza declarada par=250,0.1962,0.0000,0.1962,0.1962,1,0.1962,,
+suma_mnistval,fiab,diag certeza declarada par=2500,0.9598,0.0000,0.9598,0.9598,1,0.9598,,
+suma_mnistval,fiab,diag certeza declarada par=2750,0.9671,0.0000,0.9671,0.9671,1,0.9671,,
+suma_mnistval,fiab,diag certeza declarada par=3000,0.9708,0.0000,0.9708,0.9708,1,0.9708,,
+suma_mnistval,fiab,diag certeza declarada par=500,0.1795,0.0000,0.1795,0.1795,1,0.1795,,
+suma_mnistval,fiab,diag certeza declarada par=750,0.2089,0.0000,0.2089,0.2089,1,0.2089,,
+suma_mnistval,fiab,diag gamma par=1000,0.2052,0.0000,0.2052,0.2052,1,0.2052,,
+suma_mnistval,fiab,diag gamma par=1250,0.3111,0.0000,0.3111,0.3111,1,0.3111,,
+suma_mnistval,fiab,diag gamma par=1500,0.4448,0.0000,0.4448,0.4448,1,0.4448,,
+suma_mnistval,fiab,diag gamma par=1750,0.6643,0.0000,0.6643,0.6643,1,0.6643,,
+suma_mnistval,fiab,diag gamma par=2000,0.7424,0.0000,0.7424,0.7424,1,0.7424,,
+suma_mnistval,fiab,diag gamma par=2250,0.7402,0.0000,0.7402,0.7402,1,0.7402,,
+suma_mnistval,fiab,diag gamma par=250,0.0210,0.0000,0.0210,0.0210,1,0.0210,,
+suma_mnistval,fiab,diag gamma par=2500,0.7548,0.0000,0.7548,0.7548,1,0.7548,,
+suma_mnistval,fiab,diag gamma par=2750,0.8840,0.0000,0.8840,0.8840,1,0.8840,,
+suma_mnistval,fiab,diag gamma par=3000,0.8624,0.0000,0.8624,0.8624,1,0.8624,,
+suma_mnistval,fiab,diag gamma par=500,0.0369,0.0000,0.0369,0.0369,1,0.0369,,
+suma_mnistval,fiab,diag gamma par=750,0.1151,0.0000,0.1151,0.1151,1,0.1151,,
+suma_mnistval,fiab,diag identidad par=1000,0.7700,0.0000,0.7700,0.7700,1,0.7700,,
+suma_mnistval,fiab,diag identidad par=1250,0.8200,0.0000,0.8200,0.8200,1,0.8200,,
+suma_mnistval,fiab,diag identidad par=1500,0.9100,0.0000,0.9100,0.9100,1,0.9100,,
+suma_mnistval,fiab,diag identidad par=1750,0.9500,0.0000,0.9500,0.9500,1,0.9500,,
+suma_mnistval,fiab,diag identidad par=2000,0.9500,0.0000,0.9500,0.9500,1,0.9500,,
+suma_mnistval,fiab,diag identidad par=2250,0.9633,0.0000,0.9633,0.9633,1,0.9633,,
+suma_mnistval,fiab,diag identidad par=250,0.5033,0.0000,0.5033,0.5033,1,0.5033,,
+suma_mnistval,fiab,diag identidad par=2500,0.9633,0.0000,0.9633,0.9633,1,0.9633,,
+suma_mnistval,fiab,diag identidad par=2750,0.9667,0.0000,0.9667,0.9667,1,0.9667,,
+suma_mnistval,fiab,diag identidad par=3000,0.9700,0.0000,0.9700,0.9700,1,0.9700,,
+suma_mnistval,fiab,diag identidad par=500,0.6033,0.0000,0.6033,0.6033,1,0.6033,,
+suma_mnistval,fiab,diag identidad par=750,0.7133,0.0000,0.7133,0.7133,1,0.7133,,
+suma_mnistval,fiab,diag suma prequential par=1000,0.3320,0.0000,0.3320,0.3320,1,0.3320,,
+suma_mnistval,fiab,diag suma prequential par=1250,0.4200,0.0000,0.4200,0.4200,1,0.4200,,
+suma_mnistval,fiab,diag suma prequential par=1500,0.6960,0.0000,0.6960,0.6960,1,0.6960,,
+suma_mnistval,fiab,diag suma prequential par=1750,0.8720,0.0000,0.8720,0.8720,1,0.8720,,
+suma_mnistval,fiab,diag suma prequential par=2000,0.8600,0.0000,0.8600,0.8600,1,0.8600,,
+suma_mnistval,fiab,diag suma prequential par=2250,0.8760,0.0000,0.8760,0.8760,1,0.8760,,
+suma_mnistval,fiab,diag suma prequential par=250,0.1520,0.0000,0.1520,0.1520,1,0.1520,,
+suma_mnistval,fiab,diag suma prequential par=2500,0.9040,0.0000,0.9040,0.9040,1,0.9040,,
+suma_mnistval,fiab,diag suma prequential par=2750,0.9440,0.0000,0.9440,0.9440,1,0.9440,,
+suma_mnistval,fiab,diag suma prequential par=3000,0.9400,0.0000,0.9400,0.9400,1,0.9400,,
+suma_mnistval,fiab,diag suma prequential par=500,0.1640,0.0000,0.1640,0.1640,1,0.1640,,
+suma_mnistval,fiab,diag suma prequential par=750,0.2400,0.0000,0.2400,0.2400,1,0.2400,,
+suma_mnistval,fiab,diag vecinos d+-1 par=1000,0.1267,0.0000,0.1267,0.1267,1,0.1267,,
+suma_mnistval,fiab,diag vecinos d+-1 par=1250,0.0800,0.0000,0.0800,0.0800,1,0.0800,,
+suma_mnistval,fiab,diag vecinos d+-1 par=1500,0.0267,0.0000,0.0267,0.0267,1,0.0267,,
+suma_mnistval,fiab,diag vecinos d+-1 par=1750,0.0133,0.0000,0.0133,0.0133,1,0.0133,,
+suma_mnistval,fiab,diag vecinos d+-1 par=2000,0.0100,0.0000,0.0100,0.0100,1,0.0100,,
+suma_mnistval,fiab,diag vecinos d+-1 par=2250,0.0100,0.0000,0.0100,0.0100,1,0.0100,,
+suma_mnistval,fiab,diag vecinos d+-1 par=250,0.1933,0.0000,0.1933,0.1933,1,0.1933,,
+suma_mnistval,fiab,diag vecinos d+-1 par=2500,0.0100,0.0000,0.0100,0.0100,1,0.0100,,
+suma_mnistval,fiab,diag vecinos d+-1 par=2750,0.0100,0.0000,0.0100,0.0100,1,0.0100,,
+suma_mnistval,fiab,diag vecinos d+-1 par=3000,0.0067,0.0000,0.0067,0.0067,1,0.0067,,
+suma_mnistval,fiab,diag vecinos d+-1 par=500,0.1900,0.0000,0.1900,0.1900,1,0.1900,,
+suma_mnistval,fiab,diag vecinos d+-1 par=750,0.1400,0.0000,0.1400,0.1400,1,0.1400,,
+suma_mnistval,fiab,exactitud dígito (validación),0.9824,0.0088,0.9722,0.9876,3,0.9722 0.9874 0.9876,0.9500,criterio del proyecto
+suma_mnistval,fiab,exactitud suma (validación),0.9656,0.0170,0.9460,0.9756,3,0.9460 0.9752 0.9756,,DeepProbLog 30k pares: 0.972
+suma_mnistval,fiab,neuronas,1377.6667,513.4553,785.0000,1688.0000,3,785.0000 1660.0000 1688.0000,,
+suma_mnistval,fiab,pureza dígito (validación),0.9824,0.0088,0.9722,0.9876,3,0.9722 0.9874 0.9876,,mejor biyección
+suma_mnistval,fiab,segundos entrenamiento,230.0333,104.2943,109.9000,297.4000,3,109.9000 282.8000 297.4000,,3000 pares
+suma_mnistval,fiab_tardia,AUROC error dígito (validación): 1-confianza,0.7299,0.0000,0.7299,0.7299,1,0.7299,0.8500,criterio >= 0.85
+suma_mnistval,fiab_tardia,AUROC error suma (validación): 1-confianza,0.8411,0.0000,0.8411,0.8411,1,0.8411,0.8500,criterio >= 0.85
+suma_mnistval,fiab_tardia,ECE dígito (validación),0.0874,0.0000,0.0874,0.0874,1,0.0874,0.0500,criterio <= 0.05
+suma_mnistval,fiab_tardia,ECE suma (validación),0.1678,0.0000,0.1678,0.1678,1,0.1678,0.0500,criterio <= 0.05
+suma_mnistval,fiab_tardia,curva gamma par=10000,0.0882,0.0000,0.0882,0.0882,1,0.0882,,ACh
+suma_mnistval,fiab_tardia,curva gamma par=2500,1.0000,0.0000,1.0000,1.0000,1,1.0000,,ACh
+suma_mnistval,fiab_tardia,curva gamma par=5000,0.1021,0.0000,0.1021,0.1021,1,0.1021,,ACh
+suma_mnistval,fiab_tardia,curva gamma par=7500,0.0936,0.0000,0.0936,0.0936,1,0.0936,,ACh
+suma_mnistval,fiab_tardia,curva suma prequential par=10000,0.2900,0.0000,0.2900,0.2900,1,0.2900,,
+suma_mnistval,fiab_tardia,curva suma prequential par=2500,0.4544,0.0000,0.4544,0.4544,1,0.4544,,
+suma_mnistval,fiab_tardia,curva suma prequential par=5000,0.2436,0.0000,0.2436,0.2436,1,0.2436,,
+suma_mnistval,fiab_tardia,curva suma prequential par=7500,0.2788,0.0000,0.2788,0.2788,1,0.2788,,
+suma_mnistval,fiab_tardia,"diag anclas (0, 18) acumuladas par=1000",18.0000,0.0000,18.0000,18.0000,1,18.0000,39,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia,"diag anclas (0, 18) acumuladas par=10000",193.0000,0.0000,193.0000,193.0000,1,193.0000,421,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia,"diag anclas (0, 18) acumuladas par=1500",28.0000,0.0000,28.0000,28.0000,1,28.0000,52,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia,"diag anclas (0, 18) acumuladas par=2000",33.0000,0.0000,33.0000,33.0000,1,33.0000,75,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia,"diag anclas (0, 18) acumuladas par=2500",44.0000,0.0000,44.0000,44.0000,1,44.0000,93,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia,"diag anclas (0, 18) acumuladas par=3000",48.0000,0.0000,48.0000,48.0000,1,48.0000,124,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia,"diag anclas (0, 18) acumuladas par=3500",57.0000,0.0000,57.0000,57.0000,1,57.0000,150,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia,"diag anclas (0, 18) acumuladas par=4000",64.0000,0.0000,64.0000,64.0000,1,64.0000,164,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia,"diag anclas (0, 18) acumuladas par=4500",72.0000,0.0000,72.0000,72.0000,1,72.0000,183,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia,"diag anclas (0, 18) acumuladas par=500",6.0000,0.0000,6.0000,6.0000,1,6.0000,18,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia,"diag anclas (0, 18) acumuladas par=5000",83.0000,0.0000,83.0000,83.0000,1,83.0000,207,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia,"diag anclas (0, 18) acumuladas par=5500",88.0000,0.0000,88.0000,88.0000,1,88.0000,226,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia,"diag anclas (0, 18) acumuladas par=6000",100.0000,0.0000,100.0000,100.0000,1,100.0000,254,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia,"diag anclas (0, 18) acumuladas par=6500",103.0000,0.0000,103.0000,103.0000,1,103.0000,274,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia,"diag anclas (0, 18) acumuladas par=7000",115.0000,0.0000,115.0000,115.0000,1,115.0000,297,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia,"diag anclas (0, 18) acumuladas par=7500",127.0000,0.0000,127.0000,127.0000,1,127.0000,317,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia,"diag anclas (0, 18) acumuladas par=8000",140.0000,0.0000,140.0000,140.0000,1,140.0000,338,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia,"diag anclas (0, 18) acumuladas par=8500",156.0000,0.0000,156.0000,156.0000,1,156.0000,357,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia,"diag anclas (0, 18) acumuladas par=9000",171.0000,0.0000,171.0000,171.0000,1,171.0000,382,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia,"diag anclas (0, 18) acumuladas par=9500",180.0000,0.0000,180.0000,180.0000,1,180.0000,400,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia,diag certeza declarada par=1000,0.6762,0.0000,0.6762,0.6762,1,0.6762,,
+suma_mnistval,fiab_tardia,diag certeza declarada par=10000,0.1915,0.0000,0.1915,0.1915,1,0.1915,,
+suma_mnistval,fiab_tardia,diag certeza declarada par=1500,0.7365,0.0000,0.7365,0.7365,1,0.7365,,
+suma_mnistval,fiab_tardia,diag certeza declarada par=2000,0.7330,0.0000,0.7330,0.7330,1,0.7330,,
+suma_mnistval,fiab_tardia,diag certeza declarada par=2500,0.6513,0.0000,0.6513,0.6513,1,0.6513,,
+suma_mnistval,fiab_tardia,diag certeza declarada par=3000,0.2442,0.0000,0.2442,0.2442,1,0.2442,,
+suma_mnistval,fiab_tardia,diag certeza declarada par=3500,0.1957,0.0000,0.1957,0.1957,1,0.1957,,
+suma_mnistval,fiab_tardia,diag certeza declarada par=4000,0.1910,0.0000,0.1910,0.1910,1,0.1910,,
+suma_mnistval,fiab_tardia,diag certeza declarada par=4500,0.1942,0.0000,0.1942,0.1942,1,0.1942,,
+suma_mnistval,fiab_tardia,diag certeza declarada par=500,0.6896,0.0000,0.6896,0.6896,1,0.6896,,
+suma_mnistval,fiab_tardia,diag certeza declarada par=5000,0.2265,0.0000,0.2265,0.2265,1,0.2265,,
+suma_mnistval,fiab_tardia,diag certeza declarada par=5500,0.1812,0.0000,0.1812,0.1812,1,0.1812,,
+suma_mnistval,fiab_tardia,diag certeza declarada par=6000,0.1987,0.0000,0.1987,0.1987,1,0.1987,,
+suma_mnistval,fiab_tardia,diag certeza declarada par=6500,0.2312,0.0000,0.2312,0.2312,1,0.2312,,
+suma_mnistval,fiab_tardia,diag certeza declarada par=7000,0.1615,0.0000,0.1615,0.1615,1,0.1615,,
+suma_mnistval,fiab_tardia,diag certeza declarada par=7500,0.2391,0.0000,0.2391,0.2391,1,0.2391,,
+suma_mnistval,fiab_tardia,diag certeza declarada par=8000,0.2165,0.0000,0.2165,0.2165,1,0.2165,,
+suma_mnistval,fiab_tardia,diag certeza declarada par=8500,0.2430,0.0000,0.2430,0.2430,1,0.2430,,
+suma_mnistval,fiab_tardia,diag certeza declarada par=9000,0.2146,0.0000,0.2146,0.2146,1,0.2146,,
+suma_mnistval,fiab_tardia,diag certeza declarada par=9500,0.2152,0.0000,0.2152,0.2152,1,0.2152,,
+suma_mnistval,fiab_tardia,diag gamma par=1000,1.0000,0.0000,1.0000,1.0000,1,1.0000,,
+suma_mnistval,fiab_tardia,diag gamma par=10000,0.0678,0.0000,0.0678,0.0678,1,0.0678,,
+suma_mnistval,fiab_tardia,diag gamma par=1500,1.0000,0.0000,1.0000,1.0000,1,1.0000,,
+suma_mnistval,fiab_tardia,diag gamma par=2000,1.0000,0.0000,1.0000,1.0000,1,1.0000,,
+suma_mnistval,fiab_tardia,diag gamma par=2500,1.0000,0.0000,1.0000,1.0000,1,1.0000,,
+suma_mnistval,fiab_tardia,diag gamma par=3000,0.1639,0.0000,0.1639,0.1639,1,0.1639,,
+suma_mnistval,fiab_tardia,diag gamma par=3500,0.0910,0.0000,0.0910,0.0910,1,0.0910,,
+suma_mnistval,fiab_tardia,diag gamma par=4000,0.0783,0.0000,0.0783,0.0783,1,0.0783,,
+suma_mnistval,fiab_tardia,diag gamma par=4500,0.0784,0.0000,0.0784,0.0784,1,0.0784,,
+suma_mnistval,fiab_tardia,diag gamma par=500,1.0000,0.0000,1.0000,1.0000,1,1.0000,,
+suma_mnistval,fiab_tardia,diag gamma par=5000,0.0990,0.0000,0.0990,0.0990,1,0.0990,,
+suma_mnistval,fiab_tardia,diag gamma par=5500,0.0977,0.0000,0.0977,0.0977,1,0.0977,,
+suma_mnistval,fiab_tardia,diag gamma par=6000,0.0842,0.0000,0.0842,0.0842,1,0.0842,,
+suma_mnistval,fiab_tardia,diag gamma par=6500,0.1022,0.0000,0.1022,0.1022,1,0.1022,,
+suma_mnistval,fiab_tardia,diag gamma par=7000,0.0874,0.0000,0.0874,0.0874,1,0.0874,,
+suma_mnistval,fiab_tardia,diag gamma par=7500,0.0967,0.0000,0.0967,0.0967,1,0.0967,,
+suma_mnistval,fiab_tardia,diag gamma par=8000,0.0817,0.0000,0.0817,0.0817,1,0.0817,,
+suma_mnistval,fiab_tardia,diag gamma par=8500,0.0876,0.0000,0.0876,0.0876,1,0.0876,,
+suma_mnistval,fiab_tardia,diag gamma par=9000,0.0926,0.0000,0.0926,0.0926,1,0.0926,,
+suma_mnistval,fiab_tardia,diag gamma par=9500,0.1115,0.0000,0.1115,0.1115,1,0.1115,,
+suma_mnistval,fiab_tardia,diag identidad par=1000,0.0167,0.0000,0.0167,0.0167,1,0.0167,,
+suma_mnistval,fiab_tardia,diag identidad par=10000,0.1867,0.0000,0.1867,0.1867,1,0.1867,,
+suma_mnistval,fiab_tardia,diag identidad par=1500,0.0067,0.0000,0.0067,0.0067,1,0.0067,,
+suma_mnistval,fiab_tardia,diag identidad par=2000,0.0000,0.0000,0.0000,0.0000,1,0.0000,,
+suma_mnistval,fiab_tardia,diag identidad par=2500,0.0833,0.0000,0.0833,0.0833,1,0.0833,,
+suma_mnistval,fiab_tardia,diag identidad par=3000,0.0733,0.0000,0.0733,0.0733,1,0.0733,,
+suma_mnistval,fiab_tardia,diag identidad par=3500,0.1033,0.0000,0.1033,0.1033,1,0.1033,,
+suma_mnistval,fiab_tardia,diag identidad par=4000,0.0533,0.0000,0.0533,0.0533,1,0.0533,,
+suma_mnistval,fiab_tardia,diag identidad par=4500,0.0867,0.0000,0.0867,0.0867,1,0.0867,,
+suma_mnistval,fiab_tardia,diag identidad par=500,0.0100,0.0000,0.0100,0.0100,1,0.0100,,
+suma_mnistval,fiab_tardia,diag identidad par=5000,0.1333,0.0000,0.1333,0.1333,1,0.1333,,
+suma_mnistval,fiab_tardia,diag identidad par=5500,0.1300,0.0000,0.1300,0.1300,1,0.1300,,
+suma_mnistval,fiab_tardia,diag identidad par=6000,0.1100,0.0000,0.1100,0.1100,1,0.1100,,
+suma_mnistval,fiab_tardia,diag identidad par=6500,0.0633,0.0000,0.0633,0.0633,1,0.0633,,
+suma_mnistval,fiab_tardia,diag identidad par=7000,0.1433,0.0000,0.1433,0.1433,1,0.1433,,
+suma_mnistval,fiab_tardia,diag identidad par=7500,0.1267,0.0000,0.1267,0.1267,1,0.1267,,
+suma_mnistval,fiab_tardia,diag identidad par=8000,0.1767,0.0000,0.1767,0.1767,1,0.1767,,
+suma_mnistval,fiab_tardia,diag identidad par=8500,0.2200,0.0000,0.2200,0.2200,1,0.2200,,
+suma_mnistval,fiab_tardia,diag identidad par=9000,0.1933,0.0000,0.1933,0.1933,1,0.1933,,
+suma_mnistval,fiab_tardia,diag identidad par=9500,0.1433,0.0000,0.1433,0.1433,1,0.1433,,
+suma_mnistval,fiab_tardia,diag suma prequential par=1000,0.4560,0.0000,0.4560,0.4560,1,0.4560,,
+suma_mnistval,fiab_tardia,diag suma prequential par=10000,0.2760,0.0000,0.2760,0.2760,1,0.2760,,
+suma_mnistval,fiab_tardia,diag suma prequential par=1500,0.4800,0.0000,0.4800,0.4800,1,0.4800,,
+suma_mnistval,fiab_tardia,diag suma prequential par=2000,0.5440,0.0000,0.5440,0.5440,1,0.5440,,
+suma_mnistval,fiab_tardia,diag suma prequential par=2500,0.5300,0.0000,0.5300,0.5300,1,0.5300,,
+suma_mnistval,fiab_tardia,diag suma prequential par=3000,0.2900,0.0000,0.2900,0.2900,1,0.2900,,
+suma_mnistval,fiab_tardia,diag suma prequential par=3500,0.2320,0.0000,0.2320,0.2320,1,0.2320,,
+suma_mnistval,fiab_tardia,diag suma prequential par=4000,0.2080,0.0000,0.2080,0.2080,1,0.2080,,
+suma_mnistval,fiab_tardia,diag suma prequential par=4500,0.2280,0.0000,0.2280,0.2280,1,0.2280,,
+suma_mnistval,fiab_tardia,diag suma prequential par=500,0.2620,0.0000,0.2620,0.2620,1,0.2620,,
+suma_mnistval,fiab_tardia,diag suma prequential par=5000,0.2600,0.0000,0.2600,0.2600,1,0.2600,,
+suma_mnistval,fiab_tardia,diag suma prequential par=5500,0.2540,0.0000,0.2540,0.2540,1,0.2540,,
+suma_mnistval,fiab_tardia,diag suma prequential par=6000,0.2900,0.0000,0.2900,0.2900,1,0.2900,,
+suma_mnistval,fiab_tardia,diag suma prequential par=6500,0.2600,0.0000,0.2600,0.2600,1,0.2600,,
+suma_mnistval,fiab_tardia,diag suma prequential par=7000,0.3160,0.0000,0.3160,0.3160,1,0.3160,,
+suma_mnistval,fiab_tardia,diag suma prequential par=7500,0.2740,0.0000,0.2740,0.2740,1,0.2740,,
+suma_mnistval,fiab_tardia,diag suma prequential par=8000,0.2980,0.0000,0.2980,0.2980,1,0.2980,,
+suma_mnistval,fiab_tardia,diag suma prequential par=8500,0.2740,0.0000,0.2740,0.2740,1,0.2740,,
+suma_mnistval,fiab_tardia,diag suma prequential par=9000,0.3200,0.0000,0.3200,0.3200,1,0.3200,,
+suma_mnistval,fiab_tardia,diag suma prequential par=9500,0.2820,0.0000,0.2820,0.2820,1,0.2820,,
+suma_mnistval,fiab_tardia,diag vecinos d+-1 par=1000,0.9567,0.0000,0.9567,0.9567,1,0.9567,,
+suma_mnistval,fiab_tardia,diag vecinos d+-1 par=10000,0.7933,0.0000,0.7933,0.7933,1,0.7933,,
+suma_mnistval,fiab_tardia,diag vecinos d+-1 par=1500,0.9700,0.0000,0.9700,0.9700,1,0.9700,,
+suma_mnistval,fiab_tardia,diag vecinos d+-1 par=2000,0.9700,0.0000,0.9700,0.9700,1,0.9700,,
+suma_mnistval,fiab_tardia,diag vecinos d+-1 par=2500,0.9067,0.0000,0.9067,0.9067,1,0.9067,,
+suma_mnistval,fiab_tardia,diag vecinos d+-1 par=3000,0.9000,0.0000,0.9000,0.9000,1,0.9000,,
+suma_mnistval,fiab_tardia,diag vecinos d+-1 par=3500,0.8600,0.0000,0.8600,0.8600,1,0.8600,,
+suma_mnistval,fiab_tardia,diag vecinos d+-1 par=4000,0.9067,0.0000,0.9067,0.9067,1,0.9067,,
+suma_mnistval,fiab_tardia,diag vecinos d+-1 par=4500,0.8800,0.0000,0.8800,0.8800,1,0.8800,,
+suma_mnistval,fiab_tardia,diag vecinos d+-1 par=500,0.9267,0.0000,0.9267,0.9267,1,0.9267,,
+suma_mnistval,fiab_tardia,diag vecinos d+-1 par=5000,0.8267,0.0000,0.8267,0.8267,1,0.8267,,
+suma_mnistval,fiab_tardia,diag vecinos d+-1 par=5500,0.8367,0.0000,0.8367,0.8367,1,0.8367,,
+suma_mnistval,fiab_tardia,diag vecinos d+-1 par=6000,0.8600,0.0000,0.8600,0.8600,1,0.8600,,
+suma_mnistval,fiab_tardia,diag vecinos d+-1 par=6500,0.8867,0.0000,0.8867,0.8867,1,0.8867,,
+suma_mnistval,fiab_tardia,diag vecinos d+-1 par=7000,0.8233,0.0000,0.8233,0.8233,1,0.8233,,
+suma_mnistval,fiab_tardia,diag vecinos d+-1 par=7500,0.8467,0.0000,0.8467,0.8467,1,0.8467,,
+suma_mnistval,fiab_tardia,diag vecinos d+-1 par=8000,0.7833,0.0000,0.7833,0.7833,1,0.7833,,
+suma_mnistval,fiab_tardia,diag vecinos d+-1 par=8500,0.7400,0.0000,0.7400,0.7400,1,0.7400,,
+suma_mnistval,fiab_tardia,diag vecinos d+-1 par=9000,0.7667,0.0000,0.7667,0.7667,1,0.7667,,
+suma_mnistval,fiab_tardia,diag vecinos d+-1 par=9500,0.8233,0.0000,0.8233,0.8233,1,0.8233,,
+suma_mnistval,fiab_tardia,exactitud dígito (validación),0.1806,0.0000,0.1806,0.1806,1,0.1806,0.9500,criterio del proyecto
+suma_mnistval,fiab_tardia,exactitud suma (validación),0.2140,0.0000,0.2140,0.2140,1,0.2140,,DeepProbLog 30k pares: 0.972
+suma_mnistval,fiab_tardia,neuronas,2608.0000,0.0000,2608.0000,2608.0000,1,2608.0000,,
+suma_mnistval,fiab_tardia,pureza dígito (validación),0.5390,0.0000,0.5390,0.5390,1,0.5390,,mejor biyección
+suma_mnistval,fiab_tardia,segundos entrenamiento,380.4000,0.0000,380.4000,380.4000,1,380.4000,,10000 pares
+suma_mnistval,fiab_tardia_labil,AUROC error dígito (validación): 1-confianza,0.5839,0.0000,0.5839,0.5839,1,0.5839,0.8500,criterio >= 0.85
+suma_mnistval,fiab_tardia_labil,AUROC error suma (validación): 1-confianza,0.6979,0.0000,0.6979,0.6979,1,0.6979,0.8500,criterio >= 0.85
+suma_mnistval,fiab_tardia_labil,ECE dígito (validación),0.2959,0.0000,0.2959,0.2959,1,0.2959,0.0500,criterio <= 0.05
+suma_mnistval,fiab_tardia_labil,ECE suma (validación),0.0739,0.0000,0.0739,0.0739,1,0.0739,0.0500,criterio <= 0.05
+suma_mnistval,fiab_tardia_labil,curva gamma par=10000,0.0764,0.0000,0.0764,0.0764,1,0.0764,,ACh
+suma_mnistval,fiab_tardia_labil,curva gamma par=2500,1.0000,0.0000,1.0000,1.0000,1,1.0000,,ACh
+suma_mnistval,fiab_tardia_labil,curva gamma par=5000,0.0961,0.0000,0.0961,0.0961,1,0.0961,,ACh
+suma_mnistval,fiab_tardia_labil,curva gamma par=7500,0.0572,0.0000,0.0572,0.0572,1,0.0572,,ACh
+suma_mnistval,fiab_tardia_labil,curva suma prequential par=10000,0.2064,0.0000,0.2064,0.2064,1,0.2064,,
+suma_mnistval,fiab_tardia_labil,curva suma prequential par=2500,0.4544,0.0000,0.4544,0.4544,1,0.4544,,
+suma_mnistval,fiab_tardia_labil,curva suma prequential par=5000,0.2396,0.0000,0.2396,0.2396,1,0.2396,,
+suma_mnistval,fiab_tardia_labil,curva suma prequential par=7500,0.1888,0.0000,0.1888,0.1888,1,0.1888,,
+suma_mnistval,fiab_tardia_labil,"diag anclas (0, 18) acumuladas par=1000",18.0000,0.0000,18.0000,18.0000,1,18.0000,39,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia_labil,"diag anclas (0, 18) acumuladas par=10000",193.0000,0.0000,193.0000,193.0000,1,193.0000,421,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia_labil,"diag anclas (0, 18) acumuladas par=1500",28.0000,0.0000,28.0000,28.0000,1,28.0000,52,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia_labil,"diag anclas (0, 18) acumuladas par=2000",33.0000,0.0000,33.0000,33.0000,1,33.0000,75,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia_labil,"diag anclas (0, 18) acumuladas par=2500",44.0000,0.0000,44.0000,44.0000,1,44.0000,93,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia_labil,"diag anclas (0, 18) acumuladas par=3000",48.0000,0.0000,48.0000,48.0000,1,48.0000,124,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia_labil,"diag anclas (0, 18) acumuladas par=3500",57.0000,0.0000,57.0000,57.0000,1,57.0000,150,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia_labil,"diag anclas (0, 18) acumuladas par=4000",64.0000,0.0000,64.0000,64.0000,1,64.0000,164,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia_labil,"diag anclas (0, 18) acumuladas par=4500",72.0000,0.0000,72.0000,72.0000,1,72.0000,183,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia_labil,"diag anclas (0, 18) acumuladas par=500",6.0000,0.0000,6.0000,6.0000,1,6.0000,18,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia_labil,"diag anclas (0, 18) acumuladas par=5000",83.0000,0.0000,83.0000,83.0000,1,83.0000,207,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia_labil,"diag anclas (0, 18) acumuladas par=5500",88.0000,0.0000,88.0000,88.0000,1,88.0000,226,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia_labil,"diag anclas (0, 18) acumuladas par=6000",100.0000,0.0000,100.0000,100.0000,1,100.0000,254,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia_labil,"diag anclas (0, 18) acumuladas par=6500",103.0000,0.0000,103.0000,103.0000,1,103.0000,274,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia_labil,"diag anclas (0, 18) acumuladas par=7000",115.0000,0.0000,115.0000,115.0000,1,115.0000,297,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia_labil,"diag anclas (0, 18) acumuladas par=7500",127.0000,0.0000,127.0000,127.0000,1,127.0000,317,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia_labil,"diag anclas (0, 18) acumuladas par=8000",140.0000,0.0000,140.0000,140.0000,1,140.0000,338,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia_labil,"diag anclas (0, 18) acumuladas par=8500",156.0000,0.0000,156.0000,156.0000,1,156.0000,357,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia_labil,"diag anclas (0, 18) acumuladas par=9000",171.0000,0.0000,171.0000,171.0000,1,171.0000,382,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia_labil,"diag anclas (0, 18) acumuladas par=9500",180.0000,0.0000,180.0000,180.0000,1,180.0000,400,"casi anclas (1, 17) en referencia"
+suma_mnistval,fiab_tardia_labil,diag certeza declarada par=1000,0.6762,0.0000,0.6762,0.6762,1,0.6762,,
+suma_mnistval,fiab_tardia_labil,diag certeza declarada par=10000,0.1793,0.0000,0.1793,0.1793,1,0.1793,,
+suma_mnistval,fiab_tardia_labil,diag certeza declarada par=1500,0.7365,0.0000,0.7365,0.7365,1,0.7365,,
+suma_mnistval,fiab_tardia_labil,diag certeza declarada par=2000,0.7330,0.0000,0.7330,0.7330,1,0.7330,,
+suma_mnistval,fiab_tardia_labil,diag certeza declarada par=2500,0.6513,0.0000,0.6513,0.6513,1,0.6513,,
+suma_mnistval,fiab_tardia_labil,diag certeza declarada par=3000,0.2407,0.0000,0.2407,0.2407,1,0.2407,,
+suma_mnistval,fiab_tardia_labil,diag certeza declarada par=3500,0.2060,0.0000,0.2060,0.2060,1,0.2060,,
+suma_mnistval,fiab_tardia_labil,diag certeza declarada par=4000,0.1934,0.0000,0.1934,0.1934,1,0.1934,,
+suma_mnistval,fiab_tardia_labil,diag certeza declarada par=4500,0.1960,0.0000,0.1960,0.1960,1,0.1960,,
+suma_mnistval,fiab_tardia_labil,diag certeza declarada par=500,0.6896,0.0000,0.6896,0.6896,1,0.6896,,
+suma_mnistval,fiab_tardia_labil,diag certeza declarada par=5000,0.2159,0.0000,0.2159,0.2159,1,0.2159,,
+suma_mnistval,fiab_tardia_labil,diag certeza declarada par=5500,0.1777,0.0000,0.1777,0.1777,1,0.1777,,
+suma_mnistval,fiab_tardia_labil,diag certeza declarada par=6000,0.1984,0.0000,0.1984,0.1984,1,0.1984,,
+suma_mnistval,fiab_tardia_labil,diag certeza declarada par=6500,0.2191,0.0000,0.2191,0.2191,1,0.2191,,
+suma_mnistval,fiab_tardia_labil,diag certeza declarada par=7000,0.1715,0.0000,0.1715,0.1715,1,0.1715,,
+suma_mnistval,fiab_tardia_labil,diag certeza declarada par=7500,0.2300,0.0000,0.2300,0.2300,1,0.2300,,
+suma_mnistval,fiab_tardia_labil,diag certeza declarada par=8000,0.1977,0.0000,0.1977,0.1977,1,0.1977,,
+suma_mnistval,fiab_tardia_labil,diag certeza declarada par=8500,0.2321,0.0000,0.2321,0.2321,1,0.2321,,
+suma_mnistval,fiab_tardia_labil,diag certeza declarada par=9000,0.2169,0.0000,0.2169,0.2169,1,0.2169,,
+suma_mnistval,fiab_tardia_labil,diag certeza declarada par=9500,0.2006,0.0000,0.2006,0.2006,1,0.2006,,
+suma_mnistval,fiab_tardia_labil,diag gamma par=1000,1.0000,0.0000,1.0000,1.0000,1,1.0000,,
+suma_mnistval,fiab_tardia_labil,diag gamma par=10000,0.0699,0.0000,0.0699,0.0699,1,0.0699,,
+suma_mnistval,fiab_tardia_labil,diag gamma par=1500,1.0000,0.0000,1.0000,1.0000,1,1.0000,,
+suma_mnistval,fiab_tardia_labil,diag gamma par=2000,1.0000,0.0000,1.0000,1.0000,1,1.0000,,
+suma_mnistval,fiab_tardia_labil,diag gamma par=2500,1.0000,0.0000,1.0000,1.0000,1,1.0000,,
+suma_mnistval,fiab_tardia_labil,diag gamma par=3000,0.1545,0.0000,0.1545,0.1545,1,0.1545,,
+suma_mnistval,fiab_tardia_labil,diag gamma par=3500,0.1037,0.0000,0.1037,0.1037,1,0.1037,,
+suma_mnistval,fiab_tardia_labil,diag gamma par=4000,0.0954,0.0000,0.0954,0.0954,1,0.0954,,
+suma_mnistval,fiab_tardia_labil,diag gamma par=4500,0.0780,0.0000,0.0780,0.0780,1,0.0780,,
+suma_mnistval,fiab_tardia_labil,diag gamma par=500,1.0000,0.0000,1.0000,1.0000,1,1.0000,,
+suma_mnistval,fiab_tardia_labil,diag gamma par=5000,0.0489,0.0000,0.0489,0.0489,1,0.0489,,
+suma_mnistval,fiab_tardia_labil,diag gamma par=5500,0.0529,0.0000,0.0529,0.0529,1,0.0529,,
+suma_mnistval,fiab_tardia_labil,diag gamma par=6000,0.0516,0.0000,0.0516,0.0516,1,0.0516,,
+suma_mnistval,fiab_tardia_labil,diag gamma par=6500,0.0668,0.0000,0.0668,0.0668,1,0.0668,,
+suma_mnistval,fiab_tardia_labil,diag gamma par=7000,0.0606,0.0000,0.0606,0.0606,1,0.0606,,
+suma_mnistval,fiab_tardia_labil,diag gamma par=7500,0.0538,0.0000,0.0538,0.0538,1,0.0538,,
+suma_mnistval,fiab_tardia_labil,diag gamma par=8000,0.0713,0.0000,0.0713,0.0713,1,0.0713,,
+suma_mnistval,fiab_tardia_labil,diag gamma par=8500,0.0772,0.0000,0.0772,0.0772,1,0.0772,,
+suma_mnistval,fiab_tardia_labil,diag gamma par=9000,0.0942,0.0000,0.0942,0.0942,1,0.0942,,
+suma_mnistval,fiab_tardia_labil,diag gamma par=9500,0.0693,0.0000,0.0693,0.0693,1,0.0693,,
+suma_mnistval,fiab_tardia_labil,diag identidad par=1000,0.0167,0.0000,0.0167,0.0167,1,0.0167,,
+suma_mnistval,fiab_tardia_labil,diag identidad par=10000,0.4667,0.0000,0.4667,0.4667,1,0.4667,,
+suma_mnistval,fiab_tardia_labil,diag identidad par=1500,0.0067,0.0000,0.0067,0.0067,1,0.0067,,
+suma_mnistval,fiab_tardia_labil,diag identidad par=2000,0.0000,0.0000,0.0000,0.0000,1,0.0000,,
+suma_mnistval,fiab_tardia_labil,diag identidad par=2500,0.0833,0.0000,0.0833,0.0833,1,0.0833,,
+suma_mnistval,fiab_tardia_labil,diag identidad par=3000,0.0867,0.0000,0.0867,0.0867,1,0.0867,,
+suma_mnistval,fiab_tardia_labil,diag identidad par=3500,0.1467,0.0000,0.1467,0.1467,1,0.1467,,
+suma_mnistval,fiab_tardia_labil,diag identidad par=4000,0.1733,0.0000,0.1733,0.1733,1,0.1733,,
+suma_mnistval,fiab_tardia_labil,diag identidad par=4500,0.3133,0.0000,0.3133,0.3133,1,0.3133,,
+suma_mnistval,fiab_tardia_labil,diag identidad par=500,0.0100,0.0000,0.0100,0.0100,1,0.0100,,
+suma_mnistval,fiab_tardia_labil,diag identidad par=5000,0.3267,0.0000,0.3267,0.3267,1,0.3267,,
+suma_mnistval,fiab_tardia_labil,diag identidad par=5500,0.4200,0.0000,0.4200,0.4200,1,0.4200,,
+suma_mnistval,fiab_tardia_labil,diag identidad par=6000,0.3833,0.0000,0.3833,0.3833,1,0.3833,,
+suma_mnistval,fiab_tardia_labil,diag identidad par=6500,0.3700,0.0000,0.3700,0.3700,1,0.3700,,
+suma_mnistval,fiab_tardia_labil,diag identidad par=7000,0.4033,0.0000,0.4033,0.4033,1,0.4033,,
+suma_mnistval,fiab_tardia_labil,diag identidad par=7500,0.4800,0.0000,0.4800,0.4800,1,0.4800,,
+suma_mnistval,fiab_tardia_labil,diag identidad par=8000,0.3933,0.0000,0.3933,0.3933,1,0.3933,,
+suma_mnistval,fiab_tardia_labil,diag identidad par=8500,0.3767,0.0000,0.3767,0.3767,1,0.3767,,
+suma_mnistval,fiab_tardia_labil,diag identidad par=9000,0.5000,0.0000,0.5000,0.5000,1,0.5000,,
+suma_mnistval,fiab_tardia_labil,diag identidad par=9500,0.4167,0.0000,0.4167,0.4167,1,0.4167,,
+suma_mnistval,fiab_tardia_labil,diag suma prequential par=1000,0.4560,0.0000,0.4560,0.4560,1,0.4560,,
+suma_mnistval,fiab_tardia_labil,diag suma prequential par=10000,0.1940,0.0000,0.1940,0.1940,1,0.1940,,
+suma_mnistval,fiab_tardia_labil,diag suma prequential par=1500,0.4800,0.0000,0.4800,0.4800,1,0.4800,,
+suma_mnistval,fiab_tardia_labil,diag suma prequential par=2000,0.5440,0.0000,0.5440,0.5440,1,0.5440,,
+suma_mnistval,fiab_tardia_labil,diag suma prequential par=2500,0.5300,0.0000,0.5300,0.5300,1,0.5300,,
+suma_mnistval,fiab_tardia_labil,diag suma prequential par=3000,0.2760,0.0000,0.2760,0.2760,1,0.2760,,
+suma_mnistval,fiab_tardia_labil,diag suma prequential par=3500,0.2700,0.0000,0.2700,0.2700,1,0.2700,,
+suma_mnistval,fiab_tardia_labil,diag suma prequential par=4000,0.2600,0.0000,0.2600,0.2600,1,0.2600,,
+suma_mnistval,fiab_tardia_labil,diag suma prequential par=4500,0.2100,0.0000,0.2100,0.2100,1,0.2100,,
+suma_mnistval,fiab_tardia_labil,diag suma prequential par=500,0.2620,0.0000,0.2620,0.2620,1,0.2620,,
+suma_mnistval,fiab_tardia_labil,diag suma prequential par=5000,0.1820,0.0000,0.1820,0.1820,1,0.1820,,
+suma_mnistval,fiab_tardia_labil,diag suma prequential par=5500,0.1640,0.0000,0.1640,0.1640,1,0.1640,,
+suma_mnistval,fiab_tardia_labil,diag suma prequential par=6000,0.2140,0.0000,0.2140,0.2140,1,0.2140,,
+suma_mnistval,fiab_tardia_labil,diag suma prequential par=6500,0.1900,0.0000,0.1900,0.1900,1,0.1900,,
+suma_mnistval,fiab_tardia_labil,diag suma prequential par=7000,0.2020,0.0000,0.2020,0.2020,1,0.2020,,
+suma_mnistval,fiab_tardia_labil,diag suma prequential par=7500,0.1740,0.0000,0.1740,0.1740,1,0.1740,,
+suma_mnistval,fiab_tardia_labil,diag suma prequential par=8000,0.2120,0.0000,0.2120,0.2120,1,0.2120,,
+suma_mnistval,fiab_tardia_labil,diag suma prequential par=8500,0.1840,0.0000,0.1840,0.1840,1,0.1840,,
+suma_mnistval,fiab_tardia_labil,diag suma prequential par=9000,0.2480,0.0000,0.2480,0.2480,1,0.2480,,
+suma_mnistval,fiab_tardia_labil,diag suma prequential par=9500,0.1940,0.0000,0.1940,0.1940,1,0.1940,,
+suma_mnistval,fiab_tardia_labil,diag vecinos d+-1 par=1000,0.9567,0.0000,0.9567,0.9567,1,0.9567,,
+suma_mnistval,fiab_tardia_labil,diag vecinos d+-1 par=10000,0.4767,0.0000,0.4767,0.4767,1,0.4767,,
+suma_mnistval,fiab_tardia_labil,diag vecinos d+-1 par=1500,0.9700,0.0000,0.9700,0.9700,1,0.9700,,
+suma_mnistval,fiab_tardia_labil,diag vecinos d+-1 par=2000,0.9700,0.0000,0.9700,0.9700,1,0.9700,,
+suma_mnistval,fiab_tardia_labil,diag vecinos d+-1 par=2500,0.9067,0.0000,0.9067,0.9067,1,0.9067,,
+suma_mnistval,fiab_tardia_labil,diag vecinos d+-1 par=3000,0.8767,0.0000,0.8767,0.8767,1,0.8767,,
+suma_mnistval,fiab_tardia_labil,diag vecinos d+-1 par=3500,0.7833,0.0000,0.7833,0.7833,1,0.7833,,
+suma_mnistval,fiab_tardia_labil,diag vecinos d+-1 par=4000,0.7400,0.0000,0.7400,0.7400,1,0.7400,,
+suma_mnistval,fiab_tardia_labil,diag vecinos d+-1 par=4500,0.6267,0.0000,0.6267,0.6267,1,0.6267,,
+suma_mnistval,fiab_tardia_labil,diag vecinos d+-1 par=500,0.9267,0.0000,0.9267,0.9267,1,0.9267,,
+suma_mnistval,fiab_tardia_labil,diag vecinos d+-1 par=5000,0.6200,0.0000,0.6200,0.6200,1,0.6200,,
+suma_mnistval,fiab_tardia_labil,diag vecinos d+-1 par=5500,0.5300,0.0000,0.5300,0.5300,1,0.5300,,
+suma_mnistval,fiab_tardia_labil,diag vecinos d+-1 par=6000,0.5667,0.0000,0.5667,0.5667,1,0.5667,,
+suma_mnistval,fiab_tardia_labil,diag vecinos d+-1 par=6500,0.5200,0.0000,0.5200,0.5200,1,0.5200,,
+suma_mnistval,fiab_tardia_labil,diag vecinos d+-1 par=7000,0.5333,0.0000,0.5333,0.5333,1,0.5333,,
+suma_mnistval,fiab_tardia_labil,diag vecinos d+-1 par=7500,0.4567,0.0000,0.4567,0.4567,1,0.4567,,
+suma_mnistval,fiab_tardia_labil,diag vecinos d+-1 par=8000,0.5300,0.0000,0.5300,0.5300,1,0.5300,,
+suma_mnistval,fiab_tardia_labil,diag vecinos d+-1 par=8500,0.5300,0.0000,0.5300,0.5300,1,0.5300,,
+suma_mnistval,fiab_tardia_labil,diag vecinos d+-1 par=9000,0.4333,0.0000,0.4333,0.4333,1,0.4333,,
+suma_mnistval,fiab_tardia_labil,diag vecinos d+-1 par=9500,0.4933,0.0000,0.4933,0.4933,1,0.4933,,
+suma_mnistval,fiab_tardia_labil,exactitud dígito (validación),0.4760,0.0000,0.4760,0.4760,1,0.4760,0.9500,criterio del proyecto
+suma_mnistval,fiab_tardia_labil,exactitud suma (validación),0.1552,0.0000,0.1552,0.1552,1,0.1552,,DeepProbLog 30k pares: 0.972
+suma_mnistval,fiab_tardia_labil,neuronas,2519.0000,0.0000,2519.0000,2519.0000,1,2519.0000,,
+suma_mnistval,fiab_tardia_labil,pureza dígito (validación),0.4760,0.0000,0.4760,0.4760,1,0.4760,,mejor biyección
+suma_mnistval,fiab_tardia_labil,segundos entrenamiento,351.2000,0.0000,351.2000,351.2000,1,351.2000,,10000 pares
+suma_mnistval,g0.5,curva suma prequential par=10000,0.9640,0.0000,0.9640,0.9640,1,0.9640,,
+suma_mnistval,g0.5,curva suma prequential par=2500,0.8372,0.0000,0.8372,0.8372,1,0.8372,,
+suma_mnistval,g0.5,curva suma prequential par=5000,0.9436,0.0000,0.9436,0.9436,1,0.9436,,
+suma_mnistval,g0.5,curva suma prequential par=7500,0.9632,0.0000,0.9632,0.9632,1,0.9632,,
+suma_mnistval,g0.5,exactitud dígito (validación),0.9878,0.0000,0.9878,0.9878,1,0.9878,0.9500,criterio del proyecto
+suma_mnistval,g0.5,exactitud suma (validación),0.9756,0.0000,0.9756,0.9756,1,0.9756,,DeepProbLog 30k pares: 0.972
+suma_mnistval,g0.5,neuronas,1645.0000,0.0000,1645.0000,1645.0000,1,1645.0000,,
+suma_mnistval,g0.5,pureza dígito (validación),0.9878,0.0000,0.9878,0.9878,1,0.9878,,mejor biyección
+suma_mnistval,g0.5,segundos entrenamiento,298.0000,0.0000,298.0000,298.0000,1,298.0000,,10000 pares
+suma_mnistval,h,curva suma prequential par=10000,0.9572,0.0000,0.9572,0.9572,1,0.9572,,
+suma_mnistval,h,curva suma prequential par=2500,0.8720,0.0000,0.8720,0.8720,1,0.8720,,
+suma_mnistval,h,curva suma prequential par=5000,0.9380,0.0000,0.9380,0.9380,1,0.9380,,
+suma_mnistval,h,curva suma prequential par=7500,0.9552,0.0000,0.9552,0.9552,1,0.9552,,
+suma_mnistval,h,exactitud dígito (validación),0.9840,0.0000,0.9840,0.9840,1,0.9840,0.9500,criterio del proyecto
+suma_mnistval,h,exactitud suma (validación),0.9684,0.0000,0.9684,0.9684,1,0.9684,,DeepProbLog 30k pares: 0.972
+suma_mnistval,h,neuronas,1635.0000,0.0000,1635.0000,1635.0000,1,1635.0000,,
+suma_mnistval,h,pureza dígito (validación),0.9840,0.0000,0.9840,0.9840,1,0.9840,,mejor biyección
+suma_mnistval,h,segundos entrenamiento,299.2000,0.0000,299.2000,299.2000,1,299.2000,,10000 pares
+suma_mnistval,muestreo,AUROC error dígito (validación): 1-confianza,0.9801,0.0000,0.9801,0.9801,1,0.9801,0.8500,criterio >= 0.85
+suma_mnistval,muestreo,AUROC error suma (validación): 1-confianza,0.9622,0.0000,0.9622,0.9622,1,0.9622,0.8500,criterio >= 0.85
+suma_mnistval,muestreo,ECE dígito (validación),0.0031,0.0000,0.0031,0.0031,1,0.0031,0.0500,criterio <= 0.05
+suma_mnistval,muestreo,ECE suma (validación),0.0055,0.0000,0.0055,0.0055,1,0.0055,0.0500,criterio <= 0.05
+suma_mnistval,muestreo,curva suma prequential par=10000,0.9536,0.0000,0.9536,0.9536,1,0.9536,,
+suma_mnistval,muestreo,curva suma prequential par=2500,0.7444,0.0000,0.7444,0.7444,1,0.7444,,
+suma_mnistval,muestreo,curva suma prequential par=5000,0.9332,0.0000,0.9332,0.9332,1,0.9332,,
+suma_mnistval,muestreo,curva suma prequential par=7500,0.9476,0.0000,0.9476,0.9476,1,0.9476,,
+suma_mnistval,muestreo,exactitud dígito (validación),0.9834,0.0000,0.9834,0.9834,1,0.9834,0.9500,criterio del proyecto
+suma_mnistval,muestreo,exactitud suma (validación),0.9680,0.0000,0.9680,0.9680,1,0.9680,,DeepProbLog 30k pares: 0.972
+suma_mnistval,muestreo,neuronas,2083.0000,0.0000,2083.0000,2083.0000,1,2083.0000,,
+suma_mnistval,muestreo,pureza dígito (validación),0.9834,0.0000,0.9834,0.9834,1,0.9834,,mejor biyección
+suma_mnistval,muestreo,segundos entrenamiento,315.7000,0.0000,315.7000,315.7000,1,315.7000,,10000 pares
+suma_mnistval,sin_repaso,AUROC error dígito (validación): 1-confianza,0.9783,0.0000,0.9783,0.9783,1,0.9783,0.8500,criterio >= 0.85
+suma_mnistval,sin_repaso,AUROC error suma (validación): 1-confianza,0.9620,0.0000,0.9620,0.9620,1,0.9620,0.8500,criterio >= 0.85
+suma_mnistval,sin_repaso,ECE dígito (validación),0.0034,0.0000,0.0034,0.0034,1,0.0034,0.0500,criterio <= 0.05
+suma_mnistval,sin_repaso,ECE suma (validación),0.0078,0.0000,0.0078,0.0078,1,0.0078,0.0500,criterio <= 0.05
+suma_mnistval,sin_repaso,curva suma prequential par=10000,0.9604,0.0000,0.9604,0.9604,1,0.9604,,
+suma_mnistval,sin_repaso,curva suma prequential par=2500,0.8520,0.0000,0.8520,0.8520,1,0.8520,,
+suma_mnistval,sin_repaso,curva suma prequential par=5000,0.9352,0.0000,0.9352,0.9352,1,0.9352,,
+suma_mnistval,sin_repaso,curva suma prequential par=7500,0.9616,0.0000,0.9616,0.9616,1,0.9616,,
+suma_mnistval,sin_repaso,exactitud dígito (validación),0.9858,0.0000,0.9858,0.9858,1,0.9858,0.9500,criterio del proyecto
+suma_mnistval,sin_repaso,exactitud suma (validación),0.9724,0.0000,0.9724,0.9724,1,0.9724,,DeepProbLog 30k pares: 0.972
+suma_mnistval,sin_repaso,neuronas,1626.0000,0.0000,1626.0000,1626.0000,1,1626.0000,,
+suma_mnistval,sin_repaso,pureza dígito (validación),0.9858,0.0000,0.9858,0.9858,1,0.9858,,mejor biyección
+suma_mnistval,sin_repaso,segundos entrenamiento,299.7000,0.0000,299.7000,299.7000,1,299.7000,,10000 pares
+suma_mnistval,total,segundos,285.2909,121.6325,130.3000,429.1000,11,136.2000 130.3000 151.2000 137.4000 380.4000 412.6000 388.2000 429.1000 308.9000 317.7000 346.2000,,

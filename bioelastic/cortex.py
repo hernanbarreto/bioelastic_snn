@@ -41,9 +41,13 @@ Metacognición y neuromodulación (opcionales; por defecto apagadas, sin efecto 
             `surprise(correct)` (-log de la probabilidad del desenlace según la propia
             confianza), `familiarity()` (parecido de la entrada al prototipo más cercano de
             las áreas de asociación: novedad vs error en lo conocido) y `signals()`. Se calculan del último pase, a pedido.
-  metacog   dict(lr=...): calibrador online (regresión logística sobre logit de la
-            confianza y el conflicto) que aprende P(acierto) de cada desenlace conocido
-            (etiqueta o recompensa). Sin él, `confidence()` es la probabilidad cruda.
+  metacog   dict(lr=..., new=10): dos calibradores online (regresión logística). Uno aprende
+            P(acierto) de cada desenlace conocido (etiqueta o recompensa) a partir de la
+            confianza cruda, el conflicto, la familiaridad y la experiencia: `confidence()`.
+            El otro aprende P(es algo que casi no se me enseñó) de la propia historia de
+            enseñanza (clases con menos de `new` enseñanzas) a partir de familiaridad,
+            experiencia y evidencia: `novelty()`. Sin `metacog`, `confidence()` es la
+            probabilidad cruda y `novelty()` es 1 - familiaridad.
   hypercorrection   g > 0: un error se corrige con la tasa de las lecturas multiplicada
             por 1 + g * confianza en lo que se decidió (efecto de hipercorrección:
             Butterfield y Metcalfe, 2001). `hypercorrection_mode="plano"` es el control:
@@ -112,7 +116,11 @@ class Cortex:
                 self._config[k] = v
         if self.hypercorrection and self.hypercorrection_mode != "confianza":
             self._config["hypercorrection_mode"] = self.hypercorrection_mode
-        self._cal = Calibrator(n_extra=2, lr=float(self.metacog.get("lr", 0.05))) if self.metacog else None
+        self._cal = Calibrator(n_extra=3, lr=float(self.metacog.get("lr", 0.05))) if self.metacog else None
+        self._nov = Calibrator(n_extra=3, lr=float(self.metacog.get("lr", 0.05))) if self.metacog else None
+        if self._nov is not None:
+            self._nov.w[:] = 0.0                              # sin opinión previa sobre la novedad
+        self._taught = np.zeros(int(n_outputs), dtype=np.int64)   # enseñanzas por clase (historia propia)
         self._err_conf = [0.0, 0]                             # confianza media en los errores (control plano)
         nm = self.neuromod or {}
         self._surprise = SurpriseTracker(nm.get("slow", 0.002), nm.get("fast", 0.05),
@@ -367,6 +375,41 @@ class Cortex:
                 best = max(best, float(st.v.cos[0]))
         return best
 
+    def experience(self) -> float:
+        """Cuánto se le enseñó a lo que responde a la última entrada: media del contador de
+        consolidación de las ganadoras de las áreas de asociación, como log(1 + n). Lo nuevo
+        cae en neuronas recién reclutadas y poco enseñadas (experiencia baja) aunque se
+        parezca a algo; un error en lo conocido ocurre con experiencia alta."""
+        vals = []
+        for h in self.heads:
+            st = h._last
+            if st is not None and len(st.v.winners) and not st.v.novel:
+                vals.append(float(np.mean(h.readout.count[st.v.winners])))
+        return float(np.log1p(np.mean(vals))) if vals else 0.0
+
+    def evidence(self) -> float:
+        """Cuánta evidencia absoluta tuvo la última decisión: media, entre los votantes, del
+        mayor potencial de salida (antes de la competencia). La confianza es relativa (una
+        salida contra las otras); la evidencia es baja cuando nada de lo aprendido responde
+        con fuerza, que es lo que pasa ante algo nuevo."""
+        if not self._votes_last:
+            return 0.0
+        return float(np.mean([float(np.max(z)) for z, _ in self._votes_last]))
+
+    def _novelty_features(self) -> np.ndarray:
+        return self._nov.features(self.raw_confidence(), self.familiarity(), self.experience(), self.evidence())
+
+    def novelty(self) -> float:
+        """P(la última entrada es de algo que casi no se me enseñó): con `metacog`, un
+        segundo calibrador online que aprende de la propia historia de enseñanza (después
+        de cada `teach` el sistema sabe si la clase enseñada tenía menos de `metacog["new"]`
+        enseñanzas previas) a partir de familiaridad, experiencia y evidencia. Sin `metacog`
+        devuelve 1 - familiaridad. Separa «esto es nuevo» de «me equivoqué en algo conocido»,
+        que la confianza sola no distingue."""
+        if self._nov is None:
+            return 1.0 - self.familiarity()
+        return self._nov.predict(self._novelty_features())
+
     def raw_confidence(self) -> float:
         """Probabilidad de la última decisión en la competencia entre salidas."""
         return float(self._p()[self.pred])
@@ -390,7 +433,7 @@ class Cortex:
         raw = self.raw_confidence()
         if self._cal is None:
             return raw
-        return self._cal.predict(self._cal.features(raw, self.conflict(), self.familiarity()))
+        return self._cal.predict(self._cal.features(raw, self.conflict(), self.familiarity(), self.experience()))
 
     def surprise(self, correct: bool) -> float:
         """Sorpresa del desenlace según la propia confianza: -log P(desenlace)."""
@@ -402,7 +445,7 @@ class Cortex:
 
           confidence              P(acierto) de la decisión: calibrada si hay `metacog`
                                   (regresión logística online sobre logit de la confianza
-                                  cruda, conflicto y familiaridad), si no la cruda
+                                  cruda, conflicto, familiaridad y experiencia), si no la cruda
           raw_confidence          probabilidad de la decisión en la competencia de salidas
           conflict                desacuerdo entre votantes sobre la decisión (0 = todos la
                                   dan por segura): predice el error dentro de lo conocido
@@ -410,6 +453,15 @@ class Cortex:
           familiarity             coseno con el prototipo más cercano de las áreas de
                                   asociación: baja ante lo nuevo o distinto (novedad), alta
                                   ante un error en algo conocido
+          experience              log(1 + consolidación media de las neuronas que
+                                  responden): baja si lo que responde casi no fue enseñado
+                                  (novedad), alta en lo conocido aunque se equivoque
+          evidence                evidencia absoluta de la decisión (mayor potencial de
+                                  salida, media entre votantes): baja ante lo nuevo
+          novelty                 P(es algo que casi no se me enseñó): calibrador online
+                                  sobre familiaridad, experiencia y evidencia, entrenado con
+                                  la propia historia de enseñanza (con `metacog`; si no,
+                                  1 - familiaridad)
           expected_uncertainty    ACh: sorpresa media esperada (0 sin `neuromod`)
           unexpected_uncertainty  NE: exceso estandarizado de la sorpresa reciente (0 sin
                                   `neuromod`): un cambio en el mundo
@@ -417,7 +469,8 @@ class Cortex:
         p = self._p(); srt = np.sort(p)
         return dict(confidence=self.confidence(), raw_confidence=float(p[self.pred]),
                     conflict=self.conflict(), margin=float(srt[-1] - srt[-2]) if len(p) > 1 else 1.0,
-                    familiarity=self.familiarity(),
+                    familiarity=self.familiarity(), experience=self.experience(),
+                    evidence=self.evidence(), novelty=self.novelty(),
                     expected_uncertainty=self.expected_uncertainty,
                     unexpected_uncertainty=self.unexpected_uncertainty)
 
@@ -428,7 +481,7 @@ class Cortex:
         g = 1.0
         s = self.surprise(correct) if self._surprise is not None else 0.0   # con la confianza de antes
         if self._cal is not None:
-            self._cal.update(self._cal.features(raw, self.conflict(), self.familiarity()), correct)
+            self._cal.update(self._cal.features(raw, self.conflict(), self.familiarity(), self.experience()), correct)
         if self.hypercorrection > 0.0 and not correct:
             m = self._err_conf
             m[0] += raw; m[1] += 1
@@ -495,6 +548,10 @@ class Cortex:
                 target = int(np.argmax(soft))
         self._soft = soft
         try:
+            if self._nov is not None:                         # ¿era algo que casi no se me enseñó?
+                self._nov.update(self._novelty_features(),
+                                 bool(self._taught[int(target)] < int(self.metacog.get("new", 10))))
+                self._taught[int(target)] += 1
             if self._modulated():
                 g = self._outcome(self.pred == int(target)) * float(gain)
                 grow = bool(self.neuromod and self.neuromod["grow"]
@@ -781,7 +838,7 @@ class Cortex:
         if self.homeostasis > 0.0:
             out["umbral"] = self.umbral
         if self._cal is not None:
-            out["cal"] = self._cal.w
+            out["cal"] = self._cal.w; out["nov"] = self._nov.w; out["taught"] = self._taught
         np.savez_compressed(path, **out)
 
     @classmethod
@@ -809,4 +866,6 @@ class Cortex:
                 net.umbral[:] = z["umbral"]
             if "cal" in z.files and net._cal is not None:
                 net._cal.w = z["cal"].astype(np.float64).copy()
+                if "nov" in z.files:
+                    net._nov.w = z["nov"].astype(np.float64).copy(); net._taught[:] = z["taught"]
         return net

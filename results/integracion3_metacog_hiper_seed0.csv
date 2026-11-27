@@ -1,0 +1,81 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+metacog,hiper,0,segundos,83.4000,,10000 pasos (scale 0.05)
+metacog,hiper,0,acierto prequential sup,0.8450,,
+metacog,hiper,0,AUROC error sup: 1-confianza cruda,0.8387,0.5000,azar
+metacog,hiper,0,AUROC error sup: 1-confianza calibrada,0.8537,0.5000,azar
+metacog,hiper,0,AUROC error sup: conflicto,0.8383,0.5000,azar
+metacog,hiper,0,AUROC error sup: -margen,0.8371,0.5000,azar
+metacog,hiper,0,acierto prequential recompensa,0.8333,,
+metacog,hiper,0,AUROC error recompensa: 1-confianza cruda,0.8880,0.5000,azar
+metacog,hiper,0,AUROC error recompensa: 1-confianza calibrada,0.8930,0.5000,azar
+metacog,hiper,0,AUROC error recompensa: conflicto,0.8920,0.5000,azar
+metacog,hiper,0,AUROC error recompensa: -margen,0.8749,0.5000,azar
+metacog,hiper,0,error en lo conocido (tasa),0.1072,,>= 100 vistas
+metacog,hiper,0,pasos nuevos,470,,"< 10 vistas de (clase, contexto)"
+metacog,hiper,0,AUROC (1) error en lo conocido: 1-confianza cruda,0.8787,0.5000,azar
+metacog,hiper,0,AUROC (2) nuevo vs conocido: 1-confianza cruda,0.7725,0.5000,azar
+metacog,hiper,0,"AUROC (3) entre errores, nuevo vs conocido: 1-confianza cruda",0.4764,0.5000,azar
+metacog,hiper,0,AUROC (1) error en lo conocido: 1-confianza calibrada,0.8870,0.5000,azar
+metacog,hiper,0,AUROC (2) nuevo vs conocido: 1-confianza calibrada,0.7832,0.5000,azar
+metacog,hiper,0,"AUROC (3) entre errores, nuevo vs conocido: 1-confianza calibrada",0.5107,0.5000,azar
+metacog,hiper,0,AUROC (1) error en lo conocido: conflicto,0.8822,0.5000,azar
+metacog,hiper,0,AUROC (2) nuevo vs conocido: conflicto,0.7969,0.5000,azar
+metacog,hiper,0,"AUROC (3) entre errores, nuevo vs conocido: conflicto",0.5217,0.5000,azar
+metacog,hiper,0,AUROC (1) error en lo conocido: -margen,0.8743,0.5000,azar
+metacog,hiper,0,AUROC (2) nuevo vs conocido: -margen,0.7570,0.5000,azar
+metacog,hiper,0,"AUROC (3) entre errores, nuevo vs conocido: -margen",0.4487,0.5000,azar
+metacog,hiper,0,AUROC (1) error en lo conocido: 1-familiaridad,0.7422,0.5000,azar
+metacog,hiper,0,AUROC (2) nuevo vs conocido: 1-familiaridad,0.7688,0.5000,azar
+metacog,hiper,0,"AUROC (3) entre errores, nuevo vs conocido: 1-familiaridad",0.6460,0.5000,azar
+metacog,hiper,0,AUROC (1) error en lo conocido: -experiencia,0.6391,0.5000,azar
+metacog,hiper,0,AUROC (2) nuevo vs conocido: -experiencia,0.7702,0.5000,azar
+metacog,hiper,0,"AUROC (3) entre errores, nuevo vs conocido: -experiencia",0.6457,0.5000,azar
+metacog,hiper,0,AUROC (1) error en lo conocido: -evidencia,0.6601,0.5000,azar
+metacog,hiper,0,AUROC (2) nuevo vs conocido: -evidencia,0.8437,0.5000,azar
+metacog,hiper,0,"AUROC (3) entre errores, nuevo vs conocido: -evidencia",0.7467,0.5000,azar
+metacog,hiper,0,AUROC (1) error en lo conocido: novedad (Cortex.novelty),0.7971,0.5000,azar
+metacog,hiper,0,AUROC (2) nuevo vs conocido: novedad (Cortex.novelty),0.8061,0.5000,azar
+metacog,hiper,0,"AUROC (3) entre errores, nuevo vs conocido: novedad (Cortex.novelty)",0.7066,0.5000,azar
+metacog,hiper,0,AUROC (1) error en lo conocido: NE,0.5000,0.5000,azar
+metacog,hiper,0,AUROC (2) nuevo vs conocido: NE,0.5000,0.5000,azar
+metacog,hiper,0,"AUROC (3) entre errores, nuevo vs conocido: NE",0.5000,0.5000,azar
+metacog,hiper,0,ECE calibrada en lo conocido,0.0178,0.0000,
+metacog,hiper,0,ECE cruda (sup),0.0818,0.0000,
+metacog,hiper,0,"ECE cruda (sup, 2.a mitad)",0.0898,0.0000,
+metacog,hiper,0,ECE calibrada (sup),0.0098,0.0000,
+metacog,hiper,0,"ECE calibrada (sup, 2.a mitad)",0.0186,0.0000,
+metacog,hiper,0,recuperación B: acierto primeros 200,0.6750,,
+metacog,hiper,0,recuperación B: pasos hasta 0.7,98,800,largo de la fase
+metacog,hiper,0,recuperación C: acierto primeros 200,0.8250,,
+metacog,hiper,0,recuperación C: pasos hasta 0.7,51,800,largo de la fase
+metacog,hiper,0,recuperación D: acierto primeros 200,0.7000,,
+metacog,hiper,0,recuperación D: pasos hasta 0.7,75,800,largo de la fase
+metacog,hiper,0,recuperación AB_rot: acierto primeros 200,0.6650,,
+metacog,hiper,0,recuperación AB_rot: pasos hasta 0.7,111,1000,largo de la fase
+metacog,hiper,0,recuperación CD_occl: acierto primeros 200,0.6000,,
+metacog,hiper,0,recuperación CD_occl: pasos hasta 0.7,206,800,largo de la fase
+metacog,hiper,0,recuperación B_back: acierto primeros 200,0.9100,,
+metacog,hiper,0,recuperación B_back: pasos hasta 0.7,50,600,largo de la fase
+metacog,hiper,0,recuperación AB_rot_back: acierto primeros 200,0.9300,,
+metacog,hiper,0,recuperación AB_rot_back: pasos hasta 0.7,50,600,largo de la fase
+metacog,hiper,0,recuperación D_back: acierto primeros 200,0.8800,,
+metacog,hiper,0,recuperación D_back: pasos hasta 0.7,50,600,largo de la fase
+metacog,hiper,0,recuperación P_probe: acierto primeros 200,0.8100,,
+metacog,hiper,0,recuperación P_probe: pasos hasta 0.7,61,600,largo de la fase
+metacog,hiper,0,recuperación media: acierto primeros 200,0.7772,,fases sup salvo la 1.a
+metacog,hiper,0,recuperación media: pasos hasta 0.7,83.5556,,
+metacog,hiper,0,NE medio / máximo,0.0000,0.0000,máximo en referencia
+metacog,hiper,0,liberaciones de consolidación,0,,
+metacog,hiper,0,ganancia media de la tasa,1.1184,1.0000,
+metacog,hiper,0,final test grupo A,0.9200,,
+metacog,hiper,0,final test grupo B,0.9300,,
+metacog,hiper,0,final test grupo C,0.7500,,
+metacog,hiper,0,final test grupo D,0.7125,,
+metacog,hiper,0,Kepecs: acierto por facilidad,0.8342,,0.05:0.62 0.10:0.77 0.20:0.89 0.30:0.91 0.40:0.91 0.50:0.91
+metacog,hiper,0,Kepecs: AUROC de la apuesta (acierto vs error),0.8631,0.5000,
+metacog,hiper,0,Kepecs: apuesta media en aciertos,0.8941,0.6763,en errores en referencia
+metacog,hiper,0,Kepecs: pendiente apuesta vs facilidad en aciertos,0.3235,0.0000,"firma esperada: + en aciertos, - en errores"
+metacog,hiper,0,Kepecs: pendiente apuesta vs facilidad en errores,-0.1720,0.0000,"firma esperada: + en aciertos, - en errores"
+metacog,hiper,0,Kepecs: ECE en las mezclas,0.0327,0.0000,
+metacog,hiper,0,Kepecs: ganancia media apostando por confianza,1.3483,1.3367,siempre alto en referencia
+metacog,total,0,segundos,92.1000,,

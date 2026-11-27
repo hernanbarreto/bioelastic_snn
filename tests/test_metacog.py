@@ -412,3 +412,22 @@ def test_labilizar_libera_la_consolidacion_y_la_ganancia_escala_la_tasa():
     lr = b.proj.lr
     b.forward(X[1]); b.teach(int(y[1]), gain=3.0)
     assert b.proj.lr == lr                                         # la tasa vuelve a su valor
+
+
+def test_novedad_aprendida_de_la_propia_historia_separa_lo_nunca_ensenado():
+    """El Cortex con `metacog` aprende de su historia (las primeras enseñanzas de cada clase)
+    a reconocer lo que casi no se le enseñó: una clase nunca enseñada da más novedad que las
+    conocidas, y la evidencia absoluta de la decisión es menor."""
+    X, y = _barras(400, seed=8, C=4)
+    net = Cortex((28, 28, 1), 4, seed=0, **D2, metacog=dict(lr=0.1, new=10))
+    for x, t in zip(X, y):
+        if t != 3:                                            # la clase 3 no se enseña nunca
+            net.forward(x); net.teach(int(t))
+    nov = {True: [], False: []}; evi = {True: [], False: []}
+    for x, t in zip(*_barras(120, seed=9, C=4)):
+        net.forward(x)
+        s = net.signals()
+        nov[t == 3].append(s["novelty"]); evi[t == 3].append(s["evidence"])
+    assert auroc(nov[True] + nov[False], [1] * len(nov[True]) + [0] * len(nov[False])) > 0.8
+    assert np.mean(evi[True]) < np.mean(evi[False])
+    assert net._taught[3] == 0 and net._taught[:3].sum() == sum(1 for t in y if t != 3)
