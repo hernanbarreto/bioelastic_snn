@@ -5,3 +5,6 @@ __pycache__/
 *.egg-info/
 ckpts*/
 results/continual/
+
+# datos externos descargados para F6 (SCAN, MLC, bAbI): fuente y versión en experiments/exp_external.py
+ext_data/
