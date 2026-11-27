@@ -220,6 +220,8 @@ def fila_resultado(prueba, crudos: list[dict], catalogo: dict, commit: str) -> d
             pub["comparacion"] = "cualitativa" if extremos_referencia(r) is None else "no comparable (otra métrica o protocolo)"
         if r_idx is not None and r["id"] == r_idx["id"]:
             pub["referencia_del_indice"] = True
+        if r["grupo"] == "maquinas":
+            pub["comparacion"] = pub["comparacion"].replace("especie", "sistema")
         {"humano": humanos, "animales": animales, "maquinas": maquinas}[r["grupo"]].append(pub)
     ref_h = next((h for h in humanos if h.get("referencia_del_indice")), humanos[0] if humanos else None)
     curva = []
@@ -326,7 +328,8 @@ COLUMNAS_CSV = ("prueba", "variante", "dimension", "condicion_entrada", "equival
                 "red_media", "red_desvio", "red_mediana", "red_min", "red_max", "semillas_en_azar", "semillas_en_techo",
                 "n_semillas", "azar", "referencia_humana",
                 "referencia_valor", "referencia_fuente", "indice_min", "indice_max",
-                "especies_por_encima", "especies_por_debajo", "a_la_par", "fuente_resultado", "motivo")
+                "especies_por_encima", "especies_por_debajo", "a_la_par", "sistemas_por_encima",
+                "sistemas_por_debajo", "fuente_resultado", "motivo")
 
 
 def fila_csv(f: dict) -> dict:
@@ -337,7 +340,10 @@ def fila_csv(f: dict) -> dict:
     nombre = lambda r: f"{r.get('especie') or r.get('sistema')} ({r['id']})"
     arriba = [nombre(r) for r in refs if r.get("comparacion") == "especie por encima"]
     abajo = [nombre(r) for r in refs if str(r.get("comparacion", "")).startswith("especie por debajo")]
-    par = [nombre(r) for r in refs if r.get("comparacion") == "a la par"]
+    par = [nombre(r) for r in refs + (f.get("referencias_maquinas") or []) if r.get("comparacion") == "a la par"]
+    maq = f.get("referencias_maquinas") or []
+    s_arriba = [nombre(r) for r in maq if r.get("comparacion") == "sistema por encima"]
+    s_abajo = [nombre(r) for r in maq if str(r.get("comparacion", "")).startswith("sistema por debajo")]
     rv = rh.get("valor") if rh.get("valor") is not None else (
         f"{rh.get('valor_min')}-{rh.get('valor_max')}" if rh.get("valor_min") is not None else "")
     return dict(prueba=f["prueba"], variante=f["variante"], dimension=f["dimension"],
@@ -354,6 +360,7 @@ def fila_csv(f: dict) -> dict:
                 referencia_fuente=rh.get("cita", ""), indice_min=_num(ix.get("min"), 3),
                 indice_max=_num(ix.get("max"), 3), especies_por_encima="; ".join(arriba),
                 especies_por_debajo="; ".join(abajo), a_la_par="; ".join(par),
+                sistemas_por_encima="; ".join(s_arriba), sistemas_por_debajo="; ".join(s_abajo),
                 fuente_resultado=f.get("fuente_resultado") or "", motivo=f.get("motivo") or "")
 
 

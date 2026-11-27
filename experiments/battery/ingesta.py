@@ -41,16 +41,21 @@ class Fuente:
     firmas: dict = field(default_factory=dict)
     pendiente: str = ""                 # qué falta si el archivo no está
     agregado: bool = False              # la fuente sólo publica media ± desvío (sin valores por semilla)
+    patron: str = ""                    # archivos por semilla ({s}): todos cuentan para el commit
 
 
-def commit_de(archivo: Path) -> str:
-    """Último commit que tocó el archivo en su propio árbol de trabajo ('sin commit' si no
-    está versionado o tiene cambios sin commitear)."""
+def commit_de(archivos) -> str:
+    """Último commit que tocó alguno de los archivos en su propio árbol de trabajo ('sin
+    commit' si no están versionados; «+cambios sin commitear» si alguno tiene cambios)."""
+    archivos = [archivos] if isinstance(archivos, Path) else list(archivos)
+    if not archivos:
+        return "sin commit"
+    cwd = archivos[0].parent
+    nombres = [a.name for a in archivos]
     try:
-        cwd = archivo.parent
-        h = subprocess.run(["git", "log", "-1", "--format=%h", "--", archivo.name], cwd=cwd,
+        h = subprocess.run(["git", "log", "-1", "--format=%h", "--", *nombres], cwd=cwd,
                            capture_output=True, text=True, check=True).stdout.strip()
-        sucio = subprocess.run(["git", "status", "--porcelain", "--", archivo.name], cwd=cwd,
+        sucio = subprocess.run(["git", "status", "--porcelain", "--", *nombres], cwd=cwd,
                                capture_output=True, text=True, check=True).stdout.strip()
     except (subprocess.CalledProcessError, FileNotFoundError, NotADirectoryError):
         return "sin commit"
@@ -100,6 +105,32 @@ def leer_predictivo_f0(nombre: str, depth: int, cond: str = "ff"):
     return leer
 
 
+def leer_por_semilla(patron: str, principal: str, otras: dict | None = None, semillas=range(10)):
+    """CSV por semilla con columnas (semilla, metrica, valor), como los de integracion3. `patron`
+    lleva {s}; `principal` es la métrica del puntaje y `otras` {métrica: nombre de la medida}."""
+    def leer(path: Path):
+        out = []
+        for s in semillas:
+            f = path.parent / patron.format(s=s)
+            if not f.exists():
+                continue
+            vals = {r["metrica"]: _f(r["valor"]) for r in _csv(f)}
+            if principal not in vals:
+                continue
+            med = {nombre: vals.get(m) for m, nombre in (otras or {}).items()}
+            out.append(dict(semilla=s, puntaje=vals[principal], medidas=med))
+        return out
+    return leer
+
+
+def leer_split(escenario: str, modelo: str):
+    def leer(path: Path):
+        return [dict(semilla=int(r["seed"]), puntaje=_f(r["acc"]),
+                     medidas=dict(olvido=_f(r["forgetting"]), bytes=_f(r["bytes"]), neuronas=_f(r["neurons"])))
+                for r in _csv(path) if r["bench"] == "split" and r["scenario"] == escenario and r["model"] == modelo]
+    return leer
+
+
 def fuentes() -> list[Fuente]:
     res = ROOT / "results"
     out = []
@@ -133,6 +164,76 @@ def fuentes() -> list[Fuente]:
             equivalente=True, motivo_equivalencia="la red y las personas ven las mismas imágenes de 32 x 32",
             pendiente="todavía no hay resultados de CIFAR-10 en la rama predictivo",
         ))
+    i3 = WT / "integracion3" / "results"
+    for pares, sem in ((27500, range(3)), (3000, range(8))):
+        out.append(Fuente(
+            prueba="mnist_addition", variante=f"fiab_{pares}", condicion="imagenes",
+            metrica="exactitud de la suma en 5 000 pares del test (t10k)",
+            protocolo=(f"rama integracion3, variante «fiab» (compuerta de fiabilidad): {pares} pares de entrenamiento, una "
+                       "pasada en línea, reglas locales, la suma como única etiqueta (posterior conjunto como objetivo "
+                       "blando)"),
+            desviaciones=["una pasada en línea; las cifras publicadas usan varias épocas con backprop",
+                          f"{pares} pares de entrenamiento (las publicadas, 30 000)"],
+            archivo=i3 / f"integracion3_suma_mnist_fiab_p{pares}_seed0.csv",
+            patron=f"integracion3_suma_mnist_fiab_p{pares}_seed{{s}}.csv",
+            leer=leer_por_semilla(f"integracion3_suma_mnist_fiab_p{pares}_seed{{s}}.csv", "exactitud suma (test)",
+                                  {"exactitud dígito (test)": "exactitud_digito",
+                                   "AUROC error suma (test): 1-confianza": "auroc_error_suma",
+                                   "ECE suma (test)": "ece_suma"}, sem),
+            agente="integracion3", equivalente=True,
+            motivo_equivalencia="la misma tarea de pares de MNIST que las cifras publicadas (sin referencia humana)",
+            comparar={"deepproblog": "puntaje", "cnn_base": "puntaje", "deepstochlog": "puntaje", "anesi": "puntaje",
+                      "referencia_099": "puntaje"},
+        ))
+    out.append(Fuente(
+        prueba="auroc_tipo2", variante="flujo_continuo_integracion3", condicion="imagenes",
+        metrica="AUROC del error propio con la confianza calibrada (flujo continuo, escala 0,1)",
+        protocolo=("rama integracion3, metacognición en Cortex solo sobre el flujo continuo de exp_continual a escala 0,1 "
+                   "(20 000 pasos), confianza calibrada de `Cortex.signals()`"),
+        desviaciones=["sin escalera: la dificultad no se iguala (acierto de ~84 %, no 71 %) y aparecen clases nuevas en el "
+                      "flujo; el AUROC de tipo 2 depende del nivel de acierto",
+                      "la confianza es una señal de la red calibrada en línea, no un juicio de 1 a 6"],
+        archivo=i3 / "integracion3_metacogx0.1_cal_seed0.csv", patron="integracion3_metacogx0.1_cal_seed{s}.csv",
+        leer=leer_por_semilla("integracion3_metacogx0.1_cal_seed{s}.csv", "AUROC error sup: 1-confianza calibrada",
+                              {"ECE calibrada (sup)": "ece_calibrada",
+                               "Kepecs: AUROC de la apuesta (acierto vs error)": "auroc_apuesta_kepecs",
+                               "Kepecs: pendiente apuesta vs facilidad en aciertos": "pendiente_apuesta_aciertos",
+                               "Kepecs: pendiente apuesta vs facilidad en errores": "pendiente_apuesta_errores"},
+                              range(3)),
+        agente="integracion3", equivalente=False,
+        motivo_equivalencia="dificultad no igualada y flujo con clases nuevas: otro procedimiento que Fleming et al.",
+    ))
+    cons = WT / "consolidacion" / "results" / "consolidacion_f6_split.csv"
+    out.append(Fuente(
+        prueba="split_mnist", variante="c2", condicion="imagenes",
+        metrica="exactitud final sobre las 10 clases (test oficial), incremental por clases",
+        protocolo=("rama consolidacion, F6: 5 tareas de 2 clases, un solo pase en línea por las imágenes de entrenamiento "
+                   "de cada tarea (sin 500 por clase de validación), test oficial, argmax entre las 10 clases"),
+        desviaciones=["un solo pase; las cifras publicadas: MLP 2x400 con 2 000 iteraciones de lotes de 128 por contexto",
+                      "memoria: el almacén de c2 ocupa ~8,8 MB (unas 10 000 imágenes en uint8), diez veces el repaso de "
+                      "100 por clase de la tabla publicada",
+                      "semillas 3 a 5 (las de la rama)"],
+        archivo=cons, leer=leer_split("mnist", "c2"), agente="consolidacion", equivalente=True,
+        motivo_equivalencia="el mismo escenario incremental por clases sobre las mismas imágenes (sin referencia humana)",
+        comparar={k: "puntaje" for k in ("conjunto", "ninguno", "ewc", "si", "lwf", "agem", "fromp", "er", "dgr",
+                                         "icarl", "clasificador_generativo", "bir")},
+    ))
+    out.append(Fuente(
+        prueba="split_fashion", variante="c2", condicion="imagenes",
+        metrica="exactitud final sobre las 10 clases (test oficial), incremental por clases",
+        protocolo="rama consolidacion, F6: el mismo procedimiento que Split-MNIST sobre Fashion-MNIST",
+        desviaciones=["sin referencias publicadas verificadas por la batería"],
+        archivo=cons, leer=leer_split("fashion", "c2"), agente="consolidacion", equivalente=True,
+        motivo_equivalencia="el mismo escenario incremental por clases (sin referencia humana ni de máquina verificada)",
+    ))
+    r3 = WT / "razonamiento3" / "results"
+    for pid, nombre in (("scan", "SCAN"), ("babi", "bAbI"), ("instrucciones_pocos_ejemplos", "Lake y Baroni 2023")):
+        out.append(Fuente(
+            prueba=pid, variante="thinker", condicion="simbolos", metrica="(la define la rama razonamiento3)",
+            protocolo=f"{nombre}: lo corre la rama razonamiento3 (guion de F6 en af8d14f)", desviaciones=[],
+            archivo=r3 / f"razonamiento3_f6_{pid}.csv", leer=None, agente="razonamiento3", equivalente=False,
+            pendiente=f"{nombre}: la rama razonamiento3 tiene el guion (af8d14f) pero todavía no hay resultados",
+        ))
     return out
 
 
@@ -146,7 +247,10 @@ def fila_de(f: Fuente, catalogo: dict) -> dict:
         fila.update(estado="pendiente", motivo=f.pendiente or f"todavía no existe {f.archivo}",
                     fuente_resultado=f"{f.agente}: {f.archivo}", commit="")
         return fila
-    commit = commit_de(f.archivo)
+    archivos = [f.archivo]
+    if f.patron:
+        archivos = sorted(f.archivo.parent.glob(f.patron.format(s="*")))
+    commit = commit_de(archivos)
     if f.agregado:
         a = f.leer(f.archivo)
         if a is None:

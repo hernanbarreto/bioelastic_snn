@@ -1,8 +1,21 @@
 """Descripción de una prueba de la batería."""
 from __future__ import annotations
 
+import time
 from dataclasses import dataclass, field
 from typing import Callable
+
+LIMITE: float | None = None       # hora (time.time()) en que la corrida en curso tiene que soltar el trabajo
+
+
+class Pendiente(Exception):
+    """La semilla no terminó en el tiempo de esta corrida: lo hecho quedó guardado en la
+    cache de la prueba y se retoma en la próxima."""
+
+
+def vencido(margen: float = 0.0) -> bool:
+    """¿Empezar algo que dura `margen` segundos pasaría el límite de esta corrida?"""
+    return LIMITE is not None and time.time() + margen > LIMITE
 
 
 class NoAplicable(Exception):

@@ -6,8 +6,9 @@ import time
 
 import numpy as np
 
+from . import base as _base
 from . import esquema
-from .base import NoAplicable
+from .base import NoAplicable, Pendiente
 
 
 def pruebas() -> list:
@@ -68,6 +69,7 @@ def correr(p, almacen, escala: float = 1.0, semillas=None, limite: float | None 
     cfg_nombre = sel["elegida"] if sel else None
     cfg = p.configs[cfg_nombre] if (sel and cfg_nombre) else None
     crudos, completa = [], True
+    _base.LIMITE = limite
     for s in (semillas if semillas is not None else p.semillas):
         c = almacen.cargar(p.clave, s, p.version, escala)
         if c is not None and cfg_nombre is not None and c.get("config") != cfg_nombre:
@@ -82,6 +84,10 @@ def correr(p, almacen, escala: float = 1.0, semillas=None, limite: float | None 
                     raise NoAplicable("ninguna configuración documentada corre en este commit")
                 r = p.correr(s, escala, cfg) if _acepta_config(p.correr) else p.correr(s, escala)
                 c = dict(r, semilla=s, version=p.version, escala=escala, config=cfg_nombre)
+            except Pendiente as e:
+                log(f"  {p.clave} s{s}: queda para la próxima corrida ({e})")
+                completa = False
+                break                                 # se acabó el tiempo de esta corrida
             except NoAplicable as e:
                 c = dict(semilla=s, version=p.version, escala=escala, config=cfg_nombre, no_aplicable=str(e),
                          segundos=time.time() - t0)

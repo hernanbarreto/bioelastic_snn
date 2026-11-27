@@ -410,6 +410,20 @@
         {"id": "jensen2015_q", "sistema": "Q-learning (error de predicción de recompensa)", "valor": 0.5, "tipo_valor": "cualitativo", "cita": "Jensen, Muñoz, Alkan, Ferrera & Terrace (2015), PLoS Comput. Biol. 11:e1004523, resumen", "url": "https://doaj.org/article/8ac934abb3ae4b62bc89af239dcb9b0d", "verificacion": "primaria", "nota": "es el único de los comparados que no supera el azar en los pares críticos"}
       ],
       "pendiente": ["exactitud humana y de mono por par y por distancia (Jensen et al. 2015, 2017): sin referencia verificada (figuras)"]
+    },
+    "split_fashion": {
+      "nombre": "Split-Fashion-MNIST incremental por clases",
+      "dimension": "memoria_sin_interferencia",
+      "corre": "consolidacion",
+      "metrica": "exactitud final sobre las 10 clases, sin saber de qué contexto viene cada imagen",
+      "azar": {"valor": 0.1, "derivacion": "10 clases balanceadas"},
+      "protocolo_publicado": "5 contextos de 2 clases de Fashion-MNIST en secuencia; incremental por clases.",
+      "datos": {"fuente": "https://github.com/zalandoresearch/fashion-mnist"},
+      "referencia_indice": null,
+      "humano": [],
+      "animales": [],
+      "maquinas": [],
+      "pendiente": ["cifras publicadas de Split-Fashion incremental por clases: sin referencia verificada (la rama consolidacion cita a Sokar et al. 2021, que la batería no leyó)", "no hay referencia humana ni animal"]
     }
   },
   "registro_verificacion": {
