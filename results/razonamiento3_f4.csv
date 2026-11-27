@@ -1,0 +1,604 @@
+prueba,sistema,tramo,medida,media,desvio,semillas
+"F4.1 harlow S/V, todo aprende","valores fijos a mano (Thinker, tasa 1)","en línea, último tercio","elige el premiado, régimen S",0.6070,0.0036,3
+"F4.1 harlow S/V, todo aprende","valores fijos a mano (Thinker, tasa 1)",congelado,"elige el premiado, régimen S",0.7167,0.0124,3
+"F4.1 harlow S/V, todo aprende","valores fijos a mano (Thinker, tasa 1)","en línea, último tercio","memoria da el premiado, régimen S",0.7032,0.0037,3
+"F4.1 harlow S/V, todo aprende","valores fijos a mano (Thinker, tasa 1)",congelado,"memoria da el premiado, régimen S",0.7167,0.0124,3
+"F4.1 harlow S/V, todo aprende","valores fijos a mano (Thinker, tasa 1)","en línea, último tercio","tasa de ligadura, régimen S",1.0000,0.0000,3
+"F4.1 harlow S/V, todo aprende","valores fijos a mano (Thinker, tasa 1)",congelado,"tasa de ligadura, régimen S",1.0000,0.0000,3
+"F4.1 harlow S/V, todo aprende","valores fijos a mano (Thinker, tasa 1)","en línea, último tercio","elige el premiado, régimen V",0.7113,0.0080,3
+"F4.1 harlow S/V, todo aprende","valores fijos a mano (Thinker, tasa 1)",congelado,"elige el premiado, régimen V",0.8288,0.0221,3
+"F4.1 harlow S/V, todo aprende","valores fijos a mano (Thinker, tasa 1)","en línea, último tercio","memoria da el premiado, régimen V",0.7970,0.0019,3
+"F4.1 harlow S/V, todo aprende","valores fijos a mano (Thinker, tasa 1)",congelado,"memoria da el premiado, régimen V",0.8288,0.0221,3
+"F4.1 harlow S/V, todo aprende","valores fijos a mano (Thinker, tasa 1)","en línea, último tercio","tasa de ligadura, régimen V",1.0000,0.0000,3
+"F4.1 harlow S/V, todo aprende","valores fijos a mano (Thinker, tasa 1)",congelado,"tasa de ligadura, régimen V",1.0000,0.0000,3
+"F4.1 harlow S/V, todo aprende","valores fijos a mano (Thinker, tasa 1)",congelado,"elige el premiado, promedio S y V",0.7727,0.0052,3
+"F4.1 harlow S/V, todo aprende","valores fijos a mano (Thinker, tasa 1)",congelado,"memoria da el premiado, promedio S y V",0.7727,0.0052,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.15,"en línea, último tercio","elige el premiado, régimen S",0.6797,0.0115,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.15,congelado,"elige el premiado, régimen S",0.7538,0.1305,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.15,"en línea, último tercio","memoria da el premiado, régimen S",0.8236,0.0050,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.15,congelado,"memoria da el premiado, régimen S",0.8477,0.0389,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.15,"en línea, último tercio","tasa de ligadura, régimen S",0.1500,0.0000,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.15,congelado,"tasa de ligadura, régimen S",0.1500,0.0000,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.15,"en línea, último tercio","elige el premiado, régimen V",0.6105,0.0037,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.15,congelado,"elige el premiado, régimen V",0.6864,0.0260,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.15,"en línea, último tercio","memoria da el premiado, régimen V",0.6910,0.0011,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.15,congelado,"memoria da el premiado, régimen V",0.7106,0.0093,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.15,"en línea, último tercio","tasa de ligadura, régimen V",0.1500,0.0000,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.15,congelado,"tasa de ligadura, régimen V",0.1500,0.0000,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.15,congelado,"elige el premiado, promedio S y V",0.7201,0.0772,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.15,congelado,"memoria da el premiado, promedio S y V",0.7792,0.0191,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.3,"en línea, último tercio","elige el premiado, régimen S",0.6626,0.0082,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.3,congelado,"elige el premiado, régimen S",0.7977,0.0428,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.3,"en línea, último tercio","memoria da el premiado, régimen S",0.7956,0.0045,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.3,congelado,"memoria da el premiado, régimen S",0.8136,0.0214,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.3,"en línea, último tercio","tasa de ligadura, régimen S",0.3000,0.0000,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.3,congelado,"tasa de ligadura, régimen S",0.3000,0.0000,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.3,"en línea, último tercio","elige el premiado, régimen V",0.6458,0.0022,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.3,congelado,"elige el premiado, régimen V",0.6902,0.0966,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.3,"en línea, último tercio","memoria da el premiado, régimen V",0.7288,0.0033,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.3,congelado,"memoria da el premiado, régimen V",0.7553,0.0126,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.3,"en línea, último tercio","tasa de ligadura, régimen V",0.3000,0.0000,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.3,congelado,"tasa de ligadura, régimen V",0.3000,0.0000,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.3,congelado,"elige el premiado, promedio S y V",0.7439,0.0688,3
+"F4.1 harlow S/V, todo aprende",tasa fija 0.3,congelado,"memoria da el premiado, promedio S y V",0.7845,0.0116,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,"en línea, último tercio","elige el premiado, régimen S",0.6067,0.0472,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,congelado,"elige el premiado, régimen S",0.4674,0.3306,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,"en línea, último tercio","memoria da el premiado, régimen S",0.7279,0.0383,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,congelado,"memoria da el premiado, régimen S",0.7364,0.0233,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,"en línea, último tercio","tasa de ligadura, régimen S",0.6843,0.2337,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,congelado,"tasa de ligadura, régimen S",0.6777,0.4437,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,"en línea, último tercio","elige el premiado, régimen V",0.6865,0.0361,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,congelado,"elige el premiado, régimen V",0.5364,0.3809,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,"en línea, último tercio","memoria da el premiado, régimen V",0.7707,0.0148,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,congelado,"memoria da el premiado, régimen V",0.8106,0.0267,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,"en línea, último tercio","tasa de ligadura, régimen V",0.7160,0.1331,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,congelado,"tasa de ligadura, régimen V",0.8106,0.1673,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,congelado,"elige el premiado, promedio S y V",0.5019,0.3555,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,congelado,"memoria da el premiado, promedio S y V",0.7735,0.0054,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,"congelado, meta-controlador con ruido","elige el premiado, régimen S",0.4750,0.3364,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,"congelado, meta-controlador con ruido","tasa de ligadura, régimen S",0.6682,0.4374,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,"congelado, meta-controlador con ruido","elige el premiado, régimen V",0.5136,0.3638,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,"congelado, meta-controlador con ruido","tasa de ligadura, régimen V",0.8329,0.1884,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,"congelado, meta-controlador con ruido","elige el premiado, promedio S y V",0.4943,0.3495,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,"en línea, último tercio","forget, régimen S",0.1605,0.0941,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,"en línea, último tercio","sure, régimen S",0.7655,0.1352,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,"en línea, último tercio","epsilon, régimen S",0.0163,0.0133,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,"en línea, último tercio","decay, régimen S",0.0054,0.0032,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,"en línea, último tercio","capture, régimen S",1.7127,0.4198,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,"en línea, último tercio","lr, régimen S",0.3932,0.3318,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,"en línea, último tercio","forget, régimen V",0.2444,0.0221,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,"en línea, último tercio","sure, régimen V",0.6846,0.1049,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,"en línea, último tercio","epsilon, régimen V",0.0124,0.0069,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,"en línea, último tercio","decay, régimen V",0.0059,0.0056,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,"en línea, último tercio","capture, régimen V",2.1867,0.3287,3
+"F4.1 harlow S/V, todo aprende",ronda anterior: los 7 aprendidos por perturbación,"en línea, último tercio","lr, régimen V",0.2949,0.1383,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,"en línea, último tercio","elige el premiado, régimen S",0.6247,0.0263,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,congelado,"elige el premiado, régimen S",0.8295,0.0307,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,"en línea, último tercio","memoria da el premiado, régimen S",0.7921,0.0043,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,congelado,"memoria da el premiado, régimen S",0.8295,0.0307,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,"en línea, último tercio","tasa de ligadura, régimen S",0.5407,0.0049,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,congelado,"tasa de ligadura, régimen S",0.4915,0.0261,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,"en línea, último tercio","elige el premiado, régimen V",0.6843,0.0220,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,congelado,"elige el premiado, régimen V",0.8265,0.0204,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,"en línea, último tercio","memoria da el premiado, régimen V",0.7858,0.0011,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,congelado,"memoria da el premiado, régimen V",0.8265,0.0204,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,"en línea, último tercio","tasa de ligadura, régimen V",0.7770,0.0009,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,congelado,"tasa de ligadura, régimen V",0.8176,0.0205,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,congelado,"elige el premiado, promedio S y V",0.8280,0.0097,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,congelado,"memoria da el premiado, promedio S y V",0.8280,0.0097,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,"en línea, último tercio","forget, régimen S",0.0199,0.0001,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,"en línea, último tercio","sure, régimen S",0.7650,0.0011,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,"en línea, último tercio","epsilon, régimen S",0.0825,0.0003,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,"en línea, último tercio","decay, régimen S",0.0119,0.0007,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,"en línea, último tercio","capture, régimen S",2.8388,0.0151,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,"en línea, último tercio","lr, régimen S",0.1708,0.0126,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,"en línea, último tercio","temperature, régimen S",0.8421,0.0028,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,"en línea, último tercio","volatility, régimen S",0.0958,0.0002,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,"en línea, último tercio","noise, régimen S",0.2256,0.0022,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,"en línea, último tercio","forget, régimen V",0.0200,0.0000,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,"en línea, último tercio","sure, régimen V",0.7147,0.0007,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,"en línea, último tercio","epsilon, régimen V",0.0653,0.0004,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,"en línea, último tercio","decay, régimen V",0.0123,0.0007,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,"en línea, último tercio","capture, régimen V",2.2149,0.0065,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,"en línea, último tercio","lr, régimen V",0.1769,0.0124,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,"en línea, último tercio","temperature, régimen V",0.6876,0.0038,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,"en línea, último tercio","volatility, régimen V",0.1423,0.0020,3
+"F4.1 harlow S/V, todo aprende",neuromoduladores: los 7 adaptativos,"en línea, último tercio","noise, régimen V",0.0998,0.0010,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),"en línea, último tercio","elige el premiado, régimen S",0.5405,0.0162,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),congelado,"elige el premiado, régimen S",0.7167,0.0124,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),"en línea, último tercio","memoria da el premiado, régimen S",0.7032,0.0037,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),congelado,"memoria da el premiado, régimen S",0.7167,0.0124,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),"en línea, último tercio","tasa de ligadura, régimen S",1.0000,0.0000,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),congelado,"tasa de ligadura, régimen S",1.0000,0.0000,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),"en línea, último tercio","elige el premiado, régimen V",0.6918,0.0235,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),congelado,"elige el premiado, régimen V",0.8288,0.0221,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),"en línea, último tercio","memoria da el premiado, régimen V",0.7970,0.0019,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),congelado,"memoria da el premiado, régimen V",0.8288,0.0221,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),"en línea, último tercio","tasa de ligadura, régimen V",1.0000,0.0000,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),congelado,"tasa de ligadura, régimen V",1.0000,0.0000,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),congelado,"elige el premiado, promedio S y V",0.7727,0.0052,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),congelado,"memoria da el premiado, promedio S y V",0.7727,0.0052,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),"en línea, último tercio","forget, régimen S",0.0199,0.0001,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),"en línea, último tercio","sure, régimen S",0.7000,0.0000,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),"en línea, último tercio","epsilon, régimen S",0.0856,0.0006,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),"en línea, último tercio","decay, régimen S",0.0124,0.0006,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),"en línea, último tercio","capture, régimen S",2.0000,0.0000,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),"en línea, último tercio","lr, régimen S",0.1756,0.0129,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),"en línea, último tercio","temperature, régimen S",0.8704,0.0054,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),"en línea, último tercio","volatility, régimen S",0.0000,0.0000,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),"en línea, último tercio","noise, régimen S",0.0000,0.0000,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),"en línea, último tercio","forget, régimen V",0.0200,0.0000,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),"en línea, último tercio","sure, régimen V",0.7000,0.0000,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),"en línea, último tercio","epsilon, régimen V",0.0642,0.0004,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),"en línea, último tercio","decay, régimen V",0.0128,0.0005,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),"en línea, último tercio","capture, régimen V",2.0000,0.0000,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),"en línea, último tercio","lr, régimen V",0.1761,0.0097,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),"en línea, último tercio","temperature, régimen V",0.6774,0.0034,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),"en línea, último tercio","volatility, régimen V",0.0000,0.0000,3
+"F4.1 harlow S/V, todo aprende",ablación: sin memoria bayesiana (tasa 1),"en línea, último tercio","noise, régimen V",0.0000,0.0000,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),"en línea, último tercio","elige el premiado, régimen S",0.6756,0.0118,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),congelado,"elige el premiado, régimen S",0.8295,0.0307,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),"en línea, último tercio","memoria da el premiado, régimen S",0.7921,0.0043,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),congelado,"memoria da el premiado, régimen S",0.8295,0.0307,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),"en línea, último tercio","tasa de ligadura, régimen S",0.4106,0.0002,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),congelado,"tasa de ligadura, régimen S",0.3792,0.0085,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),"en línea, último tercio","elige el premiado, régimen V",0.7053,0.0020,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),congelado,"elige el premiado, régimen V",0.8265,0.0204,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),"en línea, último tercio","memoria da el premiado, régimen V",0.7858,0.0011,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),congelado,"memoria da el premiado, régimen V",0.8265,0.0204,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),"en línea, último tercio","tasa de ligadura, régimen V",0.4337,0.0037,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),congelado,"tasa de ligadura, régimen V",0.4231,0.0132,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),congelado,"elige el premiado, promedio S y V",0.8280,0.0097,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),congelado,"memoria da el premiado, promedio S y V",0.8280,0.0097,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),"en línea, último tercio","forget, régimen S",0.0183,0.0003,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),"en línea, último tercio","sure, régimen S",0.7650,0.0011,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),"en línea, último tercio","epsilon, régimen S",0.0709,0.0007,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),"en línea, último tercio","decay, régimen S",0.0092,0.0002,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),"en línea, último tercio","capture, régimen S",2.8388,0.0151,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),"en línea, último tercio","lr, régimen S",0.1152,0.0041,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),"en línea, último tercio","temperature, régimen S",0.7384,0.0059,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),"en línea, último tercio","volatility, régimen S",0.0958,0.0002,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),"en línea, último tercio","noise, régimen S",0.2256,0.0022,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),"en línea, último tercio","forget, régimen V",0.0187,0.0003,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),"en línea, último tercio","sure, régimen V",0.7147,0.0007,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),"en línea, último tercio","epsilon, régimen V",0.0595,0.0006,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),"en línea, último tercio","decay, régimen V",0.0095,0.0003,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),"en línea, último tercio","capture, régimen V",2.2149,0.0065,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),"en línea, último tercio","lr, régimen V",0.1471,0.0025,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),"en línea, último tercio","temperature, régimen V",0.6358,0.0050,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),"en línea, último tercio","volatility, régimen V",0.1423,0.0020,3
+"F4.1 harlow S/V, todo aprende",ablación: sólo la memoria bayesiana (control con valores fijos),"en línea, último tercio","noise, régimen V",0.0998,0.0010,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),"en línea, último tercio","elige el premiado, régimen S",0.6325,0.0110,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),congelado,"elige el premiado, régimen S",0.8295,0.0307,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),"en línea, último tercio","memoria da el premiado, régimen S",0.7921,0.0043,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),congelado,"memoria da el premiado, régimen S",0.8295,0.0307,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),"en línea, último tercio","tasa de ligadura, régimen S",0.5403,0.0047,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),congelado,"tasa de ligadura, régimen S",0.4947,0.0316,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),"en línea, último tercio","elige el premiado, régimen V",0.6867,0.0147,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),congelado,"elige el premiado, régimen V",0.8265,0.0204,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),"en línea, último tercio","memoria da el premiado, régimen V",0.7858,0.0011,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),congelado,"memoria da el premiado, régimen V",0.8265,0.0204,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),"en línea, último tercio","tasa de ligadura, régimen V",0.7763,0.0009,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),congelado,"tasa de ligadura, régimen V",0.8262,0.0084,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),congelado,"elige el premiado, promedio S y V",0.8280,0.0097,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),congelado,"memoria da el premiado, promedio S y V",0.8280,0.0097,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),"en línea, último tercio","forget, régimen S",0.0198,0.0001,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),"en línea, último tercio","sure, régimen S",0.7650,0.0011,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),"en línea, último tercio","epsilon, régimen S",0.0828,0.0002,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),"en línea, último tercio","decay, régimen S",0.0112,0.0004,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),"en línea, último tercio","capture, régimen S",2.8388,0.0151,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),"en línea, último tercio","lr, régimen S",0.1531,0.0087,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),"en línea, último tercio","temperature, régimen S",0.8455,0.0021,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),"en línea, último tercio","volatility, régimen S",0.0958,0.0002,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),"en línea, último tercio","noise, régimen S",0.2256,0.0022,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),"en línea, último tercio","forget, régimen V",0.0198,0.0001,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),"en línea, último tercio","sure, régimen V",0.7147,0.0007,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),"en línea, último tercio","epsilon, régimen V",0.0662,0.0004,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),"en línea, último tercio","decay, régimen V",0.0115,0.0003,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),"en línea, último tercio","capture, régimen V",2.2149,0.0065,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),"en línea, último tercio","lr, régimen V",0.1664,0.0094,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),"en línea, último tercio","temperature, régimen V",0.6961,0.0033,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),"en línea, último tercio","volatility, régimen V",0.1423,0.0020,3
+"F4.1 harlow S/V, todo aprende",ablación: horizonte del episodio (5-HT sin acortar),"en línea, último tercio","noise, régimen V",0.0998,0.0010,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,"en línea, último tercio","elige el premiado, régimen S",0.7324,0.0045,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,congelado,"elige el premiado, régimen S",0.8295,0.0307,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,"en línea, último tercio","memoria da el premiado, régimen S",0.7921,0.0043,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,congelado,"memoria da el premiado, régimen S",0.8295,0.0307,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,"en línea, último tercio","tasa de ligadura, régimen S",0.5298,0.0044,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,congelado,"tasa de ligadura, régimen S",0.4867,0.0309,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,"en línea, último tercio","elige el premiado, régimen V",0.7605,0.0015,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,congelado,"elige el premiado, régimen V",0.8265,0.0204,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,"en línea, último tercio","memoria da el premiado, régimen V",0.7858,0.0011,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,congelado,"memoria da el premiado, régimen V",0.8265,0.0204,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,"en línea, último tercio","tasa de ligadura, régimen V",0.7620,0.0005,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,congelado,"tasa de ligadura, régimen V",0.8200,0.0077,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,congelado,"elige el premiado, promedio S y V",0.8280,0.0097,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,congelado,"memoria da el premiado, promedio S y V",0.8280,0.0097,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,"en línea, último tercio","forget, régimen S",0.0168,0.0001,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,"en línea, último tercio","sure, régimen S",0.7650,0.0011,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,"en línea, último tercio","epsilon, régimen S",0.0213,0.0003,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,"en línea, último tercio","decay, régimen S",0.0084,0.0000,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,"en línea, último tercio","capture, régimen S",2.8388,0.0151,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,"en línea, último tercio","lr, régimen S",0.1354,0.0023,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,"en línea, último tercio","temperature, régimen S",0.2913,0.0031,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,"en línea, último tercio","volatility, régimen S",0.0958,0.0002,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,"en línea, último tercio","noise, régimen S",0.2256,0.0022,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,"en línea, último tercio","forget, régimen V",0.0166,0.0002,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,"en línea, último tercio","sure, régimen V",0.7147,0.0007,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,"en línea, último tercio","epsilon, régimen V",0.0042,0.0005,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,"en línea, último tercio","decay, régimen V",0.0083,0.0001,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,"en línea, último tercio","capture, régimen V",2.2149,0.0065,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,"en línea, último tercio","lr, régimen V",0.1471,0.0018,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,"en línea, último tercio","temperature, régimen V",0.1382,0.0042,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,"en línea, último tercio","volatility, régimen V",0.1423,0.0020,3
+"F4.1 harlow S/V, todo aprende",candidata: NE = incertidumbre inesperada + arrepentimiento,"en línea, último tercio","noise, régimen V",0.0998,0.0010,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento","en línea, último tercio","elige el premiado, régimen S",0.6930,0.0033,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento",congelado,"elige el premiado, régimen S",0.7992,0.0514,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento","en línea, último tercio","memoria da el premiado, régimen S",0.7921,0.0043,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento",congelado,"memoria da el premiado, régimen S",0.8295,0.0307,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento","en línea, último tercio","tasa de ligadura, régimen S",0.5352,0.0031,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento",congelado,"tasa de ligadura, régimen S",0.4910,0.0294,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento","en línea, último tercio","elige el premiado, régimen V",0.7327,0.0015,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento",congelado,"elige el premiado, régimen V",0.7280,0.1286,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento","en línea, último tercio","memoria da el premiado, régimen V",0.7858,0.0011,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento",congelado,"memoria da el premiado, régimen V",0.8265,0.0204,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento","en línea, último tercio","tasa de ligadura, régimen V",0.7694,0.0017,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento",congelado,"tasa de ligadura, régimen V",0.8274,0.0119,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento",congelado,"elige el premiado, promedio S y V",0.7636,0.0847,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento",congelado,"memoria da el premiado, promedio S y V",0.8280,0.0097,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento","en línea, último tercio","forget, régimen S",0.0182,0.0005,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento","en línea, último tercio","sure, régimen S",0.7650,0.0011,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento","en línea, último tercio","epsilon, régimen S",0.0195,0.0012,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento","en línea, último tercio","decay, régimen S",0.0092,0.0003,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento","en línea, último tercio","capture, régimen S",2.8388,0.0151,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento","en línea, último tercio","lr, régimen S",0.1320,0.0009,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento","en línea, último tercio","temperature, régimen S",0.2757,0.0108,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento","en línea, último tercio","volatility, régimen S",0.0958,0.0002,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento","en línea, último tercio","noise, régimen S",0.2256,0.0022,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento","en línea, último tercio","forget, régimen V",0.0182,0.0004,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento","en línea, último tercio","sure, régimen V",0.7147,0.0007,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento","en línea, último tercio","epsilon, régimen V",0.0047,0.0006,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento","en línea, último tercio","decay, régimen V",0.0092,0.0002,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento","en línea, último tercio","capture, régimen V",2.2149,0.0065,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento","en línea, último tercio","lr, régimen V",0.1448,0.0034,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento","en línea, último tercio","temperature, régimen V",0.1419,0.0053,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento","en línea, último tercio","volatility, régimen V",0.1423,0.0020,3
+"F4.1 harlow S/V, todo aprende","candidata: NE = incertidumbre inesperada, sin arrepentimiento","en línea, último tercio","noise, régimen V",0.0998,0.0010,3
+"F4.1 harlow S/V, todo aprende","óptimo por régimen (mejor tasa fija de cada uno, oráculo)",congelado,"elige el premiado, promedio S y V",0.8311,0.0102,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ronda anterior (prev_io),instantánea tras 0 problemas,ensayo 2,0.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ronda anterior (prev_io),instantánea tras 10 problemas,ensayo 2,0.5200,0.0283,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ronda anterior (prev_io),instantánea tras 25 problemas,ensayo 2,0.9000,0.0712,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ronda anterior (prev_io),instantánea tras 50 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ronda anterior (prev_io),instantánea tras 100 problemas,ensayo 2,0.9067,0.1320,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ronda anterior (prev_io),instantánea tras 200 problemas,ensayo 2,0.8200,0.1337,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ronda anterior (prev_io),instantánea tras 300 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ronda anterior (prev_io),instantánea tras 400 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ronda anterior (prev_io),instantánea tras 600 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ronda anterior (prev_io),instantánea tras 800 problemas,ensayo 2,0.9267,0.1037,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ronda anterior (prev_io),instantáneas desde 50,mínimo por semilla,0.7467,0.0471,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ronda anterior (prev_io),instantáneas desde 50,instantáneas < 0.95 (cantidad),4.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",neuromoduladores,instantánea tras 0 problemas,ensayo 2,0.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",neuromoduladores,instantánea tras 10 problemas,ensayo 2,0.8533,0.1050,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",neuromoduladores,instantánea tras 25 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",neuromoduladores,instantánea tras 50 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",neuromoduladores,instantánea tras 100 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",neuromoduladores,instantánea tras 200 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",neuromoduladores,instantánea tras 300 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",neuromoduladores,instantánea tras 400 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",neuromoduladores,instantánea tras 600 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",neuromoduladores,instantánea tras 800 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",neuromoduladores,instantáneas desde 50,mínimo por semilla,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",neuromoduladores,instantáneas desde 50,instantáneas < 0.95 (cantidad),0.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ablación: horizonte del episodio,instantánea tras 0 problemas,ensayo 2,0.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ablación: horizonte del episodio,instantánea tras 10 problemas,ensayo 2,0.8333,0.2357,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ablación: horizonte del episodio,instantánea tras 25 problemas,ensayo 2,0.8733,0.1791,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ablación: horizonte del episodio,instantánea tras 50 problemas,ensayo 2,0.6667,0.4714,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ablación: horizonte del episodio,instantánea tras 100 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ablación: horizonte del episodio,instantánea tras 200 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ablación: horizonte del episodio,instantánea tras 300 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ablación: horizonte del episodio,instantánea tras 400 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ablación: horizonte del episodio,instantánea tras 600 problemas,ensayo 2,0.8400,0.1233,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ablación: horizonte del episodio,instantánea tras 800 problemas,ensayo 2,0.8200,0.2546,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ablación: horizonte del episodio,instantáneas desde 50,mínimo por semilla,0.4867,0.4087,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ablación: horizonte del episodio,instantáneas desde 50,instantáneas < 0.95 (cantidad),4.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ablación: sin temperatura de conducta (NE sólo en epsilon),instantánea tras 0 problemas,ensayo 2,0.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ablación: sin temperatura de conducta (NE sólo en epsilon),instantánea tras 10 problemas,ensayo 2,0.6867,0.1330,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ablación: sin temperatura de conducta (NE sólo en epsilon),instantánea tras 25 problemas,ensayo 2,0.9133,0.1226,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ablación: sin temperatura de conducta (NE sólo en epsilon),instantánea tras 50 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ablación: sin temperatura de conducta (NE sólo en epsilon),instantánea tras 100 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ablación: sin temperatura de conducta (NE sólo en epsilon),instantánea tras 200 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ablación: sin temperatura de conducta (NE sólo en epsilon),instantánea tras 300 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ablación: sin temperatura de conducta (NE sólo en epsilon),instantánea tras 400 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ablación: sin temperatura de conducta (NE sólo en epsilon),instantánea tras 600 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ablación: sin temperatura de conducta (NE sólo en epsilon),instantánea tras 800 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ablación: sin temperatura de conducta (NE sólo en epsilon),instantáneas desde 50,mínimo por semilla,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",ablación: sin temperatura de conducta (NE sólo en epsilon),instantáneas desde 50,instantáneas < 0.95 (cantidad),0.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",candidata: NE = incertidumbre inesperada + arrepentimiento,instantánea tras 0 problemas,ensayo 2,0.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",candidata: NE = incertidumbre inesperada + arrepentimiento,instantánea tras 10 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",candidata: NE = incertidumbre inesperada + arrepentimiento,instantánea tras 25 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",candidata: NE = incertidumbre inesperada + arrepentimiento,instantánea tras 50 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",candidata: NE = incertidumbre inesperada + arrepentimiento,instantánea tras 100 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",candidata: NE = incertidumbre inesperada + arrepentimiento,instantánea tras 200 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",candidata: NE = incertidumbre inesperada + arrepentimiento,instantánea tras 300 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",candidata: NE = incertidumbre inesperada + arrepentimiento,instantánea tras 400 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",candidata: NE = incertidumbre inesperada + arrepentimiento,instantánea tras 600 problemas,ensayo 2,0.9200,0.1131,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",candidata: NE = incertidumbre inesperada + arrepentimiento,instantánea tras 800 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",candidata: NE = incertidumbre inesperada + arrepentimiento,instantáneas desde 50,mínimo por semilla,0.9200,0.1131,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)",candidata: NE = incertidumbre inesperada + arrepentimiento,instantáneas desde 50,instantáneas < 0.95 (cantidad),1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)","candidata: NE = incertidumbre inesperada, sin arrepentimiento",instantánea tras 0 problemas,ensayo 2,0.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)","candidata: NE = incertidumbre inesperada, sin arrepentimiento",instantánea tras 10 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)","candidata: NE = incertidumbre inesperada, sin arrepentimiento",instantánea tras 25 problemas,ensayo 2,0.6667,0.4714,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)","candidata: NE = incertidumbre inesperada, sin arrepentimiento",instantánea tras 50 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)","candidata: NE = incertidumbre inesperada, sin arrepentimiento",instantánea tras 100 problemas,ensayo 2,0.8267,0.2451,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)","candidata: NE = incertidumbre inesperada, sin arrepentimiento",instantánea tras 200 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)","candidata: NE = incertidumbre inesperada, sin arrepentimiento",instantánea tras 300 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)","candidata: NE = incertidumbre inesperada, sin arrepentimiento",instantánea tras 400 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)","candidata: NE = incertidumbre inesperada, sin arrepentimiento",instantánea tras 600 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)","candidata: NE = incertidumbre inesperada, sin arrepentimiento",instantánea tras 800 problemas,ensayo 2,1.0000,0.0000,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)","candidata: NE = incertidumbre inesperada, sin arrepentimiento",instantáneas desde 50,mínimo por semilla,0.8267,0.2451,3
+"F4.2 harlow congelado (prev_io, sin resultado percibido)","candidata: NE = incertidumbre inesperada, sin arrepentimiento",instantáneas desde 50,instantáneas < 0.95 (cantidad),1.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | closure,0.6667,0.4714,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | errors,7.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | inverse,1.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | ttc,11.6600,0.3154,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | two_step,0.8667,0.0163,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),"congelado, bloques nuevos",R=1 (cada relación observada una vez) | closure,0.6667,0.4714,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),"congelado, bloques nuevos",R=1 (cada relación observada una vez) | errors,4.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),"congelado, bloques nuevos",R=1 (cada relación observada una vez) | inverse,1.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),"congelado, bloques nuevos",R=1 (cada relación observada una vez) | ttc,5.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),"congelado, bloques nuevos",R=1 (cada relación observada una vez) | two_step,0.8000,0.0331,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),"congelado, bloques nuevos",closure,0.6667,0.4714,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),"congelado, bloques nuevos",errors,4.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),"congelado, bloques nuevos",inverse,1.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),"congelado, bloques nuevos",ttc,5.8467,0.1062,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),"congelado, bloques nuevos",two_step,0.8044,0.0175,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),bloques 0-49,closure,0.1867,0.0249,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),bloques 400-449,closure,0.3667,0.1226,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),bloques 750-799,closure,0.4733,0.0471,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),bloques 0-49,errors,4.9267,0.0249,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),bloques 400-449,errors,4.6333,0.0094,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),bloques 750-799,errors,4.6200,0.1296,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),bloques 0-49,inverse,0.3911,0.0412,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),bloques 400-449,inverse,0.7844,0.0220,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),bloques 750-799,inverse,0.7689,0.0300,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),bloques 0-49,ttc,8.0333,0.2193,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),bloques 400-449,ttc,7.4133,0.1611,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),bloques 750-799,ttc,7.8600,0.2372,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),bloques 0-49,two_step,0.3000,0.0303,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),bloques 400-449,two_step,0.5978,0.0437,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap (F2),bloques 750-799,two_step,0.6067,0.0357,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | closure,1.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | errors,7.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | inverse,0.8822,0.0031,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | ttc,11.6600,0.3154,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | two_step,0.8600,0.0249,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,"congelado, bloques nuevos",R=1 (cada relación observada una vez) | closure,1.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,"congelado, bloques nuevos",R=1 (cada relación observada una vez) | errors,4.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,"congelado, bloques nuevos",R=1 (cada relación observada una vez) | inverse,0.7933,0.0144,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,"congelado, bloques nuevos",R=1 (cada relación observada una vez) | ttc,5.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,"congelado, bloques nuevos",R=1 (cada relación observada una vez) | two_step,0.7844,0.0310,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,"congelado, bloques nuevos",closure,1.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,"congelado, bloques nuevos",errors,4.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,"congelado, bloques nuevos",inverse,0.8178,0.0031,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,"congelado, bloques nuevos",ttc,5.8467,0.1062,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,"congelado, bloques nuevos",two_step,0.8044,0.0175,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 0-49,closure,0.1067,0.0189,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 400-449,closure,0.5267,0.0736,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 750-799,closure,0.5467,0.0249,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 0-49,errors,4.9733,0.0772,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 400-449,errors,4.6000,0.0163,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 750-799,errors,4.4933,0.0340,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 0-49,inverse,0.5067,0.0411,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 400-449,inverse,0.7000,0.0109,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 750-799,inverse,0.7333,0.0237,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 0-49,ttc,8.1600,0.1697,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 400-449,ttc,7.1533,0.1996,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 750-799,ttc,7.1667,0.0838,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 0-49,two_step,0.2844,0.0537,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 400-449,two_step,0.6733,0.0357,3
+F4.3 anillo con preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 750-799,two_step,0.6800,0.0411,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | closure,1.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | errors,7.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | inverse,0.9222,0.0551,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | ttc,11.6600,0.3154,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | two_step,0.8667,0.0163,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, bloques nuevos",R=1 (cada relación observada una vez) | closure,1.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, bloques nuevos",R=1 (cada relación observada una vez) | errors,4.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, bloques nuevos",R=1 (cada relación observada una vez) | inverse,0.8600,0.0999,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, bloques nuevos",R=1 (cada relación observada una vez) | ttc,5.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, bloques nuevos",R=1 (cada relación observada una vez) | two_step,0.8000,0.0331,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, bloques nuevos",closure,1.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, bloques nuevos",errors,4.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, bloques nuevos",inverse,0.8778,0.0865,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, bloques nuevos",ttc,5.8467,0.1062,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, bloques nuevos",two_step,0.8044,0.0175,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 0-49,closure,0.6600,0.0163,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 400-449,closure,0.9533,0.0249,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 750-799,closure,0.9600,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 0-49,errors,4.5600,0.0283,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 400-449,errors,4.1600,0.0283,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 750-799,errors,4.1200,0.0283,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 0-49,inverse,0.5489,0.0629,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 400-449,inverse,0.8044,0.1290,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 750-799,inverse,0.8133,0.1296,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 0-49,ttc,6.9600,0.2209,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 400-449,ttc,6.2600,0.0712,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 750-799,ttc,6.2200,0.0748,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 0-49,two_step,0.4822,0.0529,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 400-449,two_step,0.7867,0.0340,3
+F4.3 anillo con preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 750-799,two_step,0.7622,0.0245,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap (F2),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | closure,0.6667,0.4714,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap (F2),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | errors,7.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap (F2),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | inverse,1.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap (F2),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | ttc,11.8067,0.2945,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap (F2),"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | two_step,1.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap (F2),"congelado, bloques nuevos",closure,0.6667,0.4714,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap (F2),"congelado, bloques nuevos",errors,4.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap (F2),"congelado, bloques nuevos",inverse,1.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap (F2),"congelado, bloques nuevos",ttc,6.1200,0.2197,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap (F2),"congelado, bloques nuevos",two_step,1.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap (F2),bloques 0-49,closure,0.4133,0.1147,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap (F2),bloques 400-449,closure,0.6533,0.0377,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap (F2),bloques 750-799,closure,0.6400,0.0589,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap (F2),bloques 0-49,errors,4.9133,0.1427,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap (F2),bloques 400-449,errors,4.7600,0.0327,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap (F2),bloques 750-799,errors,4.5267,0.0736,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap (F2),bloques 0-49,inverse,0.6911,0.0227,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap (F2),bloques 400-449,inverse,0.8400,0.0340,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap (F2),bloques 750-799,inverse,0.8489,0.0083,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap (F2),bloques 0-49,ttc,7.9667,0.1147,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap (F2),bloques 400-449,ttc,7.5533,0.3725,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap (F2),bloques 750-799,ttc,7.3333,0.1636,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap (F2),bloques 0-49,two_step,0.6444,0.0245,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap (F2),bloques 400-449,two_step,0.8667,0.0218,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap (F2),bloques 750-799,two_step,0.8422,0.0191,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap + neuromoduladores,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | closure,1.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap + neuromoduladores,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | errors,7.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap + neuromoduladores,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | inverse,1.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap + neuromoduladores,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | ttc,11.8067,0.2945,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap + neuromoduladores,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | two_step,1.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap + neuromoduladores,"congelado, bloques nuevos",closure,1.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap + neuromoduladores,"congelado, bloques nuevos",errors,4.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap + neuromoduladores,"congelado, bloques nuevos",inverse,1.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap + neuromoduladores,"congelado, bloques nuevos",ttc,6.1200,0.2197,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap + neuromoduladores,"congelado, bloques nuevos",two_step,1.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 0-49,closure,0.5067,0.0525,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 400-449,closure,0.7400,0.0748,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 750-799,closure,0.7600,0.0327,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 0-49,errors,4.8933,0.0340,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 400-449,errors,4.7067,0.1464,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 750-799,errors,4.6733,0.0943,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 0-49,inverse,0.8311,0.0137,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 400-449,inverse,0.9822,0.0083,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 750-799,inverse,0.9844,0.0031,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 0-49,ttc,8.1733,0.2380,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 400-449,ttc,7.7000,0.5720,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 750-799,ttc,7.6867,0.3039,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 0-49,two_step,0.7644,0.0300,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 400-449,two_step,0.9489,0.0126,3
+F4.3 línea con FIN y preguntas de aprendizaje,back + cogmap + neuromoduladores,bloques 750-799,two_step,0.9467,0.0144,3
+F4.3 línea con FIN y preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | closure,1.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | errors,7.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | inverse,1.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | ttc,11.8067,0.2945,3
+F4.3 línea con FIN y preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | two_step,1.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, bloques nuevos",closure,1.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, bloques nuevos",errors,4.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, bloques nuevos",inverse,1.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, bloques nuevos",ttc,6.1200,0.2197,3
+F4.3 línea con FIN y preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, bloques nuevos",two_step,1.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 0-49,closure,0.8933,0.0411,3
+F4.3 línea con FIN y preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 400-449,closure,0.9800,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 750-799,closure,0.9667,0.0094,3
+F4.3 línea con FIN y preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 0-49,errors,4.3267,0.0411,3
+F4.3 línea con FIN y preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 400-449,errors,4.1000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 750-799,errors,4.1067,0.0094,3
+F4.3 línea con FIN y preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 0-49,inverse,0.8956,0.0083,3
+F4.3 línea con FIN y preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 400-449,inverse,0.9844,0.0031,3
+F4.3 línea con FIN y preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 750-799,inverse,0.9822,0.0031,3
+F4.3 línea con FIN y preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 0-49,ttc,6.7000,0.1980,3
+F4.3 línea con FIN y preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 400-449,ttc,6.2333,0.2451,3
+F4.3 línea con FIN y preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 750-799,ttc,6.3333,0.1668,3
+F4.3 línea con FIN y preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 0-49,two_step,0.9044,0.0031,3
+F4.3 línea con FIN y preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 400-449,two_step,0.9844,0.0083,3
+F4.3 línea con FIN y preguntas de aprendizaje,candidata: NE = incertidumbre inesperada + arrepentimiento,bloques 750-799,two_step,0.9756,0.0031,3
+"F4.4 batería C0-C6, multitarea mezclada",back (sin neuromoduladores),"congelado, casos no vistos","C0 f(x), todos los x",1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back (sin neuromoduladores),"congelado, casos no vistos","C1 v nunca compuesto, 1-2 saltos",1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back (sin neuromoduladores),"congelado, casos no vistos","C1 v nunca compuesto, 3-4 saltos",1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back (sin neuromoduladores),"congelado, casos no vistos",C2 x nunca compuesto,1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back (sin neuromoduladores),"congelado, casos no vistos",C3 5-8 saltos,1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back (sin neuromoduladores),"congelado, casos no vistos","C3 5-8 saltos, 16 distractores + 8 ruidos",1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back (sin neuromoduladores),"congelado, casos no vistos","C3 3 saltos, orden reverso",1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back (sin neuromoduladores),"congelado, casos no vistos","C3 3 saltos, hecho corregido",1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back (sin neuromoduladores),"congelado, casos no vistos","C3 3 saltos, distractores que apuntan a la cadena",1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back (sin neuromoduladores),"congelado, casos no vistos",C4 x nunca compuesto,1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back (sin neuromoduladores),"congelado, casos no vistos","C5 orden de 8, distancia >= 4",1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back (sin neuromoduladores),"congelado, casos no vistos",C6 5 eventos,1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back (sin neuromoduladores),costo,ms por episodio (entrenar + evaluar),1.3443,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back (sin neuromoduladores),costo,ms de CPU por episodio (entrenar + evaluar),0.6679,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back (sin neuromoduladores),resumen,mínimo sobre casos y semillas,1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, casos no vistos","C0 f(x), todos los x",1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, casos no vistos","C1 v nunca compuesto, 1-2 saltos",1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, casos no vistos","C1 v nunca compuesto, 3-4 saltos",1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, casos no vistos",C2 x nunca compuesto,1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, casos no vistos",C3 5-8 saltos,1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, casos no vistos","C3 5-8 saltos, 16 distractores + 8 ruidos",1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, casos no vistos","C3 3 saltos, orden reverso",1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, casos no vistos","C3 3 saltos, hecho corregido",1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, casos no vistos","C3 3 saltos, distractores que apuntan a la cadena",1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, casos no vistos",C4 x nunca compuesto,1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, casos no vistos","C5 orden de 8, distancia >= 4",0.8100,0.2687,3
+"F4.4 batería C0-C6, multitarea mezclada",back + candidata: NE = incertidumbre inesperada + arrepentimiento,"congelado, casos no vistos",C6 5 eventos,1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + candidata: NE = incertidumbre inesperada + arrepentimiento,costo,ms por episodio (entrenar + evaluar),2.2921,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + candidata: NE = incertidumbre inesperada + arrepentimiento,costo,ms de CPU por episodio (entrenar + evaluar),1.1313,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + candidata: NE = incertidumbre inesperada + arrepentimiento,resumen,mínimo sobre casos y semillas,0.4300,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | closure,0.3333,0.4714,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | errors,7.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | inverse,0.7222,0.3119,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | ttc,11.6600,0.3154,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | two_step,0.8600,0.0249,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,"congelado, bloques nuevos",R=1 (cada relación observada una vez) | closure,0.3333,0.4714,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,"congelado, bloques nuevos",R=1 (cada relación observada una vez) | errors,4.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,"congelado, bloques nuevos",R=1 (cada relación observada una vez) | inverse,0.7422,0.2376,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,"congelado, bloques nuevos",R=1 (cada relación observada una vez) | ttc,5.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,"congelado, bloques nuevos",R=1 (cada relación observada una vez) | two_step,0.7844,0.0310,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,"congelado, bloques nuevos",closure,0.3333,0.4714,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,"congelado, bloques nuevos",errors,4.0000,0.0000,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,"congelado, bloques nuevos",inverse,0.7289,0.2665,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,"congelado, bloques nuevos",ttc,5.8467,0.1062,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,"congelado, bloques nuevos",two_step,0.8044,0.0175,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,bloques 0-49,closure,0.0933,0.0377,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,bloques 400-449,closure,0.3067,0.0772,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,bloques 750-799,closure,0.2467,0.0838,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,bloques 0-49,errors,5.0733,0.0340,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,bloques 400-449,errors,4.6200,0.0327,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,bloques 750-799,errors,4.7133,0.0573,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,bloques 0-49,inverse,0.4756,0.0300,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,bloques 400-449,inverse,0.8178,0.0854,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,bloques 750-799,inverse,0.8400,0.1039,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,bloques 0-49,ttc,8.1867,0.2265,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,bloques 400-449,ttc,7.5733,0.0618,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,bloques 750-799,ttc,7.7267,0.2500,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,bloques 0-49,two_step,0.3000,0.0094,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,bloques 400-449,two_step,0.6844,0.0245,3
+F4.3 anillo con preguntas de aprendizaje,ablación: horizonte del episodio,bloques 750-799,two_step,0.7089,0.0443,3
+F4.3 línea con FIN y preguntas de aprendizaje,ablación: horizonte del episodio,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | closure,1.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,ablación: horizonte del episodio,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | errors,7.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,ablación: horizonte del episodio,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | inverse,1.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,ablación: horizonte del episodio,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | ttc,11.8067,0.2945,3
+F4.3 línea con FIN y preguntas de aprendizaje,ablación: horizonte del episodio,"congelado, bloques nuevos",L=8 (más largo que lo entrenado) | two_step,1.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,ablación: horizonte del episodio,"congelado, bloques nuevos",closure,1.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,ablación: horizonte del episodio,"congelado, bloques nuevos",errors,4.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,ablación: horizonte del episodio,"congelado, bloques nuevos",inverse,1.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,ablación: horizonte del episodio,"congelado, bloques nuevos",ttc,6.1200,0.2197,3
+F4.3 línea con FIN y preguntas de aprendizaje,ablación: horizonte del episodio,"congelado, bloques nuevos",two_step,1.0000,0.0000,3
+F4.3 línea con FIN y preguntas de aprendizaje,ablación: horizonte del episodio,bloques 0-49,closure,0.4933,0.1050,3
+F4.3 línea con FIN y preguntas de aprendizaje,ablación: horizonte del episodio,bloques 400-449,closure,0.5467,0.1652,3
+F4.3 línea con FIN y preguntas de aprendizaje,ablación: horizonte del episodio,bloques 750-799,closure,0.5400,0.1883,3
+F4.3 línea con FIN y preguntas de aprendizaje,ablación: horizonte del episodio,bloques 0-49,errors,4.9067,0.1700,3
+F4.3 línea con FIN y preguntas de aprendizaje,ablación: horizonte del episodio,bloques 400-449,errors,4.6200,0.1608,3
+F4.3 línea con FIN y preguntas de aprendizaje,ablación: horizonte del episodio,bloques 750-799,errors,4.6400,0.0909,3
+F4.3 línea con FIN y preguntas de aprendizaje,ablación: horizonte del episodio,bloques 0-49,inverse,0.7800,0.0109,3
+F4.3 línea con FIN y preguntas de aprendizaje,ablación: horizonte del episodio,bloques 400-449,inverse,0.8911,0.0083,3
+F4.3 línea con FIN y preguntas de aprendizaje,ablación: horizonte del episodio,bloques 750-799,inverse,0.9067,0.0094,3
+F4.3 línea con FIN y preguntas de aprendizaje,ablación: horizonte del episodio,bloques 0-49,ttc,7.7333,0.1731,3
+F4.3 línea con FIN y preguntas de aprendizaje,ablación: horizonte del episodio,bloques 400-449,ttc,7.6333,0.6602,3
+F4.3 línea con FIN y preguntas de aprendizaje,ablación: horizonte del episodio,bloques 750-799,ttc,7.7267,0.4781,3
+F4.3 línea con FIN y preguntas de aprendizaje,ablación: horizonte del episodio,bloques 0-49,two_step,0.7511,0.0137,3
+F4.3 línea con FIN y preguntas de aprendizaje,ablación: horizonte del episodio,bloques 400-449,two_step,0.9311,0.0031,3
+F4.3 línea con FIN y preguntas de aprendizaje,ablación: horizonte del episodio,bloques 750-799,two_step,0.9511,0.0137,3
+"F4.4 batería C0-C6, multitarea mezclada",back + neuromoduladores,"congelado, casos no vistos","C0 f(x), todos los x",1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + neuromoduladores,"congelado, casos no vistos","C1 v nunca compuesto, 1-2 saltos",1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + neuromoduladores,"congelado, casos no vistos","C1 v nunca compuesto, 3-4 saltos",1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + neuromoduladores,"congelado, casos no vistos",C2 x nunca compuesto,1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + neuromoduladores,"congelado, casos no vistos",C3 5-8 saltos,1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + neuromoduladores,"congelado, casos no vistos","C3 5-8 saltos, 16 distractores + 8 ruidos",1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + neuromoduladores,"congelado, casos no vistos","C3 3 saltos, orden reverso",1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + neuromoduladores,"congelado, casos no vistos","C3 3 saltos, hecho corregido",1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + neuromoduladores,"congelado, casos no vistos","C3 3 saltos, distractores que apuntan a la cadena",1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + neuromoduladores,"congelado, casos no vistos",C4 x nunca compuesto,1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + neuromoduladores,"congelado, casos no vistos","C5 orden de 8, distancia >= 4",1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + neuromoduladores,"congelado, casos no vistos",C6 5 eventos,1.0000,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + neuromoduladores,costo,ms por episodio (entrenar + evaluar),1.9384,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + neuromoduladores,costo,ms de CPU por episodio (entrenar + evaluar),0.9860,0.0000,3
+"F4.4 batería C0-C6, multitarea mezclada",back + neuromoduladores,resumen,mínimo sobre casos y semillas,1.0000,0.0000,3

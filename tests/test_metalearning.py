@@ -190,8 +190,10 @@ def test_back_option_off_keeps_the_state_layout():
     a = Thinker(20, memory=True, judge=True, speak=True, seed=0)
     b = Thinker(20, memory=True, judge=True, speak=True, seed=0, back=False, prev_io=False)
     assert a.Wc.shape == b.Wc.shape == (8, a.D_state) and a.D_state == b.D_state
-    c = Thinker(20, memory=True, judge=True, speak=True, seed=0, back=True)
+    c = Thinker(20, memory=True, judge=True, speak=True, seed=0, back="automatico")
     assert c.Wc.shape[0] == 9 and c.D_state == a.D_state + 1 + 3
+    d = Thinker(20, memory=True, judge=True, speak=True, seed=0, back=True)   # + ¿predecesor sostenido?, ¿falló?
+    assert d.Wc.shape[0] == 9 and d.D_state == a.D_state + 1 + 6
 
 
 def _pred_block(net, rng, learn, L=5):

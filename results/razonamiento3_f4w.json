@@ -1,0 +1,2528 @@
+{
+ "{\"ne\": \"fiabilidad\", \"unexplained_gain\": 4.0, \"decay\": \"paso\", \"regret\": 2.0}": {
+  "sv": [
+   0.8136363636363637,
+   0.8079545454545454,
+   0.8215909090909093
+  ],
+  "online": 0.6871515151515151,
+  "harlow_min": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "score": 2.0015454545454547
+ },
+ "{\"ne\": \"inesperada\", \"unexplained_gain\": 4.0, \"decay\": \"paso\", \"regret\": 2.0}": {
+  "sv": [
+   0.8136363636363637,
+   0.8079545454545454,
+   0.8215909090909093
+  ],
+  "online": 0.6969090909090909,
+  "harlow_min": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "score": 2.01130303030303
+ },
+ "{\"ne\": \"inesperada\", \"unexplained_gain\": 4.0, \"decay\": \"paso\", \"ne_gain\": 2.0, \"regret\": 2.0}": {
+  "sv": [
+   0.8136363636363637,
+   0.8079545454545454,
+   0.8215909090909093
+  ],
+  "online": 0.691939393939394,
+  "harlow_min": [
+   0.82,
+   1.0,
+   1.0
+  ],
+  "score": 1.9763333333333335
+ },
+ "{\"ne\": \"inesperada\", \"unexplained_gain\": 4.0, \"decay\": \"paso\", \"ne_gain\": 8.0, \"regret\": 2.0}": {
+  "sv": [
+   0.8136363636363637,
+   0.8079545454545454,
+   0.8215909090909093
+  ],
+  "online": 0.6915151515151516,
+  "harlow_min": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "score": 2.005909090909091
+ },
+ "{\"ne\": \"inesperada\", \"unexplained_gain\": 0.0, \"decay\": \"paso\", \"regret\": 2.0}": {
+  "sv": [
+   0.8136363636363637,
+   0.8079545454545454,
+   0.8215909090909093
+  ],
+  "online": 0.7271515151515151,
+  "harlow_min": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "score": 2.0415454545454548
+ },
+ "{\"ne\": \"inesperada\", \"unexplained_gain\": 0.0, \"decay\": \"error\", \"regret\": 2.0}": {
+  "sv": [
+   0.5159090909090909,
+   0.48749999999999993,
+   0.6318181818181818
+  ],
+  "online": 0.6920000000000001,
+  "harlow_min": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "score": 1.7370757575757576
+ },
+ "{\"ne\": \"fiabilidad\", \"unexplained_gain\": 4.0, \"decay\": \"error\", \"regret\": 2.0}": {
+  "sv": [
+   0.5159090909090909,
+   0.6215909090909091,
+   0.8215909090909093
+  ],
+  "online": 0.7066060606060607,
+  "harlow_min": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "score": 1.8596363636363638
+ },
+ "anillo {\"ne\": \"fiabilidad\", \"unexplained_gain\": 4.0, \"decay\": \"paso\", \"regret\": 2.0}": {
+  "frozen_L=8 (más largo que lo entrenado) | closure": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | errors": [
+   7.0,
+   7.0,
+   7.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | inverse": [
+   0.24,
+   1.0,
+   0.26
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | ttc": [
+   12.32,
+   12.22,
+   12.26
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | two_step": [
+   0.8067,
+   0.9133,
+   0.88
+  ],
+  "frozen_closure": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_errors": [
+   4.0,
+   4.0,
+   4.0
+  ],
+  "frozen_inverse": [
+   0.4,
+   1.0,
+   0.44
+  ],
+  "frozen_ttc": [
+   6.1,
+   6.16,
+   5.96
+  ],
+  "frozen_two_step": [
+   0.8,
+   0.7867,
+   0.8533
+  ],
+  "online_closure_bins_mean": [
+   0.0733,
+   0.4133,
+   0.4067,
+   0.4267,
+   0.4,
+   0.4,
+   0.5333,
+   0.4067
+  ],
+  "online_closure_bins_sd": [
+   0.0525,
+   0.0189,
+   0.0499,
+   0.1147,
+   0.0432,
+   0.0712,
+   0.0984,
+   0.0806
+  ],
+  "online_errors_bins_mean": [
+   5.0867,
+   4.5733,
+   4.76,
+   4.6333,
+   4.64,
+   4.7133,
+   4.68,
+   4.6933
+  ],
+  "online_errors_bins_sd": [
+   0.1806,
+   0.1087,
+   0.1275,
+   0.1037,
+   0.0432,
+   0.0573,
+   0.0864,
+   0.1147
+  ],
+  "online_inverse_bins_mean": [
+   0.5089,
+   0.7889,
+   0.7911,
+   0.7956,
+   0.7867,
+   0.8044,
+   0.7733,
+   0.7733
+  ],
+  "online_inverse_bins_sd": [
+   0.0937,
+   0.1155,
+   0.1022,
+   0.1183,
+   0.1412,
+   0.1242,
+   0.1245,
+   0.1233
+  ],
+  "online_ttc_bins_mean": [
+   8.4,
+   7.8533,
+   7.9533,
+   7.68,
+   7.76,
+   7.64,
+   7.6933,
+   7.9533
+  ],
+  "online_ttc_bins_sd": [
+   0.4391,
+   0.3761,
+   0.3519,
+   0.4537,
+   0.1395,
+   0.1575,
+   0.4031,
+   0.1236
+  ],
+  "online_two_step_bins_mean": [
+   0.3711,
+   0.6756,
+   0.6733,
+   0.6956,
+   0.6756,
+   0.7,
+   0.6933,
+   0.7089
+  ],
+  "online_two_step_bins_sd": [
+   0.0314,
+   0.0469,
+   0.0303,
+   0.0382,
+   0.0083,
+   0.0331,
+   0.0218,
+   0.0113
+  ],
+  "say_neurons": [
+   0,
+   0,
+   0
+  ],
+  "decisions": [
+   {
+    "neurons": 0,
+    "expanded": 43822,
+    "replayed": 0,
+    "judge_neurons": 0,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 220,
+    "copiar": 7176,
+    "seguir": 2534,
+    "hablar": 205,
+    "emitir": 2346,
+    "juzgar": 208,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 5369
+   },
+   {
+    "neurons": 0,
+    "expanded": 38801,
+    "replayed": 0,
+    "judge_neurons": 0,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 238,
+    "copiar": 7069,
+    "seguir": 2541,
+    "hablar": 201,
+    "emitir": 2378,
+    "juzgar": 265,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 6355
+   },
+   {
+    "neurons": 0,
+    "expanded": 44529,
+    "replayed": 0,
+    "judge_neurons": 0,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 240,
+    "copiar": 6936,
+    "seguir": 2480,
+    "hablar": 237,
+    "emitir": 2551,
+    "juzgar": 223,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 5496
+   }
+  ],
+  "width": 50
+ },
+ "FIN {\"ne\": \"fiabilidad\", \"unexplained_gain\": 4.0, \"decay\": \"paso\", \"regret\": 2.0}": {
+  "frozen_L=8 (más largo que lo entrenado) | closure": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | errors": [
+   7.0,
+   7.0,
+   7.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | inverse": [
+   1.0,
+   1.0,
+   0.1533
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | ttc": [
+   11.3,
+   12.52,
+   12.06
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | two_step": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_closure": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_errors": [
+   4.0,
+   4.0,
+   4.0
+  ],
+  "frozen_inverse": [
+   1.0,
+   1.0,
+   0.2733
+  ],
+  "frozen_ttc": [
+   6.18,
+   5.62,
+   5.74
+  ],
+  "frozen_two_step": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "online_closure_bins_mean": [
+   0.5533,
+   0.7733,
+   0.7267,
+   0.74,
+   0.72,
+   0.7467,
+   0.7067,
+   0.78
+  ],
+  "online_closure_bins_sd": [
+   0.0525,
+   0.0573,
+   0.0377,
+   0.0283,
+   0.049,
+   0.034,
+   0.0471,
+   0.0163
+  ],
+  "online_errors_bins_mean": [
+   4.8933,
+   4.5933,
+   4.6867,
+   4.7067,
+   4.6267,
+   4.56,
+   4.68,
+   4.52
+  ],
+  "online_errors_bins_sd": [
+   0.066,
+   0.1087,
+   0.1226,
+   0.0249,
+   0.0899,
+   0.1395,
+   0.0566,
+   0.049
+  ],
+  "online_inverse_bins_mean": [
+   0.8533,
+   0.9844,
+   0.9933,
+   0.9711,
+   0.9778,
+   0.9733,
+   0.9844,
+   0.9756
+  ],
+  "online_inverse_bins_sd": [
+   0.0094,
+   0.0175,
+   0.0054,
+   0.0063,
+   0.0113,
+   0.0109,
+   0.0083,
+   0.0031
+  ],
+  "online_ttc_bins_mean": [
+   7.9933,
+   7.5733,
+   7.72,
+   7.6933,
+   7.5733,
+   7.4867,
+   7.7667,
+   7.22
+  ],
+  "online_ttc_bins_sd": [
+   0.1996,
+   0.4008,
+   0.1296,
+   0.0618,
+   0.4737,
+   0.3021,
+   0.3827,
+   0.1796
+  ],
+  "online_two_step_bins_mean": [
+   0.7644,
+   0.9044,
+   0.92,
+   0.9222,
+   0.9467,
+   0.9356,
+   0.9222,
+   0.9556
+  ],
+  "online_two_step_bins_sd": [
+   0.0191,
+   0.0113,
+   0.0163,
+   0.0166,
+   0.0054,
+   0.0126,
+   0.0113,
+   0.0063
+  ],
+  "say_neurons": [
+   0,
+   0,
+   0
+  ],
+  "decisions": [
+   {
+    "neurons": 0,
+    "expanded": 35427,
+    "replayed": 109,
+    "judge_neurons": 3,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 102,
+    "copiar": 7736,
+    "seguir": 1569,
+    "hablar": 105,
+    "emitir": 1579,
+    "juzgar": 533,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 1595
+   },
+   {
+    "neurons": 0,
+    "expanded": 35340,
+    "replayed": 88,
+    "judge_neurons": 1,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 105,
+    "copiar": 7749,
+    "seguir": 1555,
+    "hablar": 107,
+    "emitir": 1582,
+    "juzgar": 514,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 1585
+   },
+   {
+    "neurons": 0,
+    "expanded": 34319,
+    "replayed": 44,
+    "judge_neurons": 2,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 99,
+    "copiar": 7746,
+    "seguir": 1561,
+    "hablar": 118,
+    "emitir": 1575,
+    "juzgar": 530,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 1371
+   }
+  ],
+  "width": 50
+ },
+ "anillo {\"ne\": \"inesperada\", \"unexplained_gain\": 0.0, \"decay\": \"paso\", \"regret\": 2.0}": {
+  "frozen_L=8 (más largo que lo entrenado) | closure": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | errors": [
+   7.0,
+   7.0,
+   7.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | inverse": [
+   0.24,
+   1.0,
+   0.26
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | ttc": [
+   12.32,
+   12.22,
+   12.26
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | two_step": [
+   0.8667,
+   0.8467,
+   0.88
+  ],
+  "frozen_closure": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_errors": [
+   4.0,
+   4.0,
+   4.0
+  ],
+  "frozen_inverse": [
+   0.4,
+   1.0,
+   0.44
+  ],
+  "frozen_ttc": [
+   6.1,
+   6.16,
+   5.96
+  ],
+  "frozen_two_step": [
+   0.7867,
+   0.8267,
+   0.8533
+  ],
+  "online_closure_bins_mean": [
+   0.7133,
+   0.9267,
+   0.9467,
+   0.9733,
+   0.9267,
+   0.98,
+   0.96,
+   0.9467
+  ],
+  "online_closure_bins_sd": [
+   0.0411,
+   0.0249,
+   0.0411,
+   0.0094,
+   0.0249,
+   0.0163,
+   0.0163,
+   0.0189
+  ],
+  "online_errors_bins_mean": [
+   4.4733,
+   4.1133,
+   4.0933,
+   4.1133,
+   4.1533,
+   4.1133,
+   4.0933,
+   4.1133
+  ],
+  "online_errors_bins_sd": [
+   0.0411,
+   0.0094,
+   0.0249,
+   0.0499,
+   0.0094,
+   0.0189,
+   0.0094,
+   0.0094
+  ],
+  "online_inverse_bins_mean": [
+   0.5267,
+   0.7111,
+   0.6956,
+   0.7067,
+   0.7644,
+   0.8111,
+   0.78,
+   0.7911
+  ],
+  "online_inverse_bins_sd": [
+   0.0237,
+   0.0328,
+   0.0083,
+   0.0144,
+   0.1075,
+   0.11,
+   0.1338,
+   0.1254
+  ],
+  "online_ttc_bins_mean": [
+   7.2,
+   6.58,
+   6.16,
+   6.2067,
+   6.26,
+   6.1933,
+   6.62,
+   6.42
+  ],
+  "online_ttc_bins_sd": [
+   0.432,
+   0.2135,
+   0.102,
+   0.1482,
+   0.1728,
+   0.1907,
+   0.1728,
+   0.1143
+  ],
+  "online_two_step_bins_mean": [
+   0.56,
+   0.7422,
+   0.7911,
+   0.74,
+   0.7311,
+   0.7911,
+   0.7756,
+   0.7667
+  ],
+  "online_two_step_bins_sd": [
+   0.0054,
+   0.0416,
+   0.0269,
+   0.0218,
+   0.0279,
+   0.0083,
+   0.0409,
+   0.0189
+  ],
+  "say_neurons": [
+   0,
+   0,
+   0
+  ],
+  "decisions": [
+   {
+    "neurons": 0,
+    "expanded": 42897,
+    "replayed": 0,
+    "judge_neurons": 0,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 383,
+    "copiar": 6650,
+    "seguir": 2691,
+    "hablar": 342,
+    "emitir": 2564,
+    "juzgar": 353,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 7902
+   },
+   {
+    "neurons": 0,
+    "expanded": 39259,
+    "replayed": 0,
+    "judge_neurons": 0,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 364,
+    "copiar": 6418,
+    "seguir": 2433,
+    "hablar": 358,
+    "emitir": 2847,
+    "juzgar": 321,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 7639
+   },
+   {
+    "neurons": 0,
+    "expanded": 42806,
+    "replayed": 0,
+    "judge_neurons": 0,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 370,
+    "copiar": 5799,
+    "seguir": 2690,
+    "hablar": 434,
+    "emitir": 3450,
+    "juzgar": 331,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 9981
+   }
+  ],
+  "width": 50
+ },
+ "FIN {\"ne\": \"inesperada\", \"unexplained_gain\": 0.0, \"decay\": \"paso\", \"regret\": 2.0}": {
+  "frozen_L=8 (más largo que lo entrenado) | closure": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | errors": [
+   7.0,
+   7.0,
+   7.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | inverse": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | ttc": [
+   11.3,
+   12.52,
+   12.06
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | two_step": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_closure": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_errors": [
+   4.0,
+   4.0,
+   4.0
+  ],
+  "frozen_inverse": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_ttc": [
+   6.18,
+   5.62,
+   5.74
+  ],
+  "frozen_two_step": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "online_closure_bins_mean": [
+   0.8467,
+   0.9867,
+   0.9933,
+   1.0,
+   0.98,
+   0.9933,
+   0.9933,
+   0.9867
+  ],
+  "online_closure_bins_sd": [
+   0.0249,
+   0.0094,
+   0.0094,
+   0.0,
+   0.0,
+   0.0094,
+   0.0094,
+   0.0094
+  ],
+  "online_errors_bins_mean": [
+   4.3133,
+   4.1133,
+   4.0733,
+   4.1,
+   4.0933,
+   4.0867,
+   4.0933,
+   4.1067
+  ],
+  "online_errors_bins_sd": [
+   0.034,
+   0.0189,
+   0.0094,
+   0.0163,
+   0.0094,
+   0.0094,
+   0.0094,
+   0.0094
+  ],
+  "online_inverse_bins_mean": [
+   0.8756,
+   0.9956,
+   0.9889,
+   0.9711,
+   0.9822,
+   0.9822,
+   0.9844,
+   0.98
+  ],
+  "online_inverse_bins_sd": [
+   0.0113,
+   0.0063,
+   0.0031,
+   0.0083,
+   0.0113,
+   0.0113,
+   0.0031,
+   0.0109
+  ],
+  "online_ttc_bins_mean": [
+   6.5667,
+   6.2133,
+   6.24,
+   6.1867,
+   6.1733,
+   6.4333,
+   6.32,
+   5.9
+  ],
+  "online_ttc_bins_sd": [
+   0.0618,
+   0.1962,
+   0.1608,
+   0.1464,
+   0.1975,
+   0.0899,
+   0.1575,
+   0.049
+  ],
+  "online_two_step_bins_mean": [
+   0.8711,
+   0.9867,
+   0.9822,
+   0.98,
+   0.9933,
+   0.98,
+   0.9822,
+   0.9689
+  ],
+  "online_two_step_bins_sd": [
+   0.0175,
+   0.0,
+   0.0063,
+   0.0189,
+   0.0094,
+   0.0109,
+   0.0063,
+   0.0113
+  ],
+  "say_neurons": [
+   0,
+   0,
+   0
+  ],
+  "decisions": [
+   {
+    "neurons": 0,
+    "expanded": 34335,
+    "replayed": 77,
+    "judge_neurons": 1,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 252,
+    "copiar": 6480,
+    "seguir": 1963,
+    "hablar": 315,
+    "emitir": 1735,
+    "juzgar": 1483,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 1783
+   },
+   {
+    "neurons": 0,
+    "expanded": 34505,
+    "replayed": 77,
+    "judge_neurons": 1,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 267,
+    "copiar": 7046,
+    "seguir": 1825,
+    "hablar": 330,
+    "emitir": 1722,
+    "juzgar": 915,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 2764
+   },
+   {
+    "neurons": 0,
+    "expanded": 33281,
+    "replayed": 12,
+    "judge_neurons": 2,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 284,
+    "copiar": 6526,
+    "seguir": 1787,
+    "hablar": 1907,
+    "emitir": 1775,
+    "juzgar": 1365,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 1860
+   }
+  ],
+  "width": 50
+ },
+ "anillo {\"ne\": \"inesperada\", \"unexplained_gain\": 0.0, \"decay\": \"error\", \"regret\": 2.0}": {
+  "frozen_L=8 (más largo que lo entrenado) | closure": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | errors": [
+   7.0,
+   7.0,
+   7.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | inverse": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | ttc": [
+   12.32,
+   12.22,
+   12.26
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | two_step": [
+   0.8067,
+   0.8467,
+   0.88
+  ],
+  "frozen_closure": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_errors": [
+   4.0,
+   4.0,
+   4.0
+  ],
+  "frozen_inverse": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_ttc": [
+   6.1,
+   6.16,
+   5.96
+  ],
+  "frozen_two_step": [
+   0.8,
+   0.8267,
+   0.8533
+  ],
+  "online_closure_bins_mean": [
+   0.76,
+   0.9733,
+   0.9467,
+   0.9667,
+   0.96,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "online_closure_bins_sd": [
+   0.0327,
+   0.0249,
+   0.0094,
+   0.0249,
+   0.0327,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "online_errors_bins_mean": [
+   4.38,
+   4.0533,
+   4.0467,
+   4.0267,
+   4.0533,
+   4.0333,
+   4.0067,
+   4.0
+  ],
+  "online_errors_bins_sd": [
+   0.0327,
+   0.0411,
+   0.0189,
+   0.0094,
+   0.034,
+   0.0249,
+   0.0094,
+   0.0
+  ],
+  "online_inverse_bins_mean": [
+   0.6333,
+   0.88,
+   0.8644,
+   0.8778,
+   0.92,
+   0.98,
+   0.9667,
+   0.9644
+  ],
+  "online_inverse_bins_sd": [
+   0.0288,
+   0.0732,
+   0.1549,
+   0.1258,
+   0.0849,
+   0.0054,
+   0.0094,
+   0.0191
+  ],
+  "online_ttc_bins_mean": [
+   7.16,
+   6.5133,
+   6.0533,
+   6.0067,
+   6.0867,
+   5.9667,
+   6.3667,
+   6.2
+  ],
+  "online_ttc_bins_sd": [
+   0.147,
+   0.1746,
+   0.1159,
+   0.2932,
+   0.1636,
+   0.0838,
+   0.1668,
+   0.1451
+  ],
+  "online_two_step_bins_mean": [
+   0.5844,
+   0.7911,
+   0.8222,
+   0.76,
+   0.7511,
+   0.8044,
+   0.7578,
+   0.7956
+  ],
+  "online_two_step_bins_sd": [
+   0.0113,
+   0.0333,
+   0.0319,
+   0.0432,
+   0.0175,
+   0.0166,
+   0.0166,
+   0.0346
+  ],
+  "say_neurons": [
+   0,
+   0,
+   0
+  ],
+  "decisions": [
+   {
+    "neurons": 0,
+    "expanded": 36866,
+    "replayed": 0,
+    "judge_neurons": 0,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 767,
+    "copiar": 6115,
+    "seguir": 4886,
+    "hablar": 82,
+    "emitir": 2753,
+    "juzgar": 315,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 20954
+   },
+   {
+    "neurons": 0,
+    "expanded": 36866,
+    "replayed": 0,
+    "judge_neurons": 0,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 329,
+    "copiar": 6275,
+    "seguir": 4543,
+    "hablar": 2125,
+    "emitir": 2997,
+    "juzgar": 349,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 18676
+   },
+   {
+    "neurons": 0,
+    "expanded": 39742,
+    "replayed": 0,
+    "judge_neurons": 0,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 385,
+    "copiar": 6292,
+    "seguir": 4518,
+    "hablar": 932,
+    "emitir": 2932,
+    "juzgar": 341,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 20622
+   }
+  ],
+  "width": 50
+ },
+ "FIN {\"ne\": \"inesperada\", \"unexplained_gain\": 0.0, \"decay\": \"error\", \"regret\": 2.0}": {
+  "frozen_L=8 (más largo que lo entrenado) | closure": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | errors": [
+   7.0,
+   7.0,
+   7.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | inverse": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | ttc": [
+   11.3,
+   12.52,
+   12.06
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | two_step": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_closure": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_errors": [
+   4.0,
+   4.0,
+   4.0
+  ],
+  "frozen_inverse": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_ttc": [
+   6.18,
+   5.62,
+   5.74
+  ],
+  "frozen_two_step": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "online_closure_bins_mean": [
+   0.9267,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   0.9933,
+   1.0,
+   0.9933
+  ],
+  "online_closure_bins_sd": [
+   0.0249,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0094,
+   0.0,
+   0.0094
+  ],
+  "online_errors_bins_mean": [
+   4.14,
+   4.0,
+   4.0,
+   4.0,
+   4.0,
+   4.02,
+   4.0067,
+   4.0067
+  ],
+  "online_errors_bins_sd": [
+   0.0163,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0283,
+   0.0094,
+   0.0094
+  ],
+  "online_inverse_bins_mean": [
+   0.9178,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "online_inverse_bins_sd": [
+   0.0137,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "online_ttc_bins_mean": [
+   6.2333,
+   5.9333,
+   6.12,
+   5.9933,
+   5.9667,
+   6.16,
+   6.1067,
+   5.74
+  ],
+  "online_ttc_bins_sd": [
+   0.1821,
+   0.2131,
+   0.1558,
+   0.2042,
+   0.17,
+   0.0712,
+   0.2229,
+   0.0432
+  ],
+  "online_two_step_bins_mean": [
+   0.92,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   0.9956,
+   1.0,
+   0.9933
+  ],
+  "online_two_step_bins_sd": [
+   0.0054,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0063,
+   0.0,
+   0.0094
+  ],
+  "say_neurons": [
+   0,
+   0,
+   0
+  ],
+  "decisions": [
+   {
+    "neurons": 0,
+    "expanded": 32820,
+    "replayed": 12,
+    "judge_neurons": 2,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 525,
+    "copiar": 6342,
+    "seguir": 1558,
+    "hablar": 2871,
+    "emitir": 1616,
+    "juzgar": 1467,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 7329
+   },
+   {
+    "neurons": 0,
+    "expanded": 33178,
+    "replayed": 13,
+    "judge_neurons": 2,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 7,
+    "copiar": 6375,
+    "seguir": 1501,
+    "hablar": 6,
+    "emitir": 1503,
+    "juzgar": 2065,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 1520
+   },
+   {
+    "neurons": 0,
+    "expanded": 33129,
+    "replayed": 12,
+    "judge_neurons": 2,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 12,
+    "copiar": 6372,
+    "seguir": 1499,
+    "hablar": 8,
+    "emitir": 1496,
+    "juzgar": 2070,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 1521
+   }
+  ],
+  "width": 50
+ },
+ "{\"ne\": \"inesperada\", \"unexplained_gain\": 0.0, \"decay\": \"paso\", \"regret\": 2.0, \"ne_gain\": 8.0}": {
+  "sv": [
+   0.8136363636363637,
+   0.6215909090909091,
+   0.8215909090909093
+  ],
+  "online": 0.7164242424242424,
+  "harlow_min": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "score": 1.9686969696969698
+ },
+ "{\"ne\": \"inesperada\", \"unexplained_gain\": 0.0, \"decay\": \"paso\", \"regret\": 2.0, \"ne_floor\": 0.05}": {
+  "sv": [
+   0.8136363636363637,
+   0.8079545454545454,
+   0.8215909090909093
+  ],
+  "online": 0.7224242424242424,
+  "harlow_min": [
+   1.0,
+   1.0,
+   0.4
+  ],
+  "score": 1.9368181818181818
+ },
+ "{\"ne\": \"inesperada\", \"unexplained_gain\": 0.0, \"decay\": \"paso\", \"regret\": 2.0, \"ne_floor\": 0.1}": {
+  "sv": [
+   0.6352272727272726,
+   0.8079545454545454,
+   0.8215909090909093
+  ],
+  "online": 0.722121212121212,
+  "harlow_min": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "score": 1.9770454545454546
+ },
+ "{\"ne\": \"inesperada\", \"unexplained_gain\": 0.0, \"decay\": \"paso\", \"regret\": 2.0, \"beta\": 0.02}": {
+  "sv": [
+   0.8136363636363637,
+   0.6215909090909091,
+   0.8215909090909093
+  ],
+  "online": 0.7274545454545454,
+  "harlow_min": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "score": 1.9797272727272728
+ },
+ "{\"ne\": \"inesperada\", \"unexplained_gain\": 0.0, \"decay\": \"paso\", \"regret\": 0.15}": {
+  "sv": [
+   0.8136363636363637,
+   0.8079545454545454,
+   0.8215909090909093
+  ],
+  "online": 0.7545454545454546,
+  "harlow_min": [
+   0.64,
+   1.0,
+   1.0
+  ],
+  "score": 2.0089393939393942
+ },
+ "{\"ne\": \"inesperada\", \"unexplained_gain\": 0.0, \"decay\": \"paso\", \"regret\": 0.05}": {
+  "sv": [
+   0.8136363636363637,
+   0.8079545454545454,
+   0.6318181818181818
+  ],
+  "online": 0.7593939393939394,
+  "harlow_min": [
+   0.34,
+   1.0,
+   0.7
+  ],
+  "score": 1.850530303030303
+ },
+ "{\"ne\": \"inesperada\", \"unexplained_gain\": 0.0, \"decay\": \"paso\", \"regret\": 0.3}": {
+  "sv": [
+   0.8136363636363637,
+   0.8079545454545454,
+   0.8215909090909093
+  ],
+  "online": 0.7425454545454545,
+  "harlow_min": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "score": 2.056939393939394
+ },
+ "{\"ne\": \"fiabilidad\", \"unexplained_gain\": 4.0, \"decay\": \"paso\", \"regret\": 0.15}": {
+  "sv": [
+   0.8136363636363637,
+   0.8079545454545454,
+   0.8215909090909093
+  ],
+  "online": 0.6961818181818182,
+  "harlow_min": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "score": 2.010575757575758
+ },
+ "{\"ne\": \"inesperada\", \"unexplained_gain\": 0.0, \"decay\": \"error\", \"regret\": 0.15}": {
+  "sv": [
+   0.8136363636363637,
+   0.8079545454545454,
+   0.6329545454545453
+  ],
+  "online": 0.776848484848485,
+  "harlow_min": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "score": 2.0283636363636366
+ },
+ "anillo {\"ne\": \"inesperada\", \"unexplained_gain\": 0.0, \"decay\": \"paso\", \"regret\": 0.15}": {
+  "frozen_L=8 (más largo que lo entrenado) | closure": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | errors": [
+   7.0,
+   7.0,
+   7.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | inverse": [
+   1.0,
+   0.88,
+   0.26
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | ttc": [
+   12.32,
+   12.22,
+   12.26
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | two_step": [
+   0.8067,
+   0.8467,
+   0.88
+  ],
+  "frozen_closure": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_errors": [
+   4.0,
+   4.0,
+   4.0
+  ],
+  "frozen_inverse": [
+   1.0,
+   0.8067,
+   0.44
+  ],
+  "frozen_ttc": [
+   6.1,
+   6.16,
+   5.96
+  ],
+  "frozen_two_step": [
+   0.8,
+   0.8267,
+   0.8533
+  ],
+  "online_closure_bins_mean": [
+   0.7,
+   0.92,
+   0.96,
+   0.9733,
+   0.9533,
+   0.96,
+   0.94,
+   0.98
+  ],
+  "online_closure_bins_sd": [
+   0.0163,
+   0.0283,
+   0.0283,
+   0.0094,
+   0.0189,
+   0.0163,
+   0.0,
+   0.0
+  ],
+  "online_errors_bins_mean": [
+   4.48,
+   4.14,
+   4.1,
+   4.0933,
+   4.12,
+   4.12,
+   4.1267,
+   4.1067
+  ],
+  "online_errors_bins_sd": [
+   0.0163,
+   0.0327,
+   0.0589,
+   0.0189,
+   0.0,
+   0.0,
+   0.0094,
+   0.0094
+  ],
+  "online_inverse_bins_mean": [
+   0.5422,
+   0.7178,
+   0.7133,
+   0.7844,
+   0.8067,
+   0.7267,
+   0.7822,
+   0.8222
+  ],
+  "online_inverse_bins_sd": [
+   0.0113,
+   0.0269,
+   0.0411,
+   0.1384,
+   0.0993,
+   0.0573,
+   0.1164,
+   0.0882
+  ],
+  "online_ttc_bins_mean": [
+   7.1867,
+   6.68,
+   6.18,
+   6.22,
+   6.1733,
+   6.1867,
+   6.5933,
+   6.4667
+  ],
+  "online_ttc_bins_sd": [
+   0.2217,
+   0.2406,
+   0.0849,
+   0.1705,
+   0.1569,
+   0.0377,
+   0.1761,
+   0.0929
+  ],
+  "online_two_step_bins_mean": [
+   0.5489,
+   0.7467,
+   0.8044,
+   0.7489,
+   0.8,
+   0.7467,
+   0.76,
+   0.7622
+  ],
+  "online_two_step_bins_sd": [
+   0.0257,
+   0.0331,
+   0.0157,
+   0.0166,
+   0.0237,
+   0.0544,
+   0.0189,
+   0.0371
+  ],
+  "say_neurons": [
+   0,
+   0,
+   0
+  ],
+  "decisions": [
+   {
+    "neurons": 0,
+    "expanded": 40442,
+    "replayed": 32,
+    "judge_neurons": 0,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 343,
+    "copiar": 6369,
+    "seguir": 2671,
+    "hablar": 380,
+    "emitir": 2893,
+    "juzgar": 345,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 8697
+   },
+   {
+    "neurons": 0,
+    "expanded": 42430,
+    "replayed": 0,
+    "judge_neurons": 0,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 332,
+    "copiar": 6392,
+    "seguir": 1848,
+    "hablar": 307,
+    "emitir": 2908,
+    "juzgar": 318,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 7147
+   },
+   {
+    "neurons": 0,
+    "expanded": 42108,
+    "replayed": 0,
+    "judge_neurons": 0,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 331,
+    "copiar": 6207,
+    "seguir": 2674,
+    "hablar": 356,
+    "emitir": 3059,
+    "juzgar": 353,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 8335
+   }
+  ],
+  "width": 50
+ },
+ "FIN {\"ne\": \"inesperada\", \"unexplained_gain\": 0.0, \"decay\": \"paso\", \"regret\": 0.15}": {
+  "frozen_L=8 (más largo que lo entrenado) | closure": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | errors": [
+   7.0,
+   7.0,
+   7.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | inverse": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | ttc": [
+   11.3,
+   12.52,
+   12.06
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | two_step": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_closure": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_errors": [
+   4.0,
+   4.0,
+   4.0
+  ],
+  "frozen_inverse": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_ttc": [
+   6.18,
+   5.62,
+   5.74
+  ],
+  "frozen_two_step": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "online_closure_bins_mean": [
+   0.8533,
+   0.9733,
+   1.0,
+   0.9933,
+   0.9867,
+   0.9933,
+   0.98,
+   0.9933
+  ],
+  "online_closure_bins_sd": [
+   0.0411,
+   0.0094,
+   0.0,
+   0.0094,
+   0.0094,
+   0.0094,
+   0.0,
+   0.0094
+  ],
+  "online_errors_bins_mean": [
+   4.3133,
+   4.0867,
+   4.1,
+   4.1,
+   4.06,
+   4.1067,
+   4.0867,
+   4.0933
+  ],
+  "online_errors_bins_sd": [
+   0.0249,
+   0.0189,
+   0.0163,
+   0.0163,
+   0.0,
+   0.0094,
+   0.0094,
+   0.0249
+  ],
+  "online_inverse_bins_mean": [
+   0.8867,
+   0.9911,
+   0.9822,
+   0.9756,
+   0.98,
+   0.9844,
+   0.9822,
+   0.9778
+  ],
+  "online_inverse_bins_sd": [
+   0.0094,
+   0.0031,
+   0.0031,
+   0.0063,
+   0.0094,
+   0.0083,
+   0.0031,
+   0.0031
+  ],
+  "online_ttc_bins_mean": [
+   6.7,
+   6.14,
+   6.2933,
+   6.2267,
+   6.0667,
+   6.36,
+   6.3133,
+   6.0067
+  ],
+  "online_ttc_bins_sd": [
+   0.2085,
+   0.1414,
+   0.131,
+   0.0806,
+   0.1668,
+   0.1178,
+   0.2346,
+   0.0377
+  ],
+  "online_two_step_bins_mean": [
+   0.8889,
+   0.98,
+   0.9911,
+   0.9733,
+   0.9956,
+   0.98,
+   0.9867,
+   0.9689
+  ],
+  "online_two_step_bins_sd": [
+   0.0166,
+   0.0094,
+   0.0031,
+   0.0,
+   0.0063,
+   0.0109,
+   0.0109,
+   0.0113
+  ],
+  "say_neurons": [
+   0,
+   0,
+   0
+  ],
+  "decisions": [
+   {
+    "neurons": 0,
+    "expanded": 33010,
+    "replayed": 13,
+    "judge_neurons": 1,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 280,
+    "copiar": 7045,
+    "seguir": 1768,
+    "hablar": 256,
+    "emitir": 1725,
+    "juzgar": 900,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 1781
+   },
+   {
+    "neurons": 0,
+    "expanded": 34082,
+    "replayed": 44,
+    "judge_neurons": 1,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 274,
+    "copiar": 6801,
+    "seguir": 1774,
+    "hablar": 337,
+    "emitir": 1960,
+    "juzgar": 915,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 7050
+   },
+   {
+    "neurons": 0,
+    "expanded": 34530,
+    "replayed": 76,
+    "judge_neurons": 2,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 271,
+    "copiar": 6433,
+    "seguir": 1888,
+    "hablar": 391,
+    "emitir": 1758,
+    "juzgar": 1488,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 1858
+   }
+  ],
+  "width": 50
+ },
+ "anillo {\"ne\": \"inesperada\", \"unexplained_gain\": 0.0, \"decay\": \"error\", \"regret\": 0.15}": {
+  "frozen_L=8 (más largo que lo entrenado) | closure": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | errors": [
+   7.0,
+   7.0,
+   6.98
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | inverse": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | ttc": [
+   12.32,
+   12.22,
+   12.26
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | two_step": [
+   0.8667,
+   0.8467,
+   0.88
+  ],
+  "frozen_closure": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_errors": [
+   4.0,
+   3.98,
+   4.0
+  ],
+  "frozen_inverse": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_ttc": [
+   6.1,
+   6.16,
+   5.96
+  ],
+  "frozen_two_step": [
+   0.7867,
+   0.8267,
+   0.8533
+  ],
+  "online_closure_bins_mean": [
+   0.7667,
+   0.9733,
+   0.9667,
+   0.9933,
+   0.9533,
+   0.9733,
+   0.9933,
+   1.0
+  ],
+  "online_closure_bins_sd": [
+   0.0249,
+   0.0189,
+   0.0189,
+   0.0094,
+   0.0189,
+   0.0189,
+   0.0094,
+   0.0
+  ],
+  "online_errors_bins_mean": [
+   4.3333,
+   4.0533,
+   4.04,
+   4.0067,
+   4.04,
+   4.04,
+   4.0067,
+   4.0
+  ],
+  "online_errors_bins_sd": [
+   0.0094,
+   0.0411,
+   0.0327,
+   0.0094,
+   0.0327,
+   0.0283,
+   0.0094,
+   0.0
+  ],
+  "online_inverse_bins_mean": [
+   0.5511,
+   0.7289,
+   0.6844,
+   0.7933,
+   0.9556,
+   0.9667,
+   0.98,
+   0.98
+  ],
+  "online_inverse_bins_sd": [
+   0.0251,
+   0.0394,
+   0.0245,
+   0.0425,
+   0.0031,
+   0.0163,
+   0.0054,
+   0.0054
+  ],
+  "online_ttc_bins_mean": [
+   6.8533,
+   6.5933,
+   6.14,
+   5.9733,
+   6.06,
+   5.98,
+   6.38,
+   6.2
+  ],
+  "online_ttc_bins_sd": [
+   0.1962,
+   0.0411,
+   0.1818,
+   0.2015,
+   0.2903,
+   0.1143,
+   0.1855,
+   0.1451
+  ],
+  "online_two_step_bins_mean": [
+   0.5756,
+   0.7733,
+   0.8156,
+   0.7822,
+   0.7711,
+   0.7889,
+   0.7867,
+   0.78
+  ],
+  "online_two_step_bins_sd": [
+   0.0371,
+   0.0288,
+   0.0257,
+   0.03,
+   0.0126,
+   0.0206,
+   0.034,
+   0.0249
+  ],
+  "say_neurons": [
+   0,
+   0,
+   0
+  ],
+  "decisions": [
+   {
+    "neurons": 0,
+    "expanded": 39742,
+    "replayed": 0,
+    "judge_neurons": 0,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 877,
+    "copiar": 6077,
+    "seguir": 5268,
+    "hablar": 89,
+    "emitir": 2668,
+    "juzgar": 328,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 20634
+   },
+   {
+    "neurons": 0,
+    "expanded": 39174,
+    "replayed": 0,
+    "judge_neurons": 0,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 913,
+    "copiar": 5824,
+    "seguir": 6946,
+    "hablar": 1910,
+    "emitir": 2847,
+    "juzgar": 366,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 17413
+   },
+   {
+    "neurons": 0,
+    "expanded": 39217,
+    "replayed": 0,
+    "judge_neurons": 0,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 450,
+    "copiar": 5725,
+    "seguir": 3910,
+    "hablar": 606,
+    "emitir": 2995,
+    "juzgar": 780,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 21016
+   }
+  ],
+  "width": 50
+ },
+ "FIN {\"ne\": \"inesperada\", \"unexplained_gain\": 0.0, \"decay\": \"error\", \"regret\": 0.15}": {
+  "frozen_L=8 (más largo que lo entrenado) | closure": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | errors": [
+   7.0,
+   7.0,
+   7.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | inverse": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | ttc": [
+   11.3,
+   12.52,
+   12.06
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | two_step": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_closure": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_errors": [
+   4.0,
+   4.0,
+   4.0
+  ],
+  "frozen_inverse": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_ttc": [
+   6.18,
+   5.62,
+   5.74
+  ],
+  "frozen_two_step": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "online_closure_bins_mean": [
+   0.9333,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "online_closure_bins_sd": [
+   0.0249,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "online_errors_bins_mean": [
+   4.1333,
+   4.0,
+   4.0,
+   4.0,
+   4.0,
+   4.0,
+   4.0,
+   4.0
+  ],
+  "online_errors_bins_sd": [
+   0.0094,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "online_inverse_bins_mean": [
+   0.9,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "online_inverse_bins_sd": [
+   0.0094,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "online_ttc_bins_mean": [
+   6.2267,
+   5.9333,
+   6.12,
+   5.9933,
+   5.9667,
+   6.0733,
+   6.1067,
+   5.74
+  ],
+  "online_ttc_bins_sd": [
+   0.2106,
+   0.2131,
+   0.1558,
+   0.2042,
+   0.17,
+   0.1147,
+   0.2229,
+   0.0432
+  ],
+  "online_two_step_bins_mean": [
+   0.9133,
+   0.9978,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "online_two_step_bins_sd": [
+   0.0054,
+   0.0031,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "say_neurons": [
+   0,
+   0,
+   0
+  ],
+  "decisions": [
+   {
+    "neurons": 0,
+    "expanded": 32822,
+    "replayed": 12,
+    "judge_neurons": 2,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 7,
+    "copiar": 6908,
+    "seguir": 1508,
+    "hablar": 15,
+    "emitir": 1501,
+    "juzgar": 1534,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 1505
+   },
+   {
+    "neurons": 0,
+    "expanded": 33188,
+    "replayed": 13,
+    "judge_neurons": 2,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 9,
+    "copiar": 6301,
+    "seguir": 1503,
+    "hablar": 6,
+    "emitir": 1498,
+    "juzgar": 2142,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 1499
+   },
+   {
+    "neurons": 0,
+    "expanded": 33144,
+    "replayed": 12,
+    "judge_neurons": 2,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 14,
+    "copiar": 6183,
+    "seguir": 1499,
+    "hablar": 10,
+    "emitir": 1491,
+    "juzgar": 2262,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 1504
+   }
+  ],
+  "width": 50
+ },
+ "{\"ne\": \"inesperada\", \"unexplained_gain\": 0.0, \"decay\": \"ne\", \"regret\": 0.15}": {
+  "sv": [
+   0.8136363636363637,
+   0.8079545454545454,
+   0.6318181818181818
+  ],
+  "online": 0.7720606060606061,
+  "harlow_min": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "score": 2.02319696969697
+ },
+ "{\"ne\": \"inesperada\", \"unexplained_gain\": 0.0, \"decay\": \"ne\", \"regret\": 0.3}": {
+  "sv": [
+   0.6352272727272726,
+   0.6215909090909091,
+   0.8215909090909093
+  ],
+  "online": 0.7366666666666667,
+  "harlow_min": [
+   1.0,
+   1.0,
+   0.7
+  ],
+  "score": 1.8794696969696971
+ },
+ "{\"ne\": \"inesperada\", \"unexplained_gain\": 0.0, \"decay\": \"ne\", \"regret\": 2.0}": {
+  "sv": [
+   0.5159090909090909,
+   0.6215909090909091,
+   0.6318181818181818
+  ],
+  "online": 0.6958181818181817,
+  "harlow_min": [
+   1.0,
+   1.0,
+   0.7
+  ],
+  "score": 1.7355909090909087
+ }
+}

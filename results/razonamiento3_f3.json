@@ -1,0 +1,1048 @@
+{
+ "F3.1 Thinker por defecto (sin back)": {
+  "acc": {
+   "C0 f(x), todos los x": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C1 v nunca compuesto, 1-2 saltos": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C1 v nunca compuesto, 3-4 saltos": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C2 x nunca compuesto": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 5-8 saltos": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 5-8 saltos, 16 distractores + 8 ruidos": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 3 saltos, orden reverso": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 3 saltos, hecho corregido": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 3 saltos, distractores que apuntan a la cadena": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C4 x nunca compuesto": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C5 orden de 8, distancia >= 4": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C6 5 eventos": [
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "ms_per_episode": 1.1252007989612354,
+  "cost": {
+   "nodos_busqueda": 0.6402539682539682,
+   "neuronas_say": 32.333333333333336
+  },
+  "min": 1.0
+ },
+ "F3.1 ronda anterior: back con predecesores siempre visibles": {
+  "acc": {
+   "C0 f(x), todos los x": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C1 v nunca compuesto, 1-2 saltos": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C1 v nunca compuesto, 3-4 saltos": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C2 x nunca compuesto": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 5-8 saltos": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 5-8 saltos, 16 distractores + 8 ruidos": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 3 saltos, orden reverso": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 3 saltos, hecho corregido": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 3 saltos, distractores que apuntan a la cadena": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C4 x nunca compuesto": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C5 orden de 8, distancia >= 4": [
+    0.715,
+    0.72,
+    0.73
+   ],
+   "C6 5 eventos": [
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "ms_per_episode": 1.175955586347161,
+  "cost": {
+   "nodos_busqueda": 1.0911111111111111,
+   "neuronas_say": 32.333333333333336
+  },
+  "min": 0.715
+ },
+ "F3.1 back: predecesores al retroceder (+ coincidencia con lo sostenido)": {
+  "acc": {
+   "C0 f(x), todos los x": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C1 v nunca compuesto, 1-2 saltos": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C1 v nunca compuesto, 3-4 saltos": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C2 x nunca compuesto": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 5-8 saltos": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 5-8 saltos, 16 distractores + 8 ruidos": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 3 saltos, orden reverso": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 3 saltos, hecho corregido": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 3 saltos, distractores que apuntan a la cadena": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C4 x nunca compuesto": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C5 orden de 8, distancia >= 4": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C6 5 eventos": [
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "ms_per_episode": 1.4562508117320927,
+  "cost": {
+   "nodos_busqueda": 2.479777777777778,
+   "neuronas_say": 32.0
+  },
+  "min": 1.0
+ },
+ "F3.1 prev_io + back (nuevo)": {
+  "acc": {
+   "C0 f(x), todos los x": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C1 v nunca compuesto, 1-2 saltos": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C1 v nunca compuesto, 3-4 saltos": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C2 x nunca compuesto": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 5-8 saltos": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 5-8 saltos, 16 distractores + 8 ruidos": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 3 saltos, orden reverso": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 3 saltos, hecho corregido": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 3 saltos, distractores que apuntan a la cadena": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C4 x nunca compuesto": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C5 orden de 8, distancia >= 4": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C6 5 eventos": [
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "ms_per_episode": 1.235632557585566,
+  "cost": {
+   "nodos_busqueda": 1.6913968253968255,
+   "neuronas_say": 32.0
+  },
+  "min": 1.0
+ },
+ "F3.2 ronda anterior: back con predecesores siempre visibles": {
+  "YES": [
+   0.9234449760765551,
+   0.45226130653266333,
+   0.37244897959183676
+  ],
+  "NO": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "juzga sin recorrer (SÍ)": [
+   0.07655502392344497,
+   1.0,
+   1.0
+  ],
+  "juzga sin recorrer (NO)": [
+   0.45549738219895286,
+   1.0,
+   1.0
+  ]
+ },
+ "F3.2 back: predecesores al retroceder (+ coincidencia con lo sostenido)": {
+  "YES": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "NO": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "juzga sin recorrer (SÍ)": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "juzga sin recorrer (NO)": [
+   0.39267015706806285,
+   0.417910447761194,
+   0.43137254901960786
+  ]
+ },
+ "F3.3 ronda anterior: back con predecesores siempre visibles": {
+  "frozen_L=8 (más largo que lo entrenado) | before": [
+   0.7167,
+   1.0,
+   0.5933
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | errors": [
+   7.0,
+   7.0,
+   7.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | inverse": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | ttc": [
+   11.64,
+   11.92,
+   11.8
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | two_step": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_R=1 (cada relación observada una vez) | before": [
+   0.91,
+   1.0,
+   0.7633
+  ],
+  "frozen_R=1 (cada relación observada una vez) | errors": [
+   4.0,
+   4.0,
+   4.0
+  ],
+  "frozen_R=1 (cada relación observada una vez) | inverse": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_R=1 (cada relación observada una vez) | ttc": [
+   5.0,
+   5.0,
+   5.0
+  ],
+  "frozen_R=1 (cada relación observada una vez) | two_step": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_before": [
+   0.91,
+   1.0,
+   0.75
+  ],
+  "frozen_errors": [
+   4.0,
+   4.0,
+   4.0
+  ],
+  "frozen_inverse": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_ttc": [
+   6.14,
+   5.74,
+   6.12
+  ],
+  "frozen_two_step": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "online_before_bins_mean": [
+   0.3578,
+   0.7022,
+   0.7378,
+   0.8467,
+   0.8444,
+   0.8467,
+   0.8644,
+   0.8578,
+   0.8422,
+   0.88,
+   0.8667,
+   0.8556
+  ],
+  "online_before_bins_sd": [
+   0.0833,
+   0.0319,
+   0.0927,
+   0.0163,
+   0.0279,
+   0.0425,
+   0.0577,
+   0.0409,
+   0.0382,
+   0.049,
+   0.0519,
+   0.0551
+  ],
+  "online_errors_bins_mean": [
+   5.16,
+   4.7067,
+   4.6533,
+   4.72,
+   4.6267,
+   4.6933,
+   4.7733,
+   4.56,
+   4.8267,
+   4.6533,
+   4.6667,
+   4.6667
+  ],
+  "online_errors_bins_sd": [
+   0.1424,
+   0.132,
+   0.1914,
+   0.1497,
+   0.2125,
+   0.132,
+   0.2125,
+   0.0653,
+   0.1611,
+   0.2451,
+   0.0754,
+   0.1147
+  ],
+  "online_inverse_bins_mean": [
+   0.4756,
+   0.7111,
+   0.76,
+   0.7822,
+   0.8089,
+   0.8667,
+   0.8178,
+   0.8622,
+   0.8489,
+   0.7556,
+   0.7467,
+   0.8356
+  ],
+  "online_inverse_bins_sd": [
+   0.0166,
+   0.0629,
+   0.0499,
+   0.0251,
+   0.0412,
+   0.0189,
+   0.0314,
+   0.035,
+   0.0453,
+   0.0548,
+   0.0218,
+   0.0063
+  ],
+  "online_ttc_bins_mean": [
+   8.0667,
+   7.8267,
+   7.8933,
+   7.7333,
+   7.4533,
+   7.3867,
+   7.8,
+   7.12,
+   8.16,
+   7.84,
+   7.4533,
+   7.52
+  ],
+  "online_ttc_bins_sd": [
+   0.9158,
+   0.4529,
+   0.1857,
+   0.3206,
+   0.4634,
+   0.2473,
+   0.341,
+   0.2551,
+   0.2939,
+   0.8333,
+   0.4349,
+   0.4942
+  ],
+  "online_two_step_bins_mean": [
+   0.4844,
+   0.7822,
+   0.7733,
+   0.8133,
+   0.8222,
+   0.8222,
+   0.8178,
+   0.84,
+   0.7778,
+   0.8533,
+   0.7956,
+   0.8133
+  ],
+  "online_two_step_bins_sd": [
+   0.0166,
+   0.0251,
+   0.0576,
+   0.0499,
+   0.0274,
+   0.0227,
+   0.0333,
+   0.0218,
+   0.0063,
+   0.0288,
+   0.0491,
+   0.0
+  ],
+  "say_neurons": [
+   0,
+   0,
+   57
+  ],
+  "decisions": [
+   {
+    "neurons": 0,
+    "expanded": 29666,
+    "replayed": 1338,
+    "judge_neurons": 6,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 153,
+    "copiar": 6627,
+    "seguir": 1433,
+    "hablar": 181,
+    "emitir": 1391,
+    "juzgar": 2679,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 2834
+   },
+   {
+    "neurons": 0,
+    "expanded": 71002,
+    "replayed": 2381,
+    "judge_neurons": 7,
+    "revised": [
+     3,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 188,
+    "copiar": 6615,
+    "seguir": 3266,
+    "hablar": 564,
+    "emitir": 1440,
+    "juzgar": 2607,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 1450
+   },
+   {
+    "neurons": 57,
+    "expanded": 73509,
+    "replayed": 3081,
+    "judge_neurons": 2,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 283,
+    "copiar": 6626,
+    "seguir": 1465,
+    "hablar": 235,
+    "emitir": 1415,
+    "juzgar": 2526,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 4133
+   }
+  ],
+  "width": 25
+ },
+ "F3.3 back: predecesores al retroceder (+ coincidencia con lo sostenido)": {
+  "frozen_L=8 (más largo que lo entrenado) | before": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | errors": [
+   7.0,
+   7.0,
+   7.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | inverse": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | ttc": [
+   11.64,
+   11.92,
+   11.8
+  ],
+  "frozen_L=8 (más largo que lo entrenado) | two_step": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_R=1 (cada relación observada una vez) | before": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_R=1 (cada relación observada una vez) | errors": [
+   4.0,
+   4.0,
+   4.0
+  ],
+  "frozen_R=1 (cada relación observada una vez) | inverse": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_R=1 (cada relación observada una vez) | ttc": [
+   5.0,
+   5.0,
+   5.0
+  ],
+  "frozen_R=1 (cada relación observada una vez) | two_step": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_before": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_errors": [
+   4.0,
+   4.0,
+   4.0
+  ],
+  "frozen_inverse": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "frozen_ttc": [
+   6.14,
+   5.74,
+   6.12
+  ],
+  "frozen_two_step": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "online_before_bins_mean": [
+   0.2933,
+   0.7178,
+   0.8022,
+   0.8489,
+   0.86,
+   0.8822,
+   0.8711,
+   0.8556,
+   0.8556,
+   0.8489,
+   0.86,
+   0.86
+  ],
+  "online_before_bins_sd": [
+   0.172,
+   0.1012,
+   0.0386,
+   0.0582,
+   0.0196,
+   0.0166,
+   0.0113,
+   0.0191,
+   0.022,
+   0.0157,
+   0.034,
+   0.0331
+  ],
+  "online_errors_bins_mean": [
+   5.76,
+   4.6933,
+   4.44,
+   4.8933,
+   4.72,
+   4.5867,
+   4.5733,
+   4.7333,
+   4.5867,
+   4.76,
+   4.6267,
+   4.6267
+  ],
+  "online_errors_bins_sd": [
+   0.4418,
+   0.1543,
+   0.1987,
+   0.2294,
+   0.098,
+   0.0998,
+   0.1543,
+   0.1147,
+   0.1611,
+   0.0864,
+   0.0189,
+   0.132
+  ],
+  "online_inverse_bins_mean": [
+   0.5467,
+   0.7422,
+   0.8133,
+   0.8267,
+   0.8222,
+   0.8178,
+   0.8578,
+   0.8356,
+   0.8089,
+   0.7956,
+   0.8267,
+   0.8444
+  ],
+  "online_inverse_bins_sd": [
+   0.0762,
+   0.0166,
+   0.0288,
+   0.0218,
+   0.0251,
+   0.035,
+   0.035,
+   0.0537,
+   0.0412,
+   0.0412,
+   0.0475,
+   0.0166
+  ],
+  "online_ttc_bins_mean": [
+   8.8533,
+   7.5467,
+   7.3733,
+   7.9333,
+   7.7733,
+   7.3333,
+   7.6533,
+   7.6933,
+   7.52,
+   7.76,
+   7.9067,
+   7.5333
+  ],
+  "online_ttc_bins_sd": [
+   0.0499,
+   0.5565,
+   0.4458,
+   0.4446,
+   0.3336,
+   0.3642,
+   0.3087,
+   0.2363,
+   0.1131,
+   0.2551,
+   0.4148,
+   0.3035
+  ],
+  "online_two_step_bins_mean": [
+   0.4578,
+   0.7733,
+   0.8089,
+   0.7511,
+   0.8578,
+   0.8089,
+   0.7867,
+   0.8622,
+   0.8089,
+   0.7956,
+   0.8489,
+   0.8
+  ],
+  "online_two_step_bins_sd": [
+   0.0725,
+   0.0218,
+   0.0314,
+   0.0314,
+   0.0126,
+   0.0333,
+   0.0288,
+   0.0453,
+   0.044,
+   0.0537,
+   0.0227,
+   0.0762
+  ],
+  "say_neurons": [
+   0,
+   0,
+   0
+  ],
+  "decisions": [
+   {
+    "neurons": 0,
+    "expanded": 31508,
+    "replayed": 887,
+    "judge_neurons": 3,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 182,
+    "copiar": 6648,
+    "seguir": 4808,
+    "hablar": 215,
+    "emitir": 1442,
+    "juzgar": 2578,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 1504
+   },
+   {
+    "neurons": 0,
+    "expanded": 36712,
+    "replayed": 1852,
+    "judge_neurons": 3,
+    "revised": [
+     1,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 189,
+    "copiar": 6445,
+    "seguir": 4914,
+    "hablar": 284,
+    "emitir": 1575,
+    "juzgar": 2641,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 1548
+   },
+   {
+    "neurons": 0,
+    "expanded": 30777,
+    "replayed": 1290,
+    "judge_neurons": 5,
+    "revised": [
+     0,
+     0,
+     0
+    ],
+    "abstained": 0,
+    "blamed_inputs": 0,
+    "decir": 216,
+    "copiar": 6617,
+    "seguir": 5150,
+    "hablar": 238,
+    "emitir": 1442,
+    "juzgar": 2575,
+    "enfocar": 0,
+    "sostener": 0,
+    "retroceder": 1602
+   }
+  ],
+  "width": 25
+ },
+ "F3.4 Thinker por defecto (sin back)": {
+  "acc": {
+   "C0 f(x), todos los x": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C1 v nunca compuesto, 1-2 saltos": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C1 v nunca compuesto, 3-4 saltos": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C2 x nunca compuesto": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 5-8 saltos": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 5-8 saltos, 16 distractores + 8 ruidos": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 3 saltos, orden reverso": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 3 saltos, hecho corregido": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 3 saltos, distractores que apuntan a la cadena": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C4 x nunca compuesto": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C5 orden de 8, distancia >= 4": [
+    0.47,
+    1.0,
+    1.0
+   ],
+   "C6 5 eventos": [
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "ms_per_episode": 1.1210675952529383,
+  "cost": {
+   "nodos_busqueda": 0.8564786324786325,
+   "neuronas_say": 32.333333333333336
+  },
+  "min": 0.47
+ },
+ "F3.4 back: predecesores al retroceder (+ coincidencia con lo sostenido)": {
+  "acc": {
+   "C0 f(x), todos los x": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C1 v nunca compuesto, 1-2 saltos": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C1 v nunca compuesto, 3-4 saltos": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C2 x nunca compuesto": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 5-8 saltos": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 5-8 saltos, 16 distractores + 8 ruidos": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 3 saltos, orden reverso": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 3 saltos, hecho corregido": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C3 3 saltos, distractores que apuntan a la cadena": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C4 x nunca compuesto": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "C5 orden de 8, distancia >= 4": [
+    0.47,
+    1.0,
+    1.0
+   ],
+   "C6 5 eventos": [
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "ms_per_episode": 1.0456074870335876,
+  "cost": {
+   "nodos_busqueda": 1.1527521367521367,
+   "neuronas_say": 32.0
+  },
+  "min": 0.47
+ }
+}
