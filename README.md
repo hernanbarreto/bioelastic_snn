@@ -6,7 +6,7 @@ mismo núcleo procesa imagen, voz, texto o sensores (sólo cambia el encoder). S
 corre un **Thinker**: un lazo de razonamiento sobre símbolos con memoria rápida, registros y
 aprendizaje por refuerzo.
 
-NumPy (y SciPy para el encoder de imagen). **238 tests**, incluidos tests de regresión
+NumPy (y SciPy para el encoder de imagen). **242 tests**, incluidos tests de regresión
 bit a bit. Todo lo que figura abajo está medido con los scripts de `experiments/`, y los CSV de
 cada corrida están en `results/`.
 
@@ -197,7 +197,14 @@ otro modelo corrido acá con los mismos datos. «R3» son las opciones de razona
 `prev_io`, `back`, `cogmap` y `modulators`.
 
 Hoy solo 3 de 10 dimensiones tienen una comparación equivalente con personas o animales. Por eso
-no hay un «porcentaje humano» global: un promedio no sería informativo.
+no hay un «porcentaje humano» global: un promedio no sería informativo. El perfil por dimensión,
+solo con las equivalentes y las opciones por defecto, da:
+
+- percepción 0.84;
+- aprender de pocos ejemplos 0.34 (0.55 con R3);
+- metacognición dentro del rango humano.
+
+Los archivos son `results/bateria_dbc5d4bd76bf.*`.
 
 **Equivalentes** (3 semillas, salvo aviso):
 
@@ -207,7 +214,7 @@ no hay un «porcentaje humano» global: un promedio no sería informativo.
 | Fashion-MNIST, 2 niveles | 89.5 % | personas 83.5 % (Zalando) | 1.08 |
 | CIFAR-10, 2 niveles; 5 000 imágenes de entrenamiento de 50 000 y las primeras 5 000 del test | 48.1 ± 0.4 % | personas 95.2 % (CIFAR-10H) | 0.45 |
 | Omniglot: un solo ejemplo, 20 opciones; imágenes de 28 × 28 en lugar de 105 × 105, lector de la batería sobre V1 | 28.8 ± 0.9 % | personas ≥ 95.5 % (Lake, Salakhutdinov & Tenenbaum 2015) | ≤ 0.26 |
-| Harlow con objetos vistos, misma cantidad de problemas que los monos | 0.72 ± 0.04; con R3, 0.94 ± 0.02 (el techo es ~0.94 por colisiones de la percepción) | monos rhesus: 0.52 en los primeros 8 problemas (Harlow 1949) y 0.82 en los problemas 33–132 (Harlow 1950). Con R3, la red da 0.79 y 0.94 en esos tramos | — |
+| Harlow con objetos vistos, misma cantidad de problemas que los monos | 0.72 ± 0.04; con R3, 0.94 ± 0.02 (el techo es ~0.94 por colisiones de la percepción) | monos rhesus: 0.52 en los primeros 8 problemas (Harlow 1949) y 0.82 en los problemas 33–132 (Harlow 1950). En esos tramos la red da 0.50 y 0.70 por defecto, y 0.79 y 0.94 con R3 | — |
 | Saber cuándo se equivoca: AUROC de tipo 2 en una decisión visual con dificultad igualada | 0.748 ± 0.007 | personas 0.55–0.75 (Fleming et al. 2010) | dentro del rango, en el borde superior |
 | Igual/distinto con figuras nuevas; «igual» es una copia idéntica, como con los animales | 0.85 ± 0.03 (azar 0.5); con la copia corrida 2 px, 0.68; con dos dibujos del mismo carácter, 0.62 | con 8 figuras, rhesus, capuchinos y palomas no transfieren (Katz, Sturz & Wright 2010) | — |
 | MNIST-addition: 27 500 pares, una pasada | 97.6 % | DeepProbLog 97.2 ± 0.5; A-NeSI 97.66; DeepStochLog 97.9 (citado en la tabla 1 de A-NeSI); todos con backprop | — |
@@ -216,7 +223,9 @@ no hay un «porcentaje humano» global: un promedio no sería informativo.
 | Texto no visto, 600 KB de habla dirigida a niños; 1 corrida, porque la red es determinista dado el corpus | 2.96 bits/byte (2.54 con la temperatura elegida en validación) | línea base local: n-grama Kneser-Ney de orden 8 con los mismos datos, 1.43 | — |
 | Curva de escalado del texto: 0.2, 0.6 y 1.8 MB, últimos 60 000 bytes del corpus | 3.97, 3.68 y 3.75 bits/byte | línea base local, Kneser-Ney con los mismos datos: 2.13, 1.97 y 1.88. Brecha pareada 1.84 [1.82; 1.87], 1.70 y 1.86 (IC 95 % por bootstrap de bloques) | — |
 
-En igual/distinto, la red transfiere la identidad de los píxeles, no un concepto robusto.
+En igual/distinto, la red transfiere la identidad de los píxeles, no un concepto robusto. En Harlow,
+el salto con R3 lo aporta la entrada explícita del ensayo anterior (`prev_io`), no un aprendizaje
+lento como el del mono.
 
 **No equivalentes:** otra entrada u otro procedimiento. No se promedian con las de arriba.
 
@@ -384,7 +393,7 @@ sección de resultados, no esta tabla.
 
 ```bash
 pip install -e ".[dev]"
-pytest                                          # 238 tests
+pytest                                          # 242 tests
 python experiments/exp_vision.py mnist          # idem: fashion, cifar10
 python experiments/exp_fsdd.py                  # voz
 python experiments/exp_continual.py             # flujo continuo no estacionario
