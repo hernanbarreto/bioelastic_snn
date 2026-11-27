@@ -120,16 +120,19 @@ def validar_simbolos(config: dict, semilla: int, escala: float = 1.0) -> float:
 
 
 # ---------------------------------------------------------------- imágenes
-def _figuras(rng, n: int) -> np.ndarray:
+def _figuras(rng, n: int):
     """Una imagen (el primer dibujante) por carácter de Omniglot, de fondo y de evaluación,
-    en un orden al azar: (n, 28, 28) uint8."""
+    en un orden al azar: (n, 28, 28) uint8. Devuelve además los caracteres de fondo que no
+    se usaron (para los controles) con todos sus dibujos."""
     from . import omniglot
     X, y, _ = omniglot.cargar_fondo()
     primero = np.r_[0, np.flatnonzero(np.diff(y)) + 1]                 # primera imagen de cada carácter
     ev = omniglot.cargar_evaluacion_primeras()
     todas = np.concatenate([X[primero], ev])
-    idx = rng.permutation(len(todas))[:n]
-    return todas[idx]
+    perm = rng.permutation(len(todas))
+    libres = [int(c) for c in perm[n:] if c < len(primero)]            # caracteres de fondo sin usar
+    dibujos = {c: X[y == c] for c in libres}
+    return todas[perm[:n]], dibujos
 
 
 def correr_imagenes(semilla: int, escala: float = 1.0) -> dict:
@@ -140,7 +143,7 @@ def correr_imagenes(semilla: int, escala: float = 1.0) -> dict:
     tam = TAMANOS if escala >= 1.0 else TAMANOS[:2]
     max_ses = MAX_SESIONES if escala >= 1.0 else 3
     n_items = max(tam); n_pool = len(tam) * (N_TRANSFER // 2) * 3
-    figs = _figuras(rng, n_items + n_pool)
+    figs, dibujos = _figuras(rng, n_items + n_pool)
     items = list(range(n_items)); pool = list(range(n_items, n_items + n_pool))
     enc = ImageEncoder((56, 28), blur=0.4)
     cfg = dict(areas=[dict(V1, local=dict(lr=0.5))], heads=[dict(source="input")],
@@ -165,6 +168,31 @@ def correr_imagenes(semilla: int, escala: float = 1.0) -> dict:
             ar._cache = None
         return paso_de(fz, False)
     med = curva(paso_de(net, True), congelar, rng, items, pool, tam, max_ses)
+    # Controles (no son parte del protocolo publicado): ¿«igual» generaliza más allá de la
+    # identidad de los píxeles? Con la red final congelada, 100 ensayos cada uno con
+    # caracteres de fondo no usados: (a) «igual» = dos dibujos distintos del mismo carácter;
+    # (b) «igual» = la misma imagen con la de abajo corrida 2 píxeles a la derecha.
+    fz = copy.deepcopy(estado["net"])
+    for ar in fz.areas:
+        ar._cache = None
+    libres = list(dibujos)
+    rng.shuffle(libres)
+    n_c = N_TRANSFER if escala >= 1.0 else 20
+
+    def ensayo_control(arriba, abajo, igual):
+        x = enc(np.concatenate([arriba, abajo], axis=0)).reshape(56, 28, 1)
+        return bool(fz.forward(x) == (0 if igual else 1))
+    for nombre, hacer in (("otro_dibujo", lambda d: d[1]), ("corrido_2px", lambda d: np.roll(d[0], 2, axis=1))):
+        cand = libres[:3 * n_c // 2] if len(libres) >= 3 * n_c // 2 else libres
+        libres = libres[len(cand):]
+        hits_i, hits_d = [], []
+        for j in range(0, len(cand) - 2, 3):
+            a, b, c = dibujos[cand[j]], dibujos[cand[j + 1]], dibujos[cand[j + 2]]
+            hits_i.append(ensayo_control(a[0], hacer(a), True))
+            hits_d.append(ensayo_control(b[0], c[0], False))
+        med[f"control_{nombre}_igual"] = float(np.mean(hits_i)) if hits_i else None
+        med[f"control_{nombre}_distinto"] = float(np.mean(hits_d)) if hits_d else None
+        med[f"control_{nombre}"] = float(np.mean(hits_i + hits_d)) if hits_i else None
     k = max(tam)
     return dict(puntaje=med[f"transferencia_{k}"], medidas=med, segundos=time.time() - t0)
 
@@ -181,8 +209,11 @@ PRUEBAS = [
         metrica="exactitud de transferencia a figuras nunca vistas con el conjunto de 256 figuras",
         protocolo=("depth2 con dos salidas sobre las dos figuras apiladas (56 x 28); conjuntos de 8 a 256 caracteres de "
                    "Omniglot que se duplican; entrenamiento hasta 80 % y transferencia con figuras nuevas"),
-        desviaciones=_DESV + ["figuras: caracteres de Omniglot en blanco y negro a 28 x 28, no fotografías en color"],
-        correr=correr_imagenes, version=1, semillas=(0, 1, 2),
+        desviaciones=_DESV + ["figuras: caracteres de Omniglot en blanco y negro a 28 x 28, no fotografías en color",
+                              "controles agregados por la batería (no publicados): «igual» con dos dibujos del mismo "
+                              "carácter y con la copia corrida 2 píxeles, para ver si el concepto va más allá de la "
+                              "identidad de los píxeles"],
+        correr=correr_imagenes, version=2, semillas=(0, 1, 2),
         equivalente=True, motivo_equivalencia="la red ve las figuras como imágenes, igual que los animales",
         referencia=None, comparar=_COMP,
         firmas={},

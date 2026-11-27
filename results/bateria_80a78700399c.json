@@ -4,7 +4,7 @@
   "sha": "80a78700399cd469f4da14a654ad1895de3ada06",
   "sucio": false,
   "escala": 1.0,
-  "fecha": "2026-11-26 20:56:16",
+  "fecha": "2026-11-26 21:03:53",
   "python": "3.13.18",
   "numpy": "2.5.3",
   "catalogo": {
@@ -236,6 +236,7 @@
    "advertencia": "mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"
   },
   "sin_indice": [
+   "igual_distinto/imagenes",
    "igual_distinto/simbolos",
    "inferencia_transitiva_5/simbolos",
    "inferencia_transitiva_7/simbolos",
@@ -3878,6 +3879,401 @@
        0.15,
        0.3
       ]
+     ]
+    }
+   },
+   "firmas": {},
+   "curva": [],
+   "otras_referencias_humanas": [],
+   "configuracion": {
+    "elegida": "única documentada para esta prueba"
+   }
+  },
+  {
+   "prueba": "igual_distinto",
+   "variante": "imagenes",
+   "nombre": "Concepto igual/distinto con transferencia a estímulos nuevos",
+   "dimension": "conceptos_abstractos",
+   "condicion_entrada": "imagenes",
+   "equivalente": {
+    "valor": true,
+    "motivo": "la red ve las figuras como imágenes, igual que los animales"
+   },
+   "metrica": "exactitud de transferencia a figuras nunca vistas con el conjunto de 256 figuras",
+   "protocolo": "depth2 con dos salidas sobre las dos figuras apiladas (56 x 28); conjuntos de 8 a 256 caracteres de Omniglot que se duplican; entrenamiento hasta 80 % y transferencia con figuras nuevas",
+   "desviaciones": [
+    "criterio de 80 % en una sesión (máximo 30 sesiones) y 100 ensayos de transferencia sin premio sobre una copia congelada: elegidos por la batería (los de los artículos no se leyeron)",
+    "los animales responden tocando una figura o un rectángulo; la red elige entre dos salidas",
+    "figuras: caracteres de Omniglot en blanco y negro a 28 x 28, no fotografías en color",
+    "controles agregados por la batería (no publicados): «igual» con dos dibujos del mismo carácter y con la copia corrida 2 píxeles, para ver si el concepto va más allá de la identidad de los píxeles"
+   ],
+   "semillas": [
+    0,
+    1,
+    2
+   ],
+   "azar": {
+    "valor": 0.5,
+    "derivacion": "dos respuestas, mitad de ensayos iguales"
+   },
+   "commit": "80a78700399c",
+   "fuente_resultado": "medicion@80a78700399c",
+   "segundos": 189.53109693527222,
+   "estado": "medido",
+   "motivo": "sin referencia humana verificada con la misma métrica: no hay índice normalizado",
+   "red": {
+    "media": 0.8533333333333334,
+    "desvio": 0.030912061651652323,
+    "por_semilla": [
+     0.87,
+     0.88,
+     0.81
+    ],
+    "mediana": 0.87,
+    "minimo": 0.81,
+    "maximo": 0.88,
+    "semillas_en_azar": 0
+   },
+   "referencia_humana": null,
+   "referencias_animales": [
+    {
+     "id": "giurfa2001_abejas",
+     "especie": "abeja",
+     "valor": 0.75,
+     "tipo_valor": "aproximado",
+     "cita": "Giurfa, Zhang, Jenett, Menzel & Srinivasan (2001), Nature 410:930 (resumen); el promedio poblacional en pruebas y transferencias, «alrededor de 75 %», y los 60 ensayos de entrenamiento se leyeron en Cope et al. (2018), PLoS Comput. Biol. 14:e1006435",
+     "url": "https://eprints.whiterose.ac.uk/id/eprint/137143/1/journal.pcbi.1006435.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "nota": "los porcentajes por experimento del original están en figuras y no se pudieron leer",
+     "cualitativo": "aprenden la regla y la transfieren a estímulos nuevos y a otra modalidad sensorial",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "katz2010_8figuras",
+     "especie": "mono rhesus, mono capuchino y paloma",
+     "valor": 0.5,
+     "tipo_valor": "cualitativo",
+     "cita": "Katz, Sturz & Wright (2010), Behav. Processes 83:172, que resume a Katz, Wright & Bachevalier (2002), Wright, Rivera, Katz & Bachevalier (2003) y Katz & Wright (2006)",
+     "url": "https://core.ac.uk/download/229167949.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "cualitativo": "con el conjunto inicial de 8 figuras ninguna de las tres especies transfiere a figuras nuevas",
+     "conjunto": 8,
+     "medida_red": "transferencia_8",
+     "valor_red": 0.8533333333333334,
+     "comparacion": "especie por debajo"
+    },
+    {
+     "id": "wright2016_monos_palomas",
+     "especie": "mono rhesus y capuchino (64 a 128 figuras), paloma (256 figuras)",
+     "valor": null,
+     "tipo_valor": "cualitativo",
+     "cita": "Wright, Magnotti, Katz, Leonard & Kelly (2016), J. Exp. Anal. Behav. 105:76, resumen (compara con monos rhesus, capuchinos y palomas)",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/26615450/",
+     "verificacion": "primaria (resumen)",
+     "releida": "2026-11-26",
+     "nota": "antes citaba a Nakamura et al. (PMC4259154), que no se pudo releer",
+     "cualitativo": "la transferencia a figuras nuevas iguala a la línea de base entre 64 y 128 figuras en monos (como en cascanueces) y con un conjunto algo mayor, 256, en palomas",
+     "comparacion": "cualitativa"
+    },
+    {
+     "id": "katz2010_reduccion",
+     "especie": "paloma (ya entrenada con 1 024 figuras, conjunto reducido a 8)",
+     "valor": 0.758,
+     "tipo_valor": "media",
+     "cita": "Katz, Sturz & Wright (2010), Behav. Processes 83:172",
+     "url": "https://core.ac.uk/download/229167949.pdf",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "nota": "transferencia 25,8 puntos sobre el azar; línea de base 93,6 %",
+     "conjunto": 8,
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "wright2016_cascanueces",
+     "especie": "cascanueces de Clark",
+     "valor": null,
+     "tipo_valor": "cualitativo",
+     "cita": "«Concept learning set-size functions for Clark's nutcrackers» (2016), J. Exp. Anal. Behav. 105:76, resumen",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/26615450/",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "cualitativo": "transferencia parcial ya con 8 figuras y plena con 128",
+     "comparacion": "cualitativa"
+    }
+   ],
+   "referencias_maquinas": [],
+   "indice_normalizado": null,
+   "detalle": {
+    "base_128": {
+     "media": 0.7999999999999999,
+     "desvio": 0.057154760664940824,
+     "por_semilla": [
+      0.77,
+      0.88,
+      0.75
+     ]
+    },
+    "base_16": {
+     "media": 0.8933333333333334,
+     "desvio": 0.009428090415820642,
+     "por_semilla": [
+      0.9,
+      0.9,
+      0.88
+     ]
+    },
+    "base_256": {
+     "media": 0.8033333333333333,
+     "desvio": 0.04988876515698588,
+     "por_semilla": [
+      0.87,
+      0.75,
+      0.79
+     ]
+    },
+    "base_32": {
+     "media": 0.8300000000000001,
+     "desvio": 0.043204937989385725,
+     "por_semilla": [
+      0.79,
+      0.89,
+      0.81
+     ]
+    },
+    "base_64": {
+     "media": 0.8633333333333333,
+     "desvio": 0.07586537784494027,
+     "por_semilla": [
+      0.94,
+      0.76,
+      0.89
+     ]
+    },
+    "base_8": {
+     "media": 0.98,
+     "desvio": 0.028284271247461926,
+     "por_semilla": [
+      0.94,
+      1.0,
+      1.0
+     ]
+    },
+    "control_corrido_2px": {
+     "media": 0.6783998521803399,
+     "desvio": 0.005636381760040541,
+     "por_semilla": [
+      0.6818181818181818,
+      0.6704545454545454,
+      0.6829268292682927
+     ]
+    },
+    "control_corrido_2px_distinto": {
+     "media": 0.7276422764227642,
+     "desvio": 0.04875598502165374,
+     "por_semilla": [
+      0.7954545454545454,
+      0.7045454545454546,
+      0.6829268292682927
+     ]
+    },
+    "control_corrido_2px_igual": {
+     "media": 0.6291574279379158,
+     "desvio": 0.047120777244686045,
+     "por_semilla": [
+      0.5681818181818182,
+      0.6363636363636364,
+      0.6829268292682927
+     ]
+    },
+    "control_otro_dibujo": {
+     "media": 0.6233333333333334,
+     "desvio": 0.020548046676563275,
+     "por_semilla": [
+      0.65,
+      0.6,
+      0.62
+     ]
+    },
+    "control_otro_dibujo_distinto": {
+     "media": 0.7266666666666667,
+     "desvio": 0.04109609335312651,
+     "por_semilla": [
+      0.78,
+      0.72,
+      0.68
+     ]
+    },
+    "control_otro_dibujo_igual": {
+     "media": 0.52,
+     "desvio": 0.03265986323710907,
+     "por_semilla": [
+      0.52,
+      0.48,
+      0.56
+     ]
+    },
+    "llego_128": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "llego_16": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "llego_256": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "llego_32": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "llego_64": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "llego_8": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "sesiones_128": {
+     "media": 3.0,
+     "desvio": 2.160246899469287,
+     "por_semilla": [
+      1.0,
+      6.0,
+      2.0
+     ]
+    },
+    "sesiones_16": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "sesiones_256": {
+     "media": 6.0,
+     "desvio": 3.7416573867739413,
+     "por_semilla": [
+      10.0,
+      1.0,
+      7.0
+     ]
+    },
+    "sesiones_32": {
+     "media": 1.3333333333333333,
+     "desvio": 0.4714045207910317,
+     "por_semilla": [
+      1.0,
+      2.0,
+      1.0
+     ]
+    },
+    "sesiones_64": {
+     "media": 2.3333333333333335,
+     "desvio": 0.9428090415820634,
+     "por_semilla": [
+      3.0,
+      1.0,
+      3.0
+     ]
+    },
+    "sesiones_8": {
+     "media": 2.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      2.0,
+      2.0,
+      2.0
+     ]
+    },
+    "transferencia_128": {
+     "media": 0.8233333333333333,
+     "desvio": 0.004714045207910321,
+     "por_semilla": [
+      0.82,
+      0.83,
+      0.82
+     ]
+    },
+    "transferencia_16": {
+     "media": 0.82,
+     "desvio": 0.05099019513592784,
+     "por_semilla": [
+      0.8,
+      0.89,
+      0.77
+     ]
+    },
+    "transferencia_256": {
+     "media": 0.8533333333333334,
+     "desvio": 0.030912061651652323,
+     "por_semilla": [
+      0.87,
+      0.88,
+      0.81
+     ]
+    },
+    "transferencia_32": {
+     "media": 0.8466666666666667,
+     "desvio": 0.04027681991198189,
+     "por_semilla": [
+      0.88,
+      0.87,
+      0.79
+     ]
+    },
+    "transferencia_64": {
+     "media": 0.8233333333333333,
+     "desvio": 0.012472191289246443,
+     "por_semilla": [
+      0.84,
+      0.82,
+      0.81
+     ]
+    },
+    "transferencia_8": {
+     "media": 0.8533333333333334,
+     "desvio": 0.0410960933531265,
+     "por_semilla": [
+      0.8,
+      0.86,
+      0.9
      ]
     }
    },

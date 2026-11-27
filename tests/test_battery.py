@@ -233,3 +233,55 @@ def test_pruebas_registradas_tienen_catalogo():
         claves.add(p.clave)
         for rid in p.comparar:
             esquema.buscar(cat["pruebas"][p.id], rid)                 # existe en el catálogo
+
+
+# ---------------------------------------------------------------- F2: percepción e ingesta
+def test_auroc_tipo2():
+    from battery.metacognicion import auroc
+    conf = np.array([0.9, 0.8, 0.7, 0.6, 0.5, 0.4])
+    assert auroc(conf, np.array([1, 1, 1, 0, 0, 0], dtype=bool)) == pytest.approx(1.0)
+    assert auroc(conf, np.array([0, 0, 0, 1, 1, 1], dtype=bool)) == pytest.approx(0.0)
+    assert auroc(np.ones(6), np.array([1, 0, 1, 0, 1, 0], dtype=bool)) == pytest.approx(0.5)   # empates
+    assert auroc(conf, np.ones(6, dtype=bool)) is None
+    rng = np.random.default_rng(0)                                    # contra el recuento de pares
+    c = rng.random(200); o = rng.random(200) < c
+    pares = np.mean([(a > b) + 0.5 * (a == b) for a in c[o] for b in c[~o]])
+    assert auroc(c, o) == pytest.approx(pares)
+
+
+def test_omniglot_a28():
+    from battery.omniglot import a28
+    t = np.zeros((105, 105), dtype=bool); t[40:60, 50:52] = True
+    x = a28(t)
+    assert x.shape == (28, 28) and x.dtype == np.uint8
+    assert x.max() > 0 and x.sum() == pytest.approx(255 * t.sum() / 16, rel=0.01)
+
+
+def test_ingesta_agregada_y_perfil_csv(tmp_path):
+    from battery import ingesta
+    cat = _cat_falso()
+    src = tmp_path / "f0.json"
+    src.write_text(json.dumps([{"name": "x", "depth": 2, "cond": "ff", "seeds": [0, 1, 2], "n_train": 10,
+                                "n_test": 10, "test_acc": [0.7, 0.02, 3], "val_acc": [0.69, 0.01, 3]}]))
+    f = ingesta.Fuente(prueba="p1", variante="v", condicion="imagenes", metrica="m", protocolo="pr",
+                       desviaciones=[], archivo=src, leer=ingesta.leer_predictivo_f0("x", 2), agregado=True)
+    fila = ingesta.fila_de(f, cat)
+    assert fila["estado"] == "ingerido" and esquema.validar_fila(fila) == []
+    assert fila["red"]["media"] == 0.7 and fila["red"]["desvio"] == 0.02 and fila["red"]["por_semilla"] is None
+    assert fila["indice_normalizado"]["media"] == pytest.approx(0.5)
+    assert fila["indice_normalizado"]["desvio"] == pytest.approx(0.05)
+    falta = ingesta.Fuente(prueba="p1", variante="w", condicion="imagenes", metrica="m", protocolo="pr",
+                           desviaciones=[], archivo=tmp_path / "no.json", leer=None, pendiente="todavía no")
+    assert ingesta.fila_de(falta, cat)["estado"] == "pendiente"
+    pf = esquema.perfil([fila], cat)
+    esquema.escribir_perfil_csv(pf, tmp_path / "perfil.csv")
+    filas = (tmp_path / "perfil.csv").read_text().splitlines()
+    assert filas[1].startswith("equivalentes")                       # lo equivalente va primero
+    assert any("todas" in x and "no equivalentes" in x for x in filas)
+
+
+def test_reproducible_igual_distinto_simbolos():
+    from battery import harlow, igual_distinto
+    a = igual_distinto.correr_simbolos(5, 0.05, harlow.CONFIG); b = igual_distinto.correr_simbolos(5, 0.05, harlow.CONFIG)
+    a.pop("segundos"); b.pop("segundos")
+    assert a == b
