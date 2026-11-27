@@ -167,12 +167,13 @@ def group_babi(tasks=None, seeds=SEEDS, epochs=3):
     files = babi_files()
     HEAD = "F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)"
     for t in (tasks or files):
-        def fn(log, t=t):
-            res = [babi_task(t, s, epochs) for s in seeds]
+      for sd in seeds:
+        def fn(log, t=t, sd=sd):
+            res = [babi_task(t, sd, epochs)]
             acc = [r["test"] for r in res]
             name = f"{t}: {res[0]['name']}"
-            log.row(HEAD, "Thinker (todo encendido + contexto temporal)", "test, congelado", name,
-                    float(np.mean(acc)), float(np.std(acc)), len(acc))
+            log.row(HEAD, f"Thinker (valores por defecto + contexto temporal), semilla {sd}", "test, congelado", name,
+                    float(np.mean(acc)), 0.0, 1)
             for label, errs in BABI_PUBLISHED.items():
                 log.row(HEAD, label + " (publicado)", "test", name, 1.0 - errs[t - 1] / 100.0, 0.0, 0)
             for kind, v in res[0]["chance"].items():
@@ -182,9 +183,10 @@ def group_babi(tasks=None, seeds=SEEDS, epochs=3):
             return dict(test=acc, val=[r["val"] for r in res], curve=[r["curve"] for r in res],
                         paths=[r["paths"] for r in res], say_neurons=[r["say_neurons"] for r in res],
                         task_sets=[r["task_sets"] for r in res], name=res[0]["name"], chance=res[0]["chance"])
-        st.run(f"babi {t}", fn)
-    accs = np.array([st.get(f"babi {t}")["test"] for t in files if st.done(f"babi {t}")])
-    if len(accs) == len(files):
+        st.run(f"babi {t} semilla {sd}", fn)
+    accs = np.array([[st.get(f"babi {t} semilla {sd}")["test"][0] for sd in seeds] for t in files
+                     if all(st.done(f"babi {t} semilla {sd}") for sd in seeds)])
+    if len(accs) == len(files) and len(seeds) == len(SEEDS):
         def summary(log):
             m = accs.mean(0)                                 # por semilla
             log.row(HEAD, "Thinker (todo encendido + contexto temporal)", "test, congelado", "error medio (20 tareas)",
@@ -293,20 +295,23 @@ def scan_run(split, seed, n_train, n_test=500, over=None):
     rng = np.random.default_rng(seed)
     V = scan_vocab()
     net = Thinker(len(V), seed=seed, **dict(BASE, **(over or {})))
-    idx = rng.permutation(len(train))[:n_train]
-    if split == "add jump":                                   # la primitiva sola está en el train: que no falte
+    idx = rng.permutation(len(train))[:n_train]               # n_train None: el train completo
+    if split == "add jump" and n_train is not None:           # (submuestra: que no falte la primitiva sola)
         jump = [i for i, (c, _) in enumerate(train) if c == ("jump",)][:1]
         idx = np.concatenate([jump, idx[:max(n_train - 1, 0)]]).astype(int)
         rng.shuffle(idx)
-    t0 = time.time(); online = []; steps = 0
-    for i in idx:
+    t0 = time.time(); online = []; steps = 0; windows = []; tw = time.time()
+    for j, i in enumerate(idx):
         cmd, acts = train[int(i)]
         ok, _ = scan_item(net, cmd, acts, V, True)
         online.append(ok); steps += len(acts) + 1
+        if (j + 1) % 1000 == 0:                               # costo por comando, por tramo (no promediado desde el inicio)
+            windows.append((time.time() - tw) / 1000 * 1e3); tw = time.time()
     secs = time.time() - t0
     net.reset(); net.plastic = False
     te = [test[int(i)] for i in rng.permutation(len(test))[:n_test]]
     exact, tok, by = [], [], {}
+    t1 = time.time()
     for cmd, acts in te:
         ok, outs = scan_item(net, cmd, acts, V, False, free=True)
         gold = [V[a] for a in acts]
@@ -317,32 +322,150 @@ def scan_run(split, seed, n_train, n_test=500, over=None):
         by.setdefault("largo producido = largo correcto", []).append(len(outs) == len(gold))
     return dict(exact=float(np.mean(exact)), token=float(np.mean(tok)), online_last=float(np.mean(online[-max(len(online) // 5, 1):])),
                 by={k: float(np.mean(v)) for k, v in by.items()}, ms_per_step=secs / max(steps, 1) * 1e3,
-                say_neurons=int(net.say.layer.n))
+                say_neurons=int(net.say.layer.n), n_train=len(idx), n_test=len(te), ms_per_command_windows=windows,
+                train_seconds=secs, test_seconds=time.time() - t1)
 
 
-def group_scan(sizes=(250, 500, 1000, 2000, 4000), seeds=SEEDS):
+def group_scan_curve(sizes=(100, 300, 1000), seeds=SEEDS, n_test=200, splits=("simple",)):
+    """Curva con submuestras del train (desviación de protocolo: el artículo entrena con el train
+    completo). Quedó medida para «simple» antes de pasar al protocolo completo."""
     st = Store("f6_scan")
     HEAD = "F6a SCAN"
     SYS = "Thinker (todo encendido + contexto temporal)"
-    for split in SCAN_SPLITS:
+    for split in splits:
         for n in sizes:
             def fn(log, split=split, n=n):
-                res = [scan_run(split, s, n) for s in seeds]
+                res = [scan_run(split, s, n, n_test=n_test) for s in seeds]
                 for key, what in (("exact", "secuencia exacta"), ("token", "símbolos en su posición"),
                                   ("online_last", "secuencia exacta en línea, último quinto del entrenamiento")):
                     v = [r[key] for r in res]
                     log.row(HEAD + f", {split}", SYS, f"{n} comandos de entrenamiento", what, float(np.mean(v)), float(np.std(v)), len(v))
-                if n == sizes[-1]:
-                    for f in sorted(res[0]["by"]):
-                        v = [r["by"].get(f, np.nan) for r in res]
-                        log.row(HEAD + f", {split}", SYS, f"{n} comandos, por tipo de ítem", f, float(np.nanmean(v)), float(np.nanstd(v)), len(v))
-                    for label, acc in SCAN_PUBLISHED[split].items():
-                        log.row(HEAD + f", {split}", label + " (publicado)", "todo el train", "secuencia exacta", acc / 100.0, 0.0, 0)
                 log.row(HEAD + f", {split}", SYS, f"{n} comandos de entrenamiento", "ms por símbolo",
                         float(np.mean([r["ms_per_step"] for r in res])), 0.0, len(res))
                 return dict(exact=[r["exact"] for r in res], token=[r["token"] for r in res], by=[r["by"] for r in res],
                             online_last=[r["online_last"] for r in res], say_neurons=[r["say_neurons"] for r in res])
             st.run(f"scan {split} {n}", fn)
+    st.finish()
+
+
+def group_scan(seeds=SEEDS, splits=("add jump", "length", "simple")):
+    """Protocolo del artículo: el train completo de la división (una sola pasada en línea) y el
+    test completo, congelado. Una condición por semilla (con una sola semilla las filas dicen
+    «exploratorio, 1 semilla»; el promedio entre semillas lo hace `export`)."""
+    st = Store("f6_scan")
+    HEAD = "F6a SCAN"
+    for split in splits:
+        for sd in seeds:
+            def fn(log, split=split, sd=sd):
+                r = scan_run(split, sd, None, n_test=None)
+                SYS = f"Thinker (valores por defecto + contexto temporal), semilla {sd}"
+                T = f"train completo ({r['n_train']} comandos, una pasada), test completo ({r['n_test']})"
+                for key, what in (("exact", "secuencia exacta"), ("token", "símbolos en su posición"),
+                                  ("online_last", "secuencia exacta en línea, último quinto del entrenamiento")):
+                    log.row(HEAD + f", {split}", SYS, T, what, float(r[key]), 0.0, 1)
+                for f_, v in sorted(r["by"].items()):
+                    log.row(HEAD + f", {split}", SYS, T + ", por tipo de ítem", f_, float(v), 0.0, 1)
+                for label, acc in SCAN_PUBLISHED[split].items():
+                    log.row(HEAD + f", {split}", label + " (publicado)", "train completo", "secuencia exacta", acc / 100.0, 0.0, 0)
+                log.row(HEAD + f", {split}", SYS, T, "ms por símbolo (entrenamiento)", float(r["ms_per_step"]), 0.0, 1)
+                return r
+            st.run(f"scan {split} completo semilla {sd}", fn)
+    st.finish()
+
+
+def scan_template(cmd):
+    """Plantilla de un comando para el diagnóstico."""
+    if len(cmd) == 1:
+        return "primitiva sola"
+    if "and" in cmd or "after" in cmd:
+        return "con and/after"
+    if "twice" in cmd or "thrice" in cmd:
+        return "con twice/thrice (sin conjunción)"
+    return "con left/right/around/opposite (sin conjunción ni repetición)"
+
+
+def scan_bag_ambiguity(cmds):
+    """Fracción de comandos cuyo multiconjunto de palabras (lo que ve el contenido del Thinker:
+    las palabras de la pregunta sin orden) es el de otro comando con otra salida."""
+    from collections import defaultdict
+    outs = defaultdict(set)
+    for c, a in cmds:
+        outs[tuple(sorted(c))].add(a)
+    return float(np.mean([len(outs[tuple(sorted(c))]) > 1 for c, _ in cmds]))
+
+
+def scan_size_run(pct, seed, passes=1, n_test=1000, n_train_eval=300):
+    """Experimento 1 de Lake y Baroni (2018): entrenar con el pct % de los comandos (archivos
+    simple_split/size_variations del repositorio) y probar con el resto. Diagnóstico: exactitud
+    en lo ya visto, por plantilla, errores de largo y de FIN."""
+    d = SCAN / "simple_split" / "size_variations"
+    train = scan_read(d / f"tasks_train_simple_p{pct}.txt")
+    test = scan_read(d / f"tasks_test_simple_p{pct}.txt")
+    rng = np.random.default_rng(seed)
+    V = scan_vocab()
+    net = Thinker(len(V), seed=seed, **BASE)
+    t0 = time.time(); steps = 0
+    for _ in range(passes):
+        for i in rng.permutation(len(train)):
+            cmd, acts = train[int(i)]
+            scan_item(net, cmd, acts, V, True); steps += len(acts) + 1
+    secs = time.time() - t0
+    net.reset(); net.plastic = False
+
+    def evaluate(items):
+        r = dict(exact=[], token=[], first=[], length_ok=[], no_fin=[], by={})
+        for cmd, acts in items:
+            ok, outs = scan_item(net, cmd, acts, V, False, free=True)
+            gold = [V[a] for a in acts]
+            r["exact"].append(ok)
+            r["token"].append(np.mean([i < len(outs) and outs[i] == g for i, g in enumerate(gold)]))
+            r["first"].append(bool(outs) and outs[0] == gold[0])
+            r["length_ok"].append(len(outs) == len(gold))
+            r["no_fin"].append(len(outs) >= SCAN_MAX)
+            r["by"].setdefault(scan_template(cmd), []).append(ok)
+        return {k: (float(np.mean(v)) if k != "by" else {t: (float(np.mean(x)), len(x)) for t, x in v.items()}) for k, v in r.items()}
+    seen = [train[int(i)] for i in rng.permutation(len(train))[:n_train_eval]]
+    te = [test[int(i)] for i in rng.permutation(len(test))[:n_test]]
+    return dict(train=evaluate(seen), test=evaluate(te), n_train=len(train), n_test_total=len(test), n_test=len(te),
+                passes=passes, ms_per_step=secs / max(steps, 1) * 1e3, say_neurons=int(net.say.layer.n),
+                bag_ambiguity_test=scan_bag_ambiguity(te), bag_ambiguity_all=scan_bag_ambiguity(train + test))
+
+
+# Lake y Baroni (2018), experimento 1, texto (arxiv.org/pdf/1711.00350v2): con el modelo mejor en
+# conjunto (LSTM 2 x 200, sin atención, dropout 0.5) y 100 000 presentaciones (los comandos de
+# entrenamiento sorteados con reposición), «about 5% correct» con 1 %, «about 54%» con 2 % y
+# «about 93%» con 4 %. Las demás proporciones sólo están en la figura 3 (no se leen cifras).
+SCAN_EXP1_PUBLISHED = {1: 0.05, 2: 0.54, 4: 0.93}
+
+
+def group_scan_sizes(pcts=(1, 2, 4, 8), seeds=(0,), passes=(1,)):
+    """Experimento 1 de Lake y Baroni (2018) con 1-8 % de los comandos, diagnóstico incluido.
+    El test es una muestra al azar de 1000 comandos del test de cada variación (desviación
+    declarada: el artículo usa el test completo)."""
+    st = Store("f6_scan_exp1")
+    HEAD = "F6a SCAN, experimento 1 (proporción de comandos)"
+    for pct in pcts:
+        for ps in passes:
+            for sd in seeds:
+                def fn(log, pct=pct, ps=ps, sd=sd):
+                    r = scan_size_run(pct, sd, ps)
+                    SYS = f"Thinker (valores por defecto + contexto temporal), semilla {sd}" + (" (exploratorio, 1 semilla)" if len(seeds) == 1 else "")
+                    T = f"{pct} % ({r['n_train']} comandos), {ps} pasada(s)"
+                    for part in ("train", "test"):
+                        for key, what in (("exact", "secuencia exacta"), ("token", "símbolos en su posición"), ("first", "primer símbolo"),
+                                          ("length_ok", "largo correcto"), ("no_fin", "nunca dijo FIN")):
+                            log.row(HEAD, SYS, T + (", comandos ya vistos" if part == "train" else ", test (muestra de 1000)"), what,
+                                    float(r[part][key]), 0.0, 1)
+                    for t_, (v, n) in sorted(r["test"]["by"].items()):
+                        log.row(HEAD, SYS, T + ", test por plantilla", f"{t_} (n={n})", v, 0.0, 1)
+                    log.row(HEAD, SYS, T, "comandos del test con el mismo multiconjunto de palabras que otro con otra salida",
+                            r["bag_ambiguity_test"], 0.0, 1)
+                    log.row(HEAD, SYS, T, "ms por símbolo (entrenamiento)", r["ms_per_step"], 0.0, 1)
+                    if pct in SCAN_EXP1_PUBLISHED:
+                        log.row(HEAD, "seq2seq, mejor en conjunto (publicado, 100 000 presentaciones)", f"{pct} %",
+                                "secuencia exacta, test completo", SCAN_EXP1_PUBLISHED[pct], 0.0, 0)
+                    return r
+                st.run(f"scan exp1 {pct}% {ps} pasadas semilla {sd}", fn)
     st.finish()
 
 
@@ -504,7 +627,7 @@ def mlc_run(seed, n_meta, over=None):
                 ms_per_episode=secs / max(n_meta, 1) * 1e3)
 
 
-def group_mlc(sizes=(0, 100, 300, 1000), seeds=SEEDS):
+def group_mlc(sizes=(0, 30, 100, 300), seeds=SEEDS):
     st = Store("f6_mlc")
     HEAD = "F6b pocos ejemplos (tarea de Lake y Baroni 2023)"
     SYS = "Thinker (todo encendido + contexto temporal)"
@@ -591,6 +714,16 @@ def export(path=None):
         "bAbI": "github.com/bgavran/DNC @ 668a2f1ecc676748c68cedab78dd198aca190d3b, "
                 "src/task_implementations/bAbI/tasks_1-20_v1-2/en (bAbI v1.2, 1k)"},
         "citas": CITES, "protocolo": PROTOCOL, "SCAN": {}, "MLC": {}, "bAbI": {}}
+    import inspect
+    import subprocess
+    sig = inspect.signature(Thinker).parameters
+    out["opciones"] = dict(
+        thinker_por_defecto={k: sig[k].default for k in ("prev_io", "back", "task_sets", "cogmap", "modulators", "context")},
+        base_del_experimento=BASE,
+        commit=subprocess.run(["git", "-C", str(HERE), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip(),
+        nota="Las opciones encendidas son las de la punta de agent/razonamiento3 más BASE (memory, speak, judge, max_steps=10, context=True).")
+    out["azar"] = {"SCAN": "secuencia exacta: ~0 (hasta 48 símbolos de 6 acciones)",
+                   "MLC": "secuencia exacta: ~0 (2-6 símbolos de 4)", "bAbI": "por tarea: uniforme sobre las respuestas del train y clase mayoritaria del test (filas «azar»)"}
     for group, key in (("f6_scan", "SCAN"), ("f6_mlc", "MLC"), ("f6_babi", "bAbI")):
         f = RESULTS / f"razonamiento3_{group}.parts.json"
         if not f.exists():
@@ -604,7 +737,11 @@ def export(path=None):
     print("escrito", RESULTS / "razonamiento3_f6_externo.json")
 
 
-GROUPS = {"babi": group_babi, "scan": group_scan, "mlc": group_mlc, "export": export}
+GROUPS = {"babi": group_babi, "scan": group_scan, "mlc": group_mlc, "export": export, "scan_curva": group_scan_curve,
+          "scan0": lambda: group_scan(seeds=(0,)), "scan12": lambda: group_scan(seeds=(1, 2)),
+          "babi0": lambda: group_babi(seeds=(0,)), "babi12": lambda: group_babi(seeds=(1, 2)),
+          "babi_todas": lambda: group_babi(seeds=SEEDS), "scan_exp1": group_scan_sizes,
+          "scan_exp1_pasadas": lambda: group_scan_sizes(pcts=(1,), passes=(1, 3))}
 
 
 def main():
