@@ -45,6 +45,7 @@ RUNS = RESULTS / "predictivo_runs"
 V3L = dict(rf=3, pool=1, max_features=256, theta=0.5, floor=0.2, k=4, local=dict(lr=0.5))
 AREAS = (V1L, V2L, V3L)
 DEFAULT_TRAIN = dict(mnist=10_000, fashion=10_000, cifar10=5_000)
+N_FULL = dict(mnist=55_000, fashion=55_000, cifar10=45_000)      # presupuesto completo de una pasada
 
 
 def build(depth: int, pred: dict | None = None, fb: dict | None = None,
@@ -493,6 +494,120 @@ def cnn_probe(name: str, seeds, n_train: int, n_val: int, tag: str):
     return out
 
 
+def _ridge_dual(Ztr, ytr, Zva, yva, C=10, lams=(1e-2, 1e-1, 1.0, 10.0)) -> float:
+    """Decodificador lineal cerrado (ridge, forma dual), fuera de línea, sobre filas de norma 1.
+    Se informa el mejor lambda en validación: mide la información lineal disponible."""
+    from diag_depth import ridge
+    return ridge(sparse.csr_matrix(Ztr), np.asarray(ytr, dtype=np.int64), sparse.csr_matrix(Zva),
+                 np.asarray(yva, dtype=np.int64), C=C, lams=lams)
+
+
+def _rows_unit(M):
+    M = np.asarray(M, dtype=np.float32)
+    return M / np.maximum(np.sqrt((M * M).sum(axis=1, keepdims=True)), 1e-6)
+
+
+def ceiling(name: str, seeds, n_train: int, n_val: int, tag: str, n_ridge: int = 5000,
+            ours: bool = False):
+    """Control de techo con el presupuesto completo de una pasada: CNN de 2 capas (backprop) y,
+    con `ours`, nuestra red depth3 (configuración F0). Por capa: sonda de 3 factores en una
+    pasada sobre los rasgos congelados (todo el entrenamiento) y ridge cerrada fuera de línea
+    sobre los rasgos congelados de las últimas `n_ridge` imágenes de entrenamiento; ambas se
+    evalúan en las `n_val` de validación."""
+    from cnn_backprop import ARCH, CNN
+    from numpy.lib.stride_tricks import sliding_window_view
+    E = encoder(name)
+    side, _, channels = sheet_shape(name)
+    out = []
+    for seed in seeds:
+        (Xtr, ytr), (Xva, yva), _ = split(name, seed)
+        Xtr, ytr = Xtr[:n_train], ytr[:n_train]
+        yva = yva[:n_val]
+        t0 = time.time()
+        Sva = np.stack([E(x) for x in Xva[:n_val]]).astype(np.float32)
+        best = None
+        for lr in (3e-4, 1e-3, 3e-3):                      # CNN: tasa elegida en validación
+            net = CNN(ARCH["cnn2"], side=side, channels=channels, lr=lr, seed=seed)
+            for i in range(0, n_train, 1000):
+                S = np.stack([E(x) for x in Xtr[i:i + 1000]]).astype(np.float32)
+                for j in range(0, len(S), 10):
+                    net.train_batch(S[j:j + 10], ytr[i + j:i + j + 10].astype(np.int64))
+            acc = float(np.mean(net.predict(Sva) == yva))
+            if best is None or acc > best[0]:
+                best = (acc, lr, net)
+        acc, lr, cnn = best
+
+        def cnn_layers(X):
+            feats = [X.reshape(len(X), -1)]
+            for k, W, b in cnn.convs:
+                B = len(X)
+                cols = sliding_window_view(X, (k, k), axis=(1, 2))
+                oh, ow = cols.shape[1], cols.shape[2]
+                cols = cols.transpose(0, 1, 2, 4, 5, 3).reshape(B * oh * ow, -1)
+                A = np.maximum((cols @ W + b).reshape(B, oh, ow, -1), 0.0)
+                ph, pw = oh // 2, ow // 2
+                X = A[:, :ph * 2, :pw * 2].reshape(B, ph, 2, pw, 2, -1).max(axis=(2, 4))
+                feats.append(X.reshape(B, -1))
+            return feats
+        row = dict(name=name, seed=seed, n_train=n_train, n_ridge=n_ridge, n_val=n_val,
+                   cnn_lr=lr, cnn_val=acc)
+        # sondas de 3 factores (una pasada) y ridge (últimas n_ridge) sobre la CNN congelada
+        probes = None; keep = [[] for _ in range(3)]
+        for i in range(0, n_train, 1000):
+            S = np.stack([E(x) for x in Xtr[i:i + 1000]]).astype(np.float32)
+            F = cnn_layers(S)
+            if probes is None:
+                probes = Probes([f.shape[1] for f in F])
+            for j in range(len(S)):
+                probes.predict([f[j] for f in F]); probes.learn(int(ytr[i + j]))
+            if i + 1000 > n_train - n_ridge:
+                lo = max(0, n_train - n_ridge - i)
+                for k in range(3):
+                    keep[k].append(_rows_unit(F[k][lo:]))
+        Fva = cnn_layers(Sva)
+        hits = np.zeros(3)
+        for j in range(n_val):
+            hits += np.array(probes.predict([f[j] for f in Fva])) == int(yva[j])
+        ytr_r = ytr[n_train - n_ridge:]
+        for k, nm in enumerate(("pix", "cnn1", "cnn2")):
+            row[f"probe_{nm}"] = hits[k] / n_val
+            row[f"ridge_{nm}"] = _ridge_dual(np.concatenate(keep[k]), ytr_r, _rows_unit(Fva[k]), yva)
+        print(f"[{tag} techo {name} s{seed}] CNN {json.dumps({k: row[k] for k in row if 'cnn' in k or 'probe' in k or 'ridge' in k}, default=float)}", flush=True)
+        if ours:                                          # nuestra red depth3 (F0), una pasada
+            net2 = Cortex(sheet_shape(name), 10, seed=seed, **build(3))
+            for i in range(n_train):
+                net2.step(E(Xtr[i]), int(ytr[i]))
+            for a in net2.areas:
+                a._cache = None
+            dims = [int(np.prod(sheet_shape(name)))] + [int(np.prod(a.out_shape)) for a in net2.areas]
+            pr = Probes(dims); rows_r = [[] for _ in dims]
+            for i in range(n_train):                      # sondas sobre la red congelada
+                x = E(Xtr[i]); net2.predict(x)
+                lv = levels_of(net2, x)
+                pr.predict(lv); pr.learn(int(ytr[i]))
+                if i >= n_train - n_ridge:
+                    for k, L in enumerate(lv):
+                        idx, h = unit_sparse_vec(L)
+                        rows_r[k].append(sparse.csr_matrix((h, (np.zeros(len(idx), int), idx)), shape=(1, L.size)))
+            hv = np.zeros(len(dims)); rows_v = [[] for _ in dims]
+            for j in range(n_val):
+                x = E(Xva[j]); net2.predict(x)
+                lv = levels_of(net2, x)
+                hv += np.array(pr.predict(lv)) == int(yva[j])
+                for k, L in enumerate(lv):
+                    idx, h = unit_sparse_vec(L)
+                    rows_v[k].append(sparse.csr_matrix((h, (np.zeros(len(idx), int), idx)), shape=(1, L.size)))
+            for k, nm in enumerate(("pix2", "V1", "V2")):
+                row[f"probe_{nm}"] = hv[k] / n_val
+                row[f"ridge_{nm}"] = _ridge_dual(sparse.vstack(rows_r[k]).tocsr(), ytr_r,
+                                                  sparse.vstack(rows_v[k]).tocsr(), yva)
+        row["secs"] = time.time() - t0
+        print(f"[{tag} techo {name} s{seed}] {json.dumps(row, default=float)}", flush=True)
+        out.append(row)
+        (RESULTS / f"predictivo_{tag}_techo_{name}.json").write_text(json.dumps(out, indent=1, default=float))
+    return out
+
+
 # ---------------------------------------------------------------- estímulo inesperado
 def _auroc(neg, pos) -> float:
     """Probabilidad de que un positivo (novedoso) tenga más error que un negativo."""
@@ -865,7 +980,7 @@ def cnn(name: str, seeds, n_train: int, n_val: int, n_test: int, n_perturb: int,
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd", choices=["run", "summarize", "cnn", "surprise", "summarize_surprise",
-                                    "shift", "summarize_shift", "cnnprobe"])
+                                    "shift", "summarize_shift", "cnnprobe", "ceiling"])
     ap.add_argument("name", nargs="?", default="mnist")
     ap.add_argument("--depths", default="1,2,3")
     ap.add_argument("--seeds", default="0,1,2")
@@ -902,6 +1017,10 @@ def main():
         return
     if args.cmd == "cnnprobe":
         cnn_probe(args.name, seeds, n_train, args.val, args.tag)
+        return
+    if args.cmd == "ceiling":                             # --views > 1 activa nuestra red también
+        ceiling(args.name, seeds, args.train or N_FULL[args.name], args.val, args.tag,
+                ours=args.views > 1)
         return
     pred = json.loads(args.pred) if args.pred else None
     fb = json.loads(args.fb) if args.fb else None
