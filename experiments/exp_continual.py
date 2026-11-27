@@ -382,6 +382,20 @@ BASELINES = {"knn_buffer": KNNBuffer, "slda": StreamingLDA, "mlp_replay": MLPRep
              "er": ERMLP, "erace": lambda seed=0, **kw: ERMLP(seed, ace=True, **kw)}
 
 
+def _value(v):
+    """Valor de una opción genérica: entero, real, booleano o texto."""
+    if v is None or v == "true":
+        return True
+    if v == "false":
+        return False
+    for cast in (int, float):
+        try:
+            return cast(v)
+        except ValueError:
+            pass
+    return v
+
+
 def build(spec: str):
     """Fábrica(seed) a partir de un nombre «base+mod+mod=valor».
 
@@ -422,6 +436,8 @@ def build(spec: str):
           k=N          ganadoras por volea en la memoria
           tc=X         comprime las constantes de tiempo (poda, utilidad) por X, para
                        explorar con --scale X manteniendo las proporciones del flujo
+          ámbito.clave=valor  opción genérica: ámbito top (Cortex), head, layer, readout
+                       (del primer head), proj (proyección) o area; p. ej. top.recall=gate
     """
     base, *mods = spec.split("+")
     kv = dict((m.split("=") + [None])[:2] for m in mods)
@@ -509,6 +525,15 @@ def build(spec: str):
             layer.setdefault("probation", int(20000 * x)); layer.setdefault("util_tau", 20000.0 * x)
             area.setdefault("probation", int(2000 * x))
             head["maintain_every"] = max(50, int(500 * x))
+        elif "." in m:                                       # opción genérica ámbito.clave=valor
+            scope, key = m.split(".", 1)
+            val = _value(v)
+            if scope == "proj":
+                top["projection"] = {**top.get("projection", cfg.get("projection", {})), key: val}
+            elif scope in ("top", "head", "layer", "readout", "area"):
+                dict(top=top, head=head, layer=layer, readout=readout, area=area)[scope][key] = val
+            else:
+                raise ValueError(f"ámbito desconocido: {scope}")
         else:
             raise ValueError(f"modificador desconocido: {m}")
     cfg = _with(cfg, head=head, layer=layer, readout=readout, area=area, **top)

@@ -37,6 +37,44 @@ def test_asymmetric_error_does_not_depress_absent_classes():
     assert gated.W[1, 0] < gated.W[1, 0] + 1 and gated.t == t   # y no cuenta como actividad
 
 
+def test_ace_resolves_the_competition_among_present_classes_only():
+    idx = np.array([0]); h = np.ones(1, dtype=np.float32)
+    r = Readout(3, consolidation=0.0, active_window=4, ace=True)
+    r.add_input(cls=0)
+    for _ in range(20):
+        r.learn(idx, h, 0)                             # la clase 0 domina esta entrada...
+    for k in range(10):
+        r.learn(idx, h, 1 + k % 2)                     # ...y después llegan sólo 1 y 2
+    assert not r.active()[0] and r.active()[1] and r.active()[2]
+    w = r.W[:, 0].copy()
+    p = r.probs(r.potentials(idx, h))
+    q = p[[1, 2]] / p[[1, 2]].sum()
+    r.learn(idx, h, 1)
+    dw = r.W[:, 0] - w
+    assert dw[0] == 0.0                                # la ausente no se toca
+    assert np.isclose(dw[1], r.lr * (1.0 - q[0]), rtol=1e-4)   # 1 - p renormalizada entre presentes
+    assert np.isclose(dw[2], -r.lr * q[1], rtol=1e-4)
+    plain = Readout(3, consolidation=0.0, active_window=4)     # sin ace: p sobre todas las salidas
+    plain.add_input(cls=0)
+    for c in [0] * 20 + [1 + k % 2 for k in range(10)]:
+        plain.learn(idx, h, c)
+    w = plain.W[:, 0].copy(); p = plain.probs(plain.potentials(idx, h))
+    plain.learn(idx, h, 1)
+    assert np.isclose(plain.W[1, 0] - w[1], plain.lr * (1.0 - p[1]), rtol=1e-4)
+    assert plain.W[1, 0] - w[1] > dw[1]                # la ausente parecida agranda el error del objetivo
+    t = r.t; w = r.W[:, 0].copy()
+    r.learn(idx, h, 0, replay=True)                    # el repaso sigue con el error completo
+    assert r.W[0, 0] > w[0] and r.W[1, 0] < w[1] and r.t == t
+
+
+def test_ace_reaches_the_projection_of_a_cortex():
+    from bioelastic import Cortex
+    net = Cortex((8, 8, 1), 4, areas=[dict(rf=3, pool=2, max_features=16, theta=0.8)],
+                 heads=[dict(source="input")], projection=dict(source="all", active_window=20, ace=True))
+    assert net.proj.ace and net.proj.active_window == 20
+    assert not Readout(4).ace
+
+
 def test_reward_marks_the_rewarded_action_as_active():
     r = Readout(3, active_window=5)
     r.add_input(cls=None)

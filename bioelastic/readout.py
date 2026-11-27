@@ -14,6 +14,13 @@ Aprendizaje continuo (opcional, apagado por defecto):
                  no se aplica. Así lo que se enseña ahora no deprime a las clases
                  ausentes (análogo local de ER-ACE, Caccia et al. 2022, y del «labels
                  trick», Zeno et al. 2018). El repaso usa el error completo.
+  ace            con `active_window`: la competencia que fija el tercer factor de lo que
+                 llega se resuelve sólo entre las salidas activas (p renormalizada sobre
+                 ellas), como la entropía cruzada enmascarada de ER-ACE. Sin esto, una
+                 clase ausente que se parece a la entrada baja p(objetivo) y agranda el
+                 error positivo del objetivo: la fila nueva crece sobre los rasgos que
+                 comparte con la vieja y después le gana en sus propios ejemplos (sesgo
+                 hacia lo reciente). El repaso sigue usando el error completo.
   row_norm       escalado sináptico de cada salida: tras aprender, el vector de pesos
                  que llega a cada salida se reescala a norma `row_norm`. Una clase no
                  gana por acumular peso sino por parecerse (clasificador por coseno, como
@@ -30,6 +37,18 @@ Aprendizaje continuo (opcional, apagado por defecto):
   relax          metaplasticidad que se relaja: el contador de consolidación de cada
                  entrada decae con constante `relax` (en aprendizajes), así una sinapsis
                  que dejó de usarse recupera plasticidad (cf. Benna & Fusi 2016).
+  recon_lock     reconsolidación gobernada por error de predicción (Nader et al. 2000;
+                 Sevenster, Beckers y Kindt 2013, 2014). Una entrada modificada
+                 `recon_lock` veces queda consolidada: plasticidad 0. Sólo se vuelve lábil
+                 cuando, al recuperarla (estar activa en un aprendizaje o repaso), hay
+                 error de predicción: la predicción es otra clase, o la sorpresa
+                 -log p(objetivo) supera `recon_kappa` veces su media móvil (tasa
+                 `recon_beta`). La ventana lábil dura `recon_window` aprendizajes de esta
+                 lectura, con tasa x `recon_rate`, y toca sólo las filas del error (el
+                 objetivo y la clase predicha); después la entrada vuelve a quedar
+                 bloqueada (re-consolidación). Sin error no cambia nada. (La replicación
+                 de 2022 de Sevenster et al. no encontró el efecto en humanos: es una
+                 hipótesis de mecanismo, no un hecho establecido.)
 """
 from __future__ import annotations
 
@@ -41,7 +60,9 @@ class Readout:
                  w_init: float = 1.0, consolidation: float = 5.0, baseline_beta: float = 0.02,
                  active_window: int = 0, relax: float = 0.0, row_norm: float = 0.0,
                  rule: str = "delta", mean_floor: float = 1e-3, floor: float = 0.0,
-                 capacity: int = 256):
+                 recon_lock: float = 0.0, recon_window: int = 1, recon_kappa: float = 2.0,
+                 recon_beta: float = 0.01, recon_rate: float = 1.0,
+                 capacity: int = 256, ace: bool = False):
         self.C = int(n_outputs)
         self.lr = float(lr)
         self.temperature = float(temperature)
@@ -54,6 +75,7 @@ class Readout:
         self.W = np.zeros((self.C, self.cap), dtype=np.float32)
         self.count = np.zeros(self.cap, dtype=np.float32)   # veces que se modificó cada entrada
         self.active_window = int(active_window)
+        self.ace = bool(ace)
         self.relax = float(relax)
         self.row_norm = float(row_norm)
         self.floor = float(floor)
@@ -65,6 +87,13 @@ class Readout:
         self.t = 0                                          # aprendizajes con objetivo propio
         self.last_target = np.full(self.C, -(10 ** 12), dtype=np.int64)
         self._count_t = np.zeros(self.cap, dtype=np.int64)  # último ajuste del contador (relajación)
+        self.recon_lock = float(recon_lock); self.recon_window = int(recon_window)
+        self.recon_kappa = float(recon_kappa); self.recon_beta = float(recon_beta)
+        self.recon_rate = float(recon_rate)
+        self.labile_until = np.zeros(self.cap, dtype=np.int64)   # evento hasta el que la entrada es lábil
+        self._ev = 0                                        # aprendizajes de esta lectura (incluye repasos)
+        self._smean = -1.0                                  # media móvil de la sorpresa (-1: sin datos)
+        self.opened = 0; self.relearned = 0; self.blocked = 0
 
     # --- sincronía con la capa elástica
     def add_input(self, cls: int | None = None):
@@ -75,10 +104,13 @@ class Readout:
             count[:self.n] = self.count[:self.n]
             ct = np.zeros(self.cap * 2, dtype=np.int64)
             ct[:self.n] = self._count_t[:self.n]
-            self.W = W; self.count = count; self._count_t = ct; self.cap *= 2
+            lu = np.zeros(self.cap * 2, dtype=np.int64)
+            lu[:self.n] = self.labile_until[:self.n]
+            self.W = W; self.count = count; self._count_t = ct; self.labile_until = lu; self.cap *= 2
         self.W[:, self.n] = 0.0
         self.count[self.n] = 0.0
         self._count_t[self.n] = self.t
+        self.labile_until[self.n] = 0
         if cls is not None:
             self.W[cls, self.n] = self.w_init      # asociación de un solo disparo
         self.n += 1
@@ -88,12 +120,14 @@ class Readout:
             self.W[:, j] = self.W[:, last]
             self.count[j] = self.count[last]
             self._count_t[j] = self._count_t[last]
+            self.labile_until[j] = self.labile_until[last]
         self.n -= 1
 
     def merge_inputs(self, a: int, b: int, alpha: float):
         """La entrada b se funde en a (la capa fusionó dos neuronas): promedio ponderado."""
         self.W[:, a] = alpha * self.W[:, a] + (1.0 - alpha) * self.W[:, b]
         self.count[a] = max(self.count[a], self.count[b])
+        self.labile_until[a] = max(self.labile_until[a], self.labile_until[b])
 
     # --- actividad de las clases (para el error asimétrico)
     def active(self) -> np.ndarray:
@@ -141,15 +175,17 @@ class Readout:
         return pre.astype(np.float32)
 
     def learn(self, idx: np.ndarray, h: np.ndarray, target: int, V: np.ndarray | None = None,
-              p: np.ndarray | None = None, replay: bool = False, soft: np.ndarray | None = None):
+              p: np.ndarray | None = None, replay: bool = False, soft: np.ndarray | None = None,
+              lr_scale: float = 1.0):
         """`p` externo: la competencia entre salidas la resolvió la red completa.
         `replay`: el ejemplo es un recuerdo (error completo, no cuenta como actividad).
         `soft`: objetivo como distribución (p. ej. un posterior sobre las clases): el tercer
         factor de cada salida es soft_o - p_o en vez de 1[o = objetivo] - p_o (`target` es
-        entonces la clase más probable, para la actividad y la regla de medias)."""
+        entonces la clase más probable, para la actividad y la regla de medias).
+        `lr_scale`: factor sobre la tasa (asimilación rápida de un esquema, ver Cortex)."""
         if not replay:
             self.mark(target)
-        if len(idx) == 0:
+        if len(idx) == 0 or lr_scale == 0.0:
             return
         if self.rule == "mean":
             self._learn_mean(idx, h, target)
@@ -158,13 +194,63 @@ class Readout:
             p = self.probs(self.potentials(idx, h) if V is None else V)
         err = -p
         if self.active_window > 0 and not replay:
-            err = np.where(self.active(), err, 0.0)
+            act = self.active()
+            err = np.where(act, err, 0.0)
+            if self.ace:                                    # competencia sólo entre las presentes
+                tot = float(-err.sum())
+                if tot > 0.0:
+                    err = err / tot
         if soft is None:
             err[target] += 1.0
         else:
             err = err + np.asarray(soft, dtype=err.dtype)
-        self.W[:, idx] += (self.lr * err)[:, None].astype(np.float32) * self._plasticity(idx, h)[None, :]
+        lr = self.lr if lr_scale == 1.0 else self.lr * float(lr_scale)
+        if self.recon_lock > 0.0:
+            self._learn_recon(idx, h, target, p, err, lr)
+        else:
+            self.W[:, idx] += (lr * err)[:, None].astype(np.float32) * self._plasticity(idx, h)[None, :]
         self._scale_rows(err != 0)
+
+    def surprise_error(self, p: np.ndarray, target: int) -> bool:
+        """¿Hay error de predicción? Predicción equivocada, o sorpresa -log p(objetivo) por
+        encima de `recon_kappa` veces su media móvil (que se actualiza acá)."""
+        s = -float(np.log(max(float(p[target]), 1e-12)))
+        wrong = int(np.argmax(p)) != target
+        surprised = self._smean > 0.0 and s > self.recon_kappa * self._smean
+        self._smean = s if self._smean < 0.0 else self._smean + self.recon_beta * (s - self._smean)
+        return wrong or surprised
+
+    def _learn_recon(self, idx, h, target: int, p, err, lr: float):
+        """Delta con reconsolidación: las entradas libres aprenden como siempre (y cuentan
+        hacia el bloqueo); las consolidadas sólo si están lábiles, y sólo en las filas del
+        error (objetivo y predicha)."""
+        ev = self._ev; self._ev += 1
+        opened = self.surprise_error(p, target)
+        cons = self.count[idx] >= self.recon_lock
+        free = ~cons
+        if free.any():
+            fi = idx[free]
+            hf = h[free]
+            if self.consolidation > 0.0:
+                hf = hf * np.maximum(self.floor, 1.0 / (1.0 + self.count[fi] / self.consolidation))
+            self.count[fi] += 1.0
+            self.W[:, fi] += (lr * err)[:, None].astype(np.float32) * hf.astype(np.float32)[None, :]
+        if not cons.any():
+            return
+        ci = idx[cons]
+        if opened:                                          # la recuperación con error abre la ventana
+            self.labile_until[ci] = ev + self.recon_window
+            self.opened += len(ci)
+        lab = self.labile_until[ci] > ev
+        self.blocked += int((~lab).sum())
+        if not lab.any():
+            return
+        li = ci[lab]
+        pred = int(np.argmax(p))
+        rows = np.array([target] if pred == target else [target, pred])
+        dW = (lr * self.recon_rate * err[rows])[:, None] * h[cons][lab][None, :]
+        self.W[np.ix_(rows, li)] += dW.astype(np.float32)
+        self.relearned += len(li)
 
     def _learn_mean(self, idx, h, target: int):
         eta = np.float32(max(self.mean_floor, 1.0 / (self.n_class[target] + 1.0)))

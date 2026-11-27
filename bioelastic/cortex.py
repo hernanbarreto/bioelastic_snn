@@ -107,6 +107,19 @@ class Cortex:
                  replay: float = 0.0, rehearse: float = 0.0, replay_focus: str = "uniform",
                  rehearse_focus: str = "uniform", confusion_p: float = 0.05,
                  joint: bool = True, temperature: float = 0.25, arbiter: float = 0.0,
+                 recall: str = "off", recall_k: int = 8, recall_margin: float = 0.2,
+                 recall_gain: float = 1.0, recall_tau: float = 0.05, recall_source: str = "episodes",
+                 stored_labels: bool = False, slow_error: str = "joint",
+                 schema: str = "off", schema_fit: float = 0.5, schema_boost: float = 4.0,
+                 schema_misfit_lr: float = 1.0, schema_beta: float = 0.02, schema_known: int = 20,
+                 schema_frozen: int = 0,
+                 replay_mode: str = "passive", spacing: str = "none", space_base: float = 200.0,
+                 space_factor: float = 2.0, active_margin: float = 0.0, fail_weight: float = 4.0,
+                 sleep_every: int = 0, sleep_trigger: str = "steps", sleep_load: int = 200,
+                 sleep_replays: int = 0, sleep_micro: int = 0, sleep_downscale: float = 0.0,
+                 sleep_scope: str = "proj", sleep_prune: float = 0.0, sleep_release: float = 0.0,
+                 sleep_keep: int = 10, replay_contrast: bool = False, sleep_focus: str = "uniform",
+                 sleep_release_check: str = "margin", cause_slow: bool = True,
                  seed: int = 0, workers: int = 1, homeostasis: float = 0.0,
                  metacog: dict | None = None, hypercorrection: float = 0.0,
                  hypercorrection_mode: str = "confianza", neuromod: dict | None = None,
@@ -117,7 +130,26 @@ class Cortex:
                             rehearse=float(rehearse), replay_focus=str(replay_focus),
                             rehearse_focus=str(rehearse_focus), confusion_p=float(confusion_p),
                             joint=bool(joint), temperature=float(temperature),
-                            arbiter=float(arbiter), seed=int(seed))
+                            arbiter=float(arbiter),
+                            recall=str(recall), recall_k=int(recall_k), recall_margin=float(recall_margin),
+                            recall_gain=float(recall_gain), recall_tau=float(recall_tau),
+                            recall_source=str(recall_source), stored_labels=bool(stored_labels),
+                            slow_error=str(slow_error),
+                            schema=str(schema), schema_fit=float(schema_fit),
+                            schema_boost=float(schema_boost), schema_misfit_lr=float(schema_misfit_lr),
+                            schema_beta=float(schema_beta), schema_known=int(schema_known),
+                            schema_frozen=int(schema_frozen),
+                            replay_mode=str(replay_mode), spacing=str(spacing), space_base=float(space_base),
+                            space_factor=float(space_factor), active_margin=float(active_margin),
+                            fail_weight=float(fail_weight),
+                            sleep_every=int(sleep_every), sleep_trigger=str(sleep_trigger),
+                            sleep_load=int(sleep_load), sleep_replays=int(sleep_replays),
+                            sleep_micro=int(sleep_micro), sleep_downscale=float(sleep_downscale),
+                            sleep_scope=str(sleep_scope), sleep_prune=float(sleep_prune),
+                            sleep_release=float(sleep_release), sleep_keep=int(sleep_keep),
+                            replay_contrast=bool(replay_contrast), sleep_focus=str(sleep_focus),
+                            sleep_release_check=str(sleep_release_check), cause_slow=bool(cause_slow),
+                            seed=int(seed))
         self.arbiter = float(arbiter)
         self.beta = None                                      # pesos del árbitro (uno por votante)
         self._L = None
@@ -182,6 +214,72 @@ class Cortex:
         self.confusion_p = float(confusion_p)
         self.directed = 0                                     # repasos y ensayos dirigidos a la confusión
         self.joint = bool(joint)
+        # Dos sistemas explícitos (ver `forward` y `_recall_vote`).
+        if recall not in ("off", "gate", "always", "fallback"):
+            raise ValueError(f"recall desconocido: {recall}")
+        if recall_source not in ("episodes", "readout"):
+            raise ValueError(f"recall_source desconocido: {recall_source}")
+        self.recall = recall; self.recall_k = int(recall_k); self.recall_margin = float(recall_margin)
+        self.recall_gain = float(recall_gain); self.recall_tau = float(recall_tau)
+        self.recall_source = recall_source
+        self.stored_labels = bool(stored_labels)
+        if slow_error not in ("joint", "own"):
+            raise ValueError(f"slow_error desconocido: {slow_error}")
+        # "joint": la proyección aprende con el error de la decisión conjunta (lo que la
+        # memoria ya acierta no le enseña nada al lento); "own": con su propio error, como
+        # el neocórtex de CLS, que no queda «explicado» por el hipocampo.
+        self.slow_error = slow_error
+        self.recalls = 0                                      # inferencias que consultaron el almacén
+        self._slow = None; self._fast = None; self._recalled = False
+        # Esquemas (ver `_schema_fit`).
+        if schema not in ("off", "measure", "gate", "always"):
+            raise ValueError(f"schema desconocido: {schema}")
+        self.schema = schema; self.schema_fit = float(schema_fit); self.schema_boost = float(schema_boost)
+        self.schema_misfit_lr = float(schema_misfit_lr); self.schema_beta = float(schema_beta)
+        self.schema_known = int(schema_known)
+        # > 0: el encaje se mide contra una foto congelada del sistema lento (se renueva cada
+        # `schema_frozen` pasos y al terminar cada sueño), no contra el que se está modificando.
+        self.schema_frozen = int(schema_frozen); self._Wf = None; self._Wf_t = 0
+        self.reliability = 0.0                                # acierto reciente del lento en clases conocidas
+        self.fit = float("nan"); self.fit_parts = (float("nan"),) * 3
+        self.assimilated = 0
+        self._taught = np.zeros(self.C, dtype=np.int64)       # enseñanzas por clase
+        # Repaso como autoexamen espaciado (ver `_replay_scheduled`).
+        if replay_mode not in ("passive", "active", "scheduled"):
+            raise ValueError(f"replay_mode desconocido: {replay_mode}")
+        if spacing not in ("none", "equal", "expanding"):
+            raise ValueError(f"spacing desconocido: {spacing}")
+        self.replay_mode = replay_mode; self.spacing = spacing
+        self.space_base = float(space_base); self.space_factor = float(space_factor)
+        self.active_margin = float(active_margin); self.fail_weight = float(fail_weight)
+        self.tests = 0; self.test_errors = 0
+        self.replay_contrast = bool(replay_contrast)          # repaso dirigido como examen de a dos
+        self._steps = 0                                       # pasos de enseñanza (reloj del calendario)
+        # Sueño (ver `_sleep_tick`).
+        if sleep_trigger not in ("steps", "load"):
+            raise ValueError(f"sleep_trigger desconocido: {sleep_trigger}")
+        if sleep_scope not in ("proj", "all"):
+            raise ValueError(f"sleep_scope desconocido: {sleep_scope}")
+        self.sleep_every = int(sleep_every); self.sleep_trigger = sleep_trigger
+        self.sleep_load = int(sleep_load); self.sleep_replays_n = int(sleep_replays)
+        self.sleep_micro = int(sleep_micro); self.sleep_downscale = float(sleep_downscale)
+        self.sleep_scope = sleep_scope; self.sleep_prune = float(sleep_prune)
+        self.sleep_release = float(sleep_release); self.sleep_keep = int(sleep_keep)
+        if sleep_focus not in ("uniform", "weak"):
+            raise ValueError(f"sleep_focus desconocido: {sleep_focus}")
+        if sleep_release_check not in ("margin", "redundant"):
+            raise ValueError(f"sleep_release_check desconocido: {sleep_release_check}")
+        # "weak": el sueño repasa primero lo que el lento resuelve peor (margen más bajo
+        # medido; lo nunca medido, antes), entre 64 candidatos al azar (repaso priorizado).
+        # "redundant": un episodio sólo deja el almacén si, además, los demás recuerdos del
+        # almacén lo siguen reconociendo con su etiqueta (no se pierde lo único que lo cubría).
+        self.sleep_focus = sleep_focus; self.sleep_release_check = sleep_release_check
+        # Con un área que infiere causas latentes: lo que ella protege (causa nueva junto a
+        # un recuerdo dormido) tampoco se deprime en el sistema lento.
+        self.cause_slow = bool(cause_slow)
+        self.sleeps = 0; self.sleep_replays = 0; self.released = 0; self.pruned_synapses = 0
+        self.sleeping = False; self._sleep_debt = 0; self._sleep_start = 0
+        self._last_sleep = 0; self._created_at_sleep = 0
         self.rng = np.random.default_rng(seed)
         self.areas: list[FeatureArea] = []
         shape = self.input_shape
@@ -316,10 +414,12 @@ class Cortex:
         if job is not None:
             job.result()
         votes = [(head._last.V, head.readout.temperature) for head in self.heads]
+        Vp = None
         if self.proj is not None:
             idx, h = self._proj_input(codes)
             self._pv = (idx, h)
-            votes.append((self.proj.potentials(idx, h), self.proj.temperature))
+            Vp = self.proj.potentials(idx, h)
+            votes.append((Vp, self.proj.temperature))
         self._zs = []
         for a in self.areas:                                  # lectores locales (si hay error local)
             z = a.potentials()
@@ -339,6 +439,9 @@ class Cortex:
             V = np.zeros(self.C, dtype=np.float32)
             for z, _ in votes:                                # mismo orden de suma
                 V = V + z
+        self._slow = None; self._fast = None; self._recalled = False
+        if self.recall != "off" and self.arbiter <= 0.0:      # (con árbitro, V son log-probabilidades)
+            V = self._two_systems(V, Vp)
         if self.homeostasis > 0.0:
             V = V - self.umbral
         self._V = V
@@ -397,6 +500,108 @@ class Cortex:
             if len(h) > 1000:
                 h.pop(int(self._fb_rng.integers(len(h))))
         return out
+
+    # ------------------------------------------------------------------ dos sistemas
+    def _store(self):
+        """Almacén rápido: el área de asociación de la que se repasa, si guarda huellas."""
+        mem, _ = self._replay_source()
+        return mem if mem is not None and mem.episodes is not None else None
+
+    def _slow_part(self, store, Vp):
+        """Sistema lento: la proyección directa y las áreas de asociación que no son el almacén."""
+        S = np.zeros(self.C, dtype=np.float32)
+        for head in self.heads:
+            if head is not store:
+                S = S + head._last.V
+        if Vp is not None:
+            S = S + Vp
+        for z in self._zs:                                    # lectores locales de las áreas
+            if z is not None:
+                S = S + z
+        return S
+
+    def _two_systems(self, V, Vp):
+        """Complementary Learning Systems (McClelland et al. 1995; Kumaran, Hassabis y
+        McClelland 2016): el sistema lento (proyección + áreas) responde solo cuando está
+        seguro; si no, se recuperan los `recall_k` episodios más parecidos del almacén
+        rápido y se combinan (razonamiento basado en memoria).
+
+          recall="gate"    se consulta el almacén sólo si el margen p1 - p2 del sistema
+                           lento (softmax a la temperatura de la red) es < `recall_margin`
+          recall="always"  siempre lento + almacén (sin compuerta)
+          recall="fallback" lento + lectura del almacén siempre (como sin `recall`); los
+                           episodios recuperados se suman sólo si esa decisión conjunta
+                           duda (margen < `recall_margin`). Corrige la compuerta, que
+                           dejaba afuera a la memoria cuando el lento estaba seguro y
+                           equivocado (ver results/consolidacion_f1.json).
+          recall_source="episodes"  voto de los episodios recuperados con su etiqueta
+                           guardada, pesos softmax(coseno / `recall_tau`)
+          recall_source="readout"   voto de la lectura aprendida del almacén (sólo compuerta)
+        """
+        store = self._store()
+        if store is None or store._last is None:
+            return V
+        S = self._slow_part(store, Vp)
+        self._slow = S
+        if self.recall == "fallback":                         # el almacén vota siempre (ya está calculado);
+            F = S + store._last.V                             # los episodios, sólo si los dos dudan
+            e = np.exp((F - F.max()) / self.temperature)
+            q = np.sort(e / e.sum())
+            if (q[-1] - (q[-2] if len(q) > 1 else 0.0)) >= self.recall_margin:
+                return F
+            self._fast = self._recall_vote(store)
+            self._recalled = True
+            self.recalls += 1
+            return F + np.float32(self.recall_gain) * self._fast
+        use = True
+        if self.recall == "gate":
+            e = np.exp((S - S.max()) / self.temperature)
+            q = np.sort(e / e.sum())
+            use = (q[-1] - (q[-2] if len(q) > 1 else 0.0)) < self.recall_margin
+        if not use:
+            return S
+        self._fast = self._recall_vote(store)
+        self._recalled = True
+        self.recalls += 1
+        return S + np.float32(self.recall_gain) * self._fast
+
+    def _recall_vote(self, store) -> np.ndarray:
+        if self.recall_source == "readout":
+            return store._last.V.astype(np.float32)
+        v = store._last.v
+        ids, sim = store.recall(v.idx, v.val, self.recall_k)
+        out = np.zeros(self.C, dtype=np.float32)
+        if len(ids) == 0:
+            return out
+        y = store.ep["y"][ids].astype(np.int64)
+        if (y < 0).any():                                     # sin etiqueta: la de su lectura
+            y = np.where(y >= 0, y, store.readout.preferred(ids))
+        w = np.exp((sim - sim.max()) / max(self.recall_tau, 1e-6))
+        ok = y >= 0
+        if ok.any():
+            np.add.at(out, y[ok], (w[ok] / w[ok].sum()).astype(np.float32))
+        return out
+
+    def parts(self) -> dict:
+        """Aporte de cada sistema en la última inferencia: «slow» (proyección + áreas que no
+        son el almacén) y «fast» (el almacén: su lectura aprendida o, con `recall`, el voto
+        de los episodios recuperados, calculado aunque la compuerta no lo haya pedido).
+        «recalled»: si la respuesta consultó el almacén."""
+        store = self._store() or (self.heads[0] if self.heads else None)
+        Vp = self.proj.potentials(*self._pv) if self.proj is not None and self._pv is not None else None
+        slow = self._slow if self._slow is not None else self._slow_part(store, Vp)
+        if self.recall == "off" or store is None or store.episodes is None:
+            fast = store._last.V if store is not None else np.zeros(self.C, dtype=np.float32)
+        elif self.recall == "fallback":
+            fast = store._last.V + (np.float32(self.recall_gain) * self._fast if self._recalled else 0.0)
+        else:
+            fast = self._fast if self._fast is not None else self._recall_vote(store)
+        return dict(slow=slow, fast=fast, recalled=self._recalled)
+
+    def _labels(self, mem) -> np.ndarray:
+        """Clase de cada recuerdo del almacén para el repaso: la etiqueta guardada en el
+        episodio (`stored_labels`) o la preferida de la lectura aprendida (puede derivar)."""
+        return mem.labels(stored=self.stored_labels)
 
     # ------------------------------------------------------------------ aprendizaje
     def _p(self):
@@ -654,7 +859,7 @@ class Cortex:
             if self._nov is not None:                         # ¿era algo que casi no se me enseñó?
                 self._nov.update(self._novelty_features(),
                                  bool(self._taught[int(target)] < int(self.metacog.get("new", 10))))
-                self._taught[int(target)] += 1
+                # el conteo de enseñanzas por clase lo suma `_teach` (una vez por enseñanza)
             if self._modulated():
                 g = self._outcome(self.pred == int(target)) * float(gain)
                 grow = bool(self.neuromod and self.neuromod["grow"]
@@ -678,9 +883,15 @@ class Cortex:
         if (self.replay_focus == "confusion" and self.replay > 0.0 and self.proj is not None) or \
                 (self.rehearse_focus == "confusion" and self.rehearse > 0.0):
             conf = self._confusion(target, p)                 # antes de que la memoria cambie
+        grow, slow_lr = None, 1.0
+        if self.schema != "off":                              # antes de que las áreas aprendan
+            grow, slow_lr = self._schema_route(target)
+        store = self._store() if grow is not None else None
 
         def one(i):
             kw = {} if soft is None else dict(soft=soft)
+            if grow is not None and self.heads[i] is store:
+                kw["grow"] = grow
             if self.joint and not arb:
                 self.heads[i].teach(target, pred=self.pred, p=p, **kw)
             else:                                             # cada área aprende de su propio error
@@ -689,15 +900,33 @@ class Cortex:
         for i in range(len(self.heads)):
             if i not in done:
                 one(i)
+        self._taught[target] += 1
+        self._steps += 1
         if self.proj is not None:
-            self.proj.learn(*self._pv, target, p=None if arb else p, **({} if soft is None else dict(soft=soft)))
+            pp = None if arb else p
+            prot = [c for h in self.heads if self.cause_slow and getattr(h, "causes", False)
+                    for c in h.protect_classes.tolist() if c != target]
+            if self.slow_error == "own" and not arb:
+                S = self._slow if self._slow is not None else self._slow_part(
+                    self._store(), self.proj.potentials(*self._pv))
+                e = np.exp((S - S.max()) / self.temperature); pp = e / e.sum()
+            if prot and pp is not None:                       # causa nueva: el lento no deprime lo viejo
+                pp = np.array(pp, dtype=np.float64); pp[prot] = 0.0
+            kw = {} if soft is None else dict(soft=soft)
+            if slow_lr != 1.0:
+                kw["lr_scale"] = slow_lr
+            self.proj.learn(*self._pv, target, p=pp, **kw)
             if self.replay > 0.0:
                 self._replay_debt += self.replay
                 aimed = conf is not None and self.replay_focus == "confusion"
                 while self._replay_debt >= 1.0:
                     self._replay_debt -= 1.0
                     if aimed:                                 # un repaso por paso va a la confusión
-                        self._replay_pattern(conf[0], conf[1], conf[3]); aimed = False
+                        if self.replay_contrast:
+                            self._contrast(conf[0], conf[1], conf[3], target)
+                        else:
+                            self._replay_pattern(conf[0], conf[1], conf[3])
+                        aimed = False
                         self.directed += 1
                     else:
                         self._replay_one()
@@ -713,6 +942,222 @@ class Cortex:
                     self._rehearse_one()
         if conf is not None:
             conf[2].watch = -1
+        if self.sleep_replays_n > 0 and (self.sleep_every > 0 or self.sleep_trigger == "load"):
+            self._sleep_tick(self.sleep_micro if self.sleep_micro > 0 else None)
+
+    # ------------------------------------------------------------------ sueño
+    def _sleep_due(self) -> bool:
+        if self.sleep_trigger == "load":                      # carga: episodios nuevos sin dormir
+            store = self._store()
+            return store is not None and store.layer.created - self._created_at_sleep >= self.sleep_load
+        return self._steps - self._last_sleep >= self.sleep_every
+
+    def _start_sleep(self, replays: int):
+        self.sleeping = True; self._sleep_debt = int(replays)
+        self._sleep_start = self._steps; self._last_sleep = self._steps
+
+    def _sleep_tick(self, budget: int | None):
+        """Sueño (Klinzing, Niethard y Born 2019): consolidación activa de sistemas
+        (repaso intercalado del almacén rápido al lento, sin entrada nueva) seguida de
+        renormalización sináptica global (Tononi y Cirelli 2014: los pesos del sistema
+        lento se multiplican por 1 - `sleep_downscale`, lo que conserva sus relaciones) y
+        poda (sinapsis del lento por debajo de `sleep_prune` x el máximo; y, con
+        `sleep_release`, los episodios que el lento ya predice con margen >= ese valor
+        dejan el almacén rápido, conservando `sleep_keep` por clase: el lugar queda para lo
+        nuevo).
+
+        Empieza cada `sleep_every` pasos (sleep_trigger="steps") o cuando el almacén
+        escribió `sleep_load` episodios desde el último sueño ("load") y dura
+        `sleep_replays` repasos. Con `sleep_micro` > 0 corre en micro-fases de a lo sumo
+        ese número de repasos por paso (o por llamada a `idle`): la red nunca deja de
+        responder ni de aprender; con 0, el sueño entero ocurre en el paso que lo dispara."""
+        if not self.sleeping:
+            if not self._sleep_due():
+                return 0
+            self._start_sleep(self.sleep_replays_n)
+        k = self._sleep_debt if budget is None else min(int(budget), self._sleep_debt)
+        for _ in range(k):
+            if self.sleep_focus == "weak":
+                self._replay_weak()
+            else:
+                self._replay_one()
+        self.sleep_replays += k; self._sleep_debt -= k
+        if self._sleep_debt <= 0:
+            self._end_sleep()
+        return k
+
+    def _end_sleep(self):
+        self.sleeping = False; self.sleeps += 1
+        if self.schema_frozen > 0 and self.proj is not None:
+            self._freeze()                                    # lo consolidado en el sueño
+        d = self.sleep_downscale
+        if d > 0.0:
+            f = np.float32(1.0 - d)
+            if self.proj is not None:
+                self.proj.W[:, :self.proj.n] *= f
+            if self.sleep_scope == "all":
+                for h in self.heads:
+                    h.readout.W[:, :h.readout.n] *= f
+        if self.sleep_prune > 0.0 and self.proj is not None:
+            W = self.proj.W[:, :self.proj.n]
+            thr = self.sleep_prune * float(np.abs(W).max()) if W.size else 0.0
+            small = (np.abs(W) < thr) & (W != 0.0)
+            self.pruned_synapses += int(small.sum())
+            W[small] = 0.0
+        store = self._store()
+        if self.sleep_release > 0.0 and store is not None and store.ep is not None:
+            self._release(store)
+        if store is not None:
+            self._created_at_sleep = store.layer.created
+
+    def _replay_weak(self):
+        """Repaso priorizado del sueño: entre 64 episodios al azar, el de menor margen del
+        lento medido (los nunca medidos tienen -1: primero)."""
+        mem, space = self._replay_source()
+        if mem is None or mem.ep is None:
+            self._replay_one(passive=True)
+            return
+        lab = self._labels(mem)
+        ok = np.flatnonzero(lab >= 0)
+        if len(ok) == 0:
+            return
+        cand = ok if len(ok) <= 64 else self.rng.choice(ok, 64, replace=False)
+        j = int(cand[int(np.argmin(mem.ep["m"][cand]))])
+        self._replay_pattern(mem.episode(j), int(lab[j]), space, mem, j)
+
+    def _redundant(self, store, j: int, y: int) -> bool:
+        """¿Los demás recuerdos del almacén reconocen el episodio j con su etiqueta?"""
+        x = store.episode(j)
+        idx = np.flatnonzero(x > 0)
+        v = store.layer.forward(idx, x[idx])
+        if v.novel:
+            return False
+        others = v.winners[v.winners != j]
+        if len(others) == 0:
+            return False
+        lab = self._labels(store)
+        return int(lab[int(others[0])]) == y
+
+    def _release(self, store):
+        """Los episodios que el sistema lento ya resuelve (margen medido en este sueño >=
+        `sleep_release`) dejan el almacén rápido; quedan al menos `sleep_keep` por clase."""
+        n = store.layer.n; ep = store.ep
+        lab = self._labels(store)
+        cand = np.flatnonzero((ep["m_t"][:n] >= self._sleep_start) & (ep["m"][:n] >= self.sleep_release))
+        if len(cand) == 0:
+            return
+        cnt = np.bincount(lab[lab >= 0], minlength=self.C)
+        out = []
+        checked = 0
+        for j in cand[np.argsort(-ep["m"][cand], kind="stable")]:   # primero lo mejor consolidado
+            c = int(lab[j])
+            if c >= 0 and cnt[c] > self.sleep_keep:
+                if self.sleep_release_check == "redundant":
+                    if checked >= 64:                         # costo acotado por sueño
+                        break
+                    checked += 1
+                    if not self._redundant(store, int(j), c):
+                        continue
+                cnt[c] -= 1; out.append(int(j))
+        for j in sorted(out, reverse=True):                   # descendente: seguro con swap-remove
+            store.layer.remove(j)
+        self.released += len(out)
+
+    def sleep(self, replays: int | None = None) -> int:
+        """Duerme ahora, de un bloque (p. ej. entre sesiones): `replays` repasos (por
+        defecto `sleep_replays`) y después renormalización, poda y liberación."""
+        self._start_sleep(self.sleep_replays_n if replays is None else replays)
+        return self._idle_run(None)
+
+    def idle(self, budget: int = 1) -> int:
+        """Entre consultas: avanza a lo sumo `budget` repasos del sueño pendiente (o lo
+        empieza si corresponde). No toca lo necesario para aprender la última entrada."""
+        if not self.sleeping and not (self.sleep_replays_n > 0 and self._sleep_due()):
+            return 0
+        if not self.sleeping:
+            self._start_sleep(self.sleep_replays_n)
+        return self._idle_run(budget)
+
+    def _idle_run(self, budget):
+        caches = [a._cache for a in self.areas]               # el repaso pisa la última codificación
+        k = self._sleep_tick(budget)
+        for a, c in zip(self.areas, caches):
+            a._cache = c
+        return k
+
+    # ------------------------------------------------------------------ esquemas
+    def _coverage(self) -> float:
+        """Qué parte de la entrada explican las áreas sensoriales: fracción de la energía de
+        los parches válidos cuyo mejor rasgo supera el umbral del área (promedio entre
+        áreas). Usa la última codificación (antes de que las áreas aprendan)."""
+        covs = []
+        for a in self.areas:
+            if a._cache is None:
+                continue
+            Pm, norms, vr, act = a._cache[:4]
+            if act is None or len(vr) == 0:
+                covs.append(0.0); continue
+            w = norms[vr]
+            covs.append(float((w * (act.max(axis=1) >= a.theta)).sum() / max(float(w.sum()), 1e-12)))
+        return float(np.mean(covs)) if covs else 1.0
+
+    def _schema_fit(self, target: int) -> float:
+        """Encaje de (entrada, etiqueta) con el conocimiento del sistema lento (esquema, Tse
+        et al. 2007; su lectura computacional, McClelland 2013):
+
+            encaje = cobertura x fiabilidad x (1 - conflicto)
+
+          cobertura   cuánto de la entrada explican los diccionarios de las áreas
+          fiabilidad  acierto reciente (media móvil, tasa `schema_beta`) del sistema lento
+                      en clases ya enseñadas >= `schema_known` veces: si lo conocido no se
+                      predice bien, no hay esquema
+          conflicto   probabilidad de la clase equivocada más fuerte según el lento: un
+                      ítem que contradice lo que el lento cree con seguridad exigiría
+                      reestructurarlo (interferencia)
+        """
+        store = self._store()
+        if self.schema_frozen > 0 and self.proj is not None:  # lo consolidado, no lo que está cambiando
+            if self._Wf is None or self._steps - self._Wf_t >= self.schema_frozen:
+                self._freeze()
+            idx, h = self._pv
+            S = self._Wf[:, idx] @ h
+        else:
+            S = self._slow if self._slow is not None else self._slow_part(
+                store, self.proj.potentials(*self._pv) if self.proj is not None else None)
+        e = np.exp((S - S.max()) / self.temperature); q = e / e.sum()
+        conflict = float(np.max(np.delete(q, target))) if self.C > 1 else 0.0
+        cov = self._coverage()
+        rel = self.reliability
+        fit = cov * rel * (1.0 - conflict)
+        if self._taught[target] >= self.schema_known:         # la fiabilidad se mide en lo conocido
+            ok = float(int(np.argmax(S)) == target)
+            self.reliability += self.schema_beta * (ok - self.reliability)
+        self.fit = fit; self.fit_parts = (cov, rel, conflict)
+        return fit
+
+    def _freeze(self):
+        self._Wf = self.proj.W[:, :self.proj.n].copy(); self._Wf_t = self._steps
+
+    def _schema_route(self, target: int):
+        """(neurogénesis permitida en el almacén, factor de tasa del sistema lento).
+
+          schema="measure"  sólo mide el encaje (diagnóstico, sin efecto)
+          schema="gate"     encaja (>= `schema_fit`): asimilación rápida en el lento (tasa
+                            x `schema_boost`) y sin neurona nueva en el almacén; no encaja:
+                            queda en el almacén (neurogénesis habilitada) y el lento aprende
+                            con tasa x `schema_misfit_lr` (0 = sólo desde el repaso)
+          schema="always"   asimilación rápida de todo (ablación: sin medir el encaje)
+        """
+        fit = self._schema_fit(target)
+        if self.schema == "gate":
+            if fit >= self.schema_fit:
+                self.assimilated += 1
+                return False, self.schema_boost
+            return None, self.schema_misfit_lr
+        if self.schema == "always":
+            self.assimilated += 1
+            return None, self.schema_boost
+        return None, 1.0
 
     def _confusion(self, target: int, p):
         """Repaso dirigido a la confusión (cf. MIR, Aljundi et al. 2019; ASER, Shim et al.
@@ -737,14 +1182,15 @@ class Cortex:
         v = mem._last.v
         if len(v.winners) and int(v.winners.max()) >= L.n:
             return None
-        pw = mem.readout.preferred(v.winners)
+        lab = self._labels(mem)
+        pw = lab[v.winners]
         hit = np.flatnonzero(pw == c2)
         if len(hit):
             j = int(v.winners[hit[0]])
         else:
             if v.norm == 0.0:
                 return None
-            rows = np.flatnonzero(mem.readout.preferred(np.arange(L.n)) == c2)
+            rows = np.flatnonzero(lab == c2)
             if len(rows) == 0:
                 return None
             cos = L._cos_at(rows, v.idx, v.val, v.norm, L._fan_max())
@@ -770,18 +1216,22 @@ class Cortex:
                 return h, "code"
         return None, None
 
-    def _replay_one(self):
+    def _replay_one(self, passive: bool = False):
         """Consolidación por repetición: un recuerdo del área de asociación (el patrón que
         guarda una de sus neuronas) se reactiva y entrena la proyección directa con la clase
         de esa neurona. Las clases se eligen de forma pareja, así lo viejo se repasa aunque
         el flujo ya no lo muestre. Con replay_focus="absent" (y una proyección con
         `active_window`) se repasan sólo las clases ausentes del flujo: las presentes ya
-        reciben ejemplos reales."""
+        reciben ejemplos reales.
+        Con replay_mode="active" o "scheduled", ver `_replay_scheduled`."""
+        if self.replay_mode != "passive" and not passive:
+            self._replay_scheduled()
+            return
         mem, space = self._replay_source()
         if mem is None:
             return
         L = mem.layer
-        pref = mem.readout.preferred(np.arange(L.n))
+        pref = self._labels(mem)
         classes = np.unique(pref[pref >= 0])
         if self.replay_focus == "absent" and self.proj.active_window > 0 and len(classes):
             absent = classes[~self.proj.active()[classes]]
@@ -791,28 +1241,151 @@ class Cortex:
             return
         c = int(self.rng.choice(classes))
         j = int(self.rng.choice(np.flatnonzero(pref == c)))
-        self._replay_pattern(mem.episode(j), c, space)
+        self._replay_pattern(mem.episode(j), c, space, mem, j)
 
-    def _replay_pattern(self, x, c: int, space: str):
-        """Reactiva el recuerdo denso `x` (espacio de la memoria) y entrena la proyección
-        directa con la clase c, con el error completo."""
+    def _reactivate(self, x, space: str):
+        """Recuerdo denso `x` (espacio de la memoria) -> (volea normalizada de la proyección,
+        códigos de las áreas). El repaso no entrena los rasgos de las áreas."""
+        codes = []
         if space == "input":
             X = (x / max(float(x.max()), 1e-8)).reshape(self.input_shape)
-            codes = []
             for a in self.areas:
                 X = a.encode(X); codes.append(X)
                 a._cache = None                               # el repaso no entrena los rasgos
-                a.learn_readout(c, X)                         # pero sí los lectores locales
             idx, h = self._proj_input(codes)
         else:
             idx = np.flatnonzero(x > 0); val = x[idx]
             h = val / np.float32(max(float(np.sqrt(val @ val)), 1e-6))
         if len(idx) == 0:
+            return None
+        return idx, h, codes
+
+    def _replay_local(self, c: int, codes):
+        """Los lectores locales de las áreas (si hay error local) también aprenden del repaso."""
+        for a, X in zip(self.areas, codes):
+            a.learn_readout(c, X)
+
+    def _replay_pattern(self, x, c: int, space: str, mem=None, j: int = -1):
+        """Reactiva el recuerdo denso `x` (espacio de la memoria) y entrena la proyección
+        directa con la clase c, con el error completo. Con `mem` y `j`, anota en el
+        episodio el margen del sistema lento antes de aprender (lo usa el sueño)."""
+        r = self._reactivate(x, space)
+        if r is None:
             return
+        idx, h, codes = r
+        self._replay_local(c, codes)
         V = self.proj.potentials(idx, h)
         e = np.exp((V - V.max()) / self.temperature)
-        self.proj.learn(idx, h, c, p=e / e.sum(), replay=True)
+        q = e / e.sum()
+        if mem is not None and j >= 0 and mem.ep is not None:
+            self._note_margin(mem, j, q, c)
+        self.proj.learn(idx, h, c, p=q, replay=True)
         self.replays += 1
+
+    def _contrast(self, x, c: int, space: str, rival: int):
+        """Autoexamen dirigido contra la clase que compite (propuesta de Continuo 2): el
+        recuerdo de la clase c más cercano a lo que entra (ver `_confusion`) se presenta a
+        la proyección y se compara su puntaje para c con el de `rival`, la clase que se
+        está enseñando, aunque sea la única presente en el flujo. Si c no le gana por más
+        de `active_margin` (en la competencia de a dos), aprende con el error de esa
+        competencia: sólo cambian las filas c y rival."""
+        r = self._reactivate(x, space)
+        if r is None:
+            return
+        idx, h, codes = r
+        V = self.proj.potentials(idx, h)
+        pair = np.array([c, rival])
+        z = V[pair] / self.temperature
+        e = np.exp(z - z.max()); e /= e.sum()
+        self.tests += 1
+        self.replays += 1
+        if e[0] - e[1] > self.active_margin:
+            return
+        self.test_errors += 1
+        q = np.zeros(self.C); q[pair] = e
+        self._replay_local(c, codes)
+        self.proj.learn(idx, h, c, p=q, replay=True)
+
+    def _note_margin(self, mem, j: int, q, c: int):
+        other = np.delete(q, c)
+        mem.ep["m"][j] = np.float32(q[c] - (other.max() if len(other) else 0.0))
+        mem.ep["m_t"][j] = self._steps
+
+    # ------------------------------------------------------------------ autoexamen espaciado
+    def _pick_scheduled(self, mem, lab):
+        """Recuerdo a examinar. Sin espaciado: muestreo proporcional a 1 + `fail_weight` x
+        (media móvil de sus fallos). Con espaciado: entre los vencidos, el de mayor
+        prioridad = `fail_weight` x fallo + atraso / intervalo; si no hay vencidos, el que
+        vence antes (el presupuesto de repasos se gasta igual)."""
+        ep = mem.ep; n = mem.layer.n
+        ok = np.flatnonzero(lab >= 0)
+        if len(ok) == 0:
+            return -1
+        fail = ep["fail"][ok]
+        if self.spacing == "none":
+            w = 1.0 + self.fail_weight * fail.astype(np.float64)
+            return int(self.rng.choice(ok, p=w / w.sum()))
+        due = ep["due"][ok]
+        late = self._steps - due
+        ready = late >= 0
+        if not ready.any():
+            return int(ok[int(np.argmin(due))])
+        cand = ok[ready]
+        pri = self.fail_weight * fail[ready] + late[ready] / np.maximum(ep["gap"][cand], 1.0)
+        return int(cand[int(np.argmax(pri))])
+
+    def _replay_scheduled(self):
+        """Repaso como autoexamen (efecto de testeo, Roediger y Karpicke 2006): se presenta
+        la clave (el episodio guardado), el sistema lento predice y se compara con la
+        etiqueta guardada. replay_mode="active": aprende sólo si falla (o si el margen
+        p(etiqueta) - p(otra) no supera `active_margin`); "scheduled": misma elección y
+        calendario, pero aprende siempre (ablación del examen). El resultado ajusta el
+        calendario: acierto -> el intervalo se mantiene (spacing="equal") o se multiplica
+        por `space_factor` ("expanding"); fallo -> vuelve a `space_base`. Un recuerdo que
+        se sabía y ahora falla (se está olvidando) queda con prioridad máxima. Un examen
+        adelantado (no había ninguno vencido) que acierta no estira el intervalo."""
+        mem, space = self._replay_source()
+        if mem is None or mem.ep is None:
+            self._replay_one(passive=True)
+            return
+        lab = self._labels(mem)
+        j = self._pick_scheduled(mem, lab)
+        if j < 0:
+            return
+        c = int(lab[j])
+        r = self._reactivate(mem.episode(j), space)
+        if r is None:
+            return
+        idx, h, codes = r
+        V = self.proj.potentials(idx, h)
+        e = np.exp((V - V.max()) / self.temperature); q = e / e.sum()
+        other = np.delete(q, c)
+        passed = int(np.argmax(q)) == c and q[c] - (other.max() if len(other) else 0.0) > self.active_margin
+        self._note_margin(mem, j, q, c)
+        self.tests += 1
+        if not passed:
+            self.test_errors += 1
+        if self.replay_mode == "scheduled" or not passed:
+            self._replay_local(c, codes)
+            self.proj.learn(idx, h, c, p=q, replay=True)
+        self.replays += 1
+        ep = mem.ep
+        if passed:
+            g = float(ep["gap"][j])
+            early = self._steps < int(ep["due"][j])             # examen adelantado (no había vencidos)
+            if g <= 0.0:
+                g = self.space_base
+            elif self.spacing == "expanding" and not early:
+                g = min(g * self.space_factor, 1e7)
+            ep["gap"][j] = g
+            ep["fail"][j] *= np.float32(0.5)
+        else:
+            forgetting = ep["ok"][j] == 1
+            ep["gap"][j] = self.space_base
+            ep["fail"][j] = np.float32(1.0) if forgetting else np.float32(0.5) * ep["fail"][j] + np.float32(0.5)
+        ep["due"][j] = self._steps + int(round(float(ep["gap"][j])))
+        ep["ok"][j] = 1 if passed else 0
+        ep["tests"][j] += 1
 
     def _rehearse_one(self, conf=None):
         """Ensayo en la propia memoria: el recuerdo de una neurona (clase elegida de forma
@@ -830,7 +1403,7 @@ class Cortex:
                         if not self._offsets(src) and h.context == 1 and h.tau <= 0 and h.layer.n), None)
             if mem is None:
                 return
-            pref = mem.readout.preferred(np.arange(mem.layer.n))
+            pref = self._labels(mem)
             classes = np.unique(pref[pref >= 0])
             if len(classes) == 0:
                 return
@@ -901,7 +1474,9 @@ class Cortex:
             synapses=sum(a["synapses"] for a in areas) + sum(h["synapses"] for h in heads)
                      + sum(h["neurons"] for h in heads) * self.C
                      + (self.proj.n * self.C if self.proj is not None else 0),
-            replays=self.replays,
+            replays=self.replays, recalls=self.recalls, assimilated=self.assimilated,
+            tests=self.tests, sleeps=self.sleeps, sleep_replays=self.sleep_replays,
+            released=self.released,
         )
 
     def cost(self) -> dict:
