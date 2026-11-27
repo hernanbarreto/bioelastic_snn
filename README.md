@@ -6,7 +6,7 @@ mismo núcleo procesa imagen, voz, texto o sensores (sólo cambia el encoder). S
 corre un **Thinker**: un lazo de razonamiento sobre símbolos con memoria rápida, registros y
 aprendizaje por refuerzo.
 
-NumPy (y SciPy para el encoder de imagen). **212 tests**, incluidos tests de regresión
+NumPy (y SciPy para el encoder de imagen). **238 tests**, incluidos tests de regresión
 bit a bit. Todo lo que figura abajo está medido con los scripts de `experiments/`, y los CSV de
 cada corrida están en `results/`.
 
@@ -185,6 +185,43 @@ Qué explica cada mejora, según las ablaciones:
 El índice invertido exacto de la capa dispersa es idéntico bit a bit a la pasada densa y da entre
 1.2 y 3 veces más velocidad. Una imagen con 2 niveles tarda ~4 ms en un núcleo de Python/NumPy.
 
+## Comparación con referencias publicadas
+
+La batería (`experiments/battery/`, `python3 experiments/exp_battery.py correr`) mide cada
+prueba contra una cifra publicada y marca si la comparación es **equivalente**, es decir, con la
+misma entrada y el mismo protocolo que el estudio. El índice es (red − azar) / (referencia − azar):
+1 iguala la referencia y 0 es azar.
+
+Hoy solo 3 de 10 dimensiones tienen una comparación equivalente. Por eso no hay un «porcentaje
+humano» global: un promedio no sería informativo.
+
+**Equivalentes** (3 semillas, salvo aviso):
+
+| Prueba | Red | Referencia publicada | Índice |
+|---|---|---|---|
+| MNIST | 98.9 % | personas 99.8 % (Keysers 2007) | 0.99 |
+| Fashion-MNIST | 89.5 % | personas 83.5 % (Zalando) | 1.08 |
+| CIFAR-10 | 48.3 % | personas 95.2 % (CIFAR-10H) | 0.45 |
+| Omniglot: un solo ejemplo, 20 opciones | 28.8 ± 0.9 % | personas 95.5 % (Lake, Salakhutdinov & Tenenbaum 2015) | 0.26 |
+| Saber cuándo se equivoca: AUROC de tipo 2 en una decisión visual | 0.748 ± 0.006 | personas 0.55–0.75 (Fleming et al. 2010) | dentro del rango humano |
+| Igual/distinto con figuras nuevas | 0.85 ± 0.03 (azar 0.5) | sin cifra verificada | — |
+| MNIST-addition, 27 500 pares, una pasada | 97.6 % | DeepProbLog 97.2, DeepStochLog 97.9 (con 25–100 épocas) | — |
+| Split-MNIST por clases, una pasada | 96.6 % | ER-ACE 95.0 con los mismos bytes | — |
+| Split-Fashion por clases, una pasada | 80.9 % | ER-ACE 84.3, ER 85.2 con los mismos bytes | — |
+| Texto no visto, 600 KB de habla dirigida a niños | 2.54 bits/byte (1 corrida: la red es determinista dado el corpus) | n-grama Kneser-Ney de orden 8 con los mismos datos: 1.43 | — |
+
+**No equivalentes:** otra entrada u otro procedimiento. No se promedian con las de arriba.
+
+| Prueba | Red | Referencia publicada | Por qué no es equivalente |
+|---|---|---|---|
+| Inferencia transitiva, serie de 5 (par BD) | 0.50 ± 0.50 | palomas 0.875 (von Fersen et al. 1991) | símbolos en lugar de objetos vistos |
+| Inferencia transitiva, serie de 6 | 0.25 ± 0.22 | personas 0.743 (Siemann & Delius 1996) | ídem |
+| Más tasa de aprendizaje cuando el ambiente es volátil | 0.013 ± 0.079 (sin efecto) | personas: mayor en la fase volátil (Behrens et al. 2007) | ídem |
+| MLC: instrucciones con pocos ejemplos | 0.00 | personas 0.807 (Lake & Baroni 2023) | símbolos en lugar de palabras y colores |
+| SCAN, experimento 1: 1, 2, 4 y 8 % de los comandos | 0.00 en las cuatro | seq2seq 0.05, 0.54 y 0.93 con 1, 2 y 4 % (Lake & Baroni 2018) | 1 semilla; se compara con un sistema |
+| bAbI 1k, 20 tareas | error medio 52.8 % (pasa 2) | LSTM 51.3 %; MemN2N 13.9 % (Sukhbaatar et al. 2015) | 1 semilla |
+| BLiMP, con 600 KB | 0.482 | n-gramas con los mismos datos 0.505–0.511; personas 0.886 (Warstadt et al. 2020) | a esta escala ningún modelo supera al azar |
+
 ## Dónde falla
 
 - **Aprender a ver y a razonar a la vez desde cero (L3) no funciona.** Por separado anda: la
@@ -207,10 +244,19 @@ El índice invertido exacto de la capa dispersa es idéntico bit a bit a la pasa
   referencia, y usa más sinapsis que un MLP.
 - **Desplazamientos.** La CNN de 2 capas tolera mejor un desplazamiento de 3 px (56.0 % contra
   51.1 % en Fashion).
-- **Texto.** Rinde como un Markov de orden variable (54.6 % de próximo byte), no como un modelo de
-  lenguaje.
-- **El Thinker razona sobre tareas formales chicas.** No hay evidencia de razonamiento en lenguaje
-  natural ni en dominios abiertos.
+- **Texto.** Con los mismos 600 KB de habla dirigida a niños, predice peor que un n-grama de
+  Kneser-Ney: 2.54 contra 1.43 bits por byte, y 0.677 contra 0.707 de próximo byte. Ya usa
+  29 241 de sus 30 000 neuronas. Si con más neuronas y más datos tampoco lo supera, se cumple el
+  criterio de abandono F.
+- **Razonamiento composicional con benchmarks externos: cero.** SCAN, MLC y la mitad de bAbI
+  fallan (ver la tabla de comparación). Las causas medidas son de diseño:
+  - no ajusta ni los comandos que vio;
+  - casi nunca decide terminar la respuesta;
+  - guarda prototipos de comandos enteros, no significados por palabra;
+  - pierde el orden de las palabras.
+
+  La curva es plana entre 1 y 8 % de los datos. El Thinker razona sobre tareas formales chicas;
+  no hay evidencia de razonamiento en lenguaje natural ni en dominios abiertos.
 - **Aprender a aprender tiene límites medidos.** Ajustar por recompensa los meta-parámetros de la
   memoria rápida no escala: con 7 a la vez rinde peor que los valores elegidos a mano (0.50 ± 0.36).
   Lo que mejora los dos regímenes es la memoria bayesiana, no ese ajuste. Entre familias de reglas
@@ -275,8 +321,8 @@ sin calibrar.
 | B. Símbolos anclados en lo que ve | crédito conjunto entre percepción y razonamiento | MNIST-addition (DeepProbLog: 97.2 % con 30 000 pares); después con la regla desconocida | regla conocida: 97.6 ± 0.2 % en test (3 semillas, una pasada), a la par de lo publicado. Regla desconocida sin ancla: no funciona |
 | C. Abstracción por niveles | que cada nivel aporte; invariancia | CIFAR-10 contra Hebb local publicado (SoftHebb: 80.3 %, con otro protocolo); sonda por nivel; desplazamientos | abierto: el nivel 2 copia al 1 |
 | D. Memoria sin interferencia | actualizar o crear según la causa inferida | Split-MNIST y Split-Fashion incremental por clases; ER-ACE con los mismos bytes | en curso |
-| E. Razonamiento composicional | generalizar a combinaciones nuevas | SCAN, bAbI; datos de personas de Lake y Baroni 2023 | en curso: guion con los protocolos publicados (SCAN, MLC, bAbI); primera corrida en marcha |
-| F. Lenguaje | predecir y componer sobre secuencias | BabyLM (10 M de palabras, escala de un niño) a escala reducida | sin empezar; hoy rinde como n-gramas |
+| E. Razonamiento composicional | generalizar a combinaciones nuevas | SCAN, bAbI; datos de personas de Lake y Baroni 2023 | medido, falla: SCAN 0 %, MLC 0 %, bAbI 52.8 % de error. Rediseño de entrada, salida y memoria en curso (rama `agent/composicion`) |
+| F. Lenguaje | predecir y componer sobre secuencias | BabyLM (10 M de palabras, escala de un niño) a escala reducida | medido con 600 KB: peor que n-gramas con los mismos datos (2.54 contra 1.43 bits/byte); curva de escalado en curso |
 | G. Razonar con neuronas | memoria de trabajo y ligadura en neuronas de spikes, no en estructuras programadas | las pruebas de E, sin pérdida | sin empezar |
 | H. Actuar y explorar | elegir qué mirar y qué preguntar; metas propias | pruebas de cognición animal (igual/distinto, inferencia transitiva, Harlow); BabyAI | sin empezar |
 
@@ -319,7 +365,7 @@ sección de resultados, no esta tabla.
 
 ```bash
 pip install -e ".[dev]"
-pytest                                          # 212 tests
+pytest                                          # 238 tests
 python experiments/exp_vision.py mnist          # idem: fashion, cifar10
 python experiments/exp_fsdd.py                  # voz
 python experiments/exp_continual.py             # flujo continuo no estacionario
