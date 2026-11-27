@@ -4,7 +4,7 @@
   "sha": "80a78700399cd469f4da14a654ad1895de3ada06",
   "sucio": false,
   "escala": 1.0,
-  "fecha": "2026-11-27 00:40:38",
+  "fecha": "2026-11-27 01:22:15",
   "python": "3.13.18",
   "numpy": "2.5.3",
   "catalogo": {
@@ -261,8 +261,8 @@
    "advertencia": "mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"
   },
   "sin_indice": [
+   "auroc_tipo2/apuesta_espera",
    "babi/thinker_defecto_contexto",
-   "deteccion_de_cambio/dos_items",
    "igual_distinto/imagenes",
    "igual_distinto/simbolos",
    "inferencia_transitiva_5/simbolos",
@@ -497,7 +497,6 @@
    },
    "sin_indice": [
     "babi/thinker_defecto_contexto",
-    "deteccion_de_cambio/dos_items",
     "igual_distinto/imagenes",
     "igual_distinto/simbolos",
     "inferencia_transitiva_5/simbolos",
@@ -3698,44 +3697,6 @@
    }
   },
   {
-   "prueba": "deteccion_de_cambio",
-   "variante": "dos_items",
-   "perfil": "defecto",
-   "nombre": "Memoria de trabajo visual: detección de cambio y capacidad K",
-   "dimension": "memoria_de_trabajo",
-   "condicion_entrada": "simbolos",
-   "equivalente": {
-    "valor": false,
-    "motivo": "no se pudo correr"
-   },
-   "metrica": "capacidad K con el procedimiento publicado (dos ítems, tocar el que cambió)",
-   "protocolo": "el de Elmore et al. (2011)",
-   "desviaciones": [],
-   "semillas": [
-    0
-   ],
-   "variabilidad": "",
-   "azar": {
-    "valor": 0.0,
-    "derivacion": "K = 0 cuando la exactitud es la de adivinar (50 %)"
-   },
-   "commit": "8fb949e2dc73",
-   "fuente_resultado": "medicion@8fb949e2dc73 (heredado: la percepción de 80a78700399c es la misma, por archivos idénticos o por la comprobación bit a bit de results/bateria/equivalencias.json, y la prueba no usa el Thinker)",
-   "segundos": 0.00010085105895996094,
-   "estado": "no aplicable hoy",
-   "motivo": "el procedimiento de Elmore et al. (vuelven dos ítems y hay que tocar el que cambió) no se puede presentar sin cambiar la arquitectura: el Thinker responde con un símbolo de su foco o con un juicio sobre su estado, y para señalar el lugar que cambió entre dos tendría que sostener uno y responder con el otro; la batería mide la versión de un solo ítem",
-   "red": null,
-   "referencia_humana": null,
-   "referencias_animales": [],
-   "referencias_maquinas": [],
-   "indice_normalizado": null,
-   "detalle": {},
-   "firmas": {},
-   "configuracion": {
-    "elegida": "única documentada para esta prueba"
-   }
-  },
-  {
    "prueba": "omniglot",
    "variante": "imagenes",
    "perfil": "defecto",
@@ -5538,6 +5499,44 @@
    },
    "curva": [],
    "otras_referencias_humanas": [],
+   "configuracion": {
+    "elegida": "única documentada para esta prueba"
+   }
+  },
+  {
+   "prueba": "auroc_tipo2",
+   "variante": "apuesta_espera",
+   "perfil": "defecto",
+   "nombre": "Sensibilidad metacognitiva: área bajo la curva ROC de tipo 2 con dificultad igualada",
+   "dimension": "metacognicion",
+   "condicion_entrada": "imagenes",
+   "equivalente": {
+    "valor": false,
+    "motivo": "no se pudo correr"
+   },
+   "metrica": "firmas de la confianza en el tiempo de espera (ratas)",
+   "protocolo": "el de Kepecs et al. (2008) y Lak et al. (2014)",
+   "desviaciones": [],
+   "semillas": [
+    0
+   ],
+   "variabilidad": "",
+   "azar": {
+    "valor": 0.5,
+    "derivacion": "confianza sin relación con el acierto"
+   },
+   "commit": "80a78700399c",
+   "fuente_resultado": "medicion@80a78700399c",
+   "segundos": 4.100799560546875e-05,
+   "estado": "no aplicable hoy",
+   "motivo": "la apuesta de Kepecs y Lak (cuánto tiempo espera la rata el premio antes de abandonar) necesita una acción de esperar o abandonar y una escala de tiempo: la percepción decide en un paso y no tiene ninguna de las dos (tampoco con `metacog`, que da una confianza, no un tiempo de espera); las firmas de las ratas se miden con la confianza de la decisión (variante «imagenes»)",
+   "red": null,
+   "referencia_humana": null,
+   "referencias_animales": [],
+   "referencias_maquinas": [],
+   "indice_normalizado": null,
+   "detalle": {},
+   "firmas": {},
    "configuracion": {
     "elegida": "única documentada para esta prueba"
    }
