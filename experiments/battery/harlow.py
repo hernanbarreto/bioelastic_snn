@@ -31,6 +31,15 @@ CONFIG = dict(memory=True, speak=True, judge=True, max_steps=10, gate=True, prev
 # elección con recompensa que no son la de Harlow): la de v0.3-dev por defecto (sólo DECIR,
 # sin memoria rápida) y la de aprender a aprender.
 CONFIGS_ELECCION = {"defecto": {}, "aprender_a_aprender": CONFIG}
+# Perfiles de opciones de la rama razonamiento 3 (fusionadas en v0.3-dev 8fb949e, apagadas por
+# defecto). Cada perfil se suma a cada configuración candidata de la prueba y la elección en
+# validación se hace dentro del perfil. «R3+ts» agrega los conjuntos de tareas: con todo
+# encendido rompen la multitarea (README de 8fb949e), por eso va aparte y marcado.
+R3 = dict(prev_io=True, back=True, cogmap=True, modulators=True)
+PERFILES = {"defecto": {}, "R3": R3, "R3+ts": dict(R3, task_sets=True)}
+NOTA_PERFIL = {"defecto": "opciones documentadas de v0.3-dev, sin las de razonamiento 3",
+               "R3": "cada configuración candidata + prev_io, back, cogmap y modulators (sin task_sets)",
+               "R3+ts": "R3 + task_sets (marcado: con todo encendido rompe la multitarea, README de 8fb949e)"}
 P_PRELIM, T_PRELIM = 32, 50
 P_SEIS, T_SEIS = 400, 6
 N_CONGELADO = 100
@@ -222,7 +231,7 @@ PRUEBAS = [
             "los problemas 201 a 400 son una extensión de la batería para comparar con Warren (1965)",
             "los monos tuvieron entrenamiento previo con el aparato; la red empieza sin nada",
         ],
-        correr=correr, version=2, semillas=(0, 1, 2, 3, 4),
+        correr=correr, version=2, semillas=(0, 1, 2, 3, 4), perfiles=True, config_base=CONFIG,
         equivalente=False,
         motivo_equivalencia="con símbolos la red no tiene que percibir ni reconocer los objetos",
         comparar=_COMPARAR, experiencia=_EXPERIENCIA, curva=CURVA,
@@ -241,7 +250,7 @@ PRUEBAS = [
             "el resultado llega como recompensa en el estado (`prev_io`)",
             "sin los 112 problemas de reversión; problemas 201 a 400 como extensión",
         ],
-        correr=correr_imagenes, version=2, semillas=(0, 1, 2),
+        correr=correr_imagenes, version=2, semillas=(0, 1, 2), perfiles=True, config_base=CONFIG,
         equivalente=True,
         motivo_equivalencia="la red ve los objetos como imágenes; su percepción los nombra con un vocabulario chico",
         comparar=_COMPARAR, experiencia=_EXPERIENCIA, curva=CURVA,

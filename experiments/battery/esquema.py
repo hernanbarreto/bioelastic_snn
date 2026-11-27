@@ -147,7 +147,8 @@ def fila_resultado(prueba, crudos: list[dict], catalogo: dict, commit: str) -> d
     ent = catalogo["pruebas"][prueba.id]
     azar_v = prueba.azar if prueba.azar is not None else ent.get("azar", {}).get("valor")
     azar_d = prueba.azar_derivacion or ent.get("azar", {}).get("derivacion")
-    base = dict(prueba=prueba.id, variante=prueba.variante, nombre=ent["nombre"],
+    base = dict(prueba=prueba.id, variante=prueba.variante, perfil=getattr(prueba, "perfil", "defecto"),
+                nombre=ent["nombre"],
                 dimension=ent["dimension"], condicion_entrada=prueba.condicion,
                 equivalente=dict(valor=bool(prueba.equivalente), motivo=prueba.motivo_equivalencia),
                 metrica=prueba.metrica, protocolo=prueba.protocolo,
@@ -223,6 +224,10 @@ def fila_resultado(prueba, crudos: list[dict], catalogo: dict, commit: str) -> d
         if r["grupo"] == "maquinas":
             pub["comparacion"] = pub["comparacion"].replace("especie", "sistema")
         {"humano": humanos, "animales": animales, "maquinas": maquinas}[r["grupo"]].append(pub)
+    for r in (crudos[0].get("referencias_locales") or []):       # líneas base medidas por la batería
+        pub = dict(r, grupo="maquinas", medida_red="puntaje", valor_red=m)
+        pub["comparacion"] = comparar(m, red.get("desvio"), r, prueba.mayor_es_mejor).replace("especie", "sistema")
+        maquinas.append(pub)
     ref_h = next((h for h in humanos if h.get("referencia_del_indice")), humanos[0] if humanos else None)
     curva = []
     for tramo, medida, rid in prueba.curva:
@@ -324,7 +329,7 @@ def _ix(ix):
     return f"{ix['min']:.2f} a {ix['max']:.2f}"
 
 
-COLUMNAS_CSV = ("prueba", "variante", "dimension", "condicion_entrada", "equivalente", "motivo_equivalencia", "estado",
+COLUMNAS_CSV = ("prueba", "variante", "perfil", "dimension", "condicion_entrada", "equivalente", "motivo_equivalencia", "estado",
                 "red_media", "red_desvio", "red_mediana", "red_min", "red_max", "semillas_en_azar", "semillas_en_techo",
                 "n_semillas", "azar", "referencia_humana",
                 "referencia_valor", "referencia_fuente", "indice_min", "indice_max",
@@ -346,7 +351,8 @@ def fila_csv(f: dict) -> dict:
     s_abajo = [nombre(r) for r in maq if str(r.get("comparacion", "")).startswith("sistema por debajo")]
     rv = rh.get("valor") if rh.get("valor") is not None else (
         f"{rh.get('valor_min')}-{rh.get('valor_max')}" if rh.get("valor_min") is not None else "")
-    return dict(prueba=f["prueba"], variante=f["variante"], dimension=f["dimension"],
+    return dict(prueba=f["prueba"], variante=f["variante"], perfil=f.get("perfil") or "defecto",
+                dimension=f["dimension"],
                 condicion_entrada=f["condicion_entrada"],
                 equivalente="sí" if (f.get("equivalente") or {}).get("valor") else "no",
                 motivo_equivalencia=(f.get("equivalente") or {}).get("motivo", ""),
@@ -408,6 +414,45 @@ def escribir_perfil_csv(pf: dict, path: Path):
                                 indice_max=_num(v["max"]),
                                 pruebas="; ".join(f"{x['prueba']} ({', '.join(x['variantes'])})" for x in v["pruebas"]),
                                 dimensiones_con_indice="", dimensiones_total="", advertencia=adv))
+
+
+def escribir_perfiles_csv(filas: list[dict], path: Path):
+    """Las pruebas del Thinker con cada perfil de opciones, una al lado de la otra."""
+    perf = ("defecto", "R3", "R3+ts")
+    grupos: dict = {}
+    for f in filas:
+        if f.get("estado") not in ("medido", "no aplicable hoy"):
+            continue
+        base = f["variante"].split("+")[0]
+        grupos.setdefault((f["prueba"], base), {})[f.get("perfil") or "defecto"] = f
+    cols = ["prueba", "variante", "metrica", "condicion_entrada", "equivalente", "azar", "referencia_humana",
+            "referencia_valor"]
+    for pf in perf:
+        cols += [f"{pf}_media", f"{pf}_desvio", f"{pf}_n", f"{pf}_indice", f"{pf}_config", f"{pf}_estado"]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w", newline="", encoding="utf-8") as fh:
+        w = csv.DictWriter(fh, fieldnames=cols)
+        w.writeheader()
+        for (pid, var), por in grupos.items():
+            if len(por) < 2:
+                continue
+            f0 = next(iter(por.values()))
+            rh = f0.get("referencia_humana") or {}
+            fila = dict(prueba=pid, variante=var, metrica=f0.get("metrica"), condicion_entrada=f0["condicion_entrada"],
+                        equivalente="sí" if (f0.get("equivalente") or {}).get("valor") else "no",
+                        azar=_num((f0.get("azar") or {}).get("valor"), 4), referencia_humana=rh.get("id", ""),
+                        referencia_valor=rh.get("valor") if rh.get("valor") is not None else (
+                            f"{rh.get('valor_min')}-{rh.get('valor_max')}" if rh.get("valor_min") is not None else ""))
+            for pf in perf:
+                f = por.get(pf)
+                if f is None:
+                    continue
+                red = f.get("red") or {}
+                fila.update({f"{pf}_media": _num(red.get("media"), 4), f"{pf}_desvio": _num(red.get("desvio"), 4),
+                             f"{pf}_n": len(f.get("semillas") or []), f"{pf}_indice": _ix(f.get("indice_normalizado")),
+                             f"{pf}_config": (f.get("configuracion") or {}).get("elegida", ""),
+                             f"{pf}_estado": f["estado"]})
+            w.writerow(fila)
 
 
 def escribir_json(obj, path: Path):

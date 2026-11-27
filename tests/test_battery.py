@@ -285,3 +285,41 @@ def test_reproducible_igual_distinto_simbolos():
     a = igual_distinto.correr_simbolos(5, 0.05, harlow.CONFIG); b = igual_distinto.correr_simbolos(5, 0.05, harlow.CONFIG)
     a.pop("segundos"); b.pop("segundos")
     assert a == b
+
+
+def test_ingesta_por_semilla_y_lenguaje(tmp_path):
+    from battery import ingesta
+    from battery.lenguaje import NgramaWB, normalizar
+    for s, v in ((0, 0.9), (1, 0.8)):
+        (tmp_path / f"r_seed{s}.csv").write_text("prueba,variante,semilla,metrica,valor,referencia,nota\n"
+                                                 f"x,y,{s},exactitud suma (test),{v},,\nx,y,{s},otra,{v / 2},,\n")
+    leer = ingesta.leer_por_semilla("r_seed{s}.csv", "exactitud suma (test)", {"otra": "otra"})
+    crudos = leer(tmp_path / "r_seed0.csv")
+    assert [c["semilla"] for c in crudos] == [0, 1] and crudos[1]["medidas"]["otra"] == pytest.approx(0.4)
+    assert normalizar("Who should Derek hug, after shocking Richard?") == b"who should derek hug , after shocking richard ?"
+    ng = NgramaWB(3); ng.entrenar(b"\nthe dog runs .\nthe dog runs .\nthe cat runs .\n")
+    assert ng.oracion(b"the dog runs .") > ng.oracion(b"the runs dog .")
+    tot = sum(np.exp(ng.logp(b"th", y)) for y in range(256))           # distribución que suma 1
+    assert tot == pytest.approx(1.0, abs=1e-9)
+
+
+def test_no_aplicables_registrados():
+    ids = {(p.id, p.variante) for p in registro.pruebas()}
+    assert ("deteccion_de_cambio", "dos_items") in ids and ("auroc_tipo2", "apuesta_espera") in ids
+    p = next(p for p in registro.pruebas() if p.clave == "deteccion_de_cambio__dos_items")
+    with pytest.raises(NoAplicable):
+        p.correr(0, 1.0)
+
+
+def test_kneser_ney_distribucion_y_orden():
+    from battery.lenguaje import KneserNey, _ids, _palabras
+    kb = KneserNey(4, 256).entrenar([b"\nthe dog runs .\nthe cat runs .\n"])
+    for K in (1, 2, 4):
+        kb.orden(K)
+        assert sum(np.exp(kb.logp(b"th", y)) for y in range(256)) == pytest.approx(1.0, abs=1e-9)
+    lin, vocab = _palabras(b"the dog runs .\nthe cat runs .\nthe dog sits .\n")
+    km = KneserNey(2, len(vocab)).entrenar([_ids(l, vocab, 2) for l in lin])
+    assert sum(np.exp(km.logp((vocab["the"],), w)) for w in range(len(vocab))) == pytest.approx(1.0, abs=1e-9)
+    s_bien = km.secuencia(_ids("the dog runs .".split(), vocab, 2), desde=1)
+    s_mal = km.secuencia(_ids("runs the . dog".split(), vocab, 2), desde=1)
+    assert s_bien > s_mal

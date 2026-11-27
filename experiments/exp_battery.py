@@ -51,12 +51,37 @@ def _elegidas(todas, spec: str):
     return out
 
 
+def _herencia(p, info, almacen, escala):
+    """Para una prueba que no usa el Thinker y no se corrió en este commit: los resultados de
+    otro commit con la misma huella de percepción (mismo código, mismo resultado)."""
+    from battery import almacen as alm
+    if p.perfiles:
+        return None, None
+    propia = version.huella_percepcion(info["sha"])
+    for d in sorted(almacen.dir.parent.iterdir()) if almacen.dir.parent.exists() else []:
+        if d.name == almacen.dir.name or not (d / p.clave).exists():
+            continue
+        try:
+            if version.huella_percepcion(d.name.split("+")[0]) != propia:
+                continue
+        except Exception:
+            continue
+        otro = alm.Almacen(d.name, almacen.dir.parent.parent)
+        crudos = [c for s in p.semillas if (c := otro.cargar(p.clave, s, p.version, escala)) is not None]
+        if crudos:
+            return crudos, d.name
+    return None, None
+
+
 def informe(info: dict, pruebas, almacen, catalogo, resultados: Path, escala: float, log=print) -> dict:
     from battery import esquema, ingesta, registro
     filas = []
     for p in pruebas:
         crudos = [c for s in p.semillas
                   if (c := almacen.cargar(p.clave, s, p.version, escala)) is not None]
+        heredado = None
+        if not crudos:
+            crudos, heredado = _herencia(p, info, almacen, escala)
         if not crudos:
             continue
         sel = registro.seleccionar(p, almacen, escala, log=lambda *a: None) if p.configs else None
@@ -64,7 +89,12 @@ def informe(info: dict, pruebas, almacen, catalogo, resultados: Path, escala: fl
         if sel and sel.get("elegida"):
             crudos = [c for c in crudos if c.get("config") == sel["elegida"]]
             ctrl = registro.controles(p, almacen, escala, sel, limite=0.0, log=lambda *a: None)
-        filas.append(registro.fila(p, crudos, sel, catalogo, info["commit"], ctrl))
+        f = registro.fila(p, crudos, sel, catalogo, info["commit"], ctrl)
+        if heredado:
+            f["fuente_resultado"] = (f"medicion@{heredado} (heredado: los archivos de percepción son idénticos en "
+                                     f"{info['commit']}, y la prueba no usa el Thinker)")
+            f["commit"] = heredado
+        filas.append(f)
     filas += ingesta.filas(catalogo)
     for f in filas:
         err = esquema.validar_fila(f)
@@ -82,6 +112,7 @@ def informe(info: dict, pruebas, almacen, catalogo, resultados: Path, escala: fl
     esquema.escribir_json(out, resultados / f"{nombre}.json")
     esquema.escribir_csv(filas, resultados / f"{nombre}.csv")
     esquema.escribir_perfil_csv(perfil, resultados / f"{nombre}_perfil.csv")
+    esquema.escribir_perfiles_csv(filas, resultados / f"{nombre}_perfiles_thinker.csv")
     log(esquema.tabla(filas))
     log("")
     for tipo in ("equivalentes", "todas"):

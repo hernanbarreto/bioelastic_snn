@@ -23,14 +23,16 @@ DEPTH2 = dict(areas=[V1L], heads=[dict(source="input")], projection=dict(source=
 N_MNIST = 20_000
 
 
+from .version import ARCHIVOS_PERCEPCION, huella
+
+
 def _huella_red() -> str:
-    """Identifica el código de la red importada (para no mezclar caches entre commits)."""
+    """Identifica el código de percepción importado (para no mezclar caches entre commits). Si
+    esos archivos son idénticos entre dos commits, la red entrenada también lo es (el
+    entrenamiento es determinista) y la cache se comparte; el Thinker no entra."""
     import bioelastic
     raiz = Path(bioelastic.__file__).resolve().parent
-    h = hashlib.sha1()
-    for p in sorted(raiz.glob("*.py")):
-        h.update(p.read_bytes())
-    return h.hexdigest()[:10]
+    return huella((n, (raiz / n).read_bytes() if (raiz / n).exists() else b"") for n in ARCHIVOS_PERCEPCION)
 
 
 def encoder():

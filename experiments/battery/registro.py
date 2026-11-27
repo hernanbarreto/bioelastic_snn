@@ -1,6 +1,7 @@
 """Lista de pruebas de la batería, corrida reanudable de cada una y armado del informe."""
 from __future__ import annotations
 
+import dataclasses
 import inspect
 import time
 
@@ -11,17 +12,35 @@ from . import esquema
 from .base import NoAplicable, Pendiente
 
 
+def con_perfil(p, perfil: str):
+    """La prueba `p` (que usa el Thinker) con el perfil de opciones `perfil` sumado a cada
+    configuración candidata; la variante queda como «<variante>+<perfil>»."""
+    from .harlow import NOTA_PERFIL, PERFILES
+    extra = PERFILES[perfil]
+    if p.configs:
+        configs = {k: dict(v, **extra) for k, v in p.configs.items()}
+    else:
+        configs = {"documentada": dict(p.config_base or {}, **extra)}
+    return dataclasses.replace(p, variante=f"{p.variante}+{perfil}", configs=configs, perfil=perfil,
+                               desviaciones=list(p.desviaciones) + [f"perfil {perfil}: {NOTA_PERFIL[perfil]}"])
+
+
 def pruebas() -> list:
     from . import harlow, inferencia, memoria_trabajo, reversion
-    out = [*harlow.PRUEBAS, *reversion.PRUEBAS, *inferencia.PRUEBAS, *memoria_trabajo.PRUEBAS]
-    for mod in ("omniglot", "igual_distinto", "metacognicion", "lenguaje"):
+    base = [*harlow.PRUEBAS, *reversion.PRUEBAS, *inferencia.PRUEBAS, *memoria_trabajo.PRUEBAS]
+    for mod in ("omniglot", "igual_distinto", "metacognicion", "lenguaje", "lenguaje_escala"):
         try:
             m = __import__(f"{__package__}.{mod}", fromlist=["PRUEBAS"])
         except ModuleNotFoundError as e:
             if e.name != f"{__package__}.{mod}":
                 raise
             continue
-        out += list(m.PRUEBAS)
+        base += list(m.PRUEBAS)
+    out = []
+    for p in base:                                 # los perfiles quedan al lado de la variante base
+        out.append(p)
+        if p.perfiles:
+            out += [con_perfil(p, "R3"), con_perfil(p, "R3+ts")]
     return out
 
 
@@ -33,6 +52,10 @@ def seleccionar(p, almacen, escala: float, log=print) -> dict | None:
     """Elige la configuración de la red en validación (ver `base.Prueba.configs`)."""
     if not p.configs:
         return None
+    if len(p.configs) == 1:                        # una sola configuración: no hay nada que elegir
+        (nombre,) = p.configs
+        return dict(elegida=nombre, puntajes={}, criterio="única configuración de la prueba con este perfil",
+                    semillas=[], opciones=dict(p.configs))
     punt = {}
     for nombre, cfg in p.configs.items():
         clave = f"_validacion__{p.clave}__{nombre}"

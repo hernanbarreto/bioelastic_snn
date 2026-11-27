@@ -14,6 +14,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 CACHE = ROOT / "ext_data" / "commits"
+# Archivos de los que depende la percepción (Cortex y sus piezas, también la red de texto).
+# Si son idénticos entre dos commits, las pruebas que no usan el Thinker dan lo mismo (el
+# entrenamiento es determinista) y el informe puede heredar sus resultados.
+ARCHIVOS_PERCEPCION = ("__init__.py", "area.py", "cortex.py", "datasets.py", "encoders.py", "layer.py",
+                       "network.py", "neuron.py", "readout.py")
 
 
 def _git(*args) -> str:
@@ -22,6 +27,25 @@ def _git(*args) -> str:
 
 def resolver(ref: str = "HEAD") -> str:
     return _git("rev-parse", "--verify", f"{ref}^{{commit}}")
+
+
+def huella(contenidos) -> str:
+    """Huella de los archivos de percepción a partir de (nombre, bytes)."""
+    import hashlib
+    h = hashlib.sha1()
+    for nombre, datos in contenidos:
+        h.update(nombre.encode() + b"\0" + (datos or b""))
+    return "p" + h.hexdigest()[:10]
+
+
+def huella_percepcion(ref: str) -> str:
+    """La huella de percepción de un commit, leída con git (sin importar nada)."""
+    sha = resolver(ref)
+    out = []
+    for nombre in ARCHIVOS_PERCEPCION:
+        r = subprocess.run(["git", "show", f"{sha}:bioelastic/{nombre}"], cwd=ROOT, capture_output=True)
+        out.append((nombre, r.stdout if r.returncode == 0 else b""))
+    return huella(out)
 
 
 def preparar(ref: str = "HEAD") -> dict:

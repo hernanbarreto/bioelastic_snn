@@ -227,7 +227,7 @@ PRUEBAS = [
         correr=correr_simbolos, version=1, semillas=(0, 1, 2, 3, 4),
         equivalente=False, motivo_equivalencia="la identidad de los símbolos viene dada",
         referencia=None, comparar=_COMP,
-        configs=CONFIGS_ELECCION, validar=validar_simbolos,
+        configs=CONFIGS_ELECCION, validar=validar_simbolos, perfiles=True,
         criterio_validacion="exactitud en la décima sesión con el conjunto de 8 (semillas de validación)",
     ),
 ]

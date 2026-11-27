@@ -25,7 +25,7 @@ import time
 
 import numpy as np
 
-from .base import Prueba
+from .base import NoAplicable, Prueba
 from .harlow import CONFIG, thinker
 
 TAMANOS = (2, 4, 6, 8, 10)
@@ -99,6 +99,13 @@ def validar(config: dict, semilla: int, escala: float = 1.0) -> float:
     return correr(semilla, escala, config, solo_entrenar=True)["entrenamiento"]
 
 
+def correr_dos_items(semilla: int, escala: float = 1.0) -> dict:
+    raise NoAplicable("el procedimiento de Elmore et al. (vuelven dos ítems y hay que tocar el que cambió) no se puede "
+                      "presentar sin cambiar la arquitectura: el Thinker responde con un símbolo de su foco o con un juicio "
+                      "sobre su estado, y para señalar el lugar que cambió entre dos tendría que sostener uno y responder "
+                      "con el otro; la batería mide la versión de un solo ítem")
+
+
 PRUEBAS = [
     Prueba(
         id="deteccion_de_cambio", variante="simbolos", condicion="simbolos",
@@ -115,10 +122,16 @@ PRUEBAS = [
             "la demora es un silencio: el Thinker no tiene escala de tiempo",
         ],
         correr=correr, version=1, semillas=tuple(range(8)),
-        configs=CONFIGS, validar=validar,
+        configs=CONFIGS, validar=validar, perfiles=True,
         criterio_validacion="exactitud en los últimos 500 episodios de entrenamiento (semillas de validación)",
         equivalente=False, motivo_equivalencia="otro procedimiento de prueba y memoria episódica exacta por diseño",
         techo=float(max(TAMANOS)),
         comparar={"elmore2011_rhesus_colores": "puntaje", "cowan2001": "puntaje"},
+    ),
+    Prueba(
+        id="deteccion_de_cambio", variante="dos_items", condicion="simbolos",
+        metrica="capacidad K con el procedimiento publicado (dos ítems, tocar el que cambió)",
+        protocolo="el de Elmore et al. (2011)", desviaciones=[], correr=correr_dos_items, version=1, semillas=(0,),
+        equivalente=False, motivo_equivalencia="no se pudo correr",
     ),
 ]

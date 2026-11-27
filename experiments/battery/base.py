@@ -54,6 +54,11 @@ class Prueba:
     validar_mayor: bool = True
     semillas_validacion: tuple = (100, 101, 102)
     criterio_validacion: str = ""
+    # Perfiles de opciones del Thinker (ver harlow.PERFILES): `perfiles` dice si la prueba usa
+    # el Thinker y se corre también con los otros perfiles; `perfil` es el de esta variante.
+    perfil: str = "defecto"
+    perfiles: bool = False
+    config_base: dict | None = None           # sin `configs`: la configuración que se le pasa a `correr`
 
     @property
     def clave(self) -> str:

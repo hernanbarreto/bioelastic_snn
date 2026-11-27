@@ -26,7 +26,7 @@ import time
 
 import numpy as np
 
-from .base import Prueba
+from .base import NoAplicable, Prueba
 from . import percepcion
 
 RUIDO = 0.3
@@ -120,6 +120,13 @@ def correr(semilla: int, escala: float = 1.0) -> dict:
     return dict(puntaje=med["auroc2"], medidas=med, segundos=time.time() - t0)
 
 
+def correr_espera(semilla: int, escala: float = 1.0) -> dict:
+    raise NoAplicable("la apuesta de Kepecs y Lak (cuánto tiempo espera la rata el premio antes de abandonar) necesita "
+                      "una acción de esperar o abandonar y una escala de tiempo: en v0.3-dev la percepción decide en un "
+                      "paso y no tiene ninguna de las dos; las firmas se miden con la probabilidad de la decisión (variante "
+                      "«imagenes») y la rama integracion3 mide una apuesta con su API nueva")
+
+
 PRUEBAS = [
     Prueba(
         id="auroc_tipo2", variante="imagenes", condicion="imagenes",
@@ -140,5 +147,11 @@ PRUEBAS = [
         motivo_equivalencia="decisión perceptiva sobre imágenes con dificultad igualada; cambia la tarea (10 clases)",
         firmas={"firma_opuesta": "confianza de aciertos que sube y de errores que baja con la facilidad (ratas)",
                 "firma_calibracion": "exactitud que crece con la confianza (ratas)"},
+    ),
+    Prueba(
+        id="auroc_tipo2", variante="apuesta_espera", condicion="imagenes",
+        metrica="firmas de la confianza en el tiempo de espera (ratas)",
+        protocolo="el de Kepecs et al. (2008) y Lak et al. (2014)", desviaciones=[], correr=correr_espera, version=1,
+        semillas=(0,), equivalente=False, motivo_equivalencia="no se pudo correr", referencia=None,
     ),
 ]
