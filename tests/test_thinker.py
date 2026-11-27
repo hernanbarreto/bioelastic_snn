@@ -232,7 +232,7 @@ def test_consistent_knowledge_survives_one_contradiction():
     assert net.say.peek(x) == 10
 
 
-@pytest.mark.parametrize("ts", [False, True])
+@_TS
 def test_one_thinker_learns_tasks_in_sequence_without_forgetting(ts):
     """Un solo Thinker, tres consignas entrenadas en bloques (conocimiento, cadenas,
     transitiva). Al final se evalúan las tres en casos no vistos."""

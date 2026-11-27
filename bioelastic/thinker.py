@@ -338,10 +338,10 @@ class Thinker:
                  replacing: bool = True,
                  decay: float = 1e-2, mixed: bool | str = "solo", clock: bool = False,
                  lookahead: bool = False, search: str = "guiada", credit: str = "estricto",
-                 task_sets: bool | dict = False, cogmap: bool | str = False, modulators: bool | dict = True,
+                 task_sets: bool | dict = False, cogmap: bool | str = True, modulators: bool | dict = True,
                  context: bool = False,
                  doubt: float = 0.0, explain: str = "refutadas", reg_credit: str = "simple",
-                 reg_reset: str = "cero", prev_io: bool | str = True, back: bool | str = False,
+                 reg_reset: str = "cero", prev_io: bool | str = True, back: bool | str = True,
                  seed: int = 0, say: dict | None = None):
         N = self.N = int(n_symbols)
         self.R = int(registers)
@@ -609,12 +609,14 @@ class Thinker:
                 idx.append(self.o_back + 3 + int(self._best(back) in hold))
             if isinstance(focus, _Stay):                   # la consulta no devolvió nada: el foco quedó
                 idx.append(self.o_back + 5)
-        if self.cogmap:
-            idx.append(self.o_map + (self._mapc if mapc is None else mapc))
-        if self._cm_pos:
+        mc = (self._mapc if mapc is None else mapc) if self.cogmap else 0
+        if self.cogmap and mc:
+            # (sin mapa en el episodio el estado es el de sin `cogmap`: las señales del mapa sólo
+            # entran cuando hay relaciones; siempre presentes, bajaban C1 y C5 con 256 símbolos)
+            idx.append(self.o_map + mc)
+        if self._cm_pos and mc:
             ns = min(len(recall[0]), 2)
             npred = min(len(back[0]), 2) if seen else 3   # 3: no se consultó
-            mc = self._mapc if mapc is None else mapc
             idx.append(self.o_pos + mc * 12 + ns * 4 + npred)
             idx.append(self.o_pos + 36 + (last + 1) * 12 + ns * 4 + npred)
         for b in range(self.R):
@@ -661,10 +663,17 @@ class Thinker:
             return tuple(focus) + tuple(t for t in item if t not in focus), hold
         return focus, _held(item, i)
 
-    def _allowed(self, clock):
+    def _allowed(self, clock, has_map: bool = True):
+        """Acciones posibles. RETROCEDER sólo si el episodio tiene relaciones que recorrer: sin
+        mapa no hay nada que consultar al revés y la acción sólo agregaba estados que la búsqueda
+        usaba para «explicar» errores de tareas de conocimiento (multitarea en bloques en orden
+        inverso: C1 1.00 -> 0.865 con la acción siempre disponible)."""
+        acts = self.actions
+        if self.back and not has_map:
+            acts = acts[acts != BACK]
         if clock >= self.max_steps:
-            return self.actions[(self.actions != FOLLOW) & (self.actions != SPEAK) & (self.actions != BACK)]
-        return self.actions
+            return acts[(acts != FOLLOW) & (acts != SPEAK) & (acts != BACK)]
+        return acts
 
     def _recall_back(self, focus):
         return _recall_back(self.fast.events, focus) if self.fast is not None else _NONE
@@ -1032,12 +1041,13 @@ class Thinker:
         bk = self._recall_back(focus) if self.back else None
         if self.cogmap:                                       # completitud del mapa (no cambia al pensar)
             self._mapc = self._map_of(self.fast.events if self.fast is not None else ())
+        has_map = self.fast is not None and bool(self.fast.events)
         clock = 0
         while True:
             s_idx, s_val = self._state(cue, last, clock, focus, recall, hold, prev=prev, back=bk)
             if clock == 0:
                 self._fs = (s_idx, s_val)                     # la situación tal como se planteó
-            a = self._decide(s_idx, s_val, self._allowed(clock), explore)
+            a = self._decide(s_idx, s_val, self._allowed(clock, has_map), explore)
             self.decisions[a] += 1
             self._path.append(a)
             c_idx, c_val = self._content(focus)
@@ -1463,7 +1473,7 @@ class Thinker:
             rbk = lambda f: None  # noqa: E731
         mapc = self._map_of(events)
         if self.search == "amplitud":
-            return self._search_bfs(target, items, cue, reg, given, rec, over, refute, prev, rbk, mapc)
+            return self._search_bfs(target, items, cue, reg, given, rec, over, refute, prev, rbk, mapc, bool(events))
         tie = itertools.count()
         # nodo: (costo, desempate, tipo, foco, sostén, recuerdo, última, reloj/ítem, camino)
         if self.gate:
@@ -1495,7 +1505,7 @@ class Thinker:
                 continue
             bk = rbk(focus)
             s = self._state(cue, last, clock, focus, recall, hold, reg, over, prev, bk, mapc)
-            allowed = self._allowed(clock)
+            allowed = self._allowed(clock, bool(events))
             q = (1.0 - self.epsilon) * self._policy(*s, allowed) + self.epsilon / len(allowed)
             c = self._content(focus, reg=reg)
             forced = self._forced(s, path)
@@ -1534,7 +1544,7 @@ class Thinker:
         return None
 
     def _search_bfs(self, target, items, cue, reg, given, rec, over, refute=False, prev=None,
-                    rbk=lambda f: None, mapc=None):
+                    rbk=lambda f: None, mapc=None, has_map=True):
         if self.gate:                                       # la compuerta, enumerada
             roots = [((), frozenset(), -1, [])]
             for i, it in enumerate(items):
@@ -1554,7 +1564,7 @@ class Thinker:
                 self.expanded += 1
                 bk = rbk(focus)
                 s = self._state(cue, last, clock, focus, recall, hold, reg, over, prev, bk, mapc)
-                allowed = self._allowed(clock)
+                allowed = self._allowed(clock, has_map)
                 c = self._content(focus, reg=reg)
                 forced = self._forced(s, path)
                 for a in allowed:
@@ -1681,7 +1691,7 @@ class Thinker:
             while True:
                 bk = rbk(focus)
                 s = self._state(cue, last, clock, focus, recall, hold, reg, None, prev, bk, mapc)
-                allowed = self._allowed(clock)
+                allowed = self._allowed(clock, bool(events))
                 p = self._policy(*s, allowed)
                 j = int(np.argmax(p)); conf = min(conf, float(p[j]))
                 a = int(allowed[j])
