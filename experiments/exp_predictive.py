@@ -109,15 +109,23 @@ def sub_names(net: Cortex) -> list[str]:
     out = []
     for i, a in enumerate(net.areas):
         if getattr(a, "passthrough", False):
-            out += [f"L{i + 1}_own", f"L{i + 1}_pass"]
+            out += [f"L{i + 1}_own", f"L{i + 1}_pass", f"L{i + 1}_bal"]
     return out
+
+
+def _unit(v):
+    n = float(np.sqrt((v * v).sum()))
+    return v / np.float32(n) if n > 0 else v
 
 
 def sub_levels(net: Cortex) -> list:
     out = []
     for a, c in zip(net.areas, net._codes):
         if getattr(a, "passthrough", False):
-            out += [c[:, :, :a.F], c[:, :, a.F:]]
+            own, pas = c[:, :, :a.F], c[:, :, a.F:]
+            # código completo con las dos mitades de igual norma: la sonda completa sin
+            # normalizar queda dominada por los canales de paso (tienen mucha más energía)
+            out += [own, pas, np.concatenate([_unit(own), _unit(pas)], axis=2)]
     return out
 
 
@@ -125,7 +133,7 @@ def sub_probes(net: Cortex):
     dims = []
     for a in net.areas:
         if getattr(a, "passthrough", False):
-            dims += [a.ph * a.pw * a.F, a.ph * a.pw * (a.Fo - a.F)]
+            dims += [a.ph * a.pw * a.F, a.ph * a.pw * (a.Fo - a.F), a.ph * a.pw * a.Fo]
     return Probes(dims) if dims else None
 
 
