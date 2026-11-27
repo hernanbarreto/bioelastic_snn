@@ -338,6 +338,7 @@ def test_ach_gain_ignores_outcomes_known_to_be_random():
     from bioelastic.modulators import Neuromodulators
     net = _harlow_net(modulators=True)
     nm = net.modulators
+    nm.knowledge = False                                                   # (sin consultar el conocimiento: prueba de la señal)
     net.reset(); net.answer(5, probe=6, explore=False)
     net._ls = net._fs
     gains = []
@@ -361,6 +362,7 @@ def test_candidate_ne_is_unexpected_uncertainty_not_noise():
     def run(**nm_kw):
         net = _harlow_net(modulators=nm_kw or True)
         nm = net.modulators
+        nm.knowledge = False                                               # (sin consultar el conocimiento: prueba de la señal)
         net.reset(); net.answer(5, probe=6, explore=False)
         net._ls = net._fs
         ne = []
@@ -382,6 +384,7 @@ def test_regret_gives_full_gain_only_when_the_alternative_does_better():
     from bioelastic.modulators import Neuromodulators
     net = _harlow_net(modulators=dict(regret=0.15))
     nm = net.modulators
+    nm.knowledge = False                                                   # (sin consultar el conocimiento: prueba de la señal)
     net.reset(); net.answer(5, probe=6, explore=False)
     net._ls = net._fs
     for t in range(100):                                                   # la acción elegida acierta la mitad
@@ -394,3 +397,36 @@ def test_regret_gives_full_gain_only_when_the_alternative_does_better():
     assert low < 0.2 and high == 1.0 and nm.params["lr"] / net.lr < 0.2
     off = _harlow_net(modulators=True).modulators
     assert off.regret >= 1.0                                               # por defecto, apagado
+
+
+# ---------------------------------------------------------------- F6: memoria para lo de afuera
+def test_temporal_context_binds_a_sentence_as_a_whole():
+    """Con `context` la clave de cada ligadura es todo lo percibido desde el último silencio:
+    una oración queda ligada entera y se recupera por cualquier palabra que comparta con la
+    pregunta. Con hechos de dos elementos no cambia nada."""
+    from bioelastic.thinker import FastMemory
+    for ctx, want in ((False, []), (True, [4])):
+        m = FastMemory(10); m.context = ctx
+        for w in (1, 2, 3, 4):
+            m.bind((w,))
+        m.bind(())
+        got = sorted(int(x) for x, s in zip(*m.recall((9, 1))) if s == 1.0)
+        assert (got == [2]) if not ctx else (4 in [int(x) for x in m.recall((9, 1))[0]] and got == want)
+    a, b = FastMemory(10), FastMemory(10); b.context = True
+    for m in (a, b):
+        for x, y in ((1, 2), (3, 4)):
+            m.bind((x,)); m.bind((y,)); m.bind(())
+    assert [e[:2] for e in a.events] == [e[:2] for e in b.events]
+
+
+def test_bayes_memory_lets_the_most_recent_fact_win_across_keys():
+    """Dos hechos sobre lo mismo con claves distintas («María fue a la cocina», «María se
+    movió al baño»): gana el más reciente, como en `FastMemory`. Dentro de una clave sigue
+    decidiendo la creencia."""
+    net = Thinker(30, memory=True, seed=0, context=True)
+    for sent in ((1, 2, 3, 4), (5, 2, 3, 6), (1, 7, 3, 8)):
+        for w in sent:
+            net.observe(w)
+        net.observe(None)
+    assert net._best(net.fast.recall((9, 1))) == 8
+    assert net._best(net.fast.recall((9, 5))) == 6

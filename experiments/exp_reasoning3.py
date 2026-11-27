@@ -687,11 +687,16 @@ def group_f5():
     import exp_integration as EI
     import exp_integration2 as EI2
     st = Store("f5")
-    systems = (("v0.3 (todo apagado)", OLD), ("todo encendido (nuevo por defecto)", {}))
+    # Corto: la v0.3 sólo donde hace falta la misma corrida para comparar (latencia de la
+    # batería y acarreo); el resto de sus cifras están en los resultados de F2-F4 y de la ronda
+    # anterior con los mismos protocolos.
+    NEW = (("todo encendido (nuevo por defecto)", {}),)
+    systems = NEW + (("v0.3 (todo apagado)", OLD),)
     # F5.1 batería C0-C6 (multitarea mezclada y en bloques) y latencia
     for label, over in systems:
         st.run("F5.1 mezclada | " + label, lambda log, over=over, label=label: report_battery(
             log, "F5.1 batería C0-C6, multitarea mezclada", label, run_battery(over)))
+    for label, over in NEW:
         st.run("F5.1 bloques | " + label, lambda log, over=over, label=label: report_battery(
             log, "F5.1 batería C0-C6, multitarea en bloques (olvido)", label, run_battery(over, plan="bloques")))
     # F5.2 resto de exp_thinking_hard (todo encendido; la v0.3 está en results/thinking_hard_*.csv)
@@ -726,7 +731,7 @@ def group_f5():
             return {str(k): v for k, v in res.items()}
         st.run("F5.3 acarreo | " + label, carry)
     # F5.4 Harlow (B1), reversión, 3 objetos; Harlow sin resultado percibido (estabilidad)
-    for label, over in systems:
+    for label, over in NEW:
         def harlow(log, over=over, label=label):
             res = run_harlow_suite(over)
             sm = M.report_harlow(log, "F5.4 harlow por la compuerta (B1)", label, res, 50)
@@ -740,7 +745,7 @@ def group_f5():
             harlow_stability(make(gate=True, **dict(over, prev_io=True)), cps=cps)[0], cps))
     # F5.5 transferencia de estructura (línea), anillo y FIN con preguntas de aprendizaje
     tests = (("L=8 (más largo que lo entrenado)", dict(L=8)), ("R=1 (cada relación observada una vez)", dict(R=1)))
-    for label, over in systems:
+    for label, over in NEW:
         st.run("F5.5 línea | " + label, lambda log, over=over, label=label: M.report_line(
             log, "F5.5 transferencia de estructura (línea)", label,
             M.run_line(make(n_cues=4, **over), 300, struct="linea", perceive=True, tests=tests), 25))

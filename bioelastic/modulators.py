@@ -54,6 +54,19 @@ H_GRID = np.array([0.0, 0.05, 0.1, 0.2])
 Q_GRID = np.array([0.0, 0.05, 0.12, 0.2, 0.3, 0.4])
 
 
+# Fuerza guardada en cada evento: momento de la ligadura + _W x creencia (con el olvido de 5-HT).
+# Entre claves distintas gana la ligada más recientemente, como en `FastMemory` (cuya fuerza es
+# el momento); dentro de una clave, cuyas ligaduras se reescriben todas juntas, decide la
+# creencia. (Guardar sólo la creencia perdía la recencia entre claves: dos hechos sobre lo mismo
+# con claves distintas empataban y ganaba el primero, que es el viejo.)
+_W = 0.999
+
+
+def _split(v: float):
+    tb = float(np.floor(v))
+    return tb, (v - tb) / _W
+
+
 class BayesMemory(FastMemory):
     """Memoria episódica cuya tasa de ligadura la fijan la volatilidad (NE) y el ruido (ACh)
     estimados (ver el docstring del módulo). Los eventos tienen la misma forma que en
@@ -77,6 +90,8 @@ class BayesMemory(FastMemory):
         self._H = hh[..., None]; self._Q = qq[..., None]
         self.keys: dict = {}                       # clave -> [símbolos vistos, creencias (H, Q, M)]
         self.rate = 1.0                            # tasa efectiva media del episodio (claves ya ligadas)
+        self.n_obs = 0                             # desenlaces de claves ya vistas (los que informan del ruido)
+        self.n0 = 5.0
         self.rates: list = []
         self.binds = 0
 
@@ -98,6 +113,13 @@ class BayesMemory(FastMemory):
     def noise(self) -> float:                      # ACh tónica (memoria)
         return float((self.posterior() * self._Q[..., 0]).sum())
 
+    def evidence(self) -> float:
+        """Cuánto de la estimación de ruido sale de la experiencia y no del prior: sin desenlaces
+        repetidos de una clave, la media del prior (0.18) no es incertidumbre esperada conocida.
+        (Sin esto, una tarea sin memoria episódica, C1 con 256 símbolos, pedía una repetición más
+        para consolidar el conocimiento y no lo llegaba a aprender: 0.999 -> 0.005.)"""
+        return self.n_obs / (self.n_obs + self.n0)
+
     def _observe_key(self, key, y) -> np.ndarray:
         """Actualiza los filtros de la clave con el desenlace y y devuelve la creencia
         promediada sobre las hipótesis (por símbolo visto). La causa vigente es uno de los
@@ -108,10 +130,12 @@ class BayesMemory(FastMemory):
         if st is None:                                          # primera vez: [y, otro] con 1 - q, q
             B = np.empty(self._H.shape[:2] + (2,))
             B[..., 0] = 1.0 - self._Q[..., 0]; B[..., 1] = self._Q[..., 0]
-            self.keys[key] = [[y], B]
-            return np.array([1.0 - self.noise()])
+            avg = np.array([1.0 - self.noise()])
+            self.keys[key] = [[y], B, avg]
+            return avg
         else:
-            targets, B = st
+            targets, B = st[0], st[1]
+            self.n_obs += 1
             if y not in targets:
                 targets.append(y)                               # «otro» pasa a ser y
                 if len(targets) > 2:                            # (desde el tercero, sin «otro»: entra en 0)
@@ -130,7 +154,8 @@ class BayesMemory(FastMemory):
         Bn /= np.clip(Bn.sum(axis=2, keepdims=True), 1e-12, None)
         st[1] = Bn
         w = self.posterior()
-        return (w[..., None] * Bn).sum(axis=(0, 1))[:len(targets)]
+        st[2] = (w[..., None] * Bn).sum(axis=(0, 1))[:len(targets)]
+        return st[2]
 
     def bind(self, tokens: tuple, certainty: float = 1.0):
         self.t += 1
@@ -138,16 +163,21 @@ class BayesMemory(FastMemory):
         ev, cert = self.events, self.cert
         if self.forget > 0.0 and ev:                # 5-HT: olvido de todas las ligaduras
             k = 1.0 - self.forget
-            keep = [(e[0], e[1], e[2] * k, c) for e, c in zip(ev, cert) if e[2] * k >= self.floor]
-            ev = [x[:3] for x in keep]; cert = [x[3] for x in keep]
+            keep = []
+            for e, c2 in zip(ev, cert):
+                tb, st = _split(e[2])
+                if st * k >= self.floor:
+                    keep.append(((e[0], e[1], tb + _W * st * k), c2))
+            ev = [x[0] for x in keep]; cert = [x[1] for x in keep]
         if tokens and self.prev:
             key = frozenset(self.prev)
             c = min(self.prev_cert, float(certainty))
             old = {toks: (s, c2) for (k2, toks, s), c2 in zip(ev, cert) if k2 == key}
             known = key in self.keys
+            prev_b = dict(zip(self.keys[key][0], self.keys[key][2])) if known else {}
             belief = self._observe_key(key, tokens)
             targets = self.keys[key][0]
-            before = old.get(tokens, (0.0, c))[0]
+            before = float(prev_b.get(tokens, 0.0))
             new_s = float(belief[targets.index(tokens)])
             r = (new_s - before) / max(1.0 - before, 1e-9) if before < 1.0 else 1.0
             if known:                               # tasa efectiva al volver a ligar una clave conocida
@@ -158,12 +188,11 @@ class BayesMemory(FastMemory):
             out_c = [c2 for (k2, _, _), c2 in zip(ev, cert) if k2 != key]
             for toks, b in zip(targets, belief):
                 if b >= self.floor:
-                    out_e.append((key, toks, float(b)))
+                    out_e.append((key, toks, self.t + _W * float(b)))
                     out_c.append(min(old.get(toks, (0.0, c))[1], c) if toks in old else c)
             ev, cert = out_e, out_c
         self.events, self.cert = ev, cert
-        self.prev = tokens
-        self.prev_cert = float(certainty)
+        self._advance(tokens, float(certainty))
 
 
 class Neuromodulators:
@@ -183,7 +212,8 @@ class Neuromodulators:
                  confident: float = 0.6, capture_noise: float = 0.15, sure_gain: float = 0.5,
                  control: bool = True, horizon: str = "ensayo", explained: float = 0.8,
                  unexplained_gain: float = 4.0, ne: str = "fiabilidad", ne_gain: float = 4.0,
-                 ne_floor: float = 0.0, decay: str = "paso", regret: float = 2.0):
+                 ne_floor: float = 0.0, decay: str = "paso", regret: float = 2.0, decay_max: float = 1.0,
+                 knowledge: bool = True):
         self.net = net
         self.horizon = str(horizon)        # 5-HT: escala temporal de la predicción de recompensa
         self.explained = float(explained)  # fiabilidad mínima de una explicación para aprender a pleno
@@ -215,6 +245,8 @@ class Neuromodulators:
         if self.control and decay == "error":      # la contracción L1 sólo con error de predicción
             net._decay_td = True
         self.decay_mode = str(decay)       # "paso": la fija 5-HT; "ne": la fija NE (ver `step`)
+        self.decay_max = float(decay_max)  # cuánto puede 5-HT multiplicar la contracción del Thinker
+        self.knowledge = bool(knowledge)   # ACh no cuenta desenlaces que dependieron de conocimiento no establecido
         self.rho_c: dict = {}              # NE: por contexto (consigna), fiabilidad de las predicciones
         self.unexp_c: dict = {}            # confiadas de la regla y frecuencia de errores sin explicación
         self.serotonin = 0.5               # 5-HT: la recompensa se sostuvo (horizonte), promedio lento
@@ -242,7 +274,8 @@ class Neuromodulators:
     def memory_signals(self):
         m = self.net.fast
         if isinstance(m, BayesMemory):
-            return m.volatility(), m.noise()
+            e = m.evidence()
+            return m.volatility() * e, m.noise() * e
         return 0.0, 0.0
 
     # ------------------------------------------------------------------ un ensayo
@@ -266,7 +299,16 @@ class Neuromodulators:
         n = c[1]
         pr = (c[0] + 1.0) / (n + 2.0)
         ach_c = 4.0 * pr * (1.0 - pr) * n / (n + self.n0)
-        if net.plastic:
+        # Un desenlace que dependió de conocimiento todavía no establecido (el modelo interno no
+        # lo da por fiable) no dice cuán ruidoso es el mundo en ese estado: es ignorancia, que se
+        # reduce aprendiendo, no incertidumbre esperada. No entra en las cuentas ni descuenta el
+        # aprendizaje. (Sin esto, en C1 con 256 símbolos el conocimiento incompleto hacía parecer
+        # ruidoso el estado de la composición, ACh bajaba la plasticidad del control a ~0.4 y la
+        # contracción L1 lo dejaba al azar: 0.999 -> 0.005.)
+        ignorant = self.knowledge and net._ignorant()
+        if ignorant:
+            ach_c = 0.0
+        elif net.plastic:
             c[0] = self.keep * c[0] + float(ok); c[1] = self.keep * c[1] + 1.0
         w = 1.0 - ach_c                      # lo que se sabe que es azar no es evidencia
         # NE (incertidumbre inesperada): se falló donde se esperaba acertar. `pr` es lo esperado
@@ -305,7 +347,7 @@ class Neuromodulators:
         p["epsilon"] = self.eps_min + (self.eps_max - self.eps_min) * ne_c
         p["temperature"] = self.temp_min + (self.temp_max - self.temp_min) * ne_c
         # 5-HT -> forget (memoria) y decay (control): con horizonte largo no se olvida
-        short = float(np.clip(2.0 * (1.0 - self.serotonin), 0.0, 1.5))
+        short = float(np.clip(2.0 * (1.0 - self.serotonin), 0.0, self.decay_max))
         p["forget"] = self.forget_max * min(short, 1.0)
         # ("ne": el control establecido se olvida cuando deja de rendir lo que rendía, no por
         # el nivel de recompensa: con desenlaces ruidosos pero estables 5-HT queda baja para

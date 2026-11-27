@@ -142,7 +142,11 @@ def babi_task(task, seed, epochs=5, over=None, limit=None):
     for ok, p in stats:
         a = paths.setdefault(p, [0, 0]); a[0] += int(ok); a[1] += 1
     top = sorted(paths.items(), key=lambda kv: -kv[1][1])[:4]
-    return dict(name=name, test=test_acc, val=best_acc, curve=curve, ms_per_question=secs / max(n_q, 1) * 1e3,
+    from collections import Counter
+    ans_tr = Counter(it[2] for st_ in train for it in st_ if it[0] == "q")
+    ans_te = Counter(it[2] for st_ in test for it in st_ if it[0] == "q")
+    chance = dict(uniforme=1.0 / len(ans_tr), mayoritaria=ans_te.most_common(1)[0][1] / sum(ans_te.values()))
+    return dict(name=name, test=test_acc, val=best_acc, curve=curve, ms_per_question=secs / max(n_q, 1) * 1e3, chance=chance,
                 paths={p: v for p, v in top}, say_neurons=int(net.say.layer.n),
                 task_sets=len(net.task_sets.sets) if net.task_sets is not None else 0)
 
@@ -158,7 +162,7 @@ BABI_PUBLISHED = {
 }
 
 
-def group_babi(tasks=None, seeds=SEEDS, epochs=5):
+def group_babi(tasks=None, seeds=SEEDS, epochs=3):
     st = Store("f6_babi")
     files = babi_files()
     HEAD = "F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)"
@@ -171,11 +175,13 @@ def group_babi(tasks=None, seeds=SEEDS, epochs=5):
                     float(np.mean(acc)), float(np.std(acc)), len(acc))
             for label, errs in BABI_PUBLISHED.items():
                 log.row(HEAD, label + " (publicado)", "test", name, 1.0 - errs[t - 1] / 100.0, 0.0, 0)
+            for kind, v in res[0]["chance"].items():
+                log.row(HEAD, f"azar ({kind})", "test", name, float(v), 0.0, 0)
             log.row(HEAD, "Thinker (todo encendido + contexto temporal)", "costo", name + " | ms por pregunta",
                     float(np.mean([r["ms_per_question"] for r in res])), 0.0, len(res))
             return dict(test=acc, val=[r["val"] for r in res], curve=[r["curve"] for r in res],
                         paths=[r["paths"] for r in res], say_neurons=[r["say_neurons"] for r in res],
-                        task_sets=[r["task_sets"] for r in res], name=res[0]["name"])
+                        task_sets=[r["task_sets"] for r in res], name=res[0]["name"], chance=res[0]["chance"])
         st.run(f"babi {t}", fn)
     accs = np.array([st.get(f"babi {t}")["test"] for t in files if st.done(f"babi {t}")])
     if len(accs) == len(files):
@@ -538,7 +544,67 @@ def group_mlc(sizes=(0, 100, 300, 1000), seeds=SEEDS):
     st.finish()
 
 
-GROUPS = {"babi": group_babi, "scan": group_scan, "mlc": group_mlc}
+# ====================================================================== resumen para la batería comparada
+CITES = {
+    "SCAN": "Lake, B. M. y Baroni, M. (2018). Generalization without systematicity: On the compositional skills "
+            "of sequence-to-sequence recurrent networks. ICML 2018. arXiv:1711.00350. Exactitud de secuencia exacta en "
+            "el test: «mejor» = la mejor arquitectura de cada experimento; «mejor en conjunto» = LSTM 2 capas x 200, sin "
+            "atención, dropout 0.5; 100 000 presentaciones; media de 5 corridas.",
+    "MLC": "Lake, B. M. y Baroni, M. (2023). Human-like systematic generalization through a meta-learning neural "
+           "network. Nature 623, 115-121. Tabla 2 (error de MLC en SCAN) y texto principal (tarea de pocos ejemplos: "
+           "personas 80.7 % exacto, 24.4 % de sus errores uno-a-uno, 23.3 % de los errores en consultas con «after» "
+           "icónicos; MLC muestreando 82.4 %, 56.3 % y 13.8 %).",
+    "bAbI": "Sukhbaatar, S., Szlam, A., Weston, J. y Fergus, R. (2015). End-To-End Memory Networks. NeurIPS 2015. "
+            "arXiv:1503.08895, tabla 1 (1 000 ejemplos de entrenamiento por tarea, error de test por tarea): MemNN con "
+            "supervisión fuerte y LSTM (de Weston et al. 2015, arXiv:1502.05698), MemN2N BoW y MemN2N PE LS RN (3 saltos, "
+            "entrenamiento por tarea, la mejor de 10 corridas por error de entrenamiento). La tabla se leyó del PDF de arXiv.",
+}
+PROTOCOL = {
+    "SCAN": "En línea, una sola pasada: cada comando de entrenamiento (submuestra al azar del train de la división) se "
+            "lee palabra por palabra y el Thinker produce la secuencia un símbolo por vez (pregunta = palabras del comando "
+            "+ posición ordinal), con el objetivo de cada posición como única señal. Test congelado, sin objetivo, hasta "
+            "FIN, sobre una muestra al azar del test. Desviaciones respecto del artículo: entrenamiento con 250-4000 "
+            "comandos vistos una vez (no 100 000 presentaciones del train completo); test sobre una muestra; en add jump "
+            "la primitiva «jump» sola entra una vez.",
+    "MLC": "Meta-entrenamiento en línea con episodios de una familia de gramáticas propia (4 primitivas, una palabra de "
+           "función que repite, una de dos argumentos con un patrón de 3, una que ordena dos tramos; nombres de palabras "
+           "y salidas sorteados en cada episodio). Prueba congelada en el episodio de las personas (14 ejemplos de "
+           "estudio, 10 consultas), con palabras y salidas nunca vistas. Desviaciones: otra familia de gramáticas que "
+           "la de MLC (100 000 episodios); respuesta por posición ordinal; las personas respondieron con círculos de "
+           "colores, acá son símbolos de salida.",
+    "bAbI": "Por tarea: hasta 3 pasadas en línea sobre el 90 % de las historias de entrenamiento (1 000 preguntas por "
+            "tarea), la mejor pasada elegida por exactitud congelada en el 10 % restante y evaluada una vez en el test "
+            "(1 000 preguntas). Cada historia es un episodio: las oraciones se leen palabra por palabra (silencio al "
+            "final), la pregunta se muestra entera y se da la respuesta correcta como objetivo. Respuestas de varias "
+            "palabras (listas, caminos) son un símbolo. Sin hechos de apoyo (supervisión débil, como MemN2N).",
+}
+
+
+def export(path=None):
+    """Junta los resultados de F6 en un JSON por división / tarea para la batería comparada:
+    media, desvío, semillas, azar, protocolo, desviaciones y cita de cada cifra publicada."""
+    import json
+    from common import RESULTS
+    out = {"fuente_datos": {
+        "SCAN": "github.com/brendenlake/SCAN @ c4b756cbc010d75c912f16c42c8f15dc6b7e6c8f",
+        "MLC": "github.com/brendenlake/MLC @ 34837ccb06c855bb29558ad99bb1cef70debd559 (data_human/few_shot)",
+        "bAbI": "github.com/bgavran/DNC @ 668a2f1ecc676748c68cedab78dd198aca190d3b, "
+                "src/task_implementations/bAbI/tasks_1-20_v1-2/en (bAbI v1.2, 1k)"},
+        "citas": CITES, "protocolo": PROTOCOL, "SCAN": {}, "MLC": {}, "bAbI": {}}
+    for group, key in (("f6_scan", "SCAN"), ("f6_mlc", "MLC"), ("f6_babi", "bAbI")):
+        f = RESULTS / f"razonamiento3_{group}.parts.json"
+        if not f.exists():
+            continue
+        parts = json.load(open(f))
+        for name, part in parts.items():
+            rows = [dict(prueba=r[0], sistema=r[1], tramo=r[2], medida=r[3], media=r[4], desvio=r[5], semillas=r[6])
+                    for r in part["rows"]]
+            out[key][name] = dict(filas=rows, resumen=part["summary"])
+    (RESULTS / "razonamiento3_f6_externo.json").write_text(json.dumps(out, ensure_ascii=False, indent=1))
+    print("escrito", RESULTS / "razonamiento3_f6_externo.json")
+
+
+GROUPS = {"babi": group_babi, "scan": group_scan, "mlc": group_mlc, "export": export}
 
 
 def main():

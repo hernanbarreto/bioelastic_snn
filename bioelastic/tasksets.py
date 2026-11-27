@@ -61,7 +61,7 @@ class TaskSets:
     def __init__(self, alpha: float = 0.5, hazard: float = 0.03, kmax: int = 16,
                  shrink: float = 0.0, explained: float = 0.8, rho_rate: float = 0.05,
                  rho_max: float = 0.98, confident: float = 0.6, gated: bool = True,
-                 novel: float = 0.6):
+                 novel: float = 0.6, lik: str = "beta", stick: bool = True):
         self.alpha = float(alpha)          # peso de «uno nuevo» en el CRP
         self.hazard = float(hazard)        # prior de la probabilidad por ensayo de que cambie la causa latente
         self.kmax = int(kmax)              # conjuntos como máximo (después se recicla el menos usado)
@@ -80,6 +80,20 @@ class TaskSets:
         self.cue_trials: dict = {}         # por consigna: ensayos con plasticidad, cambios de conjunto
         self.cue_switches: dict = {}       # y último conjunto que rigió (para medir)
         self.cue_k: dict = {}
+        # Verosimilitud (`lik`). "beta": la de C-TS (Collins y Frank, 2013): la probabilidad del
+        # desenlace bajo el propio modelo del conjunto, la media posterior Beta-Bernoulli de que
+        # acierte en el (estado, acción) con que respondería (su tabla de fiabilidad). Un conjunto
+        # que viene fallando ahí (aprendiendo) no queda mal parado por otro error; uno que acertaba
+        # siempre, sí. "confianza" (versión anterior): fiabilidad global del conjunto x confianza
+        # de la política; un conjunto que aprende con errores confiados perdía contra uno que no
+        # predecía nada (0.5) y una consigna terminaba en el conjunto de otra.
+        self.lik = str(lik)
+        # Pegajosidad por consigna (`stick`): el cambio de causa (hazard) lleva hacia lo que rigió
+        # esa consigna en su historia (cuántos ensayos con cada conjunto), más la popularidad entre
+        # consignas y «uno nuevo»; no hacia el prior global, que con dos consignas daba lo mismo
+        # quedarse que pasar al conjunto de la otra.
+        self.stick = bool(stick)
+        self.cue_hist: dict = {}
         self.recycled = 0
         self.simulated = 0                 # simulaciones (costo)
 
@@ -90,8 +104,13 @@ class TaskSets:
         conjunto que alterna por error con otro."""
         return np.array([max(len(s.cues), 1) for s in self.sets], dtype=np.float64)
 
-    def prior(self) -> np.ndarray:
-        m = np.concatenate([self.popularity(), [self.alpha]])
+    def prior(self, cue=None) -> np.ndarray:
+        pop = self.popularity()
+        h = self.cue_hist.get(cue) if (self.stick and cue is not None) else None
+        if h is not None and h.sum() > 0:
+            hh = np.zeros(len(pop)); hh[:min(len(h), len(pop))] = h[:len(pop)]
+            pop = pop + hh
+        m = np.concatenate([pop, [self.alpha]])
         return m / m.sum()
 
     def _vec(self, cue) -> np.ndarray:
@@ -120,19 +139,24 @@ class TaskSets:
         if self.cue_k.get(cue, k) != k:
             self.cue_switches[cue] = self.cue_switches.get(cue, 0) + 1
         self.cue_k[cue] = k
+        h = self.cue_hist.get(cue, np.zeros(0))
+        if len(h) <= k:
+            h = np.concatenate([h, np.zeros(k + 1 - len(h))])
+        h[k] += 1.0
+        self.cue_hist[cue] = h
 
     def predict(self, cue) -> np.ndarray:
         """Transición de un ensayo: la causa latente sigue con probabilidad 1 - hazard."""
         b = self._vec(cue)
         h = self.hazard
-        b = (1.0 - h) * b + h * self.prior()
+        b = (1.0 - h) * b + h * self.prior(cue)
         self.belief[cue] = b / b.sum()
         return self.belief[cue]
 
     def update(self, cue, lik: np.ndarray):
         b = self._vec(cue) * lik
         s = b.sum()
-        self.belief[cue] = b / s if s > 0 else self.prior()
+        self.belief[cue] = b / s if s > 0 else self.prior(cue)
 
     def choose(self, cue, allow_new: bool) -> int:
         """El conjunto más probable; `len(sets)` = crear uno nuevo."""
@@ -144,11 +168,15 @@ class TaskSets:
         return int(np.argmax(b))
 
     # ------------------------------------------------------------------ verosimilitud
-    def likelihood(self, k: int, out: int, conf: float, target) -> float:
-        """P(desenlace | conjunto k): su predicción `out` (con confianza `conf`, la
-        probabilidad de su paso más dudoso) contra el objetivo. Sin predicción, 0.5."""
+    def likelihood(self, k: int, out: int, conf: float, target, q=None) -> float:
+        """P(desenlace | conjunto k): su predicción `out` contra el objetivo. Con "beta", `q` es
+        la media posterior de que acierte en el (estado, acción) con que respondería; con
+        "confianza", la fiabilidad global x `conf` (la probabilidad de su paso más dudoso). Sin
+        predicción, 0.5 (como un (estado, acción) nunca visto bajo Beta(1, 1))."""
         if out < 0 or target is None:
             return 0.5
+        if self.lik == "beta" and q is not None:
+            return float(q) if out == target else 1.0 - float(q)
         g = float(np.clip(2.0 * conf - 1.0, 0.0, 1.0))
         p = 0.5 + (min(self.sets[k].rho, self.rho_max) - 0.5) * g
         return p if out == target else 1.0 - p
@@ -194,6 +222,9 @@ class TaskSets:
                 s = b.sum()
                 self.belief[c] = b / s if s > 0 else self.prior()
             self.recycled += 1
+            for hh in self.cue_hist.values():                # su historia no es la del reciclado
+                if len(hh) > k:
+                    hh[k] = 0.0
             ts.cues.add(cue)
             return k
         b = self._vec(cue)

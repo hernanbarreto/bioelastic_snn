@@ -131,6 +131,7 @@ de otra.
 """
 from __future__ import annotations
 
+import contextlib
 import heapq
 import itertools
 from collections import deque
@@ -194,7 +195,12 @@ class FastMemory:
     """Memoria episódica de un disparo: cada transición (lo anterior -> lo actual) es un
     evento con su propia clave conjuntiva, como un índice hipocampal. Dura un episodio.
     Cada evento guarda además la certeza con que se percibieron sus dos extremos (la
-    menor de las dos), para saber cuánto confiar en lo que se recupere de él."""
+    menor de las dos), para saber cuánto confiar en lo que se recupere de él.
+
+    `context` (contexto temporal, Howard y Kahana 2002): la clave de cada ligadura es todo lo
+    percibido desde el último silencio, no sólo lo inmediatamente anterior. Una oración o un
+    hecho de varias palabras queda ligado como un todo y se recupera por lo que comparte con
+    la pregunta. Con hechos de dos elementos (todo lo que había hasta acá) no cambia nada."""
 
     def __init__(self, n: int):
         self.n = int(n)
@@ -203,6 +209,7 @@ class FastMemory:
         self.prev: tuple = ()
         self.prev_cert = 1.0
         self.t = 0
+        self.context = False
 
     def reset(self):
         self.events = []; self.cert = []
@@ -214,8 +221,16 @@ class FastMemory:
         if tokens and self.prev:
             self.events.append((frozenset(self.prev), tuple(tokens), self.t))
             self.cert.append(min(self.prev_cert, float(certainty)))
-        self.prev = tuple(tokens)
-        self.prev_cert = float(certainty)
+        self._advance(tuple(tokens), float(certainty))
+
+    def _advance(self, tokens: tuple, certainty: float):
+        """Lo actual pasa a ser lo anterior (o se suma a él, con contexto temporal)."""
+        if self.context and tokens and self.prev:
+            self.prev = self.prev + tokens
+            self.prev_cert = min(self.prev_cert, certainty)
+        else:
+            self.prev = tokens
+            self.prev_cert = certainty
 
     def recall(self, keys):
         return _recall_events(self.events, keys)
@@ -323,9 +338,10 @@ class Thinker:
                  replacing: bool = True,
                  decay: float = 1e-2, mixed: bool | str = "solo", clock: bool = False,
                  lookahead: bool = False, search: str = "guiada", credit: str = "estricto",
-                 task_sets: bool | dict = True, cogmap: bool | str = True, modulators: bool | dict = True,
+                 task_sets: bool | dict = False, cogmap: bool | str = False, modulators: bool | dict = True,
+                 context: bool = False,
                  doubt: float = 0.0, explain: str = "refutadas", reg_credit: str = "simple",
-                 reg_reset: str = "cero", prev_io: bool | str = True, back: bool | str = True,
+                 reg_reset: str = "cero", prev_io: bool | str = True, back: bool | str = False,
                  seed: int = 0, say: dict | None = None):
         N = self.N = int(n_symbols)
         self.R = int(registers)
@@ -481,6 +497,11 @@ class Thinker:
         self._trial_td = False                             # TD con horizonte de un ensayo (ver `feedback`)
         self._decay_td = False                             # la contracción L1 ocurre con el error de predicción (ver `_update`)
         self._decay_mod = 1.0                              # factor de la contracción que fija 5-HT (`modulators`); `decay` queda como base
+        # La contracción L1 es plasticidad (debilitamiento sináptico): va con la misma ganancia que
+        # el aprendizaje del control (responsabilidad del conjunto de tareas, ACh). Si se aprende a
+        # la mitad pero se contrae entero, el equilibrio entre TD y contracción queda en pesos ~0
+        # y la conducta es al azar (C1 con 256 símbolos: 85 % de decisiones no voraces).
+        self._decay_gain = False
         # conjuntos de tareas (`task_sets`, ver `bioelastic.tasksets`): el control que rige
         # se infiere de la estadística de los desenlaces
         self.task_sets = None
@@ -498,6 +519,8 @@ class Thinker:
                 self.fast = BayesMemory(N, **mem)
             self.modulators = Neuromodulators(self, **kw)
         self._ts_pred = None
+        if self.fast is not None:
+            self.fast.context = bool(context)              # contexto temporal (ver `FastMemory`)
         self.reset()
 
     # ------------------------------------------------------------------ episodio
@@ -676,7 +699,8 @@ class Thinker:
         if self.plastic:
             if self.decay and not self._decay_td:         # L1 local: sólo sinapsis con presináptica activa
                 W = self.Wc[:, s_idx]
-                self.Wc[:, s_idx] = np.sign(W) * np.maximum(np.abs(W) - self.decay * self._decay_mod, 0.0)
+                k = self.decay * self._decay_mod * (self._ctl_gain if self._decay_gain else 1.0)
+                self.Wc[:, s_idx] = np.sign(W) * np.maximum(np.abs(W) - k, 0.0)
             V = float(self.wv[s_idx] @ s_val)
             if self._V is not None:
                 self._update(self._r + self.gamma * V - self._V)
@@ -775,6 +799,15 @@ class Thinker:
     # ------------------------------------------------------------------ conocimiento
     def _net(self, mod):
         return self.say if mod == "say" else self.judge
+
+    def _ignorant(self) -> bool:
+        """¿La última respuesta dependió de conocimiento no establecido? (lo consultado al decir
+        o al hablarse, o el juicio sobre el estado, según el modelo interno de los módulos)."""
+        if any(not known for _, known in self._consults):
+            return True
+        if self._path and self._path[-1] == JUDGE and self.judge is not None and self._js is not None:
+            return not self._know(self._js, self.judge)[1]
+        return False
 
     def _know(self, c, net=None):
         """Qué diría un módulo de conocimiento (`say` por defecto, o el juicio) ante `c`, sin
@@ -1370,6 +1403,23 @@ class Thinker:
         p = net.readout.probs(net.readout.potentials(v.winners, net._votes(v)))
         return [(int(o),) for o in np.flatnonzero(p >= self.branch)]
 
+    @contextlib.contextmanager
+    def _bound_to(self, cue):
+        """Con conjuntos de tareas, liga mientras dure el bloque el control del conjunto que rige
+        la consigna `cue` (lo que se enseña o se guarda de un episodio va al control de quien lo
+        respondió, no al del que rige ahora)."""
+        T = self.task_sets
+        k = T.cue_k.get(cue) if (T is not None and T.sets) else None
+        if k is None or k >= len(T.sets) or T.sets[k].Wc is self.Wc:
+            yield
+            return
+        saved = (self.Wc, self.wv, self.rel, self._pending)
+        self._ts_bind(k)
+        try:
+            yield
+        finally:
+            self.Wc, self.wv, self.rel, self._pending = saved
+
     def _search(self, target: int, start=None, over=None, refute: bool = False, bind: bool = True):
         """Busca, con el conocimiento actual (según el modelo interno) y sin efectos, una
         secuencia de pasos (compuerta incluida) que habría llevado al objetivo. Devuelve
@@ -1395,16 +1445,9 @@ class Thinker:
         control del conjunto que rige la consigna de ese episodio, no el que rige ahora: la
         guía de la búsqueda (y lo que cuesta cada camino) es la política de quien respondió.
         `bind=False`: con el control que está ligado (la repetición elige el conjunto)."""
-        T = self.task_sets
-        if bind and start is not None and T is not None and T.sets:
-            k = T.cue_k.get(start[1])
-            if k is not None and k < len(T.sets) and T.sets[k].Wc is not self.Wc:
-                saved = (self.Wc, self.wv, self.rel, self._pending)
-                self._ts_bind(k)
-                try:
-                    return self._search_in(target, start, over, refute)
-                finally:
-                    self.Wc, self.wv, self.rel, self._pending = saved
+        if bind and start is not None:
+            with self._bound_to(start[1]):
+                return self._search_in(target, start, over, refute)
         return self._search_in(target, start, over, refute)
 
     def _search_in(self, target: int, start, over, refute: bool):
@@ -1606,12 +1649,16 @@ class Thinker:
         confianza es la probabilidad del paso más dudoso; respuesta -1 si el camino no lleva
         a nada establecido."""
         self.task_sets.simulated += 1
-        return self._rollout(self.task_sets.sets[k].Wc, ep)
+        ts = self.task_sets.sets[k]
+        out, conf = self._rollout(ts.Wc, ep)
+        ok, n = ts.rel.get(self._roll_key, (0, 0)) if self._roll_key is not None else (0, 0)
+        return out, conf, (ok + 1.0) / (n + 2.0)           # (+ media posterior de que acierte ahí)
 
     def _rollout(self, Wc, ep) -> tuple:
         # la confianza de una predicción no depende de cuánto se esté explorando: temperatura 1
         W, temp = self.Wc, self.temperature
         self.Wc = Wc; self.temperature = 1.0
+        self._roll_key = None                          # (estado, acción) con que respondería
         try:
             items, cue, reg, given, events = ep
             prev = getattr(items, "prev", None)
@@ -1646,6 +1693,7 @@ class Thinker:
                     focus = succ[0]; recall = rec(focus); clock += 1; last = a
                     continue
                 out, sure = self._outcome(a, focus, recall, c, s)
+                self._roll_key = (s[0].tobytes(), a)
                 return (int(out), conf) if sure else (-1, 0.0)
         finally:
             self.Wc = W; self.temperature = temp
@@ -1661,14 +1709,14 @@ class Thinker:
         K = len(T.sets)
         lik = np.full(K + 1, 0.5)
         act = T.active
-        out, conf = self._ts_rollout(act, ep)
+        out, conf, q = self._ts_rollout(act, ep)
         self._ts_pred = (out, conf)
-        lik[act] = T.likelihood(act, out, conf, target)
+        lik[act] = T.likelihood(act, out, conf, target, q)
         if lik[act] < T.explained:                         # no lo explicó: se vigila al resto
             for k in range(K):
                 if k != act:
-                    o, c = self._ts_rollout(k, ep)
-                    lik[k] = T.likelihood(k, o, c, target)
+                    o, c, qk = self._ts_rollout(k, ep)
+                    lik[k] = T.likelihood(k, o, c, target, qk)
         if self.plastic:
             T.learn_rho(act, out, conf, target)
             T.sets[act].trials += 1
