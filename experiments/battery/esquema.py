@@ -447,8 +447,9 @@ def escribir_perfil_csv(pf, path: Path):
 
 
 def escribir_perfiles_csv(filas: list[dict], path: Path):
-    """Las pruebas del Thinker con cada perfil de opciones, una al lado de la otra."""
-    perf = ("defecto", "R3", "R3+ts")
+    """Las pruebas medidas con más de un perfil de opciones (del Thinker o del Cortex), una al
+    lado de la otra: una columna por perfil presente en las filas."""
+    perf = tuple(perfiles_presentes([f for f in filas if f.get("estado") in ("medido", "no aplicable hoy")]))
     grupos: dict = {}
     for f in filas:
         if f.get("estado") not in ("medido", "no aplicable hoy"):

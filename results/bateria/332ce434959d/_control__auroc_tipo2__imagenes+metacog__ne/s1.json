@@ -1,0 +1,48 @@
+{
+ "puntaje": 0.7099757163671685,
+ "medidas": {
+  "auroc2": 0.7099757163671685,
+  "auroc2_6niveles": 0.6908887809616319,
+  "exactitud_bloques2a6": 0.71,
+  "contraste_final": 0.34569999999999945,
+  "confianza_media": 0.7595985714663219,
+  "exactitud_nivel_0.5": 0.27,
+  "exactitud_nivel_0.75": 0.56,
+  "exactitud_nivel_1.0": 0.695,
+  "exactitud_nivel_1.5": 0.9,
+  "exactitud_nivel_2.0": 0.95,
+  "pendiente_confianza_aciertos": 0.06763151131832823,
+  "pendiente_confianza_errores": -0.020534252947368038,
+  "firma_opuesta": true,
+  "exactitud_por_quintil_de_confianza": [
+   0.34,
+   0.575,
+   0.675,
+   0.82,
+   0.965
+  ],
+  "rho_confianza_exactitud": 0.9999999999999999,
+  "firma_calibracion": true,
+  "confianza_aciertos_por_nivel": [
+   0.6782776219230205,
+   0.7364189639304428,
+   0.8043712839945729,
+   0.8870643386038659,
+   0.9411124911779507
+  ],
+  "confianza_errores_por_nivel": [
+   0.6614006569983546,
+   0.6064056494026873,
+   0.6347009094787783,
+   0.6314275260077385,
+   0.5462184539589888
+  ],
+  "mnist_imagenes": 20000.0,
+  "mnist_exactitud_en_linea": 0.9678
+ },
+ "segundos": 272.43968296051025,
+ "semilla": 1,
+ "version": 1,
+ "escala": 1.0,
+ "config": "ne"
+}

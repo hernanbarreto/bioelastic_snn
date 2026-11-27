@@ -43,6 +43,7 @@ class Fuente:
     agregado: bool = False              # la fuente sólo publica media ± desvío (sin valores por semilla)
     patron: str = ""                    # archivos por semilla ({s}): todos cuentan para el commit
     variabilidad: str = ""              # de dónde sale el ± de la fuente
+    perfil: str = "defecto"             # perfil de opciones con que se midió (p. ej. «metacog»)
 
 
 def commit_de(archivos) -> str:
@@ -206,7 +207,7 @@ def fuentes() -> list[Fuente]:
                                "Kepecs: pendiente apuesta vs facilidad en aciertos": "pendiente_apuesta_aciertos",
                                "Kepecs: pendiente apuesta vs facilidad en errores": "pendiente_apuesta_errores"},
                               range(3)),
-        agente="integracion3", equivalente=False,
+        agente="integracion3", equivalente=False, perfil="metacog",
         motivo_equivalencia="dificultad no igualada y flujo con clases nuevas: otro procedimiento que Fleming et al.",
         variabilidad="semillas 0 a 2 de la rama integracion3: el flujo continuo (orden de las muestras) y la red",
     ))
@@ -358,7 +359,8 @@ def fila_de(f: Fuente, catalogo: dict) -> dict:
     p = Prueba(id=f.prueba, variante=f.variante, condicion=f.condicion, metrica=f.metrica, protocolo=f.protocolo,
                desviaciones=list(f.desviaciones), correr=None, equivalente=f.equivalente,
                motivo_equivalencia=f.motivo_equivalencia, comparar=dict(f.comparar), referencia=f.referencia,
-               azar=f.azar, azar_derivacion=f.azar_derivacion, firmas=dict(f.firmas), variabilidad=f.variabilidad)
+               azar=f.azar, azar_derivacion=f.azar_derivacion, firmas=dict(f.firmas), variabilidad=f.variabilidad,
+               perfil=f.perfil)
     if not f.archivo.exists():
         fila = esquema.fila_resultado(p, [], catalogo, "")
         fila.update(estado="pendiente", motivo=f.pendiente or f"todavía no existe {f.archivo}",

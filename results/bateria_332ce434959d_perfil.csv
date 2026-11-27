@@ -1,0 +1,21 @@
+conjunto,perfil,dimension,nombre,indice_min,indice_max,pruebas,dimensiones_con_indice,dimensiones_total,advertencia
+equivalentes,defecto,"(promedio entre dimensiones, convención)",,0.685,2.010,,3,10,
+equivalentes,defecto,pocos_ejemplos,Aprender de pocos ejemplos,0.224,0.235,"omniglot (imagenes, pixeles)",,,
+equivalentes,defecto,metacognicion,Metacognición,0.991,4.954,auroc_tipo2 (imagenes),,,
+equivalentes,defecto,percepcion,Percepción,0.840,0.840,"mnist (depth2, depth3); fashion_mnist (depth2, depth3); cifar10 (depth2_5000, depth3_5000)",,,
+equivalentes,metacog,"(promedio entre dimensiones, convención)",,0.685,2.010,,3,10,
+equivalentes,metacog,pocos_ejemplos,Aprender de pocos ejemplos,0.224,0.235,"omniglot (imagenes, pixeles)",,,
+equivalentes,metacog,metacognicion,Metacognición,0.991,4.955,auroc_tipo2 (imagenes+metacog),,,
+equivalentes,metacog,percepcion,Percepción,0.840,0.840,"mnist (depth2, depth3); fashion_mnist (depth2, depth3); cifar10 (depth2_5000, depth3_5000)",,,
+todas,defecto,"(promedio entre dimensiones, convención)",,0.402,1.196,,5,10,"mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"
+todas,defecto,pocos_ejemplos,Aprender de pocos ejemplos,0.224,0.235,"omniglot (imagenes, pixeles)",,,"mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"
+todas,defecto,metacognicion,Metacognición,0.991,4.954,auroc_tipo2 (imagenes),,,"mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"
+todas,defecto,lenguaje,Lenguaje,-0.047,-0.047,blimp (texto),,,"mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"
+todas,defecto,percepcion,Percepción,0.840,0.840,"mnist (depth2, depth3); fashion_mnist (depth2, depth3); cifar10 (depth2_5000, depth3_5000)",,,"mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"
+todas,defecto,razonamiento_relacional,Razonamiento relacional y composición,0.000,0.000,instrucciones_pocos_ejemplos (thinker_r3_contexto),,,"mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"
+todas,metacog,"(promedio entre dimensiones, convención)",,0.457,1.472,,5,10,"mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"
+todas,metacog,pocos_ejemplos,Aprender de pocos ejemplos,0.224,0.235,"omniglot (imagenes, pixeles)",,,"mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"
+todas,metacog,metacognicion,Metacognición,1.266,6.332,"auroc_tipo2 (imagenes+metacog, flujo_continuo_integracion3)",,,"mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"
+todas,metacog,lenguaje,Lenguaje,-0.047,-0.047,blimp (texto),,,"mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"
+todas,metacog,percepcion,Percepción,0.840,0.840,"mnist (depth2, depth3); fashion_mnist (depth2, depth3); cifar10 (depth2_5000, depth3_5000)",,,"mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"
+todas,metacog,razonamiento_relacional,Razonamiento relacional y composición,0.000,0.000,instrucciones_pocos_ejemplos (thinker_r3_contexto),,,"mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"

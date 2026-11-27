@@ -37,6 +37,9 @@ def _args(argv=None):
     ap.add_argument("--escala", type=float, default=1.0)
     ap.add_argument("--minutos", type=float, default=None)
     ap.add_argument("--resultados", default=None, help="carpeta de resultados (por defecto results/)")
+    ap.add_argument("--skip-existing", action="store_true",
+                    help="no rehace las semillas ya guardadas; es lo que hace siempre el almacén (se acepta por "
+                         "uniformidad con los otros experimentos)")
     return ap.parse_args(argv)
 
 
@@ -53,16 +56,17 @@ def _elegidas(todas, spec: str):
 
 def _herencia(p, info, almacen, escala):
     """Para una prueba que no usa el Thinker y no se corrió en este commit: los resultados de
-    otro commit con la misma huella de percepción (mismo código, mismo resultado)."""
+    otro commit con la misma huella de percepción (mismo código, mismo resultado). Sólo con las
+    opciones por defecto: la comprobación de identidad no cubre perfiles como `metacog`."""
     from battery import almacen as alm
-    if p.perfiles:
+    if p.perfiles or p.perfil != "defecto":
         return None, None
-    propia = version.huella_percepcion(info["sha"])
+    propia = version.huella_equivalente(version.huella_percepcion(info["sha"]))
     for d in sorted(almacen.dir.parent.iterdir()) if almacen.dir.parent.exists() else []:
         if d.name == almacen.dir.name or not (d / p.clave).exists():
             continue
         try:
-            if version.huella_percepcion(d.name.split("+")[0]) != propia:
+            if version.huella_equivalente(version.huella_percepcion(d.name.split("+")[0])) != propia:
                 continue
         except Exception:
             continue
@@ -84,15 +88,16 @@ def informe(info: dict, pruebas, almacen, catalogo, resultados: Path, escala: fl
             crudos, heredado = _herencia(p, info, almacen, escala)
         if not crudos:
             continue
-        sel = registro.seleccionar(p, almacen, escala, log=lambda *a: None) if p.configs else None
+        sel = registro.seleccionar(p, almacen, escala, log=lambda *a: None, calcular=False) if p.configs else None
         ctrl = None
         if sel and sel.get("elegida"):
             crudos = [c for c in crudos if c.get("config") == sel["elegida"]]
             ctrl = registro.controles(p, almacen, escala, sel, limite=0.0, log=lambda *a: None)
         f = registro.fila(p, crudos, sel, catalogo, info["commit"], ctrl)
         if heredado:
-            f["fuente_resultado"] = (f"medicion@{heredado} (heredado: los archivos de percepción son idénticos en "
-                                     f"{info['commit']}, y la prueba no usa el Thinker)")
+            f["fuente_resultado"] = (f"medicion@{heredado} (heredado: la percepción de {info['commit']} es la misma, "
+                                     f"por archivos idénticos o por la comprobación bit a bit de "
+                                     f"results/bateria/equivalencias.json, y la prueba no usa el Thinker)")
             f["commit"] = heredado
         filas.append(f)
     filas += ingesta.filas(catalogo)

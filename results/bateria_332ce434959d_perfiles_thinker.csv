@@ -1,0 +1,2 @@
+prueba,variante,metrica,condicion_entrada,equivalente,azar,referencia_humana,referencia_valor,defecto_media,defecto_desvio,defecto_n,defecto_indice,defecto_config,defecto_estado,metacog_media,metacog_desvio,metacog_n,metacog_indice,metacog_config,metacog_estado
+auroc_tipo2,imagenes,"AUROC de tipo 2 (confianza continua) en los bloques 2 a 6, con acierto igualado cerca de 71 %",imagenes,sí,0.5000,fleming2010,0.55-0.75,0.7477,0.0068,3,0.99 a 4.95,única documentada para esta prueba,medido,0.7478,0.0068,3,0.99 a 4.96,cal,medido

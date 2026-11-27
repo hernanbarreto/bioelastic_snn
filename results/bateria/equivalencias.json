@@ -1,0 +1,20 @@
+{
+ "percepcion": {
+  "p41a7198a1d": {
+   "igual_a": "p517af58b53",
+   "commits": [
+    "80a78700399cd469f4da14a654ad1895de3ada06",
+    "332ce434959d6bb568641f11794cf134148266b7"
+   ],
+   "comprobacion": {
+    "cortex_pred": true,
+    "cortex_V": true,
+    "v1_codigos": true,
+    "texto_pred": true,
+    "texto_p": true
+   },
+   "fecha": "2026-11-26 23:47",
+   "metodo": "battery/identidad.py: depth2 con 1 000 imágenes de MNIST (decisiones y potenciales en 300 del test), V1 con 500 de Omniglot (códigos de 20) y red de texto con 5 000 bytes (decisiones y probabilidades en 1 000), configuración por defecto, idénticos bit a bit"
+  }
+ }
+}

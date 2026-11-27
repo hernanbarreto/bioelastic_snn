@@ -4,7 +4,7 @@
   "sha": "80a78700399cd469f4da14a654ad1895de3ada06",
   "sucio": false,
   "escala": 1.0,
-  "fecha": "2026-11-26 23:45:43",
+  "fecha": "2026-11-27 00:40:38",
   "python": "3.13.18",
   "numpy": "2.5.3",
   "catalogo": {
@@ -188,17 +188,16 @@
     },
     "metacognicion": {
      "nombre": "Metacognición",
-     "min": 1.266346392151439,
-     "max": 6.331731960757189,
+     "min": 0.9908261176362113,
+     "max": 4.9541305881810525,
      "pruebas": [
       {
        "prueba": "auroc_tipo2",
        "variantes": [
-        "imagenes",
-        "flujo_continuo_integracion3"
+        "imagenes"
        ],
-       "min": 1.266346392151439,
-       "max": 6.331731960757189
+       "min": 0.9908261176362113,
+       "max": 4.9541305881810525
       }
      ]
     },
@@ -253,8 +252,8 @@
     }
    },
    "global_": {
-    "min": 0.7031694501885296,
-    "max": 1.5483290639539256,
+    "min": 0.6572494044359917,
+    "max": 1.3187288351912358,
     "dimensiones": 6,
     "de": 10,
     "convencion": "promedio simple de los promedios por dimensión que tienen al menos un índice; es una convención, sin pesos, y se informa siempre junto al perfil"
@@ -282,7 +281,242 @@
    "split_mnist/c2"
   ]
  },
- "perfiles_de_opciones": {},
+ "perfiles_de_opciones": {
+  "metacog": {
+   "perfil_opciones": "metacog",
+   "pruebas_con_el_perfil": [
+    "auroc_tipo2"
+   ],
+   "equivalentes": {
+    "por_dimension": {
+     "pocos_ejemplos": {
+      "nombre": "Aprender de pocos ejemplos",
+      "min": 0.3353947368421053,
+      "max": 0.34096685082872935,
+      "pruebas": [
+       {
+        "prueba": "harlow",
+        "variantes": [
+         "imagenes"
+        ],
+        "min": 0.4466666666666667,
+        "max": 0.4466666666666667
+       },
+       {
+        "prueba": "omniglot",
+        "variantes": [
+         "imagenes",
+         "pixeles"
+        ],
+        "min": 0.22412280701754383,
+        "max": 0.23526703499079193
+       }
+      ]
+     },
+     "percepcion": {
+      "nombre": "Percepción",
+      "min": 0.8398516982256786,
+      "max": 0.8398516982256786,
+      "pruebas": [
+       {
+        "prueba": "mnist",
+        "variantes": [
+         "depth2",
+         "depth3"
+        ],
+        "min": 0.9901818856718634,
+        "max": 0.9901818856718634
+       },
+       {
+        "prueba": "fashion_mnist",
+        "variantes": [
+         "depth2",
+         "depth3"
+        ],
+        "min": 1.0813832199546487,
+        "max": 1.0813832199546487
+       },
+       {
+        "prueba": "cifar10",
+        "variantes": [
+         "depth2_5000",
+         "depth3_5000"
+        ],
+        "min": 0.44798998905052395,
+        "max": 0.44798998905052395
+       }
+      ]
+     }
+    },
+    "global_": {
+     "min": 0.587623217533892,
+     "max": 0.590409274527204,
+     "dimensiones": 2,
+     "de": 10,
+     "convencion": "promedio simple de los promedios por dimensión que tienen al menos un índice; es una convención, sin pesos, y se informa siempre junto al perfil"
+    }
+   },
+   "todas": {
+    "por_dimension": {
+     "pocos_ejemplos": {
+      "nombre": "Aprender de pocos ejemplos",
+      "min": 0.35172807017543856,
+      "max": 0.3573001841620626,
+      "pruebas": [
+       {
+        "prueba": "harlow",
+        "variantes": [
+         "simbolos",
+         "imagenes"
+        ],
+        "min": 0.4793333333333333,
+        "max": 0.4793333333333333
+       },
+       {
+        "prueba": "omniglot",
+        "variantes": [
+         "imagenes",
+         "pixeles"
+        ],
+        "min": 0.22412280701754383,
+        "max": 0.23526703499079193
+       }
+      ]
+     },
+     "razonamiento_relacional": {
+      "nombre": "Razonamiento relacional y composición",
+      "min": -0.5137690094533499,
+      "max": -0.5137690094533499,
+      "pruebas": [
+       {
+        "prueba": "inferencia_transitiva_6",
+        "variantes": [
+         "simbolos"
+        ],
+        "min": -1.0275380189066998,
+        "max": -1.0275380189066998
+       },
+       {
+        "prueba": "instrucciones_pocos_ejemplos",
+        "variantes": [
+         "thinker_r3_contexto"
+        ],
+        "min": 0.0,
+        "max": 0.0
+       }
+      ]
+     },
+     "memoria_de_trabajo": {
+      "nombre": "Memoria de trabajo",
+      "min": 2.321646341463415,
+      "max": 2.321646341463415,
+      "pruebas": [
+       {
+        "prueba": "deteccion_de_cambio",
+        "variantes": [
+         "simbolos"
+        ],
+        "min": 2.321646341463415,
+        "max": 2.321646341463415
+       }
+      ]
+     },
+     "lenguaje": {
+      "nombre": "Lenguaje",
+      "min": -0.046786791431443854,
+      "max": -0.046786791431443854,
+      "pruebas": [
+       {
+        "prueba": "blimp",
+        "variantes": [
+         "texto"
+        ],
+        "min": -0.046786791431443854,
+        "max": -0.046786791431443854
+       }
+      ]
+     },
+     "percepcion": {
+      "nombre": "Percepción",
+      "min": 0.8398516982256786,
+      "max": 0.8398516982256786,
+      "pruebas": [
+       {
+        "prueba": "mnist",
+        "variantes": [
+         "depth2",
+         "depth3"
+        ],
+        "min": 0.9901818856718634,
+        "max": 0.9901818856718634
+       },
+       {
+        "prueba": "fashion_mnist",
+        "variantes": [
+         "depth2",
+         "depth3"
+        ],
+        "min": 1.0813832199546487,
+        "max": 1.0813832199546487
+       },
+       {
+        "prueba": "cifar10",
+        "variantes": [
+         "depth2_5000",
+         "depth3_5000"
+        ],
+        "min": 0.44798998905052395,
+        "max": 0.44798998905052395
+       }
+      ]
+     },
+     "metacognicion": {
+      "nombre": "Metacognición",
+      "min": 1.5418666666666667,
+      "max": 7.709333333333326,
+      "pruebas": [
+       {
+        "prueba": "auroc_tipo2",
+        "variantes": [
+         "flujo_continuo_integracion3"
+        ],
+        "min": 1.5418666666666667,
+        "max": 7.709333333333326
+       }
+      ]
+     }
+    },
+    "global_": {
+     "min": 0.7490894959410676,
+     "max": 1.7779292927166148,
+     "dimensiones": 6,
+     "de": 10,
+     "convencion": "promedio simple de los promedios por dimensión que tienen al menos un índice; es una convención, sin pesos, y se informa siempre junto al perfil"
+    },
+    "advertencia": "mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"
+   },
+   "sin_indice": [
+    "babi/thinker_defecto_contexto",
+    "deteccion_de_cambio/dos_items",
+    "igual_distinto/imagenes",
+    "igual_distinto/simbolos",
+    "inferencia_transitiva_5/simbolos",
+    "inferencia_transitiva_7/simbolos",
+    "mnist_addition/fiab_27500",
+    "mnist_addition/fiab_3000",
+    "reversion_serial/simbolos",
+    "reversion_volatil/simbolos",
+    "scan/exp1_1pc",
+    "scan/exp1_1pc_3pasadas",
+    "scan/exp1_2pc",
+    "scan/exp1_4pc",
+    "scan/exp1_8pc",
+    "scan/jump",
+    "split_fashion/c2",
+    "split_mnist/c2"
+   ]
+  }
+ },
  "filas": [
   {
    "prueba": "harlow",
@@ -3486,7 +3720,7 @@
     "derivacion": "K = 0 cuando la exactitud es la de adivinar (50 %)"
    },
    "commit": "8fb949e2dc73",
-   "fuente_resultado": "medicion@8fb949e2dc73 (heredado: los archivos de percepción son idénticos en 80a78700399c, y la prueba no usa el Thinker)",
+   "fuente_resultado": "medicion@8fb949e2dc73 (heredado: la percepción de 80a78700399c es la misma, por archivos idénticos o por la comprobación bit a bit de results/bateria/equivalencias.json, y la prueba no usa el Thinker)",
    "segundos": 0.00010085105895996094,
    "estado": "no aplicable hoy",
    "motivo": "el procedimiento de Elmore et al. (vuelven dos ítems y hay que tocar el que cambió) no se puede presentar sin cambiar la arquitectura: el Thinker responde con un símbolo de su foco o con un juicio sobre su estado, y para señalar el lugar que cambió entre dos tendría que sostener uno y responder con el otro; la batería mide la versión de un solo ítem",
@@ -7906,7 +8140,7 @@
   {
    "prueba": "auroc_tipo2",
    "variante": "flujo_continuo_integracion3",
-   "perfil": "defecto",
+   "perfil": "metacog",
    "nombre": "Sensibilidad metacognitiva: área bajo la curva ROC de tipo 2 con dificultad igualada",
    "dimension": "metacognicion",
    "condicion_entrada": "imagenes",
