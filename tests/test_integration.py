@@ -348,3 +348,17 @@ def test_fiabilidad_arranca_sin_creerle_a_la_percepcion_y_sube_si_acierta():
     for _ in range(150):
         f.actualizar(p3, p4, 9)                               # ahora el par más probable no da la suma
     assert f.gamma < 0.1
+
+
+def test_pureza_no_supervisada_rotula_con_una_mitad_y_mide_con_la_otra():
+    from bioelastic import Cortex
+    datos = _sinteticos(20)
+    net = Cortex((28, 28, 1), 10, seed=0, heads=[{}])
+    E = ei.encoder()
+    for x in datos.X["train"]:
+        net.observe(E(x))                                     # sin etiquetas
+    X, y = datos.X["test"], datos.y["test"]
+    m = e3.pureza_no_supervisada(net, E, X, y)
+    assert m["neuronas"] >= 10 and m["pureza"] > 0.8          # barras separables: categorías puras
+    m0 = e3.pureza_no_supervisada(Cortex((28, 28, 1), 10, seed=0, heads=[], areas=[]), E, X, y)
+    assert np.isnan(m0["pureza"])

@@ -833,6 +833,65 @@ def fase_f1c(seed, tam, out, variante, extra):
         medir(out, "f1c", nom, th, v, per, datos, rng, tam, st, extra, curva, seed, congelada=False)
 
 
+VARIANTES_F1U = {
+    # etapa 1 sin etiquetas (categorías visuales: prototipos del área de asociación y rasgos
+    # de V1), etapa 2-3 como aprendida_eq (posterior conjunto + equipartición + muestreo)
+    # con la estructura de la memoria congelada: se ligan los prototipos que ya hay
+    "u_cabeza": dict(thinker="cadena", h=0.0, cadena=dict(regla="aprendida", modo="muestreo", equiparticion=1.0)),
+    # ídem sin memoria de ejemplares: rasgos de V1 sin etiquetas y lectura lineal (proyección)
+    "u_proy": dict(thinker="cadena", h=0.0, config_kw=dict(heads=[], replay=0.0),
+                   cadena=dict(regla="aprendida", modo="muestreo", equiparticion=1.0)),
+}
+
+
+def pureza_no_supervisada(net, E, X, y) -> dict:
+    """Pureza de las categorías que se formaron sin etiquetas: cada imagen cae en la neurona
+    ganadora del área de asociación; cada neurona se rotula con el dígito mayoritario de las
+    imágenes de posición par que gana y se mide en las de posición impar (las etiquetas sólo
+    miden, como en Diehl y Cook, 2015; una neurona sin rótulo cuenta como error). Devuelve
+    la pureza y cuántas neuronas ganan alguna imagen."""
+    if not net.heads:
+        return dict(pureza=float("nan"), neuronas=0)
+    w = []
+    for x in X:
+        net.forward(E(x))
+        st = net.heads[0]._last
+        w.append(int(st.v.winners[0]) if len(st.v.winners) else -1)
+    w = np.array(w); y = np.asarray(y).astype(int)
+    a, b = slice(0, None, 2), slice(1, None, 2)           # rotular con las pares, medir con las impares
+    rot = {int(j): int(np.bincount(y[a][w[a] == j], minlength=10).argmax()) for j in np.unique(w[a])}
+    ok = np.array([rot.get(int(j), -1) == t for j, t in zip(w[b], y[b])])
+    return dict(pureza=float(ok.mean()), neuronas=int(len(np.unique(w))))
+
+
+def fase_f1u(seed, tam, out, variante, extra):
+    """L3 con regla desconocida en etapas (ver VARIANTES_F1U): 1) `tam["n_nosup"]` imágenes
+    de train sin etiquetas (Cortex.observe: neurogénesis por novedad y STDP en la memoria,
+    rasgos de V1 sin error local); se mide la pureza de las categorías formadas; 2-3) L3 desde
+    ahí como aprendida_eq, con la neurogénesis de la memoria apagada."""
+    from exp_vision import encoder
+    datos, Xt, yt, Xc, yc = preparar(seed, tam)
+    E = encoder()
+    for var in (list(VARIANTES_F1U) if variante is None else [variante]):
+        rng = np.random.default_rng(2000 + seed)
+        ei.muestra_test(datos, rng, tam["n_test_pureza"])
+        v, per, th, cfg = construir(VARIANTES_F1U[var], seed, tam)
+        t0 = time.time()
+        idx = np.random.default_rng(5000 + seed).permutation(len(datos.y["train"]))[:tam["n_nosup"]]
+        for i in idx:
+            v.net.observe(E(datos.X["train"][i]))
+        pz = pureza_no_supervisada(v.net, E, Xt[:1000], yt[:1000])
+        out("f1u", var, "etapa 1: segundos", round(time.time() - t0, 1), "", f"{tam['n_nosup']} imágenes sin etiquetas")
+        out("f1u", var, "etapa 1: pureza de las categorías sin etiquetas", pz["pureza"], 0.1, "neurona ganadora rotulada por mayoría")
+        out("f1u", var, "etapa 1: neuronas que ganan alguna imagen", pz["neuronas"], 10, "")
+        for h in v.net.heads:
+            h.layer.neurogenesis = False
+        st: dict = {}; curva: list = []
+        entrenar(th, per, datos, rng, tam["ep"], cfg, st, None, curva, tam["cada"], Xc, yc)
+        out("f1u", var, "etapas 2-3: segundos", round(time.time() - t0, 1), "", f"{tam['ep']} episodios")
+        medir(out, "f1u", var, th, v, per, datos, rng, tam, st, extra, curva, seed, congelada=False)
+
+
 def fase_f1(seed, tam, out, variante, extra, variantes=None, fase="f1"):
     datos = ei.Digitos(tam["n_pre"])
     Xt, yt = Xt_(datos, seed, tam), yt_(datos, seed, tam)
@@ -1600,14 +1659,16 @@ def fase_f5(seed, tam, out, variante, extra):
 TAM = dict(
     completa=dict(n_pre=10000, n_test_pureza=2000, n_curva=500, ep=4000, cada=500, ep_eval=500,
                   homeostasis=0.02, congelada=True, ep_f3=4000, columnas=10000, cada_col=1250, col_tabular=10000,
+                  n_nosup=10000,
                   f0=["rep", "a_oraculo", "a_ruido_0.65", "a_ruido_0.8", "a_ruido_0.9",
                       "b_refuerzo", "b_cred2", "c_barajadas", "rep_v02"]),
     rapida=dict(n_pre=300, n_test_pureza=100, n_curva=50, ep=30, cada=10, ep_eval=10,
                 homeostasis=0.02, congelada=True, ep_f3=800, columnas=80, cada_col=20, col_tabular=300,
+                n_nosup=100,
                 f0=["rep", "a_oraculo", "a_ruido_0.8", "b_refuerzo", "b_cred2", "c_barajadas"]),
 )
 _sistemas_cadena()
-FASES = dict(f0=fase_f0, f0s=fase_f0s, f1=fase_f1, f1c=fase_f1c, f3c=fase_f3c, f2=fase_f2, f3=fase_f3, f4=fase_f4, f5=fase_f5)
+FASES = dict(f0=fase_f0, f0s=fase_f0s, f1=fase_f1, f1c=fase_f1c, f1u=fase_f1u, f3c=fase_f3c, f2=fase_f2, f3=fase_f3, f4=fase_f4, f5=fase_f5)
 
 
 def completo(path) -> bool:

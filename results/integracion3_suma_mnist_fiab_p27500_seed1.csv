@@ -1,0 +1,33 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+suma_mnist,fiab,1,curva suma prequential par=2500,0.6496,,
+suma_mnist,fiab,1,curva gamma par=2500,0.4971,,ACh
+suma_mnist,fiab,1,curva suma prequential par=5000,0.9364,,
+suma_mnist,fiab,1,curva gamma par=5000,0.8672,,ACh
+suma_mnist,fiab,1,curva suma prequential par=7500,0.9532,,
+suma_mnist,fiab,1,curva gamma par=7500,0.9028,,ACh
+suma_mnist,fiab,1,curva suma prequential par=10000,0.9584,,
+suma_mnist,fiab,1,curva gamma par=10000,0.9140,,ACh
+suma_mnist,fiab,1,curva suma prequential par=12500,0.9680,,
+suma_mnist,fiab,1,curva gamma par=12500,0.9299,,ACh
+suma_mnist,fiab,1,curva suma prequential par=15000,0.9624,,
+suma_mnist,fiab,1,curva gamma par=15000,0.9223,,ACh
+suma_mnist,fiab,1,curva suma prequential par=17500,0.9752,,
+suma_mnist,fiab,1,curva gamma par=17500,0.9465,,ACh
+suma_mnist,fiab,1,curva suma prequential par=20000,0.9760,,
+suma_mnist,fiab,1,curva gamma par=20000,0.9501,,ACh
+suma_mnist,fiab,1,curva suma prequential par=22500,0.9740,,
+suma_mnist,fiab,1,curva gamma par=22500,0.9469,,ACh
+suma_mnist,fiab,1,curva suma prequential par=25000,0.9732,,
+suma_mnist,fiab,1,curva gamma par=25000,0.9411,,ACh
+suma_mnist,fiab,1,curva suma prequential par=27500,0.9688,,
+suma_mnist,fiab,1,curva gamma par=27500,0.9351,,ACh
+suma_mnist,fiab,1,segundos entrenamiento,781.4000,,27500 pares
+suma_mnist,fiab,1,AUROC error dígito (test): 1-confianza,0.9847,0.8500,criterio >= 0.85
+suma_mnist,fiab,1,ECE dígito (test),0.0016,0.0500,criterio <= 0.05
+suma_mnist,fiab,1,AUROC error suma (test): 1-confianza,0.9714,0.8500,criterio >= 0.85
+suma_mnist,fiab,1,ECE suma (test),0.0032,0.0500,criterio <= 0.05
+suma_mnist,fiab,1,exactitud suma (test),0.9766,0.9720,DeepProbLog 30k pares: 0.972
+suma_mnist,fiab,1,exactitud dígito (test),0.9881,0.9500,criterio del proyecto
+suma_mnist,fiab,1,pureza dígito (test),0.9881,,mejor biyección
+suma_mnist,fiab,1,neuronas,2123,,
+suma_mnist,total,1,segundos,843.4000,,
