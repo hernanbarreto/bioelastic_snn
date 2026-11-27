@@ -764,12 +764,14 @@ PUBLISHED = {
 }
 
 
-def split_run(ds: str, spec: str, seed: int, D, n_small: int = 100) -> dict:
+def split_run(ds: str, spec: str, seed: int, D, n_small: int = 100, iid: bool = False) -> dict:
     """Split-MNIST / Split-Fashion-MNIST por clases (van de Ven et al. 2022): 5 tareas de 2
     clases, un solo pase online por todas las imágenes de entrenamiento de cada tarea
     (sin las de validación), sin identidad de tarea en la prueba: la respuesta es el
     argmax entre las 10 clases del conjunto. Acierto final sobre todo el test de las 10
-    clases y olvido (máximo previo - final, por tarea, con 100 imágenes por clase)."""
+    clases y olvido (máximo previo - final, por tarea, con 100 imágenes por clase).
+    iid=True: control sin secuencia, un solo pase por las mismas imágenes mezcladas (la
+    exactitud por tarea se sigue informando por los pares originales; sin olvido)."""
     pools, test = D
     enc = encoder()
     tasks = SPLIT[ds]; cls = np.array([c for t in tasks for c in t])
@@ -781,35 +783,51 @@ def split_run(ds: str, spec: str, seed: int, D, n_small: int = 100) -> dict:
     pred = lambda s: int(cls[int(np.argmax(np.asarray(agent.scores(s))[cls]))])
     hist = []
     t0 = time.time()
-    for k, t in enumerate(tasks):
+    train = [tuple(cls)] if iid else tasks
+    for k, t in enumerate(train):
         items = [(c, i) for c in t for i in range(len(pools[c]))]
         for o in rng.permutation(len(items)):
             c, i = items[o]
             agent.sup(enc(pools[c][i].astype(np.float32) / 255), int(c))
-        seen = [c for tt in tasks[:k + 1] for c in tt]
+        seen = [c for tt in train[:k + 1] for c in tt]
         hist.append({int(c): float(np.mean([pred(s) == c for s in small[c]])) for c in seen})
     secs = time.time() - t0
     hits = []; per_task = []
+    net = agent.net if isinstance(agent, CortexAgent) else None
+    hs, hq = [], []                                  # sistema lento / rápido por separado (Cortex)
     for t in tasks:
-        h = [pred(enc(x.astype(np.float32) / 255)) == c for c in t for x in test[c]]
+        h = []
+        for c in t:
+            for x in test[c]:
+                h.append(pred(enc(x.astype(np.float32) / 255)) == c)
+                if net is not None:
+                    Vs, Vq = _parts(net)
+                    hs.append(int(cls[int(np.argmax(np.asarray(Vs)[cls]))]) == c)
+                    hq.append(int(cls[int(np.argmax(np.asarray(Vq)[cls]))]) == c)
         per_task.append(float(np.mean(h))); hits += h
     task_acc = lambda d, t: float(np.mean([d[c] for c in t]))
-    forget = [max(task_acc(h, t) for h in hist[k:-1]) - task_acc(hist[-1], t) for k, t in enumerate(tasks[:-1])]
+    forget = [] if iid else [max(task_acc(h, t) for h in hist[k:-1]) - task_acc(hist[-1], t)
+                             for k, t in enumerate(tasks[:-1])]
+    st = agent.stats()
     row = dict(bench="split", scenario=ds, model=spec, seed=seed, acc=float(np.mean(hits)),
-               forgetting=float(np.mean(forget)), seconds=secs, bytes=agent.stats()["bytes"],
-               neurons=agent.stats()["neurons"])
+               forgetting=float(np.mean(forget)) if forget else float("nan"), seconds=secs, bytes=st["bytes"], neurons=st["neurons"])
+    if "evicted" in st:
+        row["evicted"] = int(st["evicted"])
+    if hs:
+        row["slow_acc"] = float(np.mean(hs)); row["fast_acc"] = float(np.mean(hq))
     row.update({f"task{k + 1}": v for k, v in enumerate(per_task)})
     return row
 
 
-def split_bench(specs, seeds, D, *, rows, tag, split="test", match=None):
+def split_bench(specs, seeds, D, *, rows, tag, split="test", match=None, datasets=None, iid=False):
     """Corre los modelos de `specs`; `match`: referencias (er, erace) igualadas en bytes al
-    promedio del primer modelo."""
-    for ds in SPLIT:
+    promedio del primer modelo; iid: control sin secuencia (ver split_run)."""
+    extra = dict(iid=True) if iid else {}
+    for ds in (datasets or SPLIT):
         for spec in specs:
             for seed in seeds:
-                row = cached(dict(b="split", ds=ds, spec=spec, seed=seed, split=split),
-                             lambda ds=ds, spec=spec, seed=seed: split_run(ds, spec, seed, D))
+                row = cached(dict(b="split", ds=ds, spec=spec, seed=seed, split=split, **extra),
+                             lambda ds=ds, spec=spec, seed=seed: split_run(ds, spec, seed, D, iid=iid))
                 rows.append(row)
                 print(f"[{tag}] split {ds} {spec[:60]} s{seed}: acc={row['acc']:.4f} olvido={row['forgetting']:.3f} "
                       f"bytes={row['bytes']} {row['seconds']:.0f}s", flush=True)
@@ -819,8 +837,8 @@ def split_bench(specs, seeds, D, *, rows, tag, split="test", match=None):
             for base in match:
                 sp = f"{base}+bytes={nb}+iters=3"
                 for seed in seeds:
-                    row = cached(dict(b="split", ds=ds, spec=sp, seed=seed, split=split),
-                                 lambda ds=ds, sp=sp, seed=seed: split_run(ds, sp, seed, D))
+                    row = cached(dict(b="split", ds=ds, spec=sp, seed=seed, split=split, **extra),
+                                 lambda ds=ds, sp=sp, seed=seed: split_run(ds, sp, seed, D, iid=iid))
                     rows.append(row)
                     print(f"[{tag}] split {ds} {sp} s{seed}: acc={row['acc']:.4f} olvido={row['forgetting']:.3f}",
                           flush=True)
@@ -841,6 +859,72 @@ def phase_f6s(a, data):
                note="ER y ER-ACE nuestras: MLP 784-256-20 con reservorio igualado en bytes a c2, lotes de 10, "
                     "3 iteraciones por lote; las cifras publicadas usan más pasadas (ver protocol)")
     save("f6_split", dict(phase="f6s", config=cfg, summary=summary, rows=rows), rows, keys)
+
+
+CAP_BUDGETS = (1000, 2000, 4000, 8000, 0)          # 0 = sin tope (nunca desaloja)
+
+
+def phase_f6cap(a, data):
+    """Curva de capacidad en Split-Fashion-MNIST (semillas de test 3-5). En f6s c2 pierde
+    contra el repaso y su almacén llega al tope de 2000 neuronas en las tres semillas: ¿es
+    saturación (recursos) o arquitectura? Presupuesto del almacén 1000, 2000, 4000 y 8000
+    neuronas, y sin tope (a 8000 todavía desaloja); ER y ER-ACE con los bytes equivalentes
+    en cada punto. Comparte el registro de f6s (el punto de 2000 es c2 tal cual). Regla:
+    si c2 sigue perdiendo cuando ya no satura, la pérdida es de arquitectura."""
+    _PHASE["name"] = "f6s"
+    D = split_data(data)["test"]
+    rows: list = []
+    for n in CAP_BUDGETS:
+        spec = C2 if n == 2000 else f"{C2}+budget={n}"
+        pts: list = []
+        split_bench([spec], a.seeds, D, rows=pts, tag="f6cap", match=("erace", "er"), datasets=("fashion",))
+        for r in pts:
+            fam = r["model"].split("+")[0]
+            sat = (r["evicted"] > 0 if "evicted" in r else (n > 0 and r["neurons"] >= n)) if fam == "c2" else False
+            rows.append(dict(r, budget=n, family=fam, saturated=float(sat)))
+    keys = ["acc", "forgetting", "task1", "task2", "task3", "task4", "task5", "bytes", "neurons", "evicted",
+            "saturated", "seconds"]
+    summary = agg(rows, ("scenario", "budget", "family"), keys)
+    for d in summary:
+        print(f"  {d['budget']:5d} {d['family']:6s} " + fmt(d, ["acc", "forgetting", "neurons", "seconds"]), flush=True)
+    gap = {n: float(np.mean([r["acc"] for r in rows if r["budget"] == n and r["family"] == "c2"])
+                    - max(np.mean([r["acc"] for r in rows if r["budget"] == n and r["family"] == f])
+                          for f in ("erace", "er"))) for n in CAP_BUDGETS}
+    cfg = dict(seeds=a.seeds, budgets=CAP_BUDGETS, tasks=SPLIT["fashion"],
+               protocol="como f6s: un solo pase online por tarea (sin las 500 por clase de validación), test "
+                        "oficial completo, argmax entre las 10 clases; ER/ER-ACE: MLP 784-256-20, lotes de 10, "
+                        "3 iteraciones, reservorio uint8 igualado en bytes al c2 de cada punto",
+               rule=phase_f6cap.__doc__, gap_c2_minus_best_replay=gap,
+               note="budget 0 = sin tope; saturated = 1 si el almacén desalojó alguna vez (en las filas de "
+                    "2000, medidas en f6s sin el contador, si terminó con tantas neuronas como su presupuesto); "
+                    "evicted = neuronas desalojadas por llegar al tope")
+    save("f6_capacidad", dict(phase="f6cap", config=cfg, summary=summary, rows=rows), rows,
+         ["budget", "family"] + keys)
+
+
+def phase_f6iid(a, data):
+    """Control sin secuencia en Split-Fashion-MNIST (semillas 3-5): un solo pase por las
+    mismas imágenes de entrenamiento mezcladas, c2 y ER / ER-ACE con los mismos bytes.
+    Separa el techo del aprendiz (lo que logra cada modelo sin olvido posible) de la
+    dinámica continua: si c2 ya pierde contra el repaso sin secuencia, la brecha de f6s
+    es del aprendiz y no del olvido."""
+    _PHASE["name"] = "f6s"
+    D = split_data(data)["test"]
+    rows: list = []
+    split_bench([C2], a.seeds, D, rows=rows, tag="f6iid", match=("erace", "er"), datasets=("fashion",), iid=True)
+    for r in rows:
+        r["family"] = r["model"].split("+")[0]; r["order"] = "iid"
+    keys = ["acc", "slow_acc", "fast_acc", "task1", "task2", "task3", "task4", "task5", "bytes", "neurons",
+            "evicted", "seconds"]
+    summary = agg(rows, ("scenario", "order", "family"), keys)
+    for d in summary:
+        print(f"  iid {d['family']:6s} " + fmt(d, ["acc", "slow_acc", "fast_acc", "task1", "task3", "neurons",
+                                                    "seconds"]), flush=True)
+    cfg = dict(seeds=a.seeds, rule=phase_f6iid.__doc__,
+               protocol="las mismas imágenes de f6s (sin las 500 por clase de validación) en un solo pase, "
+                        "mezcladas; test oficial completo, argmax entre las 10 clases",
+               compare="consolidacion_f6_split.json (secuencia por tareas)")
+    save("f6_iid", dict(phase="f6iid", config=cfg, summary=summary, rows=rows), rows, ["order", "family"] + keys)
 
 
 # ====================================================================== F7
@@ -1154,7 +1238,8 @@ def phase_f7x(a, data):
     spec = chosen_spec()
     rows: list = []
     split_bench([spec], a.seeds, D, rows=rows, tag="f7x", match=("erace",))
-    keys = ["acc", "forgetting", "task1", "task2", "task3", "task4", "task5", "bytes", "neurons", "seconds"]
+    keys = ["acc", "forgetting", "slow_acc", "fast_acc", "task1", "task2", "task3", "task4", "task5", "bytes",
+            "neurons", "evicted", "seconds"]
     summary = agg(rows, ("bench", "scenario", "model"), keys)
     for d in summary:
         print(f"  {d['scenario']:8s} {d['model'][-60:]:60s} " + fmt(d, ["acc", "forgetting"]), flush=True)
@@ -1274,7 +1359,7 @@ def phase_f7c(a, data):
 
 SCEN_STEPS = {k: sum(p[1] for p in v) for k, v in SCENARIOS.items()}
 
-PHASES = {"f0": phase_f0, "f1": phase_f1, "f1b": phase_f1b, "f2": phase_f2, "f3": phase_f3, "f4": phase_f4, "f5": phase_f5, "f6": phase_f6, "f6s": phase_f6s, "f7a": phase_f7a, "f7a2": phase_f7a2, "f7b": phase_f7b, "f7x": phase_f7x, "f7k": phase_f7k, "f7s": phase_f7s, "f7c": phase_f7c}
+PHASES = {"f0": phase_f0, "f1": phase_f1, "f1b": phase_f1b, "f2": phase_f2, "f3": phase_f3, "f4": phase_f4, "f5": phase_f5, "f6": phase_f6, "f6s": phase_f6s, "f6cap": phase_f6cap, "f6iid": phase_f6iid, "f7a": phase_f7a, "f7a2": phase_f7a2, "f7b": phase_f7b, "f7x": phase_f7x, "f7k": phase_f7k, "f7s": phase_f7s, "f7c": phase_f7c}
 
 
 def main():
@@ -1284,7 +1369,7 @@ def main():
     ap.add_argument("--seeds", nargs="+", type=int, default=None)
     a = ap.parse_args()
     if a.seeds is None:                              # las pruebas de F7 usan semillas no contaminadas
-        a.seeds = list(F7_TEST_SEEDS) if a.phase in ("f6s", "f7b", "f7x", "f7k", "f7s", "f7c") else [0, 1, 2]
+        a.seeds = list(F7_TEST_SEEDS) if a.phase in ("f6s", "f6cap", "f6iid", "f7b", "f7x", "f7k", "f7s", "f7c") else [0, 1, 2]
     _PHASE["name"] = a.phase
     PHASES[a.phase](a, load_data())
 
