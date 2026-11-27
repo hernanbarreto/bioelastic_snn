@@ -479,6 +479,7 @@ class Thinker:
         self._beh_temp = None                              # temperatura de la conducta (None: la del Thinker)
         self._beh_eps = None                               # exploración de la conducta (None: epsilon)
         self._trial_td = False                             # TD con horizonte de un ensayo (ver `feedback`)
+        self._decay_td = False                             # la contracción L1 ocurre con el error de predicción (ver `_update`)
         # conjuntos de tareas (`task_sets`, ver `bioelastic.tasksets`): el control que rige
         # se infiere de la estadística de los desenlaces
         self.task_sets = None
@@ -648,6 +649,18 @@ class Thinker:
     def _update(self, delta: float):
         step = self.lr * self._ctl_gain * delta          # (ganancia: conjuntos de tareas y moduladores)
         self.Wc += step * self.Ec; self.Wr += step * self.Er; self.wv += step * self.ev
+        if self._decay_td and self.decay and delta:
+            # Variante descartada en validación (`modulators`, decay="error"): la contracción L1
+            # sólo con error de predicción y con la misma ganancia, sobre las sinapsis elegibles.
+            # En Harlow determinista deja menos caídas del control congelado (1 de 320
+            # instantáneas contra 6 con la contracción en cada decisión; sin contracción, 0), pero
+            # con desenlaces ruidosos la contracción en cada decisión es el filtro que borra lo
+            # que el azar reforzó: sin ella el control congelado en S/V elige mal (0.55-0.75).
+            k = self.decay * self._ctl_gain * min(abs(delta), 1.0)
+            live = np.flatnonzero(np.abs(self.Ec).max(axis=0) > 1e-3)
+            if len(live):
+                W = self.Wc[:, live]
+                self.Wc[:, live] = np.sign(W) * np.maximum(np.abs(W) - k, 0.0)
 
     def _softmax(self, logits):
         z = logits / self.temperature
@@ -660,7 +673,7 @@ class Thinker:
     def _decide(self, s_idx, s_val, allowed, explore):
         """Cierra la transición anterior (TD) y elige la acción de control."""
         if self.plastic:
-            if self.decay:                                # L1 local: sólo sinapsis con presináptica activa
+            if self.decay and not self._decay_td:         # L1 local: sólo sinapsis con presináptica activa
                 W = self.Wc[:, s_idx]
                 self.Wc[:, s_idx] = np.sign(W) * np.maximum(np.abs(W) - self.decay, 0.0)
             V = float(self.wv[s_idx] @ s_val)

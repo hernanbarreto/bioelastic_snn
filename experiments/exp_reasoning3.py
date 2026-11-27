@@ -427,7 +427,9 @@ NM = {}                                                    # constantes elegidas
 NM_KEYS = ("rate", "forget", "sure", "epsilon", "decay", "capture", "lr", "temperature", "volatility", "noise")
 
 
-NE_OLD = dict(ne="fiabilidad", unexplained_gain=4.0)     # la primera señal de NE del control (ablación)
+# la señal de NE candidata (no es el valor por defecto, ver `group_f4`): incertidumbre inesperada,
+# sin el término de errores sin explicación, y aprender del arrepentimiento
+NE_NEW = dict(ne="inesperada", unexplained_gain=0.0, regret=0.15)
 
 
 def _traced_reset(self):
@@ -479,10 +481,18 @@ def report_stability(log, name, label, arr, cps, start=50):
 
 
 def group_f4():
+    """Meta-parámetros por neuromoduladores. F4.1 regímenes S/V; F4.2 Harlow congelado; F4.3
+    anillo y FIN con preguntas de aprendizaje; F4.4 batería C0-C6 con `back`.
+
+    «candidata»: NE del control = incertidumbre inesperada (+ aprender del arrepentimiento),
+    elegida en validación (`group_f4w`) por lo que mejora en línea, pero que deja de resolver
+    C5 en 1 de 3 semillas (F4.4): no es el valor por defecto."""
     from bioelastic.metalearning import PARAMS
     st = Store("f4")
     P = 3000
     plus = ("exito", "sorpresa", "td", "novedad", "persistencia")
+    C1 = "candidata: NE = incertidumbre inesperada + arrepentimiento"
+    C0 = "candidata: NE = incertidumbre inesperada, sin arrepentimiento"
     conds = [("valores fijos a mano (Thinker, tasa 1)", make()),
              ("tasa fija 0.15", M.make_meta(fixed={"rate": 0.15})),
              ("tasa fija 0.3", M.make_meta(fixed={"rate": 0.3})),
@@ -491,7 +501,7 @@ def group_f4():
              ("ablación: sin memoria bayesiana (tasa 1)", make_nm(dict(NM, memory=None))),
              ("ablación: sólo la memoria bayesiana (control con valores fijos)", make_nm(dict(NM, control=False))),
              ("ablación: horizonte del episodio (5-HT sin acortar)", make_nm(dict(NM, horizon="episodio"))),
-             ("ablación: NE = fiabilidad de la regla (primera versión)", make_nm(dict(NM, **NE_OLD)))]
+             (C1, make_nm(dict(NM, **NE_NEW))), (C0, make_nm(dict(NM, **dict(NE_NEW, regret=2.0))))]
     for label, mk in conds:
         st.run("F4.1 " + label, lambda log, mk=mk, label=label: M.report_regimes(
             log, "F4.1 harlow S/V, todo aprende", label, M.run_regimes(mk, P, pretrain=100)))
@@ -512,18 +522,16 @@ def group_f4():
                       ("ablación: horizonte del episodio", make_nm(dict(NM, horizon="episodio"), gate=True, prev_io=True)),
                       ("ablación: sin temperatura de conducta (NE sólo en epsilon)",
                        make_nm(dict(NM, temp=(1.0, None)), gate=True, prev_io=True)),
-                      ("ablación: NE = fiabilidad de la regla (primera versión)",
-                       make_nm(dict(NM, **NE_OLD), gate=True, prev_io=True))):
+                      (C1, make_nm(dict(NM, **NE_NEW), gate=True, prev_io=True)),
+                      (C0, make_nm(dict(NM, **dict(NE_NEW, regret=2.0)), gate=True, prev_io=True))):
         st.run("F4.2 " + label, lambda log, mk=mk, label=label: report_stability(
             log, "F4.2 harlow congelado (prev_io, sin resultado percibido)", label, harlow_stability(mk, cps=cps)[0], cps))
-    # F4.3 con el control estabilizado: cierre del anillo y FIN con preguntas de aprendizaje (F2)
-    # y batería C0-C6 con back (F3)
+    # F4.3 con el control modulado: cierre del anillo y FIN con preguntas de aprendizaje (F2)
     tests = (("L=8 (más largo que lo entrenado)", dict(L=8)), ("R=1 (cada relación observada una vez)", dict(R=1)))
     for label, over in (("back + cogmap (F2)", dict(back=True, cogmap=True)),
                         ("back + cogmap + neuromoduladores", dict(back=True, cogmap=True, modulators=(dict(NM) or True))),
                         ("ablación: horizonte del episodio", dict(back=True, cogmap=True, modulators=dict(NM, horizon="episodio"))),
-                        ("ablación: NE = fiabilidad de la regla (primera versión)",
-                         dict(back=True, cogmap=True, modulators=dict(NM, **NE_OLD)))):
+                        (C1, dict(back=True, cogmap=True, modulators=dict(NM, **NE_NEW)))):
         st.run("F4.3 anillo | " + label, lambda log, over=over, label=label: M.report_line(
             log, "F4.3 anillo con preguntas de aprendizaje", label,
             M.run_line(make(n_cues=4, **over), F2_B, struct="anillo", perceive=True, tests=tests), 50))
@@ -531,12 +539,13 @@ def group_f4():
             log, "F4.3 línea con FIN y preguntas de aprendizaje", label,
             M.run_line(make(n_cues=4, **over), F2_B, struct="linea", perceive=True, use_end=True, queries=(2, 3),
                        tests=(tests[0],)), 50))
-    st.run("F4.4 batería | back + neuromoduladores", lambda log: report_battery(
-        log, "F4.4 batería C0-C6, multitarea mezclada", "back + neuromoduladores",
-        run_battery(dict(back=True, modulators=(dict(NM) or True)))))
-    # (el RETROCEDER que no encuentra nada ahora deja el foco: se vuelve a medir la batería de F3)
-    st.run("F4.4 batería | back", lambda log: report_battery(
-        log, "F4.4 batería C0-C6, multitarea mezclada", "back (sin neuromoduladores)", run_battery(dict(back=True))))
+    # F4.4 batería C0-C6 con back (F3), con el RETROCEDER que deja el foco
+    for label, over in (("back + neuromoduladores", dict(back=True, modulators=(dict(NM) or True))),
+                        ("back", dict(back=True)),
+                        (C1, dict(back=True, modulators=dict(NM, **NE_NEW)))):
+        name = {"back": "back (sin neuromoduladores)", C1: "back + " + C1}.get(label, label)
+        st.run("F4.4 batería | " + label, lambda log, over=over, name=name: report_battery(
+            log, "F4.4 batería C0-C6, multitarea mezclada", name, run_battery(over)))
     st.finish()
 
 
@@ -568,16 +577,39 @@ def group_f4v():
 
 
 def group_f4w():
-    """Validación (semillas 10-12) de la señal de NE del control: fiabilidad de la regla
-    (versión anterior: en un régimen ruidoso y estable NE queda alta para siempre y la conducta
-    en línea sortea) contra incertidumbre inesperada (fallos por encima de los esperados).
+    """Validación (semillas 10-12) de dos decisiones del control modulado. Cada condición
+    lleva la especificación completa (no depende de los valores por defecto).
+
+    NE: fiabilidad de la regla + errores sin explicación (primera versión: con ruido estable o
+    preguntas imposibles NE queda alta para siempre y la conducta en línea sortea) contra
+    incertidumbre inesperada (fallos por encima de los esperados), con y sin el término de
+    errores sin explicación, ganancia, zona muerta y tasa.
+    Contracción L1 del control: en cada decisión con el nivel que fija 5-HT ("paso", versión
+    anterior), sólo con error de predicción ("error") o en cada decisión con el nivel que fija
+    NE ("ne").
+    Arrepentimiento (`regret`): aprender a pleno de un error cuando el camino que habría
+    acertado rinde más que lo elegido por al menos esa ventaja (2.0 = apagado).
     Medidas: régimen S/V en línea y congelado (1500 problemas), mínimo de Harlow congelado
-    (400 problemas) y, para las finalistas, cierre del anillo y FIN (400 bloques)."""
+    (400 problemas) y, para las finalistas, anillo y FIN con preguntas de aprendizaje (400
+    bloques, con el RETROCEDER que deja el foco).
+
+    Resultado: con el congelado de S/V entero (0.814) la mejor en línea es NE inesperada, sin
+    el término de errores sin explicación, contracción "paso" y arrepentimiento 0.15 (0.754
+    contra 0.687 de la primera versión; cierre del anillo en línea 0.98 contra 0.41). Las
+    variantes con menos contracción o menos exploración dejan el control congelado de S/V mal
+    en una semilla (0.55-0.75). Esa candidata no quedó por defecto: en la batería C0-C6 con
+    semillas de prueba deja la transitiva (C5) en 0.81 +- 0.27 (`group_f4`, F4.4)."""
     st = Store("f4w")
-    grid = [dict(), dict(ne="inesperada"), dict(ne="inesperada", ne_gain=2.0),
-            dict(ne="inesperada", unexplained_gain=0.0), dict(ne="inesperada", unexplained_gain=0.0, ne_gain=8.0),
-            dict(ne="inesperada", unexplained_gain=0.0, ne_floor=0.05), dict(ne="inesperada", unexplained_gain=0.0, ne_floor=0.1),
-            dict(ne="inesperada", unexplained_gain=0.0, beta=0.02)]
+    off = 2.0                                  # arrepentimiento apagado (ninguna ventaja llega a 2)
+    old = dict(ne="fiabilidad", unexplained_gain=4.0, decay="paso", regret=off)
+    new = dict(ne="inesperada", unexplained_gain=0.0, decay="paso", regret=off)
+    err = dict(ne="inesperada", unexplained_gain=0.0, decay="error", regret=off)
+    fin = dict(ne="inesperada", unexplained_gain=0.0, decay="paso", regret=0.15)
+    grid = [old, dict(ne="inesperada", unexplained_gain=4.0, decay="paso", regret=off),
+            dict(ne="inesperada", unexplained_gain=4.0, decay="paso", ne_gain=2.0, regret=off), new, dict(new, ne_gain=8.0),
+            dict(new, ne_floor=0.05), dict(new, ne_floor=0.1), dict(new, beta=0.02), err,
+            dict(old, decay="error"), fin, dict(fin, regret=0.05), dict(fin, regret=0.3), dict(old, regret=0.15),
+            dict(fin, decay="error"), dict(fin, decay="ne"), dict(fin, decay="ne", regret=0.3), dict(new, decay="ne")]
     for g in grid:
         name = json.dumps(g)
 
@@ -596,9 +628,9 @@ def group_f4w():
             return dict(sv=sm["frozen_mean_SV"], online=online, harlow_min=st_["min_after"], score=score)
         st.run(name, fn)
     tests = (("L=8 (más largo que lo entrenado)", dict(L=8)),)
-    for g in (dict(), dict(ne="inesperada", unexplained_gain=0.0)):
+    for g in (old, new, err, fin, dict(fin, decay="error")):
         name = json.dumps(g)
-        over = dict(back=True, cogmap=True, modulators=(dict(NM, **g) or True))
+        over = dict(back=True, cogmap=True, modulators=dict(g))
         st.run("anillo " + name, lambda log, over=over, name=name: M.report_line(
             log, "F4w anillo con preguntas de aprendizaje", name,
             M.run_line(make(n_cues=4, **over), 400, seeds=VAL_SEEDS, struct="anillo", perceive=True, tests=tests), 50))

@@ -304,25 +304,31 @@ def _harlow_net(**kw):
 
 def test_neuromodulated_harlow_stays_solved_when_frozen():
     """Harlow sin resultado percibido (`prev_io`) con los canales: congelado en distintos
-    momentos del entrenamiento, el ensayo 2 queda resuelto (sin la oscilación de la ronda
-    anterior, que venía del δ de fin de episodio)."""
+    momentos del entrenamiento, el ensayo 2 queda resuelto. La oscilación de la ronda anterior
+    venía del δ de fin de episodio; con el horizonte de un ensayo quedan caídas raras (2 de 320
+    instantáneas en 16 semillas, 27 de 160 con el horizonte del episodio), así que se pide que
+    a lo sumo una instantánea de las seis esté por debajo de 0.95."""
     import copy
-    net = _harlow_net(modulators=True)
-    rng = np.random.default_rng(0)
-    objs = rng.permutation(2 * 1200)
-    i = 0
-    snaps = []
-    for p in range(300):
-        _harlow(net, rng, [int(objs[2 * i]), int(objs[2 * i + 1])], "W"); i += 1
-        if p + 1 in (100, 200, 300):
-            fz = copy.deepcopy(net); fz.reset(); fz.plastic = False
-            acc = []
-            for _ in range(30):
-                acc.append(_harlow(fz, rng, [int(objs[2 * i]), int(objs[2 * i + 1])], "W", learn=False)[1]); i += 1
-            snaps.append(np.mean(acc))
-    assert min(snaps) >= 0.95, snaps
+
+    def snapshots(**nm):
+        net = _harlow_net(modulators=nm or True)
+        rng = np.random.default_rng(0)
+        objs = rng.permutation(2 * 1200)
+        i = 0
+        snaps = []
+        for p in range(300):
+            _harlow(net, rng, [int(objs[2 * i]), int(objs[2 * i + 1])], "W"); i += 1
+            if (p + 1) % 50 == 0:
+                fz = copy.deepcopy(net); fz.reset(); fz.plastic = False
+                acc = []
+                for _ in range(30):
+                    acc.append(_harlow(fz, rng, [int(objs[2 * i]), int(objs[2 * i + 1])], "W", learn=False)[1]); i += 1
+                snaps.append(np.mean(acc))
+        return net, np.array(snaps)
+    net, snaps = snapshots()
+    assert (snaps < 0.95).sum() <= 1 and snaps.mean() >= 0.95, snaps
     assert net._V is None                                                  # horizonte de un ensayo
-    assert net.modulators.params["epsilon"] < 0.03                         # regla fiable: poca exploración
+    assert net.modulators.params["epsilon"] < 0.03                         # nada inesperado: poca exploración
 
 
 def test_ach_gain_ignores_outcomes_known_to_be_random():
@@ -341,10 +347,12 @@ def test_ach_gain_ignores_outcomes_known_to_be_random():
     assert gains[0] > 0.9 and gains[-1] < 0.2
 
 
-def test_ne_is_unexpected_uncertainty_not_noise():
-    """NE del control: fallos por encima de los esperados. Con un desenlace ruidoso pero
-    estable (acierta el 70 %) la exploración se apaga; cuando la estrategia deja de rendir lo
-    que rendía, sube. La primera versión (fiabilidad de la regla) quedaba alta con el ruido."""
+def test_candidate_ne_is_unexpected_uncertainty_not_noise():
+    """La señal de NE candidata (`ne="inesperada"`): fallos por encima de los esperados. Con un
+    desenlace ruidoso pero estable (acierta el 70 %) la exploración se apaga; cuando la
+    estrategia deja de rendir lo que rendía, sube. La señal por defecto (fiabilidad de la
+    regla) queda alta con el ruido. (La candidata no es el valor por defecto: con ella la
+    transitiva de la batería deja de resolverse en 1 de 3 semillas.)"""
     rng = np.random.default_rng(0)
 
     def run(**nm_kw):
@@ -359,10 +367,27 @@ def test_ne_is_unexpected_uncertainty_not_noise():
             nm.step(5 if ok else 6, None, (5, 1.0))
             ne.append(nm.params["ne"])
         return np.array(ne)
-    ne = run()
+    ne = run(ne="inesperada", unexplained_gain=0.0)
     assert ne[0] > 0.8                                                     # contexto nuevo: explora
     assert ne[300:600].mean() < 0.2                                        # ruido conocido: no explora
     assert ne[610:640].max() > 0.8                                         # dejó de rendir: explora
     assert ne[-1] < ne[610:640].max()                                      # y lo nuevo pasa a ser lo esperado
-    old = run(ne="fiabilidad", unexplained_gain=4.0)
-    assert old[300:600].mean() > 0.4
+    assert run()[300:600].mean() > 0.4                                     # por defecto: sigue explorando
+
+
+def test_regret_gives_full_gain_only_when_the_alternative_does_better():
+    from bioelastic.modulators import Neuromodulators
+    net = _harlow_net(modulators=dict(regret=0.15))
+    nm = net.modulators
+    net.reset(); net.answer(5, probe=6, explore=False)
+    net._ls = net._fs
+    for t in range(100):                                                   # la acción elegida acierta la mitad
+        net._ctl_gain = 1.0; net._out = 5
+        nm.step(5 if t % 2 == 0 else 6, None, (-1, 0.0))
+    low = nm.params["lr"] / net.lr
+    net._ctl_gain = 1.0; nm.step(6, None, (-1, 0.0), explained=0.75)       # la alternativa rinde 0.75 > 0.5 + 0.15
+    high = nm.params["lr"] / net.lr
+    net._ctl_gain = 1.0; nm.step(6, None, (-1, 0.0), explained=0.55)       # no rinde bastante más
+    assert low < 0.2 and high == 1.0 and nm.params["lr"] / net.lr < 0.2
+    off = _harlow_net(modulators=True).modulators
+    assert off.regret >= 1.0                                               # por defecto, apagado

@@ -179,14 +179,15 @@ class Neuromodulators:
                  forget_max: float = 0.02, beta: float = 0.05, beta5: float = 0.01,
                  confident: float = 0.6, capture_noise: float = 0.15, sure_gain: float = 0.5,
                  control: bool = True, horizon: str = "ensayo", explained: float = 0.8,
-                 unexplained_gain: float = 0.0, ne: str = "inesperada", ne_gain: float = 4.0,
-                 ne_floor: float = 0.0):
+                 unexplained_gain: float = 4.0, ne: str = "fiabilidad", ne_gain: float = 4.0,
+                 ne_floor: float = 0.0, decay: str = "paso", regret: float = 2.0):
         self.net = net
         self.horizon = str(horizon)        # 5-HT: escala temporal de la predicción de recompensa
         self.explained = float(explained)  # fiabilidad mínima de una explicación para aprender a pleno
         self.unexplained_gain = float(unexplained_gain)
         self.ne_mode = str(ne)             # "inesperada": fallos por encima de lo esperado; "fiabilidad": versión anterior
         self.ne_gain = float(ne_gain)
+        self.regret = float(regret)        # ventaja mínima de la alternativa para aprender de ella a pleno (2 = nunca)
         self.ne_floor = float(ne_floor)    # zona muerta: lo que el promedio rápido fluctúa sin que nada cambie
         self._s0 = self.ne_floor + 1.0 / max(self.ne_gain, 1e-9)   # un contexto nuevo empieza explorando (NE = 1)
         self.surprise_c: dict = {}         # NE: por contexto, fallos por encima de los esperados (rápido - lento)
@@ -209,6 +210,9 @@ class Neuromodulators:
         self.control = bool(control)       # False: sólo la memoria (ablación)
         if self.control and self.horizon == "ensayo":
             net._trial_td = True
+        if self.control and decay == "error":      # la contracción L1 sólo con error de predicción
+            net._decay_td = True
+        self.decay_mode = str(decay)       # "paso": la fija 5-HT; "ne": la fija NE (ver `step`)
         self.rho_c: dict = {}              # NE: por contexto (consigna), fiabilidad de las predicciones
         self.unexp_c: dict = {}            # confiadas de la regla y frecuencia de errores sin explicación
         self.serotonin = 0.5               # 5-HT: la recompensa se sostuvo (horizonte), promedio lento
@@ -285,7 +289,13 @@ class Neuromodulators:
         # ACh -> lr. Un error de estrategia con una explicación fiable (el camino que habría
         # acertado suele acertar) no es azar: se aprende con toda la tasa aunque el estado en
         # que se respondió sea ruidoso (si no, un atajo que acierta el 90 % no se corregía)
-        gain = max(w, 1.0 if explained >= self.explained else 0.0)
+        # ... y tampoco lo es si el camino que habría acertado rinde más que lo que se hizo
+        # (arrepentimiento: fiabilidad de la alternativa - acierto esperado de lo elegido). Con
+        # desenlaces ruidosos ninguna opción llega a «fiable», pero una rinde más que la otra: sin
+        # esto, y explorando poco, el control podía quedarse en la peor (su desenlace es el
+        # esperado, nada sorprende) y la mejor nunca se volvía a probar.
+        better = explained > 0.0 and explained - pr >= self.regret
+        gain = max(w, 1.0 if (explained >= self.explained or better) else 0.0)
         p["lr"] = net.lr * gain
         p["ach_control"] = ach_c
         # NE -> aleatoriedad de la selección: piso de exploración y temperatura de la conducta
@@ -295,7 +305,10 @@ class Neuromodulators:
         # 5-HT -> forget (memoria) y decay (control): con horizonte largo no se olvida
         short = float(np.clip(2.0 * (1.0 - self.serotonin), 0.0, 1.5))
         p["forget"] = self.forget_max * min(short, 1.0)
-        p["decay"] = self.decay0 * short
+        # ("ne": el control establecido se olvida cuando deja de rendir lo que rendía, no por
+        # el nivel de recompensa: con desenlaces ruidosos pero estables 5-HT queda baja para
+        # siempre y la contracción seguía comiéndose los márgenes de lo ya aprendido)
+        p["decay"] = self.decay0 * (ne_c if self.decay_mode == "ne" else short)
         # ACh (ruido de los desenlaces en la memoria) -> capture y sure
         p["capture"] = self.capture0 + int(ach_m > self.capture_noise)
         p["sure"] = float(np.clip(self.sure0 + self.sure_gain * max(ach_m - 0.1, 0.0), 0.5, 0.95))
