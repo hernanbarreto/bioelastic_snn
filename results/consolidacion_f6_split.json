@@ -1,0 +1,649 @@
+{
+ "phase": "f6s",
+ "config": {
+  "seeds": [
+   3,
+   4,
+   5
+  ],
+  "tasks": {
+   "mnist": [
+    [
+     0,
+     1
+    ],
+    [
+     2,
+     3
+    ],
+    [
+     4,
+     5
+    ],
+    [
+     6,
+     7
+    ],
+    [
+     8,
+     9
+    ]
+   ],
+   "fashion": [
+    [
+     10,
+     11
+    ],
+    [
+     12,
+     13
+    ],
+    [
+     14,
+     15
+    ],
+    [
+     16,
+     17
+    ],
+    [
+     18,
+     19
+    ]
+   ]
+  },
+  "published": {
+   "mnist": {
+    "source": "van de Ven, Tuytelaars y Tolias 2022, Nat. Mach. Intell. 4:1185, tabla 2 (Class-IL)",
+    "protocol": "MLP 2x400, 2000 iteraciones x lote 128 por contexto (~21 pasadas por tarea, no un solo pase); repaso con 100 ejemplos por clase; 20 semillas; media \u00b1 e.e.m.",
+    "values": {
+     "EWC": 20.64,
+     "SI": 21.2,
+     "ER": 88.79,
+     "A-GEM": 65.1,
+     "Ninguno": 19.89,
+     "Conjunto": 98.17
+    }
+   },
+   "fashion": {
+    "source": "Sokar, Mocanu y Pechenizkiy 2021 (SpaceNet), Neural Networks, tabla 3",
+    "protocol": "MLP 2x400, 20 \u00e9pocas por tarea (no un solo pase), cabeza \u00fanica; no se encontr\u00f3 una cifra publicada de ER ni de A-GEM en Split Fashion-MNIST por clases con un protocolo comparable: la referencia de repaso es nuestra ER / ER-ACE con los mismos bytes",
+    "values": {
+     "EWC": 19.47,
+     "SI": 19.93,
+     "iCaRL": 80.7
+    }
+   }
+  },
+  "protocol": "un solo pase online por las im\u00e1genes de entrenamiento de cada tarea (sin las 500 por clase de validaci\u00f3n), test oficial completo; argmax entre las 10 clases del conjunto",
+  "note": "ER y ER-ACE nuestras: MLP 784-256-20 con reservorio igualado en bytes a c2, lotes de 10, 3 iteraciones por lote; las cifras publicadas usan m\u00e1s pasadas (ver protocol)"
+ },
+ "summary": [
+  {
+   "bench": "split",
+   "scenario": "mnist",
+   "model": "c2",
+   "seeds": 3,
+   "acc": [
+    0.9662666666666667,
+    0.001422439219556762
+   ],
+   "forgetting": [
+    0.034166666666666685,
+    0.002602082499332657
+   ],
+   "task1": [
+    0.9500394011032309,
+    0.00607952766650463
+   ],
+   "task2": [
+    0.9593535749265426,
+    0.004897159647404559
+   ],
+   "task3": [
+    0.95980078263963,
+    0.0051827827407803515
+   ],
+   "task4": [
+    0.982544478012756,
+    0.0016186053643828216
+   ],
+   "task5": [
+    0.9805009245251304,
+    0.0007703102529762792
+   ],
+   "bytes": [
+    8768629.333333334,
+    11024.65406864693
+   ],
+   "neurons": [
+    1989.6666666666667,
+    3.7859388972001824
+   ],
+   "seconds": [
+    625.0657111008962,
+    25.506231027410262
+   ]
+  },
+  {
+   "bench": "split",
+   "scenario": "mnist",
+   "model": "erace+bytes=8768629+iters=3",
+   "seeds": 3,
+   "acc": [
+    0.9500333333333333,
+    0.002154839514519192
+   ],
+   "forgetting": [
+    0.023749999999999983,
+    0.007499999999999965
+   ],
+   "task1": [
+    0.9853427895981087,
+    0.004510350834122681
+   ],
+   "task2": [
+    0.9459680052236369,
+    0.015976553356992586
+   ],
+   "task3": [
+    0.9427250088936322,
+    0.014020381642788014
+   ],
+   "task4": [
+    0.9516616314199395,
+    0.011247889176076841
+   ],
+   "task5": [
+    0.9218356026222896,
+    0.021059619786002133
+   ],
+   "bytes": [
+    8768502.0,
+    0.0
+   ],
+   "neurons": [
+    256.0,
+    0.0
+   ],
+   "seconds": [
+    15.947129646937052,
+    1.066100352852956
+   ]
+  },
+  {
+   "bench": "split",
+   "scenario": "mnist",
+   "model": "er+bytes=8768629+iters=3",
+   "seeds": 3,
+   "acc": [
+    0.9539,
+    0.0079642953235048
+   ],
+   "forgetting": [
+    0.039583333333333325,
+    0.004732423621500226
+   ],
+   "task1": [
+    0.974468085106383,
+    0.018115597220489815
+   ],
+   "task2": [
+    0.9396016976820111,
+    0.0137673201535917
+   ],
+   "task3": [
+    0.9332977588046959,
+    0.010712305176032427
+   ],
+   "task4": [
+    0.9511581067472306,
+    0.005806929805977235
+   ],
+   "task5": [
+    0.9689023365271474,
+    0.006809423130115692
+   ],
+   "bytes": [
+    8768502.0,
+    0.0
+   ],
+   "neurons": [
+    256.0,
+    0.0
+   ],
+   "seconds": [
+    16.233109951019287,
+    0.08853826587094726
+   ]
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "c2",
+   "seeds": 3,
+   "acc": [
+    0.8087,
+    0.009753460924205351
+   ],
+   "forgetting": [
+    0.1870833333333333,
+    0.011880481191152693
+   ],
+   "task1": [
+    0.719,
+    0.05226614583073829
+   ],
+   "task2": [
+    0.7776666666666667,
+    0.016327379867368024
+   ],
+   "task3": [
+    0.7433333333333333,
+    0.028356363189473596
+   ],
+   "task4": [
+    0.8396666666666667,
+    0.013344786747390643
+   ],
+   "task5": [
+    0.9638333333333334,
+    0.002929732638541129
+   ],
+   "bytes": [
+    8798720.0,
+    0.0
+   ],
+   "neurons": [
+    2000.0,
+    0.0
+   ],
+   "seconds": [
+    702.4834000269572,
+    80.15452676393679
+   ]
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "erace+bytes=8798720+iters=3",
+   "seeds": 3,
+   "acc": [
+    0.8427000000000001,
+    0.010376415566080642
+   ],
+   "forgetting": [
+    0.09166666666666669,
+    0.008779711460710635
+   ],
+   "task1": [
+    0.8996666666666666,
+    0.0282060868135467
+   ],
+   "task2": [
+    0.7876666666666665,
+    0.030001388856740165
+   ],
+   "task3": [
+    0.863,
+    0.038509739027939444
+   ],
+   "task4": [
+    0.7151666666666666,
+    0.07161761887505987
+   ],
+   "task5": [
+    0.948,
+    0.010440306508910495
+   ],
+   "bytes": [
+    8798370.0,
+    0.0
+   ],
+   "neurons": [
+    256.0,
+    0.0
+   ],
+   "seconds": [
+    22.919620037078857,
+    10.399093231109802
+   ]
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "er+bytes=8798720+iters=3",
+   "seeds": 3,
+   "acc": [
+    0.8515,
+    0.006032412452742282
+   ],
+   "forgetting": [
+    0.13708333333333333,
+    0.00813300887330965
+   ],
+   "task1": [
+    0.8916666666666667,
+    0.020738450601077502
+   ],
+   "task2": [
+    0.805,
+    0.02424871130596424
+   ],
+   "task3": [
+    0.847,
+    0.018000000000000016
+   ],
+   "task4": [
+    0.7401666666666666,
+    0.031425838625776296
+   ],
+   "task5": [
+    0.9736666666666666,
+    0.006788470618138747
+   ],
+   "bytes": [
+    8798370.0,
+    0.0
+   ],
+   "neurons": [
+    256.0,
+    0.0
+   ],
+   "seconds": [
+    35.37613654136658,
+    1.3031180021274082
+   ]
+  }
+ ],
+ "rows": [
+  {
+   "bench": "split",
+   "scenario": "mnist",
+   "model": "c2",
+   "seed": 3,
+   "acc": 0.9656,
+   "forgetting": 0.036250000000000004,
+   "seconds": 649.0772666931152,
+   "bytes": 8760864,
+   "neurons": 1987,
+   "task1": 0.9475177304964539,
+   "task2": 0.954456415279138,
+   "task3": 0.964247598719317,
+   "task4": 0.9818731117824774,
+   "task5": 0.9813414019162885
+  },
+  {
+   "bench": "split",
+   "scenario": "mnist",
+   "model": "c2",
+   "seed": 4,
+   "acc": 0.9653,
+   "forgetting": 0.03125000000000003,
+   "seconds": 627.8298933506012,
+   "bytes": 8781248,
+   "neurons": 1994,
+   "task1": 0.9456264775413712,
+   "task2": 0.9593535749265426,
+   "task3": 0.9610458911419424,
+   "task4": 0.9813695871097684,
+   "task5": 0.9803328290468987
+  },
+  {
+   "bench": "split",
+   "scenario": "mnist",
+   "model": "c2",
+   "seed": 5,
+   "acc": 0.9679,
+   "forgetting": 0.03500000000000003,
+   "seconds": 598.2899732589722,
+   "bytes": 8763776,
+   "neurons": 1988,
+   "task1": 0.9569739952718677,
+   "task2": 0.9642507345739472,
+   "task3": 0.9541088580576307,
+   "task4": 0.9843907351460222,
+   "task5": 0.9798285426122038
+  },
+  {
+   "bench": "split",
+   "scenario": "mnist",
+   "model": "erace+bytes=8768629+iters=3",
+   "seed": 3,
+   "acc": 0.9476,
+   "forgetting": 0.016250000000000014,
+   "seconds": 17.05770993232727,
+   "bytes": 8768502,
+   "neurons": 256,
+   "task1": 0.9801418439716312,
+   "task2": 0.9495592556317336,
+   "task3": 0.9535752401280683,
+   "task4": 0.9551863041289023,
+   "task5": 0.8976298537569339
+  },
+  {
+   "bench": "split",
+   "scenario": "mnist",
+   "model": "erace+bytes=8768629+iters=3",
+   "seed": 4,
+   "acc": 0.9517,
+   "forgetting": 0.031249999999999944,
+   "seconds": 14.931917190551758,
+   "bytes": 8768502,
+   "neurons": 256,
+   "task1": 0.9877068557919622,
+   "task2": 0.9285014691478942,
+   "task3": 0.9477054429028815,
+   "task4": 0.9607250755287009,
+   "task5": 0.9319213313161876
+  },
+  {
+   "bench": "split",
+   "scenario": "mnist",
+   "model": "erace+bytes=8768629+iters=3",
+   "seed": 5,
+   "acc": 0.9508,
+   "forgetting": 0.023749999999999993,
+   "seconds": 15.851761817932129,
+   "bytes": 8768502,
+   "neurons": 256,
+   "task1": 0.9881796690307328,
+   "task2": 0.9598432908912831,
+   "task3": 0.9268943436499466,
+   "task4": 0.9390735146022156,
+   "task5": 0.9359556227937469
+  },
+  {
+   "bench": "split",
+   "scenario": "mnist",
+   "model": "er+bytes=8768629+iters=3",
+   "seed": 3,
+   "acc": 0.9448,
+   "forgetting": 0.044999999999999984,
+   "seconds": 16.21433186531067,
+   "bytes": 8768502,
+   "neurons": 256,
+   "task1": 0.9536643026004729,
+   "task2": 0.9329089128305583,
+   "task3": 0.928495197438634,
+   "task4": 0.945619335347432,
+   "task5": 0.962178517397882
+  },
+  {
+   "bench": "split",
+   "scenario": "mnist",
+   "model": "er+bytes=8768629+iters=3",
+   "seed": 4,
+   "acc": 0.9573,
+   "forgetting": 0.037500000000000006,
+   "seconds": 16.15546703338623,
+   "bytes": 8768502,
+   "neurons": 256,
+   "task1": 0.9829787234042553,
+   "task2": 0.930460333006856,
+   "task3": 0.9455709711846318,
+   "task4": 0.9572004028197382,
+   "task5": 0.9687342410489158
+  },
+  {
+   "bench": "split",
+   "scenario": "mnist",
+   "model": "er+bytes=8768629+iters=3",
+   "seed": 5,
+   "acc": 0.9596,
+   "forgetting": 0.03624999999999998,
+   "seconds": 16.329530954360962,
+   "bytes": 8768502,
+   "neurons": 256,
+   "task1": 0.9867612293144208,
+   "task2": 0.955435847208619,
+   "task3": 0.9258271077908218,
+   "task4": 0.9506545820745217,
+   "task5": 0.9757942511346445
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "c2",
+   "seed": 3,
+   "acc": 0.809,
+   "forgetting": 0.19874999999999995,
+   "seconds": 609.9875881671906,
+   "bytes": 8798720,
+   "neurons": 2000,
+   "task1": 0.7175,
+   "task2": 0.793,
+   "task3": 0.7165,
+   "task4": 0.852,
+   "task5": 0.966
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "c2",
+   "seed": 4,
+   "acc": 0.7988,
+   "forgetting": 0.18749999999999997,
+   "seconds": 751.5846815109253,
+   "bytes": 8798720,
+   "neurons": 2000,
+   "task1": 0.6675,
+   "task2": 0.7795,
+   "task3": 0.7405,
+   "task4": 0.8415,
+   "task5": 0.965
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "c2",
+   "seed": 5,
+   "acc": 0.8183,
+   "forgetting": 0.175,
+   "seconds": 745.8779304027557,
+   "bytes": 8798720,
+   "neurons": 2000,
+   "task1": 0.772,
+   "task2": 0.7605,
+   "task3": 0.773,
+   "task4": 0.8255,
+   "task5": 0.9605
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "erace+bytes=8798720+iters=3",
+   "seed": 3,
+   "acc": 0.8386,
+   "forgetting": 0.0925,
+   "seconds": 15.319009065628052,
+   "bytes": 8798370,
+   "neurons": 256,
+   "task1": 0.869,
+   "task2": 0.7665,
+   "task3": 0.825,
+   "task4": 0.7795,
+   "task5": 0.953
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "erace+bytes=8798720+iters=3",
+   "seed": 4,
+   "acc": 0.8545,
+   "forgetting": 0.10000000000000006,
+   "seconds": 18.66920042037964,
+   "bytes": 8798370,
+   "neurons": 256,
+   "task1": 0.9055,
+   "task2": 0.822,
+   "task3": 0.862,
+   "task4": 0.728,
+   "task5": 0.955
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "erace+bytes=8798720+iters=3",
+   "seed": 5,
+   "acc": 0.835,
+   "forgetting": 0.08250000000000002,
+   "seconds": 34.77065062522888,
+   "bytes": 8798370,
+   "neurons": 256,
+   "task1": 0.9245,
+   "task2": 0.7745,
+   "task3": 0.902,
+   "task4": 0.638,
+   "task5": 0.936
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "er+bytes=8798720+iters=3",
+   "seed": 3,
+   "acc": 0.8448,
+   "forgetting": 0.145,
+   "seconds": 34.22425055503845,
+   "bytes": 8798370,
+   "neurons": 256,
+   "task1": 0.8685,
+   "task2": 0.777,
+   "task3": 0.829,
+   "task4": 0.7695,
+   "task5": 0.98
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "er+bytes=8798720+iters=3",
+   "seed": 4,
+   "acc": 0.8565,
+   "forgetting": 0.13750000000000004,
+   "seconds": 36.79052186012268,
+   "bytes": 8798370,
+   "neurons": 256,
+   "task1": 0.898,
+   "task2": 0.819,
+   "task3": 0.847,
+   "task4": 0.744,
+   "task5": 0.9745
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "er+bytes=8798720+iters=3",
+   "seed": 5,
+   "acc": 0.8532,
+   "forgetting": 0.12874999999999998,
+   "seconds": 35.1136372089386,
+   "bytes": 8798370,
+   "neurons": 256,
+   "task1": 0.9085,
+   "task2": 0.819,
+   "task3": 0.865,
+   "task4": 0.707,
+   "task5": 0.9665
+  }
+ ]
+}
