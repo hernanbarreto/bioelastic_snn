@@ -1,0 +1,41 @@
+{
+ "puntaje": 0.73,
+ "medidas": {
+  "ensayo2_primeros8": 0.375,
+  "ensayo2_preliminares": 0.53125,
+  "ensayo2_1a100": 0.73,
+  "ensayo2_101a200": 0.73,
+  "ensayo2_233a344": 0.7678571428571429,
+  "ensayo2_351a400": 0.8,
+  "ensayo1_101a200": 0.43,
+  "congelado_tras200": 1.0,
+  "congelado_tras400": 1.0,
+  "curva_ensayo2_por25": [
+   0.76,
+   0.6,
+   0.76,
+   0.8,
+   0.64,
+   0.76,
+   0.72,
+   0.8,
+   0.8,
+   0.84,
+   0.76,
+   0.68,
+   0.8,
+   0.8,
+   0.88,
+   0.72
+  ]
+ },
+ "segundos": 3.0285677909851074,
+ "problemas": {
+  "preliminares": 32,
+  "seis": 400
+ },
+ "semilla": 3,
+ "version": 2,
+ "escala": 1.0,
+ "config": null
+}
