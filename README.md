@@ -6,7 +6,7 @@ mismo núcleo procesa imagen, voz, texto o sensores (sólo cambia el encoder). S
 corre un **Thinker**: un lazo de razonamiento sobre símbolos con memoria rápida, registros y
 aprendizaje por refuerzo.
 
-NumPy (y SciPy para el encoder de imagen). **242 tests**, incluidos tests de regresión
+NumPy (y SciPy para el encoder de imagen). **307 tests**, incluidos tests de regresión
 bit a bit. Todo lo que figura abajo está medido con los scripts de `experiments/`, y los CSV de
 cada corrida están en `results/`.
 
@@ -48,9 +48,9 @@ flowchart LR
 | Dopamina: error de predicción de recompensa | TD(λ) con trazas en el Thinker; tercer factor en la percepción | hecho |
 | Corteza prefrontal: memoria de trabajo | registros del Thinker, aprendidos en retrospectiva | hecho |
 | Ligadura rápida tipo cabeza de inducción | `FastMemory` (por eventos, conjuntiva) | hecho |
-| Láminas 6 y 1 (predicción descendente) | rama `agent/predictivo` | en curso |
+| Láminas 6 y 1 (predicción descendente) | `predictive` de `FeatureArea`, `feedback` de `Cortex` | opción; no hace que la profundidad sume |
 | Cingulado anterior (detección del propio error), ACh/NE | `Cortex.signals()`, `metacog` (`metacog.py`), compuerta de fiabilidad (`posterior.py`) | opción; medido |
-| Consolidación en sueño, reconsolidación, esquemas | rama `agent/consolidacion` | en curso |
+| Consolidación en sueño, reconsolidación, esquemas, causas latentes | opciones de `Cortex`, `BioElasticNet` y `Readout` | opción; medido |
 | Aprender a aprender (prefrontal como meta-RL) | `prev_io` del Thinker, `MetaThinker` | hecho (ver resultados) |
 | Mapa cognitivo recorrible en ambos sentidos | `back` del Thinker | hecho (opción); ya no daña la transitiva |
 | Prefrontal: conjuntos de tareas y causa latente de cada regla | `task_sets` del Thinker (`tasksets.py`) | opción; falla con todo encendido |
@@ -108,6 +108,29 @@ después otras (D). Con la huella episódica, el repaso dirigido a la clase que 
 separación al reclutar, el resultado sobre todas las clases sube de 0.651 a **0.776**, a la par de
 ER-ACE con los mismos bytes (0.784). El pulóver, que antes se olvidaba por completo (~0.01), queda
 en 0.42.
+
+**Split por clases, una pasada** (test, semillas 3–5; ER y ER-ACE corridos acá con los mismos bytes):
+
+| | c2 | c2 + `ace` | ER-ACE | ER |
+|---|---|---|---|---|
+| Split-MNIST, exactitud | 0.966 ± 0.001 | 0.970 ± 0.001 | 0.950 ± 0.002 | 0.954 ± 0.008 |
+| Split-MNIST, olvido | 0.034 | 0.028 | 0.024 | 0.040 |
+| Split-Fashion, exactitud | 0.809 ± 0.010 | 0.833 ± 0.003 | 0.843 ± 0.010 | 0.852 ± 0.006 |
+| Split-Fashion, olvido | 0.187 | 0.152 | 0.092 | 0.137 |
+
+Por qué perdía en Split-Fashion:
+
+- **No es capacidad.** Con 1 000 a 8 000 neuronas da 0.805, 0.809, 0.805 y 0.799, contra 0.84 de
+  ER-ACE en todas. Los desalojos caen 5 veces sin que se mueva la exactitud.
+- **No es el aprendiz.** Con las mismas imágenes mezcladas llega a 0.883, por encima de ER-ACE
+  (0.855). La secuencia le cuesta 7.4 puntos; a ER-ACE, 1.2.
+- **Es la lectura lenta, que se inclina hacia lo reciente.** Los rasgos de V1 no derivan: la sonda
+  da 0.852 al aprender y 0.847 al final. La lectura sobre esos rasgos cae de 0.967 a 0.717, y el
+  82 % de sus errores va a clases más nuevas.
+
+**El arreglo, `ace`.** Para lo que llega, la competencia de la lectura se resuelve solo entre las
+clases presentes. Es la versión local de la entropía cruzada enmascarada de ER-ACE. Se eligió en
+validación y se midió una sola vez en test.
 
 ### Aprender a aprender (Thinker, 3 semillas)
 
@@ -218,8 +241,8 @@ Los archivos son `results/bateria_dbc5d4bd76bf.*`.
 | Saber cuándo se equivoca: AUROC de tipo 2 en una decisión visual con dificultad igualada | 0.748 ± 0.007 | personas 0.55–0.75 (Fleming et al. 2010) | dentro del rango, en el borde superior |
 | Igual/distinto con figuras nuevas; «igual» es una copia idéntica, como con los animales | 0.85 ± 0.03 (azar 0.5); con la copia corrida 2 px, 0.68; con dos dibujos del mismo carácter, 0.62 | con 8 figuras, rhesus, capuchinos y palomas no transfieren (Katz, Sturz & Wright 2010) | — |
 | MNIST-addition: 27 500 pares, una pasada | 97.6 % | DeepProbLog 97.2 ± 0.5; A-NeSI 97.66; DeepStochLog 97.9 (citado en la tabla 1 de A-NeSI); todos con backprop | — |
-| Split-MNIST por clases, una pasada | 96.6 % | publicado, con otros presupuestos de memoria (van de Ven, Tuytelaars & Tolias 2022): entrenamiento conjunto 98.2, BI-R 94.4, iCaRL 92.5, ER 88.8, EWC 20.6. Línea base local con los mismos bytes: ER-ACE 95.0 | — |
-| Split-Fashion por clases, una pasada | 80.9 % | sin cifra publicada verificada. Línea base local con los mismos bytes: ER-ACE 84.3, ER 85.2 | — |
+| Split-MNIST por clases, una pasada | 96.6 %; 97.0 % con `ace` | publicado, con otros presupuestos de memoria y ~21 pasadas por tarea (van de Ven, Tuytelaars & Tolias 2022): entrenamiento conjunto 98.2, BI-R 94.4, iCaRL 92.5, ER 88.8, EWC 20.6. Línea base local con los mismos bytes: ER-ACE 95.0 | — |
+| Split-Fashion por clases, una pasada | 80.9 %; 83.3 % con `ace` | sin cifra publicada con un protocolo comparable. Línea base local con los mismos bytes: ER-ACE 84.3, ER 85.2 | — |
 | Texto no visto, 600 KB de habla dirigida a niños; 1 corrida, porque la red es determinista dado el corpus | 2.96 bits/byte (2.54 con la temperatura elegida en validación) | línea base local: n-grama Kneser-Ney de orden 8 con los mismos datos, 1.43 | — |
 | Curva de escalado del texto: 0.2, 0.6 y 1.8 MB, últimos 60 000 bytes del corpus | 3.97, 3.68 y 3.75 bits/byte | línea base local, Kneser-Ney con los mismos datos: 2.13, 1.97 y 1.88. Brecha pareada 1.84 [1.82; 1.87], 1.70 y 1.86 (IC 95 % por bootstrap de bloques) | — |
 
@@ -260,12 +283,31 @@ lento como el del mono.
     (2 de 3 semillas pasan el 80 %). Lo que decide es cuán buena es la percepción cuando empieza
     el aprendizaje conjunto. Medido en el Cortex: desde cero, enseñar una imagen generaliza igual
     a su dígito que a los demás (g = h = 1); con 10 anclas, g = 0.335 contra h = 0.153.
-- **La profundidad no escala sola.** En Fashion el tercer nivel no suma. En CIFAR-10 (exploratorio,
-  5 000 muestras, 1 semilla, en validación; es otra corrida que la de la tabla de comparación) el segundo nivel rinde menos que el primero (45 % contra
-  47 % de la sonda local; la CNN, 44–46 %). Hipótesis en prueba: a las capas altas no les llega ninguna señal
-  propia (no hay predicción descendente).
-- **Clases viejas parecidas.** Quedan 0.13 por debajo de ER-ACE en el escenario de prendas. Cuando
-  las clases llegan de a una, la proyección sobre las viejas cae a 0.2–0.4.
+- **La profundidad no suma: la pila de áreas hacia adelante es el diseño equivocado.**
+  - Con una pasada y 5–10k muestras, tampoco suma en una CNN con backprop: en ese régimen la
+    prueba no discrimina.
+  - Con el presupuesto completo, la segunda capa de la CNN sí gana: +1.1 puntos en Fashion y +4.5
+    en CIFAR-10. Ahí nuestro V2 queda 2.7 puntos debajo de V1 en Fashion (1 semilla), y una sonda
+    ridge fuera de línea da lo mismo. La información no está en V2; no es la lectura.
+  - Probados sin éxito: ancho 256–2048, decorrelación, predicción descendente con residuo, regla
+    de traza con micro-sacadas, CLAPP y WTA blando tipo SoftHebb (este, además, 17 veces más
+    lento con 1024 neuronas).
+  - En CIFAR-10 con 45k imágenes, el V2 por defecto terminó con código nulo: es un fallo numérico
+    sin diagnosticar.
+  - Nuestro V1 queda por encima de la capa 2 de la CNN en la sonda lineal: 0.906 contra 0.893 en
+    Fashion.
+  - Con el diccionario lleno, la poda solo libera rasgos jóvenes: la neurogénesis queda detenida
+    para siempre, y la elasticidad muere.
+- **Olvido de clases parecidas.** En Split-Fashion, aun con `ace`, la red queda 1 punto debajo de
+  ER-ACE y olvida más: 0.152 contra 0.092. La causa medida es el sesgo de la lectura lenta hacia
+  lo reciente, no la capacidad ni los rasgos. Falta medir `ace` en el flujo de 200 000 pasos.
+  Probados sin ganancia:
+  - compuertas de recuerdo;
+  - reconsolidación por error de predicción (0.764 contra 0.775 con la consolidación fija);
+  - autoexamen y espaciado;
+  - sueño en microfases: baja la latencia máxima de 2 107 a 74 ms, pero no mejora la exactitud, y
+    liberar neuronas es catastrófico (0.554);
+  - todo junto: 0.723, peor que lo mejor de cada fase.
 - **Costo.** Con 2 niveles, entrenar tarda entre 16 (MNIST) y 30 (Fashion) veces más que la CNN de
   referencia, y usa más sinapsis que un MLP.
 - **Desplazamientos.** La CNN de 2 capas tolera mejor un desplazamiento de 3 px (56.0 % contra
@@ -312,17 +354,18 @@ se prueban todos juntos.
 
 | Cómo aprende un humano | Fuente | Rama |
 |---|---|---|
-| Predicción de arriba hacia abajo; sube el error residual; plasticidad por error en cada nivel | Rao & Ballard 1999 | `agent/predictivo` |
+| Predicción de arriba hacia abajo; sube el error residual; plasticidad por error en cada nivel | Rao & Ballard 1999 | **medido**: subir el residuo empeora (Fashion −4.4 puntos); modular la plasticidad con el error no gana al control barajado. El error de predicción sí detecta lo nuevo (AUROC 0.81 en V2) |
 | Detección del propio error por conflicto entre respuestas | Yeung, Botvinick & Cohen 2004 | **medido**: el conflicto predice el error (AUROC 0.874) |
 | Los errores cometidos con mucha confianza se corrigen más | Butterfield & Metcalfe 2001, 2006 | **medido**: sin efecto propio |
 | Incertidumbre esperada (ACh) e inesperada (NE) modulan inferencia y plasticidad | Yu & Dayan 2005 | **medido**: NE separa error de novedad (0.89) |
 | Aprender pares palabra-objeto acumulando evidencia de escenas ambiguas | Smith & Yu 2008 | **medido**: con la regla conocida liga (97.6 %); sin ancla no |
 | Etapas: "uno", "dos", "tres" y después el principio cardinal | Carey; Le Corre; Elman 1993 contra Rohde & Plaut 1999 | **medido**: contar primero los números chicos rinde peor que el orden aleatorio (pureza 0.30 contra 0.43) |
-| Dos sistemas: memoria rápida y conocimiento lento intercalado | Kumaran, Hassabis & McClelland 2016 | `agent/consolidacion` |
-| Lo que encaja en un esquema se consolida en un ensayo | Tse et al. 2007 | `agent/consolidacion` |
-| Un recuerdo consolidado sólo se modifica si hay error de predicción | Sevenster, Beckers & Kindt 2013–2014 (y la replicación fallida de 2022) | `agent/consolidacion` |
-| Recordar enseña más que releer; el espaciado retiene mejor | Roediger & Karpicke 2006 | `agent/consolidacion` |
-| Sueño: repaso activo y renormalización sináptica global | Klinzing, Niethard & Born 2019 | `agent/consolidacion` |
+| Dos sistemas: memoria rápida y conocimiento lento intercalado | Kumaran, Hassabis & McClelland 2016 | **medido**: con el sistema lento aprendiendo de su propio error, 0.791 contra 0.784 de ER-ACE en clases parecidas; las compuertas de recuerdo empeoran |
+| Lo que encaja en un esquema se consolida en un ensayo | Tse et al. 2007 | **medido**: asimila rápido solo con un esquema que encaja (0.81 contra 0.68 con uno inconsistente); los ítems en conflicto dañan lo viejo (−0.21) |
+| Un recuerdo consolidado sólo se modifica si hay error de predicción | Sevenster, Beckers & Kindt 2013–2014 (y la replicación fallida de 2022) | **medido**: actualiza rápido sin romper vecinos, pero queda debajo de la consolidación fija (0.764 contra 0.775) |
+| Recordar enseña más que releer; el espaciado retiene mejor | Roediger & Karpicke 2006 | **medido**: sin ganancia contra el repaso pasivo con el mismo presupuesto |
+| Sueño: repaso activo y renormalización sináptica global | Klinzing, Niethard & Born 2019 | **medido**: en microfases baja la latencia máxima de 2 107 a 74 ms, sin mejorar la exactitud |
+| Inferir la causa de un cambio antes de actualizar (cambió el nombre, o es algo nuevo) | Gershman et al. 2017 | **medido**: las causas latentes llevan el cambio de etiqueta de 0.118 a 0.528 y el renombre de 0.395 a 0.865, a costa de 0.04 en clases viejas parecidas |
 | La dopamina entrena a la prefrontal para que sea un aprendiz rápido propio | Wang et al. 2018 | **medido** (ver resultados) |
 | Mapas cognitivos: estructura relacional reutilizable | Behrens et al. 2018 | **medido** (ver resultados) |
 | Las reglas se agrupan en conjuntos de tareas reutilizables; una causa latente decide cuál rige | Collins & Frank 2013 | **medido** como opción; con todo encendido, abierto |
@@ -347,8 +390,8 @@ sin calibrar.
 |---|---|---|---|
 | A. Saber cuándo se equivoca | confianza calibrada; separar error de novedad | apuesta por confianza (ratas, Kepecs 2008); ECE ≤ 0.05; AUROC ≥ 0.85 | cumplido en el flujo continuo de `Cortex`, que no es equivalente: AUROC 0.855, 0.886 y 0.909 en tres escalas; ECE 0.010; firma de Kepecs; NE separa error de novedad (0.89). Con el protocolo equivalente de Fleming da 0.748, dentro del rango humano (0.55–0.75), donde el umbral de 0.85 no aplica. En el Thinker: AUROC 0.83 de sus errores de cálculo, 0.63 de los símbolos mal percibidos que recibe |
 | B. Símbolos anclados en lo que ve | crédito conjunto entre percepción y razonamiento | MNIST-addition (DeepProbLog: 97.2 % con 30 000 pares); después con la regla desconocida | regla conocida: 97.6 ± 0.2 % en test (3 semillas, una pasada), a la par de lo publicado. Regla desconocida: sin ancla no funciona; con 10 imágenes nombradas por dígito, 75.7 ± 20.9 % (2 de 3 semillas ≥ 80 %) |
-| C. Abstracción por niveles | que cada nivel aporte; invariancia | CIFAR-10 contra Hebb local publicado (SoftHebb: 80.3 %, con otro protocolo); sonda por nivel; desplazamientos | abierto: el nivel 2 copia al 1 |
-| D. Memoria sin interferencia | actualizar o crear según la causa inferida | Split-MNIST y Split-Fashion incremental por clases; ER-ACE con los mismos bytes | en curso |
+| C. Abstracción por niveles | que cada nivel aporte; invariancia | CIFAR-10 contra Hebb local publicado (SoftHebb: 80.3 %, con otro protocolo); sonda por nivel; desplazamientos | criterio de abandono **no cumplido** en el régimen válido. Con todo el presupuesto de una pasada, el backprop sí gana con la segunda capa (Fashion +1.1, CIFAR-10 +4.5 puntos); nuestro V2 queda 2.7 puntos debajo de V1 en Fashion (1 semilla), y la ridge fuera de línea da lo mismo (−3.0). Ningún objetivo local probado le da información propia: ancho, decorrelación, residuo, traza, CLAPP, WTA blando. Aprobado para la próxima sesión: un área recurrente de atención en lugar de V2/V3 |
+| D. Memoria sin interferencia | actualizar o crear según la causa inferida | Split-MNIST y Split-Fashion incremental por clases; ER-ACE con los mismos bytes | Split-MNIST: 97.0 %, por encima de ER-ACE (95.0). Split-Fashion: 83.3 % con `ace`, 1 punto debajo de ER-ACE (84.3), y olvida más (0.152 contra 0.092). La causa es el sesgo de la lectura lenta, no la capacidad (curva plana de 1 000 a 8 000 neuronas) |
 | E. Razonamiento composicional | generalizar a combinaciones nuevas | SCAN, bAbI; datos de personas de Lake y Baroni 2023 | medido, falla: SCAN 0 %, MLC 0 %, bAbI 52.8 % de error. Modo serial (rama `agent/composicion`, opción apagada): aprende el léxico y a decir FIN; en una gramática de juguete propia generaliza a comandos nuevos (84.8 ± 2.6 %), en SCAN al 1 % todavía no (0–10 % en validación, 1 semilla) |
 | F. Lenguaje | predecir y componer sobre secuencias | BabyLM (10 M de palabras, escala de un niño) a escala reducida | medido en 0.2, 0.6 y 1.8 MB: la red queda 1.7–1.9 bits/byte por encima de un n-grama con los mismos datos en las tres escalas. Ya en 0.2 MB, sin llegar al tope de neuronas (18 857 de 30 000), la brecha es 1.84, y de 0.6 a 1.8 MB no mejora (tope alcanzado). Criterio F: no supera a los n-gramas; falta la serie con tope triple para separar capacidad de mecanismo |
 | G. Razonar con neuronas | memoria de trabajo y ligadura en neuronas de spikes, no en estructuras programadas | las pruebas de E, sin pérdida | sin empezar |
@@ -366,6 +409,51 @@ se aplana, el límite es de diseño y hay que corregirlo.
   de secuencias es el equivocado.
 - G: si al pasar la memoria de trabajo a neuronas se pierde el razonamiento ya logrado, el
   Thinker es un programa con control aprendido y no una red.
+
+## Estado de las ramas y cómo continuar
+
+`main`, `master` y `v0.3-dev` tienen todo lo integrado. Lo nuevo de cada rama entra como opción
+apagada por defecto. Con la configuración de siempre, la percepción da lo mismo bit a bit que la
+medida por la batería (`experiments/battery/identidad.py`), y el Thinker no cambió. Por eso las
+cifras de la comparación valen para este `main`. Las ramas de trabajo también están publicadas.
+Todo se corre con `OMP_NUM_THREADS=1`; las corridas largas se reanudan con `--skip-existing`.
+
+| Rama | Último commit | Estado | Qué sigue |
+|---|---|---|---|
+| `agent/composicion` | 89da0ae | **no fusionada**: se apoya en `agent/razonamiento3` (10eed10), que enciende por defecto opciones con regresiones (F5). Sus resultados están en `results/composicion_*` | Que el control fije lo que halla la búsqueda: imitar la trayectoria entera alineada en retrospectiva. Después la curva del experimento 1 de SCAN con 3 semillas, MLC, add-jump y length, bAbI, y las regresiones de F5 (`back` primero, en bloques en orden inverso) |
+| `integracion3` | 246cf9b | fusionada | Tercer punto de presupuesto en la curva de anclas (16 000 episodios). Generalización por dígito antes de ligar (g/h ≫ 2, medido con `f0g`). Una compuerta que solo deje aprender la regla con percepción confiable |
+| `agent/consolidacion` | 276ff1b | fusionada | Medir `ace` en el flujo de 200 000 pasos, en clases parecidas, en cadenas y en cambio de etiqueta (fases `f7b`, `f7x`, `f7s`, `f7k`, `f7c`); el punto de capacidad sin tope (`f6cap0`) |
+| `agent/predictivo` | 0a535bb | fusionada | **Área recurrente de atención en lugar de V2 y V3** (aprobada). Criterios: sonda ≥ V1 + 1 punto, red ≥ profundidad 2 + 0.5, 3 px en Fashion ≥ 56 %, latencia ≤ 2×. Diagnosticar el V2 nulo en CIFAR-10 con 45k. Que la poda libere rasgos viejos poco usados |
+| `agent/medicion` | d77a60d | fusionada | Serie de lenguaje con el tope de neuronas triplicado (decide el criterio F). Pruebas de abejas con cifras verificadas: Howard 2018, Avarguès-Weber 2012, Giurfa 2001 en el original. Repetir la batería si cambia `bioelastic/` |
+| `agent/razonamiento3` | 10eed10 | base de `agent/composicion` | se continúa en `agent/composicion` |
+
+Sin empezar: el escalón G (el Thinker en neuronas de spikes) y el reemplazo del mecanismo de
+secuencias del escalón F, si la serie de tope triple confirma el criterio.
+
+Comandos para retomar:
+
+```bash
+# composición (escalón E), desde la rama agent/composicion
+python3 -I experiments/exp_composicion.py scan_imitate      # imitación en validación (cambiar gains)
+python3 -I experiments/exp_composicion.py mini              # mini-SCAN, 3 semillas
+python3 -I experiments/exp_composicion.py scan_exp1         # curva 1-2-4-8 %; toca el test una vez
+# anclas (escalón B)
+python3 experiments/exp_integration3.py f1a --seed S --variante 10 --val --ep 16000 --skip-existing   # S = 0, 1, 2; después sin --val
+# consolidación (escalón D)
+cd experiments && for ph in f7b f7x f7s f7k f7c f6cap0; do python3 exp_consolidation.py $ph; done
+# jerarquía (escalón C): techo con más semillas y diagnóstico del V2 de CIFAR-10
+cd experiments && python3 exp_predictive.py ceiling fashion --seeds 1,2 --val 2000 --tag f7f --views 2
+cd experiments && python3 exp_predictive.py run cifar10 --depths 3 --seeds 0 --train 45000 --val 2000 --test 0 --perturb 0 --tag f7g
+# batería: lenguaje con el tope triple e informe
+python3 experiments/exp_battery.py correr --commit 80a7870 --pruebas blimp__curva_escalado_tope_triple --minutos 100 --skip-existing
+python3 experiments/exp_battery.py informe --commit <sha de main>
+```
+
+Los datos externos no están versionados; las fuentes están en el docstring de
+`experiments/exp_external.py` y en `experiments/battery/catalogo.json`:
+
+- SCAN, MLC y bAbI, en `ext_data/`;
+- AO-CHILDES, BLiMP, Omniglot y CIFAR-10H, en los datos de la batería.
 
 ## Escala: qué significa «capacidad humana»
 
@@ -393,7 +481,7 @@ sección de resultados, no esta tabla.
 
 ```bash
 pip install -e ".[dev]"
-pytest                                          # 242 tests
+pytest                                          # 307 tests
 python experiments/exp_vision.py mnist          # idem: fashion, cifar10
 python experiments/exp_fsdd.py                  # voz
 python experiments/exp_continual.py             # flujo continuo no estacionario
