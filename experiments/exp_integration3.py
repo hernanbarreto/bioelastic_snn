@@ -927,6 +927,43 @@ def fase_f1up(seed, tam, out, variante, extra):
             out("f1up", var, f"segundos n={m}", round(time.time() - t0, 1), "", "")
 
 
+def fase_f1a(seed, tam, out, variante, extra):
+    """Curva de anclas (protocolo humano: un chico no aprende qué dígito es cuál sólo con
+    sumas; alguien le dice el nombre de algunos): k imágenes nombradas por dígito, con la
+    regla de la suma DESCONOCIDA (ChainRule + posterior conjunto + equipartición + objetivo
+    muestreado, como aprendida_eq). Las 10 k imágenes se nombran al principio (la percepción
+    aprende su dígito con la regla local) y después, cada `cada_ancla` episodios, se vuelve a
+    nombrar una (ciclando): nombrar de vez en cuando, mientras se aprende a sumar. Las anclas
+    salen de train (no de validación ni de test). variante = k."""
+    from exp_vision import encoder
+    datos, Xt, yt, Xc, yc = preparar(seed, tam)
+    E = encoder()
+    ks = (0, 1, 3, 10, 30) if variante is None else (int(variante),)
+    for k in ks:
+        rng = np.random.default_rng(2000 + seed)
+        ei.muestra_test(datos, rng, tam["n_test_pureza"])
+        v, per, th, cfg = construir(VARIANTES_F1C["aprendida_eq"], seed, tam)
+        ra = np.random.default_rng(7000 + seed)
+        anclas = [(int(d), int(i)) for d in range(10)
+                  for i in ra.choice(datos.por["train"][d], k, replace=False)] if k else []
+        ra.shuffle(anclas)
+        t0 = time.time()
+        for d, i in anclas:                                   # nombrar
+            v.net.forward(E(datos.X["train"][i])); v.net.teach(d)
+        ciclo = [0]
+
+        def renombrar(e, r):
+            if anclas and (e + 1) % tam["cada_ancla"] == 0:
+                d, i = anclas[ciclo[0] % len(anclas)]; ciclo[0] += 1
+                v.net.forward(E(datos.X["train"][i])); v.net.teach(d)
+        st: dict = {}; curva: list = []
+        entrenar(th, per, datos, rng, tam["ep"], cfg, st, None, curva, tam["cada"], Xc, yc, al_episodio=renombrar)
+        var = f"k={k}"
+        out("f1a", var, "segundos", round(time.time() - t0, 1), "", f"{10 * k} anclas, {tam['ep']} episodios")
+        out("f1a", var, "imágenes nombradas (total, con repeticiones)", len(anclas) + ciclo[0], "", "")
+        medir(out, "f1a", var, th, v, per, datos, rng, tam, st, extra, curva, seed, congelada=False)
+
+
 def fase_f1(seed, tam, out, variante, extra, variantes=None, fase="f1"):
     datos = ei.Digitos(tam["n_pre"])
     Xt, yt = Xt_(datos, seed, tam), yt_(datos, seed, tam)
@@ -1140,7 +1177,14 @@ def tabular_protos(K: int, seed: int, columnas: int = 10000, lr: float = 0.5, ba
         for j in range(K):
             C[d] += P(d, j) / K
     r, cc = linear_sum_assignment(-C)
-    return dict(pureza=float(C[r, cc].sum() / 10), columna_final=float(np.mean(hits[-1000:])))
+    # diagnóstico: ¿los prototipos de un mismo dígito se reparten entre símbolos distintos?
+    sim = np.array([[int(np.argmax(W[d, j])) for j in range(K)] for d in range(10)])
+    repartidos = float(np.mean([len(set(sim[d])) > 1 for d in range(10)]))
+    simbolos_compartidos = float(np.mean([len({d2 for d2 in range(10) if s_ in sim[d2]}) > 1
+                                          for s_ in set(sim.ravel().tolist())]))
+    return dict(pureza=float(C[r, cc].sum() / 10), columna_final=float(np.mean(hits[-1000:])),
+                digitos_repartidos=repartidos, simbolos_compartidos=simbolos_compartidos,
+                simbolos=sim.tolist())
 
 
 def fase_f0s(seed, tam, out, variante, extra):
@@ -1355,6 +1399,41 @@ def fase_f2(seed, tam, out, variante, extra):
         extra[f"f2_{var}"] = dict(confiabilidad_sistema_test=curva_cal_t, confiabilidad_cruda_test=curva_raw_t,
                                   confiabilidad_percepcion_test=curva_p, calibrador=cal.w.tolist())
         out("f2", var, "segundos", round(time.time() - t0, 1), "", "")
+
+
+def fase_f2t(seed, tam, out, variante, extra):
+    """Metacognición del Thinker: ¿sabe cuándo se equivoca al razonar? Thinker de L3 (2
+    registros) con percepción simbólica perfecta o ruidosa (exactitud 0.8 y 0.65, que se
+    declara tal cual), 4 000 episodios de entrenamiento; se leen sus señales antes de cada
+    feedback (Thinker.answer_confidence: probabilidad de la respuesta en la lectura del
+    conocimiento y si es conocimiento establecido; conflicto predictivo con la percepción) y
+    se mide la AUROC de su propio error y la ECE, crudas y con un calibrador online entrenado
+    en el flujo de entrenamiento (prequential) y congelado en test."""
+    from bioelastic.metacog import auroc, ece
+    datos = ei.Digitos(tam["n_pre"])
+    for nombre, per_f in (("oraculo", lambda: OraculoP()), ("ruido 0.8", lambda: RuidosaP(0.8, 50 + seed)),
+                          ("ruido 0.65", lambda: RuidosaP(0.65, 50 + seed))):
+        rng = np.random.default_rng(8000 + seed)
+        th = thinker_l3(seed); per = per_f()
+        reg: list = []
+        entrenar(th, per, datos, rng, tam["ep"], {}, {}, registro=reg)
+        sig, ok, feats, _ = senales_columna(reg)
+        cal, pre = calibrar(feats, ok)
+        rt = registrar_eval(th, per, datos, rng, 3, tam["ep_eval"])
+        sig_t, ok_t, feats_t, _ = senales_columna(rt)
+        p_cal = np.array([cal.predict(f) for f in feats_t])
+        pt = 1 - sig_t["1-p Thinker"]
+        out("f2t", nombre, "acierto columna (test)", float(ok_t.mean()), 0.1, "")
+        out("f2t", nombre, "AUROC error test: 1-p Thinker", auroc(1 - pt, ~ok_t), 0.85, "criterio >= 0.85")
+        out("f2t", nombre, "AUROC error test: no establecido", auroc(sig_t["no establecido (Thinker)"], ~ok_t), 0.5, "")
+        out("f2t", nombre, "AUROC error test: conflicto percepción-Thinker",
+            auroc(sig_t["conflicto percepción-Thinker"], ~ok_t), 0.5, "")
+        out("f2t", nombre, "AUROC error test: 1-confianza calibrada (sistema)", auroc(1 - p_cal, ~ok_t), 0.85, "")
+        out("f2t", nombre, "ECE test: p Thinker cruda", ece(pt, ok_t)[0], 0.05, "criterio <= 0.05")
+        out("f2t", nombre, "ECE test: calibrada (sistema)", ece(p_cal, ok_t)[0], 0.05, "")
+        mitad = np.arange(len(ok)) >= len(ok) // 2
+        out("f2t", nombre, "AUROC error prequential (2.a mitad): 1-p Thinker",
+            auroc(sig["1-p Thinker"][mitad], ~ok[mitad]), 0.5, "")
 
 
 # ====================================================================== F3
@@ -1695,16 +1774,17 @@ def fase_f5(seed, tam, out, variante, extra):
 TAM = dict(
     completa=dict(n_pre=10000, n_test_pureza=2000, n_curva=500, ep=4000, cada=500, ep_eval=500,
                   homeostasis=0.02, congelada=True, ep_f3=4000, columnas=10000, cada_col=1250, col_tabular=10000,
-                  n_nosup=10000, marcas_nosup=(2500, 10000, 40000),
+                  n_nosup=10000, marcas_nosup=(2500, 10000, 40000), cada_ancla=10,
                   f0=["rep", "a_oraculo", "a_ruido_0.65", "a_ruido_0.8", "a_ruido_0.9",
                       "b_refuerzo", "b_cred2", "c_barajadas", "rep_v02"]),
     rapida=dict(n_pre=300, n_test_pureza=100, n_curva=50, ep=30, cada=10, ep_eval=10,
                 homeostasis=0.02, congelada=True, ep_f3=800, columnas=80, cada_col=20, col_tabular=300,
-                n_nosup=100, marcas_nosup=(50, 100, 200),
+                n_nosup=100, marcas_nosup=(50, 100, 200), cada_ancla=5,
                 f0=["rep", "a_oraculo", "a_ruido_0.8", "b_refuerzo", "b_cred2", "c_barajadas"]),
 )
 _sistemas_cadena()
-FASES = dict(f0=fase_f0, f0s=fase_f0s, f1=fase_f1, f1c=fase_f1c, f1u=fase_f1u, f1up=fase_f1up, f3c=fase_f3c, f2=fase_f2, f3=fase_f3, f4=fase_f4, f5=fase_f5)
+FASES = dict(f0=fase_f0, f0s=fase_f0s, f1=fase_f1, f1a=fase_f1a, f1c=fase_f1c, f1u=fase_f1u, f1up=fase_f1up,
+             f2t=fase_f2t, f3c=fase_f3c, f2=fase_f2, f3=fase_f3, f4=fase_f4, f5=fase_f5)
 
 
 def completo(path) -> bool:
