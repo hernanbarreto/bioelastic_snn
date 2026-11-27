@@ -1147,7 +1147,7 @@ def tabular_cadena(conocida: bool, curriculo: str, seed: int, columnas: int = 10
 def tabular_protos(K: int, seed: int, columnas: int = 10000, lr: float = 0.5, balance: float = 1.0,
                    causa: str | None = None, delta: float = 0.15, m: int = 30, r: float = 0.05,
                    templar: float = 0.0, cada_templar: int = 1000, cercania: float = 0.0,
-                   fuga: float = 0.0) -> dict:
+                   fuga: float = 0.0, ancla: float = 0.0) -> dict:
     """Como `tabular_cadena` con la regla aprendida, objetivo muestreado y equipartición,
     pero con K prototipos independientes por dígito (cada ejemplar cae en uno al azar y
     cada prototipo tiene su propia tabla de símbolos): el modelo mínimo de una percepción
@@ -1172,6 +1172,8 @@ def tabular_protos(K: int, seed: int, columnas: int = 10000, lr: float = 0.5, ba
     from bioelastic.posterior import ChainRule, Equipartition, chain_posterior
     rng = np.random.default_rng(seed)
     W = rng.normal(0, 0.1, (10, K, 10))
+    if ancla > 0:
+        W[np.arange(10), :, np.arange(10)] += ancla
     L = np.full((10, K, 10), 0.1); N = np.zeros((10, K), dtype=np.int64)
     regla = ChainRule(seed=seed); eq = Equipartition(10, balance) if balance > 0 else None
     u = np.full(10, 0.1)
@@ -1256,20 +1258,25 @@ def fase_f0s(seed, tam, out, variante, extra):
     identidad, en +5 o en un código de desplazamientos que se compensan). Con
     `variante="conjunto"`, el modelo de co-adaptación `tabular_conjunto`; con "fin", el
     posterior que también usa el acarreo final."""
-    if variante == "causa":                          # ligadura con causa compartida antes de ligar
+    if variante in ("causa", "causa_ancla"):         # ligadura con causa compartida antes de ligar
         base = tam["col_tabular"]
-        conds = [("K=1 sin", 1, {}), ("K=3 sin", 3, {}), ("K=3 perfil de contexto", 3, dict(causa="contexto")),
-                 ("K=3 recocido 0.5", 3, dict(templar=0.5)), ("K=3 cercanía 0.05", 3, dict(cercania=0.05)),
-                 ("K=3 cercanía 0.1", 3, dict(cercania=0.1)), ("K=3 cercanía 0.3", 3, dict(cercania=0.3)),
-                 ("K=3 cercanía 0.3 fuga 0.15", 3, dict(cercania=0.3, fuga=0.15)),
-                 ("K=3 cercanía 0.5 fuga 0.3", 3, dict(cercania=0.5, fuga=0.3)),
-                 ("K=3 cercanía 1 fuga 1", 3, dict(cercania=1.0, fuga=1.0)),
-                 ("K=10 sin", 10, {}), ("K=10 cercanía 0.1", 10, dict(cercania=0.1)),
-                 ("K=10 cercanía 0.3", 10, dict(cercania=0.3))]
+        if variante == "causa_ancla":                 # arranque anclado (pureza inicial 0.6, como f1a k = 10)
+            conds = [("K=3 ancla", 3, dict(ancla=2.6)), ("K=10 ancla", 10, dict(ancla=2.6)),
+                     ("K=3 ancla + g, h del Cortex", 3, dict(ancla=2.6, cercania=0.33, fuga=0.15)),
+                     ("K=3 ancla + fuga 0.03", 3, dict(ancla=2.6, cercania=0.33, fuga=0.03))]
+        else:
+            conds = [("K=1 sin", 1, {}), ("K=3 sin", 3, {}), ("K=3 perfil de contexto", 3, dict(causa="contexto")),
+                     ("K=3 recocido 0.5", 3, dict(templar=0.5)), ("K=3 cercanía 0.05", 3, dict(cercania=0.05)),
+                     ("K=3 cercanía 0.1", 3, dict(cercania=0.1)), ("K=3 cercanía 0.3", 3, dict(cercania=0.3)),
+                     ("K=3 cercanía 0.3 fuga 0.15", 3, dict(cercania=0.3, fuga=0.15)),
+                     ("K=3 cercanía 0.5 fuga 0.3", 3, dict(cercania=0.5, fuga=0.3)),
+                     ("K=3 cercanía 1 fuga 1", 3, dict(cercania=1.0, fuga=1.0)),
+                     ("K=10 sin", 10, {}), ("K=10 cercanía 0.1", 10, dict(cercania=0.1)),
+                     ("K=10 cercanía 0.3", 10, dict(cercania=0.3))]
         largos = ("K=3 sin", "K=3 perfil de contexto", "K=3 cercanía 0.05")
         for nombre, K, kw in conds:
             for mult, n_sub in ((1, 6), (4, 3)):
-                if mult > 1 and nombre not in largos:
+                if mult > 1 and (nombre not in largos or variante == "causa_ancla"):
                     continue
                 R = [tabular_protos(K, 100 * seed + k, base * mult, **kw) for k in range(n_sub)]
                 var = f"causa {nombre} | {base * mult} columnas"
