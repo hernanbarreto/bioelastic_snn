@@ -5,9 +5,12 @@ archivo). Mismo protocolo: el entorno muestra lo que hay para leer palabra por p
 (`observe`), pide la salida un símbolo por vez y da el objetivo de cada símbolo (`feedback`).
 
 Grupos
-  diag   diagnóstico del diseño anterior en SCAN simple con el 1 % de los comandos (semilla 0,
-         exploratorio): por qué no ajusta ni lo visto (a), por qué no dice FIN (b), cuántos
-         prototipos quedan para cuántos contenidos (c) y cuánto se pierde con el multiconjunto (d).
+  diag          diagnóstico del diseño anterior en SCAN simple con el 1 % de los comandos (semilla
+                0, exploratorio): por qué no ajusta ni lo visto (a), por qué no dice FIN (b),
+                cuántos prototipos quedan para cuántos contenidos (c) y el multiconjunto (d).
+  scan_imitate  modo serial en SCAN al 1 %, en validación: peso de la imitación de la búsqueda.
+  mini          modo serial en mini-SCAN (juguete propio), 3 semillas, imitate 1 y 3.
+  scan_exp1     curva del experimento 1 (1-8 %, 3 semillas, mismas pasadas), test tocado una vez.
 
   python -I experiments/exp_composicion.py <grupo> [...]     (OMP_NUM_THREADS=1, nice -n 10)
   (resultados en results/composicion_<grupo>.csv y .json; cada condición terminada queda en
@@ -323,7 +326,86 @@ def group_scan_exp1(pcts=(1, 2, 4, 8), seeds=(0, 1, 2), passes=SCAN_PASSES):
     st.finish()
 
 
-GROUPS = {"diag": group_diag, "scan_exp1": group_scan_exp1}
+def group_scan_imitate(gains=(1.0, 3.0, 5.0), pct=1, seed=0, passes=30, every=10):
+    """Hipótesis del jefe de equipo: el control imita el camino que halló la búsqueda
+    retrospectiva con más peso que el TD. SCAN al `pct` %, en validación (10 % del train, el
+    test no se toca), una semilla (exploratorio), las mismas pasadas para cada peso."""
+    st = Store("scan_imitate")
+    HEAD = "E1 SCAN, imitación de la búsqueda (validación)"
+    for g in gains:
+        def fn(log, g=g):
+            r = scan_serial_run(pct, seed, cfg(imitate=g), passes=passes, n_seen=100, val=True, curve_every=every)
+            SYS = f"Thinker serial, imitate={g}, semilla {seed} (exploratorio, 1 semilla)"
+            pres = r["n_train"] * passes
+            for ps, v, tr in r["curve"]:
+                T = f"{pct} %, {ps} pasadas ({r['n_train'] * ps} presentaciones)"
+                log.row(HEAD, SYS, T, "secuencia exacta, validación", v, 0.0, 1)
+                log.row(HEAD, SYS, T, "secuencia exacta, vistos (100)", tr, 0.0, 1)
+            T = f"{pct} %, {passes} pasadas ({pres} presentaciones)"
+            for part, label in (("seen", "vistos (100)"), ("val", "validación (" + str(len(r["val"]["by"]) and sum(n for _, n in [r["val"]["by"].get("conjunción: and", (0, 0)), r["val"]["by"].get("conjunción: after", (0, 0)), r["val"]["by"].get("conjunción: sin conjunción", (0, 0))])) + ")")):
+                for k in ("exact", "token", "length_ok", "no_fin"):
+                    log.row(HEAD, SYS, T + ", " + label, k, float(r[part][k]), 0.0, 1)
+            n = sum(r["blame"])
+            log.row(HEAD, SYS, T, "errores explicados por estrategia (fracción de los errores)", r["blame"][0] / max(n, 1), 0.0, 1)
+            log.row(HEAD, SYS, T, "ms por símbolo (entrenamiento)", r["ms_per_step"], 0.0, 1)
+            return r
+        st.run(f"imitate {g} {pct}% semilla {seed}", fn)
+    st.finish()
+
+
+# ====================================================================== mini-SCAN (juguete propio)
+# Gramática chica para iterar rápido sobre el mecanismo, no una prueba externa: U en {a, b, c, d}
+# -> {A, B, C, D}; V = U | U left (L U) | U twice (U U); C = V | V and V | V after V (V2 V1).
+MINI_U = ("a", "b", "c", "d")
+
+
+def mini_commands():
+    import itertools
+    P = []
+    for u in MINI_U:
+        P += [((u,), (u.upper(),)), ((u, "left"), ("L", u.upper())), ((u, "twice"), (u.upper(),) * 2)]
+    cmds = list(P)
+    for (c1, o1), (c2, o2) in itertools.product(P, P):
+        cmds += [(c1 + ("and",) + c2, o1 + o2), (c1 + ("after",) + c2, o2 + o1)]
+    return cmds
+
+
+def mini_run(seed=0, frac=0.3, passes=15, conf=None):
+    """Entrena con una fracción al azar de los 300 comandos (sin exploración) y mide exacta,
+    congelado, en lo visto y en el resto."""
+    words = list(MINI_U) + ["left", "twice", "and", "after"]
+    V = {w: i for i, w in enumerate(words + ["A", "B", "C", "D", "L", "<fin>"])}
+    rng = np.random.default_rng(seed)
+    cmds = mini_commands()
+    idx = rng.permutation(len(cmds))
+    k = int(frac * len(cmds))
+    tr, te = [cmds[i] for i in idx[:k]], [cmds[i] for i in idx[k:]]
+    net = Thinker(len(V), seed=seed, **(conf or SERIAL))
+    for _ in range(passes):
+        for i in rng.permutation(len(tr)):
+            serial_item(net, *tr[i], V, True, max_len=12)
+    net.reset(); net.plastic = False
+    ev = lambda items: float(np.mean([serial_item(net, c, o, V, False, free=True, max_len=12)[0] for c, o in items]))  # noqa: E731
+    return dict(train=ev(tr), test=ev(te), n_train=len(tr), passes=passes)
+
+
+def group_mini(seeds=(0, 1, 2), gains=(1.0, 3.0)):
+    st = Store("mini")
+    HEAD = "E1 mini-SCAN (gramática de juguete propia, 30 % del train, 15 pasadas)"
+    for g in gains:
+        def fn(log, g=g):
+            res = [mini_run(sd, conf=cfg(imitate=g)) for sd in seeds]
+            for k in ("train", "test"):
+                v = [r[k] for r in res]
+                log.row(HEAD, f"Thinker serial, imitate={g}", f"{res[0]['n_train']} comandos x 15 pasadas",
+                        f"secuencia exacta, {k}", float(np.mean(v)), float(np.std(v)), len(v))
+            return dict(train=[r["train"] for r in res], test=[r["test"] for r in res])
+        st.run(f"mini imitate {g}", fn)
+    st.finish()
+
+
+GROUPS = {"diag": group_diag, "scan_exp1": group_scan_exp1, "scan_imitate": group_scan_imitate,
+          "mini": group_mini}
 
 
 def main():
