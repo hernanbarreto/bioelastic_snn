@@ -44,7 +44,7 @@ class BioElasticNet:
     _EP_FIELDS = (("y", np.int16), ("t", np.int64), ("ctx", np.int32), ("norm", np.float32),
                   ("due", np.int64), ("gap", np.float32), ("fail", np.float32), ("ok", np.int8),
                   ("tests", np.int32), ("m", np.float32), ("m_t", np.int64), ("cc", np.int16),
-                  ("nm", np.float32))
+                  ("nm", np.float32), ("v", np.float32))
     KEY_DIMS = 32                    # dimensiones de la expectativa de clave de cada recuerdo
     RATE_EVENTS = 16                 # conflictos recientes con los que se mide el ritmo de un par
 
@@ -55,7 +55,7 @@ class BioElasticNet:
                  separation: float = 0.0, separation_relax: float = 0.0, recon_lock: int = 0,
                  causes: bool = False, cause_n: float = 10.0, cause_shift: float = 0.04,
                  cause_tau: float = 2000.0, cause_rate: float = 1.0, cause_streak: int = 4,
-                 cause_rho: float = 0.7, cause_est: int = 2000,
+                 cause_rho: float = 0.7, cause_est: int = 2000, cause_mode: str = "relabel",
                  layer: dict | None = None, readout: dict | None = None, seed: int = 0):
         self._config = dict(n_inputs=int(n_inputs), n_outputs=int(n_outputs), context=int(context),
                             delay=float(delay), tau=float(tau), grow_on_error=bool(grow_on_error),
@@ -67,7 +67,7 @@ class BioElasticNet:
                             cause_shift=float(cause_shift), cause_tau=float(cause_tau),
                             cause_rate=float(cause_rate),
                             cause_streak=int(cause_streak), cause_rho=float(cause_rho),
-                            cause_est=int(cause_est),
+                            cause_est=int(cause_est), cause_mode=str(cause_mode),
                             layer=dict(layer or {}), readout=dict(readout or {}), seed=int(seed))
         self.N = int(n_inputs)
         self.tau = float(tau)
@@ -96,6 +96,15 @@ class BioElasticNet:
         self.cause_tau = float(cause_tau); self.cause_rate = float(cause_rate)
         self.cause_streak = int(cause_streak); self.cause_rho = float(cause_rho)
         self.cause_est = int(cause_est)
+        if cause_mode not in ("relabel", "parallel"):
+            raise ValueError(f"cause_mode desconocido: {cause_mode}")
+        # "relabel": ante «misma causa» el recuerdo se reescribe (reconsolidación).
+        # "parallel": las dos hipótesis quedan en paralelo: el recuerdo viejo se conserva
+        # intacto pero pierde voz (validez `ep["v"]`, se recupera con una confirmación) y
+        # nace uno nuevo; la evidencia posterior decide. Nada se destruye por una
+        # inferencia equivocada (cf. los conjuntos de tareas del Thinker).
+        self.cause_mode = cause_mode
+        self.superseded = 0
         self._cfirst = np.full(int(n_outputs), -1, dtype=np.int64)   # primera confirmación de cada clase
         self._ci = np.zeros(int(n_outputs), dtype=np.float64)   # intervalo medio entre confirmaciones de cada clase
         self._ct = np.full(int(n_outputs), -1, dtype=np.int64)  # última confirmación
@@ -170,7 +179,7 @@ class BioElasticNet:
             ep["norm"][j] = np.float32(np.sqrt(e @ e) / 255.0)
             ep["due"][j] = self.layer.t; ep["gap"][j] = 0.0; ep["fail"][j] = 0.0
             ep["ok"][j] = -1; ep["tests"][j] = 0; ep["m"][j] = -1.0; ep["m_t"][j] = -1
-            ep["cc"][j] = 0; ep["nm"][j] = 1.0
+            ep["cc"][j] = 0; ep["nm"][j] = 1.0; ep["v"][j] = 1.0
             if self._kq is not None:
                 if j >= len(self._kq):
                     kq = np.zeros((len(self.episodes), self.KEY_DIMS), dtype=np.float32)
@@ -215,7 +224,9 @@ class BioElasticNet:
         pref = self.readout.preferred(np.arange(n))
         if stored and self.ep is not None:
             y = self.ep["y"][:n].astype(np.int64)
-            return np.where(y >= 0, y, pref)
+            pref = np.where(y >= 0, y, pref)
+        if self.causes and self.cause_mode == "parallel":     # lo superado no se repasa ni se recuerda
+            pref = np.where(self.ep["v"][:n] >= 0.5, pref, -1)
         return pref
 
     def recall(self, idx: np.ndarray, val: np.ndarray, k: int = 8):
@@ -296,6 +307,8 @@ class BioElasticNet:
         idx, val = self._composite()
         v = self.layer.forward(idx, val)
         h = self._votes(v)
+        if self.causes and self.cause_mode == "parallel" and len(v.winners) and not v.novel:
+            h = h * self.ep["v"][v.winners]                   # un recuerdo superado no vota
         V = self.readout.potentials(v.winners, h)
         if explore:
             pred = int(self.rng.choice(self.readout.C, p=self.readout.probs(V)))
@@ -352,7 +365,6 @@ class BioElasticNet:
         if self.causes and not v.novel and len(wn):
             relabel, prot = self._causes(v, st, target, pref)
             guard |= prot | relabel                           # lo protegido y lo que se reconsolida aparte
-            self.protect_classes = np.unique(pref[prot])
         if not v.novel:                                       # sin spike presináptico no hay plasticidad
             if guard.any():
                 if (~guard).any():
@@ -437,6 +449,12 @@ class BioElasticNet:
         no alcanza, se trata como causa nueva (provisoria). Las ganadoras de causas activas
         (su etiqueta se sigue confirmando entre un conflicto y otro: dos clases que
         conviven en esa zona, aunque sus claves se superpongan) aprenden como siempre.
+        Con cause_mode="parallel" ninguna inferencia reescribe nada: ante «misma causa»
+        el recuerdo viejo queda protegido pero deja de votar y de repasarse (validez 0, que
+        una confirmación posterior restituye) y la entrada crea un recuerdo nuevo. Si las
+        dos hipótesis no se pueden separar con lo que se sabe en el momento (una clase
+        nueva con las mismas claves y el mismo ritmo, contra un cambio de etiqueta), se
+        mantienen las dos y decide la evidencia posterior.
         Devuelve (máscara de reconsolidación, máscara de protección) sobre las ganadoras."""
         ep = self.ep; t = self.layer.t; wn = v.winners
         n = len(wn)
@@ -445,6 +463,7 @@ class BioElasticNet:
         agree = np.flatnonzero(pref == target)
         if len(agree):                                        # las que aciertan siguen activas
             ep["cc"][wn[agree]] = 0
+            ep["v"][wn[agree]] = 1.0                          # y, si estaban superadas, vuelven a valer
             if self._ct[target] >= 0:                         # ritmo de confirmación de la clase
                 dt = float(t - self._ct[target])
                 if self._ci[target] <= 0.0:
@@ -492,12 +511,19 @@ class BioElasticNet:
         for i, k in enumerate(conf):
             if not dormant[i]:
                 continue                                      # causa activa: discriminación común
-            if verdicts.get(int(pref[k])):
+            if verdicts.get(int(pref[k])) and self.cause_mode == "relabel":
                 relabel[k] = True
                 ep["cc"][int(wn[k])] = 0                      # recién actualizada: vuelve a estar activa
             else:
                 prot[k] = True
+                if verdicts.get(int(pref[k])):                # paralelo: se conserva, pero pierde voz
+                    j = int(wn[k])
+                    self.superseded += int(ep["v"][j] >= 0.5)
+                    ep["v"][j] *= np.float32(1.0 - min(max(self.cause_rate, 0.0), 1.0))
         self.relabeled += int(relabel.sum()); self.protected += int(prot.sum())
+        # en el sistema lento se protege sólo lo que se infirió como causa nueva (o sin decidir)
+        self.protect_classes = np.unique([int(pref[k]) for i, k in enumerate(conf)
+                                          if dormant[i] and not verdicts.get(int(pref[k]))]).astype(np.int64)
         return relabel, prot
 
     def _reconsolidate(self, cols, st, target: int, p):
@@ -687,6 +713,8 @@ class BioElasticNet:
                     arr[:n] = R.preferred(np.arange(n))
                 elif name in ("m", "m_t"):
                     arr[:n] = -1
+                elif name == "v":
+                    arr[:n] = 1.0
                 elif name == "norm":
                     e = net.episodes[:n].astype(np.float32)
                     arr[:n] = np.sqrt(np.einsum("ij,ij->i", e, e)) / 255.0

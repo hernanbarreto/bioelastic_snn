@@ -484,6 +484,26 @@ def test_neighbouring_keys_with_a_new_label_create_a_new_cause_and_protect_the_o
     assert np.mean([net.predict(sample(0, 30)) == 0 for _ in range(200)]) > 0.9
 
 
+def test_parallel_hypotheses_keep_the_old_memory_and_let_later_evidence_choose():
+    net, sample = _cause_stream()
+    net.cause_mode = "parallel"
+    n0 = net.layer.n
+    old = np.flatnonzero(net.labels(True)[:n0] == 0)
+    W0 = net.readout.W[:, old].copy()
+    for _ in range(150):                                   # las mismas claves, ahora con etiqueta 1
+        net.step(sample(0, 30), 1)
+    assert net.superseded > 0 and net.relabeled == 0
+    assert np.array_equal(net.readout.W[:, old], W0[:, :]) or np.abs(net.readout.W[:, old] - W0).sum() < 2.0
+    assert (net.ep["y"][old] == 0).all()                   # el recuerdo viejo sigue ahí, intacto
+    assert np.mean([net.predict(sample(0, 30)) == 1 for _ in range(200)]) > 0.9   # pero ya no vota
+    silenced = old[net.ep["v"][old] < 0.5]
+    assert len(silenced) and (net.labels(True)[silenced] == -1).all()   # ni se repasa
+    for _ in range(60):                                    # la etiqueta vieja vuelve: se recupera sola
+        net.step(sample(0, 30), 0)
+    assert (net.ep["v"][old] >= 0.5).mean() > 0.5
+    assert np.mean([net.predict(sample(0, 30)) == 0 for _ in range(200)]) > 0.6
+
+
 def test_a_brand_new_label_never_rewrites_an_old_memory():
     net, sample = _cause_stream()
     net.cause_est = 1000                                   # la etiqueta 2 aparece ahora: no está establecida

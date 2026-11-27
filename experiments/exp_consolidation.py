@@ -199,7 +199,7 @@ def run_scenario(sc: str, spec: str, seed: int, data, n_eval: int = 100, phases=
     if net is not None:
         out["counters"] = counters(net)
         out["causes"] = {k: int(sum(getattr(h, k, 0) for h in net.heads))
-                         for k in ("relabeled", "protected", "new_causes")}
+                         for k in ("relabeled", "protected", "new_causes", "superseded")}
     if timing:
         out["latency"] = latency(lat_f, lat_t)
     if keep_agent:
@@ -489,6 +489,8 @@ def phase_f2(a, data):
 
 
 DRIFT = [((10, 11, 12, 13), 3000), ((10, 11, 12, 13), 1500, {10: 12, 12: 10})]
+# caso adversarial inverso: una clase conocida pasa a llamarse con un nombre recién aparecido
+RENAME = [((10, 11, 12, 13), 3000), ((10, 11, 12, 13), 1500, {10: 18})]
 RECON = {                                    # lectura de la memoria / proyección
     "fija/nada (c2)": C2,
     "nada/nada": C2 + "+no_consol",
@@ -507,18 +509,18 @@ def recon_counters(net) -> dict:
                 if net.proj is not None and net.proj.recon_lock > 0 else float("nan"))
 
 
-def drift_row(spec, seed, r) -> dict:
-    """Cambio de etiqueta (10 <-> 12) después de aprender C: ¿se actualiza lo que cambió
-    sin destruir lo vecino (11, 13)?"""
+def drift_row(spec, seed, r, changed=(10, 12), kept=(11, 13), scenario="swap10_12") -> dict:
+    """Cambio de etiqueta (10 <-> 12, o 10 -> 18 con `changed=(10,)`) después de aprender C:
+    ¿se actualiza lo que cambió sin destruir lo vecino?"""
     h0 = r["hist"][0][2]; hm = r["hist"][1][2]; hf = r["hist"][-1][2]
-    row = dict(bench="drift", scenario="swap10_12", model=spec, seed=seed)
+    row = dict(bench="drift", scenario=scenario, model=spec, seed=seed)
     for part in ("full", "slow", "fast"):
         if not hf[part]:
             continue
-        row[f"{part}_swapped_end"] = float(np.mean([hf[part][c] for c in (10, 12)]))
-        row[f"{part}_swapped_mid"] = float(np.mean([hm[part][c] for c in (10, 12)]))
-        row[f"{part}_kept_end"] = float(np.mean([hf[part][c] for c in (11, 13)]))
-        row[f"{part}_kept_drop"] = float(np.mean([h0[part][c] - hf[part][c] for c in (11, 13)]))
+        row[f"{part}_swapped_end"] = float(np.mean([hf[part][c] for c in changed]))
+        row[f"{part}_swapped_mid"] = float(np.mean([hm[part][c] for c in changed]))
+        row[f"{part}_kept_end"] = float(np.mean([hf[part][c] for c in kept]))
+        row[f"{part}_kept_drop"] = float(np.mean([h0[part][c] - hf[part][c] for c in kept]))
         row[f"{part}_before"] = float(np.mean(list(h0[part].values())))
     row.update(r.get("counters", {}), seconds=r["seconds"])
     return row
@@ -847,7 +849,7 @@ CAUSES = "+head.causes=true+head.cause_tau=500"
 F7_BASE = C2 + STORED + OWN
 
 
-def pair_rows(spec, seeds, data, *, tag, split, rows, cd=True, swap=True, chain=False):
+def pair_rows(spec, seeds, data, *, tag, split, rows, cd=True, swap=True, chain=False, rename=False):
     """CD y cambio de etiqueta (y chainF) con el mismo modelo y el split pedido (reanudable)."""
     def cd_row(spec, seed):
         r = run_scenario("CD", spec, seed, data)
@@ -864,6 +866,14 @@ def pair_rows(spec, seeds, data, *, tag, split, rows, cd=True, swap=True, chain=
     def ch_row(spec, seed):
         r = run_scenario("chainF", spec, seed, data)
         row = scenario_row("chainF", spec, seed, r); row["split"] = split
+        row.update({f"c_{k}": v for k, v in cause_counters(r).items()})
+        return row
+
+    def rn_row(spec, seed):
+        r = run_scenario("rename", spec, seed, data, phases=RENAME)
+        row = drift_row(spec, seed, r, changed=(10,), kept=(11, 12, 13), scenario="rename10_18")
+        row["split"] = split
+        row.update({f"c_{k}": v for k, v in cause_counters(r).items()})
         return row
 
     for seed in seeds:
@@ -885,10 +895,15 @@ def pair_rows(spec, seeds, data, *, tag, split, rows, cd=True, swap=True, chain=
             rows.append(row)
             print(f"[{tag}] {split} chainF {spec[len(C2):]} s{seed}: " + " ".join(
                 f"{k}={row[k]:.3f}" for k in ("old", "new", "all", "min")), flush=True)
+        if rename:
+            row = cached(dict(b="drift", sc="rename", spec=spec, seed=seed, split=split), lambda: rn_row(spec, seed))
+            rows.append(row)
+            print(f"[{tag}] {split} renombre {spec[len(C2):]} s{seed}: " + " ".join(
+                f"{k}={row[k]:.3f}" for k in ("full_swapped_mid", "full_swapped_end", "full_kept_end")), flush=True)
 
 
 def cause_counters(r) -> dict:
-    return {k: r.get("causes", {}).get(k, 0) for k in ("relabeled", "protected", "new_causes")}
+    return {k: r.get("causes", {}).get(k, 0) for k in ("relabeled", "protected", "new_causes", "superseded")}
 
 
 def val_score(rows, spec) -> float:
@@ -989,54 +1004,74 @@ def overlap(net, test, pairs=((10, 16), (12, 14), (10, 12), (14, 16), (10, 13)),
 
 
 FIXES = "+top.replay_contrast=true" + MICRO + "+top.sleep_focus=weak"
+PARALLEL = "+head.cause_mode=parallel"
 FINAL_CANDS = {"sin causas": "",
-               "causas": CAUSES,
-               "causas, corrimiento 0.06": CAUSES + "+head.cause_shift=0.06",
-               "causas + contraste + sueño priorizado": CAUSES + FIXES,
-               "causas, corrimiento 0.06 + contraste + sueño priorizado": CAUSES + "+head.cause_shift=0.06" + FIXES}
+               "causas (reescribir)": CAUSES,
+               "causas (reescribir), sin antigüedad": CAUSES + "+head.cause_est=0",
+               "causas (paralelo)": CAUSES + PARALLEL,
+               "causas (paralelo), sin antigüedad": CAUSES + PARALLEL + "+head.cause_est=0"}
 
 
 def phase_f7a2(a, data):
     """Selección final en validación (semillas 10 y 11) con el objetivo duro como
-    restricción. El primer barrido (consolidacion_f7_validacion_barrido1.json) eligió por
-    el promedio de cinco números y ese promedio cambiaba viejas de CD por velocidad en el
-    cambio de etiqueta; además no miraba chainF, donde clases parecidas que llegan de a
-    una se reetiquetaban entre sí (corregido con `cause_est`). Regla:
+    restricción y los cuatro casos a la vez: interferencia CD, cambio de etiqueta entre
+    nombres establecidos (10 <-> 12), clases parecidas que llegan de a una (chainF) y el
+    caso adversarial inverso, una clase que pasa a llamarse con un nombre recién aparecido
+    (10 -> 18). El primer barrido (consolidacion_f7_validacion_barrido1.json) eligió por
+    un promedio que cambiaba viejas de CD por velocidad y no miraba chainF. Regla:
       factible  CD todas >= sin causas - 0,01; CD viejas >= 0,80; chainF todas >= sin
                 causas - 0,01; vecinos del cambio de etiqueta >= sin causas - 0,01
-      se elige  el factible con mayor media de (cambio a los 200 pasos, cambio al final);
-                si ninguno es factible, el de menor violación total."""
+      se elige  el factible con mayor media de la exactitud de lo que cambió de nombre
+                (a los 200 pasos y al final, en 10 <-> 12 y en 10 -> 18); si ninguno es
+                factible, el de menor violación total. Después se prueban encima los dos
+                arreglos que mejoraron en el primer barrido (contraste + sueño priorizado)
+                y se quedan si siguen siendo factibles y mejoran ese objetivo."""
     D = split_data(data)["val"]
     rows: list = []
     table = {}
-    for name, mod in FINAL_CANDS.items():
-        sp = F7_BASE + mod
-        pair_rows(sp, VAL_SEEDS, D, tag="f7a2", split="val", rows=rows, chain=True)
+
+    def measure(name, sp):
+        pair_rows(sp, VAL_SEEDS, D, tag="f7a2", split="val", rows=rows, chain=True, rename=True)
         mine = [r for r in rows if r["model"] == sp]
         cd = [r for r in mine if r["bench"] == "interf" and r["scenario"] == "CD"]
         ch = [r for r in mine if r["bench"] == "interf" and r["scenario"] == "chainF"]
-        sw = [r for r in mine if r["bench"] == "drift"]
+        sw = [r for r in mine if r["bench"] == "drift" and r["scenario"] == "swap10_12"]
+        rn = [r for r in mine if r["bench"] == "drift" and r["scenario"] == "rename10_18"]
         f = lambda rs, k: float(np.mean([r[k] for r in rs]))
-        table[name] = dict(spec=sp, cd_all=f(cd, "all"), cd_old=f(cd, "old"), cd_new=f(cd, "new"),
-                           chain_all=f(ch, "all"), chain_old=f(ch, "old"), swap_mid=f(sw, "full_swapped_mid"),
-                           swap_end=f(sw, "full_swapped_end"), kept=f(sw, "full_kept_end"),
-                           relabel_cd=f(cd, "c_relabeled"), relabel_swap=f(sw, "c_relabeled"))
-        print(f"[f7a2] {name}: " + " ".join(f"{k}={v:.3f}" for k, v in table[name].items() if k != "spec"), flush=True)
-    base = table["sin causas"]
-    for name, t in table.items():
-        viol = (max(0.0, base["cd_all"] - 0.01 - t["cd_all"]) + max(0.0, 0.80 - t["cd_old"])
-                + max(0.0, base["chain_all"] - 0.01 - t["chain_all"]) + max(0.0, base["kept"] - 0.01 - t["kept"]))
-        t["violation"] = viol; t["feasible"] = viol == 0.0
-        t["objective"] = 0.5 * (t["swap_mid"] + t["swap_end"])
-    feas = [n for n, t in table.items() if t["feasible"]]
-    if feas:
-        best = max(feas, key=lambda n: table[n]["objective"])
-    else:
-        best = min(table, key=lambda n: (table[n]["violation"], -table[n]["objective"]))
+        t = dict(spec=sp, cd_all=f(cd, "all"), cd_old=f(cd, "old"), cd_new=f(cd, "new"),
+                 chain_all=f(ch, "all"), chain_old=f(ch, "old"), swap_mid=f(sw, "full_swapped_mid"),
+                 swap_end=f(sw, "full_swapped_end"), kept=f(sw, "full_kept_end"),
+                 rename_mid=f(rn, "full_swapped_mid"), rename_end=f(rn, "full_swapped_end"),
+                 rename_kept=f(rn, "full_kept_end"),
+                 relabel_cd=f(cd, "c_relabeled"), relabel_chain=f(ch, "c_relabeled"),
+                 superseded_cd=f(cd, "c_superseded"), superseded_chain=f(ch, "c_superseded"))
+        t["objective"] = float(np.mean([t["swap_mid"], t["swap_end"], t["rename_mid"], t["rename_end"]]))
+        table[name] = t
+        print(f"[f7a2] {name}: " + " ".join(f"{k}={v:.3f}" for k, v in t.items() if k != "spec"), flush=True)
+
+    def judge():
+        base = table["sin causas"]
+        for t in table.values():
+            t["violation"] = (max(0.0, base["cd_all"] - 0.01 - t["cd_all"]) + max(0.0, 0.80 - t["cd_old"])
+                              + max(0.0, base["chain_all"] - 0.01 - t["chain_all"])
+                              + max(0.0, base["kept"] - 0.01 - t["kept"]))
+            t["feasible"] = t["violation"] == 0.0
+        feas = [n for n, t in table.items() if t["feasible"]]
+        if feas:
+            return feas, max(feas, key=lambda n: table[n]["objective"])
+        return feas, min(table, key=lambda n: (table[n]["violation"], -table[n]["objective"]))
+
+    for name, mod in FINAL_CANDS.items():
+        measure(name, F7_BASE + mod)
+    feas, best = judge()
+    if best != "sin causas":
+        measure(best + " + contraste + sueño priorizado", table[best]["spec"] + FIXES)
+        feas, best = judge()
     keys = sorted({k for r in rows for k in r if isinstance(r[k], (int, float)) and k != "seed"})
     out = dict(phase="f7a2", chosen=table[best]["spec"], chosen_name=best, feasible=feas, table=table,
                rule=phase_f7a2.__doc__, first_sweep="consolidacion_f7_validacion_barrido1.json",
-               config=dict(val_seeds=VAL_SEEDS, val_per_class=VAL_N, candidates=FINAL_CANDS, base=F7_BASE),
+               config=dict(val_seeds=VAL_SEEDS, val_per_class=VAL_N, candidates=FINAL_CANDS, base=F7_BASE,
+                           scenarios=dict(CD=SCENARIOS["CD"], chainF=SCENARIOS["chainF"], swap=DRIFT, rename=RENAME)),
                summary=agg(rows, ("bench", "scenario", "model"), keys), rows=rows)
     (RESULTS / "consolidacion_f7_validacion.json").write_text(json.dumps(out, indent=1, default=float))
     print(f"[f7a2] factibles: {feas}; elegido: {best}: {table[best]['spec']}", flush=True)
@@ -1065,6 +1100,16 @@ def ablations(spec: str) -> dict:
     return out
 
 
+F7_TEST_SEEDS = (3, 4, 5)
+CONTAMINATION = ("Semillas de test 0 y 1 contaminadas para F7: una elección anterior (primer barrido: "
+                 "corrimiento 0,06 + contraste + sueño priorizado, sin cause_est) llegó a correr en test "
+                 "con las semillas 0 (CD, cambio de etiqueta, chainF) y 1 (CD, cambio de etiqueta) y se "
+                 "vieron esos números (CD 0,825 / 0,755; chainF 0,622) antes de descartarla; ese vistazo "
+                 "motivó mirar chainF y agregar cause_est. Por eso todas las pruebas de F7 usan las "
+                 "semillas nuevas 3, 4 y 5 (la 2 se descarta por prudencia) y corren una sola vez sobre "
+                 "lo elegido en validación (semillas 10 y 11).")
+
+
 def phase_f7b(a, data):
     """Prueba (split oficial de test, semillas 0-2) de la configuración elegida en
     validación, contra c2 y ER-ACE con los mismos bytes, con ablaciones: interferencia CD,
@@ -1073,14 +1118,14 @@ def phase_f7b(a, data):
     spec = chosen_spec()
     rows: list = []
     for sp in (spec, C2):
-        pair_rows(sp, a.seeds, D, tag="f7b", split="test", rows=rows, chain=True)
+        pair_rows(sp, a.seeds, D, tag="f7b", split="test", rows=rows, chain=True, rename=True)
     nb = int(np.mean([r["bytes"] for r in rows if r["bench"] == "interf" and r["scenario"] == "CD"
                       and r["model"] == spec]))
     er = f"erace+bytes={nb}+iters=3"
-    pair_rows(er, a.seeds, D, tag="f7b", split="test", rows=rows, chain=True)
+    pair_rows(er, a.seeds, D, tag="f7b", split="test", rows=rows, chain=True, rename=True)
     abl = ablations(spec)
     for name, sp in abl.items():
-        pair_rows(sp, a.seeds, D, tag="f7b", split="test", rows=rows)
+        pair_rows(sp, a.seeds, D, tag="f7b", split="test", rows=rows, chain=True)
     ov = []
     for sp in (spec, C2):                            # diagnóstico de representación (semilla 0)
         def go(sp=sp):
@@ -1092,8 +1137,10 @@ def phase_f7b(a, data):
     for r in rows:
         r.setdefault("split", "test")
     rows += ov
-    cfg = dict(seeds=a.seeds, chosen=spec, erace=er, ablations=abl,
-               protocol="entrenamiento sin las 500 imágenes por clase de validación; evaluación en test",
+    cfg = dict(seeds=a.seeds, chosen=spec, erace=er, ablations=abl, contamination=CONTAMINATION,
+               protocol="entrenamiento sin las 500 imágenes por clase de validación; evaluación en test, "
+                        "una sola vez, sobre la configuración elegida en f7a2",
+               rename=RENAME,
                drift=DRIFT, interference={k: SCENARIOS[k] for k in ("CD", "chainF")})
     finish("f7b", rows, {}, cfg)
 
@@ -1232,8 +1279,10 @@ def main():
     os.environ.setdefault("OMP_NUM_THREADS", "1")
     ap = argparse.ArgumentParser()
     ap.add_argument("phase", choices=sorted(PHASES))
-    ap.add_argument("--seeds", nargs="+", type=int, default=[0, 1, 2])
+    ap.add_argument("--seeds", nargs="+", type=int, default=None)
     a = ap.parse_args()
+    if a.seeds is None:                              # las pruebas de F7 usan semillas no contaminadas
+        a.seeds = list(F7_TEST_SEEDS) if a.phase in ("f6s", "f7b", "f7x", "f7k", "f7s", "f7c") else [0, 1, 2]
     _PHASE["name"] = a.phase
     PHASES[a.phase](a, load_data())
 
