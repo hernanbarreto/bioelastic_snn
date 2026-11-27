@@ -4,7 +4,7 @@
   "sha": "80a78700399cd469f4da14a654ad1895de3ada06",
   "sucio": false,
   "escala": 1.0,
-  "fecha": "2026-11-26 22:47:55",
+  "fecha": "2026-11-26 23:45:43",
   "python": "3.13.18",
   "numpy": "2.5.3",
   "catalogo": {
@@ -35,6 +35,8 @@
   }
  },
  "perfil": {
+  "perfil_opciones": "defecto",
+  "pruebas_con_el_perfil": [],
   "equivalentes": {
    "por_dimension": {
     "pocos_ejemplos": {
@@ -261,6 +263,7 @@
   },
   "sin_indice": [
    "babi/thinker_defecto_contexto",
+   "deteccion_de_cambio/dos_items",
    "igual_distinto/imagenes",
    "igual_distinto/simbolos",
    "inferencia_transitiva_5/simbolos",
@@ -269,11 +272,17 @@
    "mnist_addition/fiab_3000",
    "reversion_serial/simbolos",
    "reversion_volatil/simbolos",
-   "scan/thinker",
+   "scan/exp1_1pc",
+   "scan/exp1_1pc_3pasadas",
+   "scan/exp1_2pc",
+   "scan/exp1_4pc",
+   "scan/exp1_8pc",
+   "scan/jump",
    "split_fashion/c2",
    "split_mnist/c2"
   ]
  },
+ "perfiles_de_opciones": {},
  "filas": [
   {
    "prueba": "harlow",
@@ -302,6 +311,7 @@
     3,
     4
    ],
+   "variabilidad": "la semilla cambia el Thinker (pesos iniciales del escritor de registros y la exploración) y el entorno (qué objeto se premia, el orden en cada ensayo)",
    "azar": {
     "valor": 0.5,
     "derivacion": "dos objetos; antes de aprender a aprender, el ensayo 2 no supera al 1"
@@ -789,6 +799,7 @@
     1,
     2
    ],
+   "variabilidad": "la semilla cambia la percepción (orden de las imágenes de MNIST), los objetos de Omniglot, el Thinker y el entorno",
    "azar": {
     "valor": 0.5,
     "derivacion": "dos objetos; antes de aprender a aprender, el ensayo 2 no supera al 1"
@@ -1152,6 +1163,7 @@
     3,
     4
    ],
+   "variabilidad": "la semilla cambia el entorno (lados y objeto premiado al empezar) y el Thinker; con la configuración por defecto (sólo DECIR) el Thinker no usa la semilla: el ± es del entorno",
    "azar": {
     "valor": 70.41,
     "derivacion": "errores esperados por fase de quien elige al azar con el mismo criterio y tope de 200 ensayos (cálculo exacto); en el ensayo 2 tras una reversión el azar es 0,5"
@@ -1534,6 +1546,7 @@
     4,
     5
    ],
+   "variabilidad": "la semilla cambia el calendario (largos de 30 o 40, desenlaces sorteados, orden de las fases) y el Thinker; con la configuración por defecto el Thinker no usa la semilla: el ± es del entorno",
    "azar": {
     "valor": 0.0,
     "derivacion": "diferencia nula entre fases"
@@ -1862,6 +1875,7 @@
     6,
     7
    ],
+   "variabilidad": "la semilla cambia qué símbolo ocupa cada lugar del orden, el orden de los ensayos y el Thinker (con la configuración por defecto, sólo el entorno)",
    "azar": {
     "valor": 0.5,
     "derivacion": "elección entre dos"
@@ -2169,6 +2183,7 @@
     6,
     7
    ],
+   "variabilidad": "la semilla cambia qué símbolo ocupa cada lugar del orden, el orden de los ensayos y el Thinker (con la configuración por defecto, sólo el entorno)",
    "azar": {
     "valor": 0.5,
     "derivacion": "elección entre dos"
@@ -2549,6 +2564,7 @@
     6,
     7
    ],
+   "variabilidad": "la semilla cambia la lista, los pares sorteados en cada fase y el Thinker (con la configuración por defecto, sólo el entorno)",
    "azar": {
     "valor": 0.5,
     "derivacion": "elección entre dos"
@@ -3035,6 +3051,7 @@
     6,
     7
    ],
+   "variabilidad": "la semilla cambia el Thinker (pesos iniciales y exploración: aprende o no la política) y los episodios de entrenamiento y de prueba",
    "azar": {
     "valor": 0.0,
     "derivacion": "K = 0 cuando la exactitud es la de adivinar (50 %)"
@@ -3447,6 +3464,44 @@
    }
   },
   {
+   "prueba": "deteccion_de_cambio",
+   "variante": "dos_items",
+   "perfil": "defecto",
+   "nombre": "Memoria de trabajo visual: detección de cambio y capacidad K",
+   "dimension": "memoria_de_trabajo",
+   "condicion_entrada": "simbolos",
+   "equivalente": {
+    "valor": false,
+    "motivo": "no se pudo correr"
+   },
+   "metrica": "capacidad K con el procedimiento publicado (dos ítems, tocar el que cambió)",
+   "protocolo": "el de Elmore et al. (2011)",
+   "desviaciones": [],
+   "semillas": [
+    0
+   ],
+   "variabilidad": "",
+   "azar": {
+    "valor": 0.0,
+    "derivacion": "K = 0 cuando la exactitud es la de adivinar (50 %)"
+   },
+   "commit": "8fb949e2dc73",
+   "fuente_resultado": "medicion@8fb949e2dc73 (heredado: los archivos de percepción son idénticos en 80a78700399c, y la prueba no usa el Thinker)",
+   "segundos": 0.00010085105895996094,
+   "estado": "no aplicable hoy",
+   "motivo": "el procedimiento de Elmore et al. (vuelven dos ítems y hay que tocar el que cambió) no se puede presentar sin cambiar la arquitectura: el Thinker responde con un símbolo de su foco o con un juicio sobre su estado, y para señalar el lugar que cambió entre dos tendría que sostener uno y responder con el otro; la batería mide la versión de un solo ítem",
+   "red": null,
+   "referencia_humana": null,
+   "referencias_animales": [],
+   "referencias_maquinas": [],
+   "indice_normalizado": null,
+   "detalle": {},
+   "firmas": {},
+   "configuracion": {
+    "elegida": "única documentada para esta prueba"
+   }
+  },
+  {
    "prueba": "omniglot",
    "variante": "imagenes",
    "perfil": "defecto",
@@ -3471,6 +3526,7 @@
     1,
     2
    ],
+   "variabilidad": "la semilla cambia V1 (orden del conjunto de fondo y semilla del área); las 20 corridas de prueba son siempre las oficiales y el lector de un ejemplo es determinista",
    "azar": {
     "valor": 0.05,
     "derivacion": "1 de 20 opciones"
@@ -3737,6 +3793,7 @@
     1,
     2
    ],
+   "variabilidad": "determinista: el lector de un ejemplo no usa la semilla y las corridas son las oficiales",
    "azar": {
     "valor": 0.05,
     "derivacion": "1 de 20 opciones"
@@ -3963,6 +4020,7 @@
     1,
     2
    ],
+   "variabilidad": "la semilla cambia la red (depth2), qué caracteres forman cada conjunto, los ensayos y los caracteres nuevos de transferencia",
    "azar": {
     "valor": 0.5,
     "derivacion": "dos respuestas, mitad de ensayos iguales"
@@ -4361,6 +4419,7 @@
     3,
     4
    ],
+   "variabilidad": "la semilla cambia los símbolos de cada conjunto, los ensayos y el Thinker (con la configuración por defecto, sólo el entorno)",
    "azar": {
     "valor": 0.5,
     "derivacion": "dos respuestas, mitad de ensayos iguales"
@@ -4909,6 +4968,7 @@
     1,
     2
    ],
+   "variabilidad": "la semilla cambia la red (orden de las 20 000 imágenes de entrenamiento) y los estímulos de prueba (dígitos del test y ruido)",
    "azar": {
     "valor": 0.5,
     "derivacion": "confianza sin relación con el acierto"
@@ -5273,6 +5333,7 @@
     0,
     1
    ],
+   "variabilidad": "determinista: la red de texto no usa la semilla para aprender y el corpus va siempre en el mismo orden; los intervalos salen del bootstrap por bloques del tramo de prueba (en la curva)",
    "azar": {
     "valor": 0.5,
     "derivacion": "elección entre dos oraciones"
@@ -6831,6 +6892,7 @@
     1,
     2
    ],
+   "variabilidad": "la semilla de exp_vision cambia el orden de las 55 000 imágenes y la semilla de la red; el test es siempre el mismo",
    "azar": {
     "valor": 0.1,
     "derivacion": "10 clases balanceadas"
@@ -6960,6 +7022,7 @@
     1,
     2
    ],
+   "variabilidad": "la semilla de exp_vision cambia el orden de las 55 000 imágenes y la semilla de la red; el test es siempre el mismo",
    "azar": {
     "valor": 0.1,
     "derivacion": "10 clases balanceadas"
@@ -7089,6 +7152,7 @@
     1,
     2
    ],
+   "variabilidad": "la semilla de exp_vision cambia el orden de las 55 000 imágenes y la semilla de la red; el test es siempre el mismo",
    "azar": {
     "valor": 0.1,
     "derivacion": "10 clases balanceadas"
@@ -7219,6 +7283,7 @@
     1,
     2
    ],
+   "variabilidad": "la semilla de exp_vision cambia el orden de las 55 000 imágenes y la semilla de la red; el test es siempre el mismo",
    "azar": {
     "valor": 0.1,
     "derivacion": "10 clases balanceadas"
@@ -7350,6 +7415,7 @@
     1,
     2
    ],
+   "variabilidad": "semillas 0 a 2 de la rama predictivo: orden de las imágenes y semilla de la red",
    "azar": {
     "valor": 0.1,
     "derivacion": "10 clases balanceadas"
@@ -7446,6 +7512,7 @@
     1,
     2
    ],
+   "variabilidad": "semillas 0 a 2 de la rama predictivo: orden de las imágenes y semilla de la red",
    "azar": {
     "valor": 0.1,
     "derivacion": "10 clases balanceadas"
@@ -7541,6 +7608,7 @@
     1,
     2
    ],
+   "variabilidad": "semillas de la rama integracion3: armado de los pares, orden y semilla de la red; el test (5 000 pares) es el mismo",
    "azar": {
     "valor": 0.1,
     "derivacion": "responder siempre la suma más probable (9) acierta 10 de 100 pares con dígitos uniformes"
@@ -7691,6 +7759,7 @@
     6,
     7
    ],
+   "variabilidad": "semillas de la rama integracion3: armado de los pares, orden y semilla de la red; el test (5 000 pares) es el mismo",
    "azar": {
     "valor": 0.1,
     "derivacion": "responder siempre la suma más probable (9) acierta 10 de 100 pares con dígitos uniformes"
@@ -7856,6 +7925,7 @@
     1,
     2
    ],
+   "variabilidad": "semillas 0 a 2 de la rama integracion3: el flujo continuo (orden de las muestras) y la red",
    "azar": {
     "valor": 0.5,
     "derivacion": "confianza sin relación con el acierto"
@@ -8016,6 +8086,7 @@
     4,
     5
    ],
+   "variabilidad": "semillas 3 a 5 de la rama consolidacion: asignación de dígitos a tareas, orden y red",
    "azar": {
     "valor": 0.1,
     "derivacion": "10 clases balanceadas"
@@ -8242,6 +8313,7 @@
     4,
     5
    ],
+   "variabilidad": "semillas 3 a 5 de la rama consolidacion",
    "azar": {
     "valor": 0.1,
     "derivacion": "10 clases balanceadas"
@@ -8323,6 +8395,7 @@
    "semillas": [
     0
    ],
+   "variabilidad": "una sola semilla: no hay ± entre semillas",
    "azar": {
     "valor": null,
     "derivacion": "respuesta mayoritaria por tarea (de la tabla de la rama)"
@@ -8577,6 +8650,7 @@
     1,
     2
    ],
+   "variabilidad": "3 semillas del Thinker en la rama razonamiento3; el episodio de prueba es el mismo (el de las personas)",
    "azar": {
     "valor": 0.0,
     "derivacion": "salida exacta de una secuencia"
@@ -8652,7 +8726,836 @@
   },
   {
    "prueba": "scan",
-   "variante": "thinker",
+   "variante": "exp1_1pc",
+   "perfil": "defecto",
+   "nombre": "SCAN: composición de instrucciones (divisiones simple, jump y longitud)",
+   "dimension": "razonamiento_relacional",
+   "condicion_entrada": "simbolos",
+   "equivalente": {
+    "valor": false,
+    "motivo": "1 pasada(s) en línea contra 100 000 presentaciones; se compara con un sistema"
+   },
+   "metrica": "exactitud de secuencia exacta en una muestra de 1 000 comandos del test (1 % para entrenar)",
+   "protocolo": "rama razonamiento3, F6a (exploratorio): Thinker con valores por defecto + contexto temporal; 1 pasada(s) en línea por el 1 % de los comandos (división al azar del experimento 1 de Lake & Baroni 2018) y prueba congelada en 1 000 de los comandos restantes",
+   "desviaciones": [
+    "una sola semilla (exploratorio, según la rama)",
+    "1 pasada(s) en línea por los comandos de entrenamiento; el seq2seq publicado ve 100 000 presentaciones con reemplazo",
+    "muestra de 1 000 comandos del test en lugar de todos los restantes",
+    "palabras y acciones como símbolos, igual que en el seq2seq publicado"
+   ],
+   "semillas": [
+    0
+   ],
+   "variabilidad": "una sola semilla: no hay ± entre semillas",
+   "azar": {
+    "valor": 0.0,
+    "derivacion": "salida exacta de una secuencia: el azar es despreciable"
+   },
+   "commit": "7839e7b",
+   "fuente_resultado": "razonamiento3@7839e7b: /home/claude/wt/razonamiento3/results/razonamiento3_f6_scan_exp1.csv",
+   "segundos": 0.0,
+   "estado": "ingerido",
+   "motivo": "sin referencia humana verificada con la misma métrica: no hay índice normalizado",
+   "red": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "por_semilla": [
+     0.0
+    ],
+    "mediana": 0.0,
+    "minimo": 0.0,
+    "maximo": 0.0,
+    "semillas_en_azar": 1
+   },
+   "referencia_humana": null,
+   "referencias_animales": [],
+   "referencias_maquinas": [
+    {
+     "id": "lake2018_exp1_1pc",
+     "sistema": "LSTM seq2seq de 2 capas (200 unidades, sin atención, dropout 0,5), el mejor en conjunto del experimento 1, con 1 % de los comandos",
+     "valor": 0.05,
+     "tipo_valor": "aproximado",
+     "cita": "Lake & Baroni (2018), ICML, arXiv:1711.00350, experimento 1, texto («about 5% correct»)",
+     "url": "https://ar5iv.labs.arxiv.org/html/1711.00350",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "protocolo": "división al azar de los 20 910 comandos; entrenamiento con 100 000 presentaciones con reemplazo; 5 corridas por configuración; test: todos los comandos restantes",
+     "medida_red": "puntaje",
+     "valor_red": 0.0,
+     "comparacion": "sistema por encima"
+    },
+    {
+     "id": "lake2018_exp1_2pc",
+     "sistema": "LSTM seq2seq de 2 capas (200 unidades, sin atención, dropout 0,5), el mejor en conjunto del experimento 1, con 2 % de los comandos",
+     "valor": 0.54,
+     "tipo_valor": "aproximado",
+     "cita": "Lake & Baroni (2018), ICML, arXiv:1711.00350, experimento 1, texto («about 54% correct»)",
+     "url": "https://ar5iv.labs.arxiv.org/html/1711.00350",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "protocolo": "división al azar de los 20 910 comandos; entrenamiento con 100 000 presentaciones con reemplazo; 5 corridas por configuración; test: todos los comandos restantes",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "lake2018_exp1_4pc",
+     "sistema": "LSTM seq2seq de 2 capas (200 unidades, sin atención, dropout 0,5), el mejor en conjunto del experimento 1, con 4 % de los comandos",
+     "valor": 0.93,
+     "tipo_valor": "aproximado",
+     "cita": "Lake & Baroni (2018), ICML, arXiv:1711.00350, experimento 1, texto («about 93% correct»)",
+     "url": "https://ar5iv.labs.arxiv.org/html/1711.00350",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "protocolo": "división al azar de los 20 910 comandos; entrenamiento con 100 000 presentaciones con reemplazo; 5 corridas por configuración; test: todos los comandos restantes",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "lstm_simple",
+     "sistema": "LSTM seq2seq, división simple",
+     "valor": 0.998,
+     "cita": "tabla 2 de Dessì & Baroni (2019), arXiv:1905.08527",
+     "url": "https://arxiv.org/pdf/1905.08527",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "nota": "la tabla reúne resultados de trabajos anteriores con LSTM y GRU",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "lstm_jump",
+     "sistema": "LSTM seq2seq, división jump",
+     "valor": 0.012,
+     "cita": "ídem",
+     "url": "https://arxiv.org/pdf/1905.08527",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "cnn_jump",
+     "sistema": "CNN seq2seq, división jump",
+     "valor": 0.692,
+     "cita": "Dessì & Baroni (2019), arXiv:1905.08527",
+     "url": "https://arxiv.org/pdf/1905.08527",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "nota": "más o menos 8,2 entre corridas",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    }
+   ],
+   "indice_normalizado": null,
+   "detalle": {
+    "entrenamiento_secuencia_exacta": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0
+     ]
+    },
+    "test_ambiguos_como_bolsa_de_palabras": {
+     "media": 0.257,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.257
+     ]
+    },
+    "test_largo_correcto": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0
+     ]
+    },
+    "test_nunca_dijo_FIN": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0
+     ]
+    },
+    "test_primer_símbolo": {
+     "media": 0.427,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.427
+     ]
+    },
+    "test_símbolos_en_su_posición": {
+     "media": 0.2881,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.2881
+     ]
+    }
+   },
+   "firmas": {},
+   "curva": [],
+   "otras_referencias_humanas": []
+  },
+  {
+   "prueba": "scan",
+   "variante": "exp1_2pc",
+   "perfil": "defecto",
+   "nombre": "SCAN: composición de instrucciones (divisiones simple, jump y longitud)",
+   "dimension": "razonamiento_relacional",
+   "condicion_entrada": "simbolos",
+   "equivalente": {
+    "valor": false,
+    "motivo": "1 pasada(s) en línea contra 100 000 presentaciones; se compara con un sistema"
+   },
+   "metrica": "exactitud de secuencia exacta en una muestra de 1 000 comandos del test (2 % para entrenar)",
+   "protocolo": "rama razonamiento3, F6a (exploratorio): Thinker con valores por defecto + contexto temporal; 1 pasada(s) en línea por el 2 % de los comandos (división al azar del experimento 1 de Lake & Baroni 2018) y prueba congelada en 1 000 de los comandos restantes",
+   "desviaciones": [
+    "una sola semilla (exploratorio, según la rama)",
+    "1 pasada(s) en línea por los comandos de entrenamiento; el seq2seq publicado ve 100 000 presentaciones con reemplazo",
+    "muestra de 1 000 comandos del test en lugar de todos los restantes",
+    "palabras y acciones como símbolos, igual que en el seq2seq publicado"
+   ],
+   "semillas": [
+    0
+   ],
+   "variabilidad": "una sola semilla: no hay ± entre semillas",
+   "azar": {
+    "valor": 0.0,
+    "derivacion": "salida exacta de una secuencia: el azar es despreciable"
+   },
+   "commit": "7839e7b",
+   "fuente_resultado": "razonamiento3@7839e7b: /home/claude/wt/razonamiento3/results/razonamiento3_f6_scan_exp1.csv",
+   "segundos": 0.0,
+   "estado": "ingerido",
+   "motivo": "sin referencia humana verificada con la misma métrica: no hay índice normalizado",
+   "red": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "por_semilla": [
+     0.0
+    ],
+    "mediana": 0.0,
+    "minimo": 0.0,
+    "maximo": 0.0,
+    "semillas_en_azar": 1
+   },
+   "referencia_humana": null,
+   "referencias_animales": [],
+   "referencias_maquinas": [
+    {
+     "id": "lake2018_exp1_1pc",
+     "sistema": "LSTM seq2seq de 2 capas (200 unidades, sin atención, dropout 0,5), el mejor en conjunto del experimento 1, con 1 % de los comandos",
+     "valor": 0.05,
+     "tipo_valor": "aproximado",
+     "cita": "Lake & Baroni (2018), ICML, arXiv:1711.00350, experimento 1, texto («about 5% correct»)",
+     "url": "https://ar5iv.labs.arxiv.org/html/1711.00350",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "protocolo": "división al azar de los 20 910 comandos; entrenamiento con 100 000 presentaciones con reemplazo; 5 corridas por configuración; test: todos los comandos restantes",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "lake2018_exp1_2pc",
+     "sistema": "LSTM seq2seq de 2 capas (200 unidades, sin atención, dropout 0,5), el mejor en conjunto del experimento 1, con 2 % de los comandos",
+     "valor": 0.54,
+     "tipo_valor": "aproximado",
+     "cita": "Lake & Baroni (2018), ICML, arXiv:1711.00350, experimento 1, texto («about 54% correct»)",
+     "url": "https://ar5iv.labs.arxiv.org/html/1711.00350",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "protocolo": "división al azar de los 20 910 comandos; entrenamiento con 100 000 presentaciones con reemplazo; 5 corridas por configuración; test: todos los comandos restantes",
+     "medida_red": "puntaje",
+     "valor_red": 0.0,
+     "comparacion": "sistema por encima"
+    },
+    {
+     "id": "lake2018_exp1_4pc",
+     "sistema": "LSTM seq2seq de 2 capas (200 unidades, sin atención, dropout 0,5), el mejor en conjunto del experimento 1, con 4 % de los comandos",
+     "valor": 0.93,
+     "tipo_valor": "aproximado",
+     "cita": "Lake & Baroni (2018), ICML, arXiv:1711.00350, experimento 1, texto («about 93% correct»)",
+     "url": "https://ar5iv.labs.arxiv.org/html/1711.00350",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "protocolo": "división al azar de los 20 910 comandos; entrenamiento con 100 000 presentaciones con reemplazo; 5 corridas por configuración; test: todos los comandos restantes",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "lstm_simple",
+     "sistema": "LSTM seq2seq, división simple",
+     "valor": 0.998,
+     "cita": "tabla 2 de Dessì & Baroni (2019), arXiv:1905.08527",
+     "url": "https://arxiv.org/pdf/1905.08527",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "nota": "la tabla reúne resultados de trabajos anteriores con LSTM y GRU",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "lstm_jump",
+     "sistema": "LSTM seq2seq, división jump",
+     "valor": 0.012,
+     "cita": "ídem",
+     "url": "https://arxiv.org/pdf/1905.08527",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "cnn_jump",
+     "sistema": "CNN seq2seq, división jump",
+     "valor": 0.692,
+     "cita": "Dessì & Baroni (2019), arXiv:1905.08527",
+     "url": "https://arxiv.org/pdf/1905.08527",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "nota": "más o menos 8,2 entre corridas",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    }
+   ],
+   "indice_normalizado": null,
+   "detalle": {
+    "entrenamiento_secuencia_exacta": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0
+     ]
+    },
+    "test_ambiguos_como_bolsa_de_palabras": {
+     "media": 0.251,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.251
+     ]
+    },
+    "test_largo_correcto": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0
+     ]
+    },
+    "test_nunca_dijo_FIN": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0
+     ]
+    },
+    "test_primer_símbolo": {
+     "media": 0.426,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.426
+     ]
+    },
+    "test_símbolos_en_su_posición": {
+     "media": 0.3075,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.3075
+     ]
+    }
+   },
+   "firmas": {},
+   "curva": [],
+   "otras_referencias_humanas": []
+  },
+  {
+   "prueba": "scan",
+   "variante": "exp1_4pc",
+   "perfil": "defecto",
+   "nombre": "SCAN: composición de instrucciones (divisiones simple, jump y longitud)",
+   "dimension": "razonamiento_relacional",
+   "condicion_entrada": "simbolos",
+   "equivalente": {
+    "valor": false,
+    "motivo": "1 pasada(s) en línea contra 100 000 presentaciones; se compara con un sistema"
+   },
+   "metrica": "exactitud de secuencia exacta en una muestra de 1 000 comandos del test (4 % para entrenar)",
+   "protocolo": "rama razonamiento3, F6a (exploratorio): Thinker con valores por defecto + contexto temporal; 1 pasada(s) en línea por el 4 % de los comandos (división al azar del experimento 1 de Lake & Baroni 2018) y prueba congelada en 1 000 de los comandos restantes",
+   "desviaciones": [
+    "una sola semilla (exploratorio, según la rama)",
+    "1 pasada(s) en línea por los comandos de entrenamiento; el seq2seq publicado ve 100 000 presentaciones con reemplazo",
+    "muestra de 1 000 comandos del test en lugar de todos los restantes",
+    "palabras y acciones como símbolos, igual que en el seq2seq publicado"
+   ],
+   "semillas": [
+    0
+   ],
+   "variabilidad": "una sola semilla: no hay ± entre semillas",
+   "azar": {
+    "valor": 0.0,
+    "derivacion": "salida exacta de una secuencia: el azar es despreciable"
+   },
+   "commit": "7839e7b",
+   "fuente_resultado": "razonamiento3@7839e7b: /home/claude/wt/razonamiento3/results/razonamiento3_f6_scan_exp1.csv",
+   "segundos": 0.0,
+   "estado": "ingerido",
+   "motivo": "sin referencia humana verificada con la misma métrica: no hay índice normalizado",
+   "red": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "por_semilla": [
+     0.0
+    ],
+    "mediana": 0.0,
+    "minimo": 0.0,
+    "maximo": 0.0,
+    "semillas_en_azar": 1
+   },
+   "referencia_humana": null,
+   "referencias_animales": [],
+   "referencias_maquinas": [
+    {
+     "id": "lake2018_exp1_1pc",
+     "sistema": "LSTM seq2seq de 2 capas (200 unidades, sin atención, dropout 0,5), el mejor en conjunto del experimento 1, con 1 % de los comandos",
+     "valor": 0.05,
+     "tipo_valor": "aproximado",
+     "cita": "Lake & Baroni (2018), ICML, arXiv:1711.00350, experimento 1, texto («about 5% correct»)",
+     "url": "https://ar5iv.labs.arxiv.org/html/1711.00350",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "protocolo": "división al azar de los 20 910 comandos; entrenamiento con 100 000 presentaciones con reemplazo; 5 corridas por configuración; test: todos los comandos restantes",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "lake2018_exp1_2pc",
+     "sistema": "LSTM seq2seq de 2 capas (200 unidades, sin atención, dropout 0,5), el mejor en conjunto del experimento 1, con 2 % de los comandos",
+     "valor": 0.54,
+     "tipo_valor": "aproximado",
+     "cita": "Lake & Baroni (2018), ICML, arXiv:1711.00350, experimento 1, texto («about 54% correct»)",
+     "url": "https://ar5iv.labs.arxiv.org/html/1711.00350",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "protocolo": "división al azar de los 20 910 comandos; entrenamiento con 100 000 presentaciones con reemplazo; 5 corridas por configuración; test: todos los comandos restantes",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "lake2018_exp1_4pc",
+     "sistema": "LSTM seq2seq de 2 capas (200 unidades, sin atención, dropout 0,5), el mejor en conjunto del experimento 1, con 4 % de los comandos",
+     "valor": 0.93,
+     "tipo_valor": "aproximado",
+     "cita": "Lake & Baroni (2018), ICML, arXiv:1711.00350, experimento 1, texto («about 93% correct»)",
+     "url": "https://ar5iv.labs.arxiv.org/html/1711.00350",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "protocolo": "división al azar de los 20 910 comandos; entrenamiento con 100 000 presentaciones con reemplazo; 5 corridas por configuración; test: todos los comandos restantes",
+     "medida_red": "puntaje",
+     "valor_red": 0.0,
+     "comparacion": "sistema por encima"
+    },
+    {
+     "id": "lstm_simple",
+     "sistema": "LSTM seq2seq, división simple",
+     "valor": 0.998,
+     "cita": "tabla 2 de Dessì & Baroni (2019), arXiv:1905.08527",
+     "url": "https://arxiv.org/pdf/1905.08527",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "nota": "la tabla reúne resultados de trabajos anteriores con LSTM y GRU",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "lstm_jump",
+     "sistema": "LSTM seq2seq, división jump",
+     "valor": 0.012,
+     "cita": "ídem",
+     "url": "https://arxiv.org/pdf/1905.08527",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "cnn_jump",
+     "sistema": "CNN seq2seq, división jump",
+     "valor": 0.692,
+     "cita": "Dessì & Baroni (2019), arXiv:1905.08527",
+     "url": "https://arxiv.org/pdf/1905.08527",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "nota": "más o menos 8,2 entre corridas",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    }
+   ],
+   "indice_normalizado": null,
+   "detalle": {
+    "entrenamiento_secuencia_exacta": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0
+     ]
+    },
+    "test_ambiguos_como_bolsa_de_palabras": {
+     "media": 0.235,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.235
+     ]
+    },
+    "test_largo_correcto": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0
+     ]
+    },
+    "test_nunca_dijo_FIN": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0
+     ]
+    },
+    "test_primer_símbolo": {
+     "media": 0.278,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.278
+     ]
+    },
+    "test_símbolos_en_su_posición": {
+     "media": 0.3226,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.3226
+     ]
+    }
+   },
+   "firmas": {},
+   "curva": [],
+   "otras_referencias_humanas": []
+  },
+  {
+   "prueba": "scan",
+   "variante": "exp1_8pc",
+   "perfil": "defecto",
+   "nombre": "SCAN: composición de instrucciones (divisiones simple, jump y longitud)",
+   "dimension": "razonamiento_relacional",
+   "condicion_entrada": "simbolos",
+   "equivalente": {
+    "valor": false,
+    "motivo": "1 pasada(s) en línea contra 100 000 presentaciones; se compara con un sistema"
+   },
+   "metrica": "exactitud de secuencia exacta en una muestra de 1 000 comandos del test (8 % para entrenar)",
+   "protocolo": "rama razonamiento3, F6a (exploratorio): Thinker con valores por defecto + contexto temporal; 1 pasada(s) en línea por el 8 % de los comandos (división al azar del experimento 1 de Lake & Baroni 2018) y prueba congelada en 1 000 de los comandos restantes",
+   "desviaciones": [
+    "una sola semilla (exploratorio, según la rama)",
+    "1 pasada(s) en línea por los comandos de entrenamiento; el seq2seq publicado ve 100 000 presentaciones con reemplazo",
+    "muestra de 1 000 comandos del test en lugar de todos los restantes",
+    "palabras y acciones como símbolos, igual que en el seq2seq publicado",
+    "con 8 % no hay cifra publicada verificada (sólo en la figura 3)"
+   ],
+   "semillas": [
+    0
+   ],
+   "variabilidad": "una sola semilla: no hay ± entre semillas",
+   "azar": {
+    "valor": 0.0,
+    "derivacion": "salida exacta de una secuencia: el azar es despreciable"
+   },
+   "commit": "7839e7b",
+   "fuente_resultado": "razonamiento3@7839e7b: /home/claude/wt/razonamiento3/results/razonamiento3_f6_scan_exp1.csv",
+   "segundos": 0.0,
+   "estado": "ingerido",
+   "motivo": "sin referencia humana verificada con la misma métrica: no hay índice normalizado",
+   "red": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "por_semilla": [
+     0.0
+    ],
+    "mediana": 0.0,
+    "minimo": 0.0,
+    "maximo": 0.0,
+    "semillas_en_azar": 1
+   },
+   "referencia_humana": null,
+   "referencias_animales": [],
+   "referencias_maquinas": [
+    {
+     "id": "lake2018_exp1_1pc",
+     "sistema": "LSTM seq2seq de 2 capas (200 unidades, sin atención, dropout 0,5), el mejor en conjunto del experimento 1, con 1 % de los comandos",
+     "valor": 0.05,
+     "tipo_valor": "aproximado",
+     "cita": "Lake & Baroni (2018), ICML, arXiv:1711.00350, experimento 1, texto («about 5% correct»)",
+     "url": "https://ar5iv.labs.arxiv.org/html/1711.00350",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "protocolo": "división al azar de los 20 910 comandos; entrenamiento con 100 000 presentaciones con reemplazo; 5 corridas por configuración; test: todos los comandos restantes",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "lake2018_exp1_2pc",
+     "sistema": "LSTM seq2seq de 2 capas (200 unidades, sin atención, dropout 0,5), el mejor en conjunto del experimento 1, con 2 % de los comandos",
+     "valor": 0.54,
+     "tipo_valor": "aproximado",
+     "cita": "Lake & Baroni (2018), ICML, arXiv:1711.00350, experimento 1, texto («about 54% correct»)",
+     "url": "https://ar5iv.labs.arxiv.org/html/1711.00350",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "protocolo": "división al azar de los 20 910 comandos; entrenamiento con 100 000 presentaciones con reemplazo; 5 corridas por configuración; test: todos los comandos restantes",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "lake2018_exp1_4pc",
+     "sistema": "LSTM seq2seq de 2 capas (200 unidades, sin atención, dropout 0,5), el mejor en conjunto del experimento 1, con 4 % de los comandos",
+     "valor": 0.93,
+     "tipo_valor": "aproximado",
+     "cita": "Lake & Baroni (2018), ICML, arXiv:1711.00350, experimento 1, texto («about 93% correct»)",
+     "url": "https://ar5iv.labs.arxiv.org/html/1711.00350",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "protocolo": "división al azar de los 20 910 comandos; entrenamiento con 100 000 presentaciones con reemplazo; 5 corridas por configuración; test: todos los comandos restantes",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "lstm_simple",
+     "sistema": "LSTM seq2seq, división simple",
+     "valor": 0.998,
+     "cita": "tabla 2 de Dessì & Baroni (2019), arXiv:1905.08527",
+     "url": "https://arxiv.org/pdf/1905.08527",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "nota": "la tabla reúne resultados de trabajos anteriores con LSTM y GRU",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "lstm_jump",
+     "sistema": "LSTM seq2seq, división jump",
+     "valor": 0.012,
+     "cita": "ídem",
+     "url": "https://arxiv.org/pdf/1905.08527",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "cnn_jump",
+     "sistema": "CNN seq2seq, división jump",
+     "valor": 0.692,
+     "cita": "Dessì & Baroni (2019), arXiv:1905.08527",
+     "url": "https://arxiv.org/pdf/1905.08527",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "nota": "más o menos 8,2 entre corridas",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    }
+   ],
+   "indice_normalizado": null,
+   "detalle": {
+    "entrenamiento_secuencia_exacta": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0
+     ]
+    },
+    "test_ambiguos_como_bolsa_de_palabras": {
+     "media": 0.231,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.231
+     ]
+    },
+    "test_largo_correcto": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0
+     ]
+    },
+    "test_nunca_dijo_FIN": {
+     "media": 0.985,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.985
+     ]
+    },
+    "test_primer_símbolo": {
+     "media": 0.543,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.543
+     ]
+    },
+    "test_símbolos_en_su_posición": {
+     "media": 0.3456,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.3456
+     ]
+    }
+   },
+   "firmas": {},
+   "curva": [],
+   "otras_referencias_humanas": []
+  },
+  {
+   "prueba": "scan",
+   "variante": "exp1_1pc_3pasadas",
+   "perfil": "defecto",
+   "nombre": "SCAN: composición de instrucciones (divisiones simple, jump y longitud)",
+   "dimension": "razonamiento_relacional",
+   "condicion_entrada": "simbolos",
+   "equivalente": {
+    "valor": false,
+    "motivo": "3 pasada(s) en línea contra 100 000 presentaciones; se compara con un sistema"
+   },
+   "metrica": "exactitud de secuencia exacta en una muestra de 1 000 comandos del test (1 % para entrenar)",
+   "protocolo": "rama razonamiento3, F6a (exploratorio): Thinker con valores por defecto + contexto temporal; 3 pasada(s) en línea por el 1 % de los comandos (división al azar del experimento 1 de Lake & Baroni 2018) y prueba congelada en 1 000 de los comandos restantes",
+   "desviaciones": [
+    "una sola semilla (exploratorio, según la rama)",
+    "3 pasada(s) en línea por los comandos de entrenamiento; el seq2seq publicado ve 100 000 presentaciones con reemplazo",
+    "muestra de 1 000 comandos del test en lugar de todos los restantes",
+    "palabras y acciones como símbolos, igual que en el seq2seq publicado"
+   ],
+   "semillas": [
+    0
+   ],
+   "variabilidad": "una sola semilla: no hay ± entre semillas",
+   "azar": {
+    "valor": 0.0,
+    "derivacion": "salida exacta de una secuencia: el azar es despreciable"
+   },
+   "commit": "7839e7b",
+   "fuente_resultado": "razonamiento3@7839e7b: /home/claude/wt/razonamiento3/results/razonamiento3_f6_scan_exp1.csv",
+   "segundos": 0.0,
+   "estado": "ingerido",
+   "motivo": "sin referencia humana verificada con la misma métrica: no hay índice normalizado",
+   "red": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "por_semilla": [
+     0.0
+    ],
+    "mediana": 0.0,
+    "minimo": 0.0,
+    "maximo": 0.0,
+    "semillas_en_azar": 1
+   },
+   "referencia_humana": null,
+   "referencias_animales": [],
+   "referencias_maquinas": [
+    {
+     "id": "lake2018_exp1_1pc",
+     "sistema": "LSTM seq2seq de 2 capas (200 unidades, sin atención, dropout 0,5), el mejor en conjunto del experimento 1, con 1 % de los comandos",
+     "valor": 0.05,
+     "tipo_valor": "aproximado",
+     "cita": "Lake & Baroni (2018), ICML, arXiv:1711.00350, experimento 1, texto («about 5% correct»)",
+     "url": "https://ar5iv.labs.arxiv.org/html/1711.00350",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "protocolo": "división al azar de los 20 910 comandos; entrenamiento con 100 000 presentaciones con reemplazo; 5 corridas por configuración; test: todos los comandos restantes",
+     "medida_red": "puntaje",
+     "valor_red": 0.0,
+     "comparacion": "sistema por encima"
+    },
+    {
+     "id": "lake2018_exp1_2pc",
+     "sistema": "LSTM seq2seq de 2 capas (200 unidades, sin atención, dropout 0,5), el mejor en conjunto del experimento 1, con 2 % de los comandos",
+     "valor": 0.54,
+     "tipo_valor": "aproximado",
+     "cita": "Lake & Baroni (2018), ICML, arXiv:1711.00350, experimento 1, texto («about 54% correct»)",
+     "url": "https://ar5iv.labs.arxiv.org/html/1711.00350",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "protocolo": "división al azar de los 20 910 comandos; entrenamiento con 100 000 presentaciones con reemplazo; 5 corridas por configuración; test: todos los comandos restantes",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "lake2018_exp1_4pc",
+     "sistema": "LSTM seq2seq de 2 capas (200 unidades, sin atención, dropout 0,5), el mejor en conjunto del experimento 1, con 4 % de los comandos",
+     "valor": 0.93,
+     "tipo_valor": "aproximado",
+     "cita": "Lake & Baroni (2018), ICML, arXiv:1711.00350, experimento 1, texto («about 93% correct»)",
+     "url": "https://ar5iv.labs.arxiv.org/html/1711.00350",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "protocolo": "división al azar de los 20 910 comandos; entrenamiento con 100 000 presentaciones con reemplazo; 5 corridas por configuración; test: todos los comandos restantes",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "lstm_simple",
+     "sistema": "LSTM seq2seq, división simple",
+     "valor": 0.998,
+     "cita": "tabla 2 de Dessì & Baroni (2019), arXiv:1905.08527",
+     "url": "https://arxiv.org/pdf/1905.08527",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "nota": "la tabla reúne resultados de trabajos anteriores con LSTM y GRU",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "lstm_jump",
+     "sistema": "LSTM seq2seq, división jump",
+     "valor": 0.012,
+     "cita": "ídem",
+     "url": "https://arxiv.org/pdf/1905.08527",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "cnn_jump",
+     "sistema": "CNN seq2seq, división jump",
+     "valor": 0.692,
+     "cita": "Dessì & Baroni (2019), arXiv:1905.08527",
+     "url": "https://arxiv.org/pdf/1905.08527",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "nota": "más o menos 8,2 entre corridas",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    }
+   ],
+   "indice_normalizado": null,
+   "detalle": {
+    "entrenamiento_secuencia_exacta": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0
+     ]
+    },
+    "test_ambiguos_como_bolsa_de_palabras": {
+     "media": 0.237,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.237
+     ]
+    },
+    "test_largo_correcto": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0
+     ]
+    },
+    "test_nunca_dijo_FIN": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0
+     ]
+    },
+    "test_primer_símbolo": {
+     "media": 0.331,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.331
+     ]
+    },
+    "test_símbolos_en_su_posición": {
+     "media": 0.2492,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.2492
+     ]
+    }
+   },
+   "firmas": {},
+   "curva": [],
+   "otras_referencias_humanas": []
+  },
+  {
+   "prueba": "scan",
+   "variante": "jump",
    "perfil": "defecto",
    "nombre": "SCAN: composición de instrucciones (divisiones simple, jump y longitud)",
    "dimension": "razonamiento_relacional",
@@ -8661,19 +9564,20 @@
     "valor": false,
     "motivo": ""
    },
-   "metrica": "(la define la rama razonamiento3)",
-   "protocolo": "SCAN: lo corre la rama razonamiento3 (F6, curva en curso)",
+   "metrica": "exactitud de secuencia exacta (división jump)",
+   "protocolo": "SCAN, división jump: la rama razonamiento3 no la corrió todavía",
    "desviaciones": [],
    "semillas": [],
+   "variabilidad": "",
    "azar": {
     "valor": 0.0,
     "derivacion": "salida exacta de una secuencia: el azar es despreciable"
    },
-   "commit": "",
-   "fuente_resultado": "razonamiento3: /home/claude/wt/razonamiento3/results/razonamiento3_f6_scan.csv",
+   "commit": "c884631",
+   "fuente_resultado": "razonamiento3: /home/claude/wt/razonamiento3/results/razonamiento3_f6_scan.parts.json",
    "segundos": 0.0,
    "estado": "pendiente",
-   "motivo": "SCAN: la rama razonamiento3 tiene la curva en curso (sólo archivos parciales)",
+   "motivo": "SCAN división jump: todavía no hay resultados en la rama razonamiento3",
    "red": null,
    "referencia_humana": null,
    "referencias_animales": [],

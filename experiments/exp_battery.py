@@ -101,32 +101,38 @@ def informe(info: dict, pruebas, almacen, catalogo, resultados: Path, escala: fl
         if err:
             raise RuntimeError(f"fila inválida {f['prueba']}/{f['variante']}: {err}")
     perfil = esquema.perfil(filas, catalogo)
+    otros = {po: esquema.perfil(filas, catalogo, po) for po in esquema.perfiles_presentes(filas)[1:]}
     import numpy
     out = dict(meta=dict(commit=info["commit"], sha=info["sha"], sucio=info["sucio"], escala=escala,
                          fecha=time.strftime("%Y-%m-%d %H:%M:%S"), python=platform.python_version(),
                          numpy=numpy.__version__, catalogo=dict(estado=catalogo.get("estado"),
                                                                 actualizado=catalogo.get("actualizado")),
                          convenciones=catalogo["convenciones"]),
-               perfil=perfil, filas=filas)
+               perfil=perfil, perfiles_de_opciones=otros, filas=filas)
     nombre = f"bateria_{info['commit']}"
     esquema.escribir_json(out, resultados / f"{nombre}.json")
     esquema.escribir_csv(filas, resultados / f"{nombre}.csv")
-    esquema.escribir_perfil_csv(perfil, resultados / f"{nombre}_perfil.csv")
+    esquema.escribir_perfil_csv([perfil, *otros.values()], resultados / f"{nombre}_perfil.csv")
     esquema.escribir_perfiles_csv(filas, resultados / f"{nombre}_perfiles_thinker.csv")
     log(esquema.tabla(filas))
     log("")
     for tipo in ("equivalentes", "todas"):
-        g = perfil[tipo]["global_"]
         log(f"perfil ({'sólo comparaciones equivalentes' if tipo == 'equivalentes' else 'todas las condiciones'}):")
         if tipo == "todas":
             log(f"  ADVERTENCIA: {esquema.ADVERTENCIA_TODAS}")
-        for d, v in perfil[tipo]["por_dimension"].items():
-            log(f"  {d:28s} {v['min']:.2f}" + ("" if abs(v['max'] - v['min']) < 0.005 else f" a {v['max']:.2f}")
-                + f"  ({', '.join(x['prueba'] for x in v['pruebas'])})")
-        if g:
-            log(f"  promedio entre dimensiones (convención): {g['min']:.2f}"
-                + ("" if abs(g['max'] - g['min']) < 0.005 else f" a {g['max']:.2f}")
-                + f", {g['dimensiones']} de {g['de']} dimensiones")
+        for pf in (perfil, *otros.values()):
+            po = pf["perfil_opciones"]
+            g = pf[tipo]["global_"]
+            if po != "defecto":
+                log(f"  con el perfil {po} (en {', '.join(pf['pruebas_con_el_perfil'])}; el resto con las opciones "
+                    f"por defecto):")
+            for d, v in pf[tipo]["por_dimension"].items():
+                log(f"  {d:28s} {v['min']:.2f}" + ("" if f"{v['max']:.2f}" == f"{v['min']:.2f}" else f" a {v['max']:.2f}")
+                    + f"  ({', '.join(x['prueba'] for x in v['pruebas'])})")
+            if g:
+                log(f"  promedio entre dimensiones (convención): {g['min']:.2f}"
+                    + ("" if f"{g['max']:.2f}" == f"{g['min']:.2f}" else f" a {g['max']:.2f}")
+                    + f", {g['dimensiones']} de {g['de']} dimensiones")
     log(f"\n-> {resultados / (nombre + '.json')}")
     return out
 
