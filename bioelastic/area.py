@@ -54,6 +54,20 @@ de cambiar (ni STDP, ni error local sobre los rasgos, ni nacimientos, ni poda) y
 aprendiendo su lector local. Con períodos escalonados (V1 cierra antes que V2) cada área
 aprende sobre una entrada que ya no se mueve.
 
+Consolidación con reapertura (opcional, `consolidate=dict(...)`): la plasticidad del
+diccionario es una ganancia phi en [floor, 1] que multiplica la tasa de STDP, la del error
+local sobre los rasgos y el cupo de nacimientos (el lector local aprende siempre). La decide
+una señal medida, el error de cuantización del área e = 1 - coseno medio del mejor rasgo en
+cada parche (o `pe` con signal="pe"), con dos medias móviles (rápida y lenta):
+  rápida < lenta * (1 - improve)   el diccionario todavía reduce el error (más que `eps`
+                                   en valor absoluto): phi se mantiene
+  dentro de la banda               ya no mejora: phi decae con constante tau_close hasta
+                                   `floor` (plasticidad adulta, nunca cero)
+  rápida > lenta * (1 + open)      error sostenido por encima de su media: phi vuelve a 1
+                                   (reapertura, tipo noradrenalina) y `reopened` avisa
+Un área no cierra mientras la de abajo siga abierta (`hold`), y si la de abajo reabre, la de
+arriba también (su entrada cambió): lo coordina `Cortex`.
+
 Regla de traza (opcional, `trace=dict(lr, decay)`; Földiák 1991): cada célula compleja
 guarda una traza de su actividad en las vistas anteriores de la misma secuencia (micro-
 sacadas sobre una imagen). Un rasgo que estuvo activo en q aprende también del parche que
@@ -100,7 +114,7 @@ class FeatureArea:
                  local: dict | None = None, n_classes: int = 0, seed: int = 0,
                  predictive: dict | None = None, lateral: dict | None = None,
                  support: int = 0, passthrough: bool = False, trace: dict | None = None,
-                 soft: dict | None = None, critical: int = 0):
+                 soft: dict | None = None, critical: int = 0, consolidate: dict | None = None):
         H, W, C = (int(v) for v in in_shape)
         self.in_shape = (H, W, C)
         self.rf = _pair(rf); self.stride = _pair(stride); self.pool = _pair(pool)
@@ -153,6 +167,19 @@ class FeatureArea:
         self._pool_pos = ((qy[:, :, None] + my) * self.ow + (qx[:, :, None] + mx)).reshape(-1, a * b)
         if self.passthrough:                                      # entradas que ve cada célula compleja
             self._pass_idx = np.stack([np.unique(self._gather[pp].ravel()) for pp in self._pool_pos])
+
+        self.con = None; self.phi = 1.0; self.hold = False; self.reopened = False; self.reopens = 0
+        if consolidate:
+            spec = dict(tau_fast=100.0, tau_slow=1000.0, tau_close=1000.0, floor=0.02, open=0.15,
+                        improve=0.02, eps=0.002, warmup=300, signal="match")
+            unknown = set(consolidate) - set(spec)
+            if unknown:
+                raise ValueError(f"opciones de `consolidate` desconocidas: {sorted(unknown)}")
+            spec.update(consolidate)
+            if spec["signal"] not in ("match", "pe"):
+                raise ValueError(f"signal desconocida: {spec['signal']}")
+            self.con = spec
+            self._e_fast = 0.0; self._e_slow = 0.0; self._con_n = 0; self._cdebt = 0.0
 
         self.soft = None
         if soft:
@@ -471,6 +498,8 @@ class FeatureArea:
                 self.prediction_error()
             self._learn_generative()
             g, gn = self._surprise_gain(self.pe if surprise is None else surprise)
+        if self.con is not None:                                  # consolidación: plasticidad adulta
+            g *= self.phi; gn *= self.phi
         Pm, norms, vr, act, arg, code = self._cache
         self._cache = None
         if self.lat is not None:
@@ -481,7 +510,7 @@ class FeatureArea:
             self._learn_local(int(target), Pm, norms, act_full, arg, code,
                               prior if self.local.get("residual") else None, scale=g)
         if self.tr is not None and act is not None:
-            self._learn_trace(Pm, norms, vr, act, code)
+            self._learn_trace(Pm, norms, vr, act, code, g)
         self.t += 1
         n = self.n
         if act is not None:
@@ -531,6 +560,10 @@ class FeatureArea:
                 nov = nov[np.argsort(-energy)][:16]               # primero lo que la predicción no explica
             else:
                 nov = nov[np.argsort(-norms[nov])][:16]           # primero los parches con más energía
+                if self.con is not None:                          # cupo de nacimientos consolidado
+                    rps = float(self.recruit_per_step)
+                    self._cdebt = min(self._cdebt + rps * self.phi, rps)
+                    limit = int(self._cdebt); self._cdebt -= limit
             fresh = []
             for c in nov:
                 if len(fresh) >= limit:
@@ -542,6 +575,8 @@ class FeatureArea:
                     break
                 fresh.append(f)
         grow = int(self.local["grow"]) if self.local is not None else 0
+        if grow and self.con is not None:
+            grow = int(round(grow * self.phi))
         if grow and self._lerr is not None and self._lerr[0] and len(vr):
             # neurogénesis por error: el lector local falló; nacen rasgos en las células
             # complejas donde el error dendrítico es mayor (parche con más energía de su campo)
@@ -563,6 +598,11 @@ class FeatureArea:
                 made.append(f)
             self.grown += len(made)
         self._lerr = None
+        if self.con is not None:                                  # señal medida: error de cuantización
+            if self.con["signal"] == "pe" and self.pc is not None:
+                self._consolidate(self.pe)
+            elif len(bc):
+                self._consolidate(1.0 - float(bc.mean()))
         if self.maintain_every and self.t % self.maintain_every == 0:
             self.maintain()
 
@@ -634,6 +674,33 @@ class FeatureArea:
         nf = np.bincount(np.searchsorted(u, f), minlength=len(u)).astype(np.float32)
         self.G[u] += (np.float32(lr) / nf)[:, None] * s
 
+    def _consolidate(self, e: float):
+        """Cierre gradual y reapertura de la plasticidad según el error medido (ver módulo)."""
+        c = self.con
+        self._con_n += 1
+        self._e_fast += (e - self._e_fast) / min(self._con_n, float(c["tau_fast"]))
+        self._e_slow += (e - self._e_slow) / min(self._con_n, float(c["tau_slow"]))
+        self.reopened = False
+        if self._con_n < c["warmup"] or self._e_slow <= 0.0:
+            return
+        rho = self._e_fast / self._e_slow
+        gain = self._e_slow - self._e_fast                        # cuánto baja el error todavía
+        if rho > 1.0 + float(c["open"]) and -gain > float(c["eps"]):   # sorpresa sostenida: reabrir
+            if self.phi < 0.5:
+                self.reopened = True; self.reopens += 1
+            self.phi = 1.0
+        elif gain > max(float(c["improve"]) * self._e_slow, float(c["eps"])) or self.hold:
+            pass                                                  # mejora, o abajo sigue abierto
+        else:                                                     # ya no mejora: consolidar
+            self.phi = max(float(c["floor"]), self.phi * (1.0 - 1.0 / float(c["tau_close"])))
+
+    def reopen(self):
+        """La entrada del área cambió (el área de abajo reabrió): vuelve la plasticidad."""
+        if self.con is not None:
+            if self.phi < 0.5:
+                self.reopens += 1
+            self.phi = 1.0
+
     def _learn_soft(self, Pm, norms, vr, act, g: float = 1.0):
         """Hebb de WTA blando (SoftHebb): dW_f = lr * mean_p s_pf y_pf (x̂_p - u_pf W_f)."""
         n = act.shape[1]
@@ -662,7 +729,7 @@ class FeatureArea:
         if self.tr is not None:
             self._trace[:] = 0.0
 
-    def _learn_trace(self, Pm, norms, vr, act, code):
+    def _learn_trace(self, Pm, norms, vr, act, code, g: float = 1.0):
         """Földiák (1991): los rasgos activos en las vistas anteriores aprenden del parche que
         mejor les responde ahora en el vecindario de donde estaban; después se actualiza la
         traza con el código actual."""
@@ -685,7 +752,7 @@ class FeatureArea:
                     X = Pm[pos] / np.maximum(norms[pos], 1e-6)[:, None]
                 u, sx = _segment_sum(fs, X, w)
                 sw = np.bincount(np.searchsorted(u, fs), weights=w, minlength=len(u)).astype(np.float32)
-                Wn = self.W[u] + np.float32(self.tr["lr"]) * (sx / sw[:, None] - self.W[u])
+                Wn = self.W[u] + np.float32(self.tr["lr"] * g) * (sx / sw[:, None] - self.W[u])
                 self.W[u] = Wn / np.maximum(np.linalg.norm(Wn, axis=1, keepdims=True), 1e-8)
         d = np.float32(self.tr["decay"])
         self._trace[:, :n] = d * prev + code[:, :, :n].reshape(-1, n)
@@ -816,6 +883,9 @@ class FeatureArea:
                    meta=np.array([self.n, self.t, self.created, self.pruned], dtype=np.int64))
         if self.local is not None:
             out["clf"] = self.clf.W
+        if self.con is not None:
+            out["con"] = np.array([self.phi, self._e_fast, self._e_slow, self._con_n, self.reopens,
+                                   self._cdebt], dtype=np.float64)
         if self.lat is not None:
             out["V"] = self.V; out["lat_m"] = self.lat_m; out["lat_n"] = np.array([self.lat_n])
             out["lat_b"] = self.lat_b
@@ -833,6 +903,10 @@ class FeatureArea:
         self.n, self.t, self.created, self.pruned = (int(v) for v in z[prefix + "meta"])
         if self.local is not None and prefix + "clf" in z:
             self.clf.W[:] = z[prefix + "clf"]
+        if self.con is not None and prefix + "con" in z:
+            v = [float(x) for x in z[prefix + "con"]]
+            self.phi, self._e_fast, self._e_slow = v[0], v[1], v[2]
+            self._con_n, self.reopens, self._cdebt = int(v[3]), int(v[4]), v[5]
         if self.lat is not None and prefix + "V" in z:
             self.V[:] = z[prefix + "V"]; self.lat_m[:] = z[prefix + "lat_m"]
             self.lat_n = int(z[prefix + "lat_n"][0]); self.lat_b[:] = z[prefix + "lat_b"]

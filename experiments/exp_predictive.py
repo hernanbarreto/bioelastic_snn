@@ -104,6 +104,31 @@ def levels_of(net: Cortex, x) -> list:
     return [x] + list(net._codes)
 
 
+def sub_names(net: Cortex) -> list[str]:
+    """Sondas parciales de las áreas con canales de paso: rasgos propios y canales de paso."""
+    out = []
+    for i, a in enumerate(net.areas):
+        if getattr(a, "passthrough", False):
+            out += [f"L{i + 1}_own", f"L{i + 1}_pass"]
+    return out
+
+
+def sub_levels(net: Cortex) -> list:
+    out = []
+    for a, c in zip(net.areas, net._codes):
+        if getattr(a, "passthrough", False):
+            out += [c[:, :, :a.F], c[:, :, a.F:]]
+    return out
+
+
+def sub_probes(net: Cortex):
+    dims = []
+    for a in net.areas:
+        if getattr(a, "passthrough", False):
+            dims += [a.ph * a.pw * a.F, a.ph * a.pw * (a.Fo - a.F)]
+    return Probes(dims) if dims else None
+
+
 def area_pe(net: Cortex) -> list[float]:
     return [float(getattr(a, "pe", np.nan)) for a in net.areas]
 
@@ -160,7 +185,7 @@ def dict_stats(a, usage: np.ndarray) -> dict:
 
 
 # ---------------------------------------------------------------- evaluación
-def evaluate(net: Cortex, probes: Probes, E, X, y, collect: int = 0, extra=None) -> dict:
+def evaluate(net: Cortex, probes: Probes, E, X, y, collect: int = 0, extra=None, subs=None) -> dict:
     """Exactitud de la red, de sus componentes y de las sondas; pe y densidad por nivel.
     `collect`: guarda los códigos de las primeras `collect` imágenes (CKA) y el uso de rasgos.
     `extra(net, x, i)`: medida adicional por imagen (se acumula en una lista)."""
@@ -171,6 +196,7 @@ def evaluate(net: Cortex, probes: Probes, E, X, y, collect: int = 0, extra=None)
     phits = np.zeros(nL); dens = np.zeros(nL); pe = np.zeros(len(net.areas))
     pe_parts = np.zeros((len(net.areas), 2))
     correct = np.zeros((len(y), nL), dtype=bool)
+    sub_hits = np.zeros(len(subs.R)) if subs is not None else None
     rows = [[] for _ in range(nL)]
     usage = [np.zeros(a.out_shape[2]) for a in net.areas]
     co = [None for _ in net.areas] if collect else []    # coactivación por posición (dispersa)
@@ -186,6 +212,8 @@ def evaluate(net: Cortex, probes: Probes, E, X, y, collect: int = 0, extra=None)
         lv = levels_of(net, x)
         pp = probes.predict(lv)
         correct[i] = np.array(pp) == t
+        if subs is not None:
+            sub_hits += np.array(subs.predict(sub_levels(net))) == t
         for j, L in enumerate(lv):
             dens[j] += np.count_nonzero(L) / L.size
         pe += np.nan_to_num(area_pe(net))
@@ -213,6 +241,8 @@ def evaluate(net: Cortex, probes: Probes, E, X, y, collect: int = 0, extra=None)
                if any(a.__dict__.get("pc") for a in net.areas) else [],
                pe_active_silent=(pe_parts / max(n, 1)).tolist(),
                ms_per_image=1000.0 * secs / max(n, 1))
+    if subs is not None:                                  # sondas parciales (propios / de paso)
+        out["probe_sub"] = dict(zip(sub_names(net), (sub_hits / max(n, 1)).tolist()))
     if collect:
         M = [sparse.vstack(r).tocsr() for r in rows]
         out["cka"] = {f"{i}-{j}": cka(M[i], M[j]) for i in range(nL) for j in range(i + 1, nL)}
@@ -316,6 +346,8 @@ def run_one(name: str, depth: int, seed: int, n_train: int, n_val: int, n_test: 
     vrng = np.random.default_rng(seed + 12345)
     dims = [int(np.prod(sheet_shape(name)))] + [int(np.prod(a.out_shape)) for a in net.areas]
     probes = Probes(dims)
+    subs = sub_probes(net)
+    w_sub = np.zeros(len(subs.R)) if subs is not None else None
     nL = len(dims)
     timeline = []
     w_net = 0; w_probe = np.zeros(nL); w_pe = np.zeros(len(net.areas)); w_n = 0
@@ -331,8 +363,12 @@ def run_one(name: str, depth: int, seed: int, n_train: int, n_val: int, n_test: 
         pp = probes.predict(levels_of(net, x))
         pe = area_pe(net)
         w_loc += [float(z is not None and int(np.argmax(z)) == t) for z in net._zs]
+        if subs is not None:
+            w_sub += np.array(subs.predict(sub_levels(net))) == t
         net.teach(t)
         probes.learn(t)
+        if subs is not None:
+            subs.learn(t)
         w_net += int(pred == t); preq += int(pred == t)
         w_probe += np.array(pp) == t
         w_pe += np.nan_to_num(pe); w_n += 1
@@ -340,8 +376,11 @@ def run_one(name: str, depth: int, seed: int, n_train: int, n_val: int, n_test: 
             st = net.stats()
             row = dict(step=i + 1, acc=w_net / w_n, probe=(w_probe / w_n).tolist(),
                        local=(w_loc / w_n).tolist(),
+                       **({"probe_sub": (w_sub / w_n).tolist()} if subs is not None else {}),
                        features=[s["features"] for s in st["areas"]],
                        secs=round(time.time() - t0, 1))
+            if any(getattr(a, "con", None) for a in net.areas):
+                row["phi"] = [round(float(a.phi), 4) for a in net.areas]
             if any(a.__dict__.get("pc") for a in net.areas):
                 row["pe"] = [float(v) if a.__dict__.get("pc") else float("nan")
                              for v, a in zip(w_pe / w_n, net.areas)]
@@ -349,14 +388,17 @@ def run_one(name: str, depth: int, seed: int, n_train: int, n_val: int, n_test: 
             timeline.append(row)
             print(f"[{tag} {name} d{depth} {cond} s{seed}] {json.dumps(row)}", flush=True)
             w_net = 0; w_probe[:] = 0; w_pe[:] = 0; w_n = 0; w_loc[:] = 0
+            if subs is not None:
+                w_sub[:] = 0
     train_secs = time.time() - t0
-    val = evaluate(net, probes, E, Xva[:n_val], yva[:n_val], collect=min(n_cka, n_val))
-    test = evaluate(net, probes, E, Xte[:n_test], yte[:n_test], extra=extra_eval) if n_test else {}
+    val = evaluate(net, probes, E, Xva[:n_val], yva[:n_val], collect=min(n_cka, n_val), subs=subs)
+    test = evaluate(net, probes, E, Xte[:n_test], yte[:n_test], extra=extra_eval, subs=subs) \
+        if n_test else {}
     pert = {}
     loop = getattr(net, "fb", None) is not None and net.fb["iters"] > 0
     for p in perturbs if n_perturb else ():
         Xp = perturb(Xte[:n_perturb], p)
-        pert[p] = evaluate(net, probes, E, Xp, yte[:n_perturb])
+        pert[p] = evaluate(net, probes, E, Xp, yte[:n_perturb], subs=subs)
         if loop:                                          # misma red, sin el bucle descendente
             with feedback_off(net):
                 pert[p + "_fb_off"] = evaluate(net, probes, E, Xp, yte[:n_perturb])
@@ -447,6 +489,129 @@ def surprise(name: str, depth: int, seed: int, cfg: dict, cond: str, tag: str,
     return res
 
 
+# ---------------------------------------------------------------- cambio de dominio tardío
+def shift(seed: int, cfg: dict, cond: str, tag: str, name_a: str = "mnist", name_b: str = "fashion",
+          n_a: int = 6000, n_b: int = 6000, n_val: int = 1000, n_test: int = 2000,
+          window: int = 500) -> dict:
+    """Flujo no estacionario: primero `n_a` imágenes del dominio A (clases 0-9), después `n_b`
+    del dominio B (clases 10-19), una sola pasada. ¿Sigue aprendiendo la red después de
+    consolidar? Se mide la exactitud en lo nuevo (B), el olvido de lo viejo (A antes y después)
+    y las sondas por nivel en cada dominio. Validación y test separados por dominio."""
+    (Xa, ya), (Xva_a, yva_a), (Xte_a, yte_a) = split(name_a, seed)
+    (Xb, yb), (Xva_b, yva_b), (Xte_b, yte_b) = split(name_b, seed)
+    E = encoder(name_a)
+    shape = sheet_shape(name_a)
+    net = Cortex(shape, 20, seed=seed, **cfg)
+    dims = [int(np.prod(shape))] + [int(np.prod(a.out_shape)) for a in net.areas]
+    probes = Probes(dims, C=20)
+    subs = sub_probes(net)
+    if subs is not None:
+        subs = Probes([R.n for R in subs.R], C=20)
+    rows = []; hits = []; phits = []
+    t0 = time.time()
+
+    def ev(X, y, off, n):
+        r = evaluate(net, probes, E, X[:n], y[:n].astype(np.int64) + off, subs=subs)
+        return dict(acc=r["acc"], probe=r["probe"], probe_sub=r.get("probe_sub", {}))
+
+    at_switch = None
+    for step in range(n_a + n_b):
+        if step == n_a:                                       # justo antes del cambio
+            at_switch = dict(A_val=ev(Xva_a, yva_a, 0, n_val),
+                             phi=[float(getattr(a, "phi", np.nan)) for a in net.areas],
+                             features=[int(a.alive.sum()) for a in net.areas],
+                             created=[int(a.created) for a in net.areas])
+            print(f"[{tag} cambio {cond} s{seed}] antes del cambio: A {at_switch['A_val']['acc']['net']:.4f} "
+                  f"phi {at_switch['phi']}", flush=True)
+        if step < n_a:
+            x = E(Xa[step]); t = int(ya[step])
+        else:
+            x = E(Xb[step - n_a]); t = int(yb[step - n_a]) + 10
+        pred = net.forward(x)
+        pp = probes.predict(levels_of(net, x))
+        if subs is not None:
+            subs.predict(sub_levels(net))
+        net.teach(t); probes.learn(t)
+        if subs is not None:
+            subs.learn(t)
+        hits.append(pred == t); phits.append(np.array(pp) == t)
+        if (step + 1) % window == 0:
+            rows.append(dict(step=step + 1, acc=float(np.mean(hits[-window:])),
+                             probe=np.mean(phits[-window:], axis=0).tolist(),
+                             phi=[float(getattr(a, "phi", np.nan)) for a in net.areas],
+                             reopens=[int(getattr(a, "reopens", 0)) for a in net.areas],
+                             features=[int(a.alive.sum()) for a in net.areas],
+                             created=[int(a.created) for a in net.areas]))
+            print(f"[{tag} cambio {cond} s{seed}] {json.dumps(rows[-1])}", flush=True)
+    end = dict(A_val=ev(Xva_a, yva_a, 0, n_val), B_val=ev(Xva_b, yva_b, 10, n_val),
+               A_test=ev(Xte_a, yte_a, 0, n_test), B_test=ev(Xte_b, yte_b, 10, n_test))
+    res = dict(tag=tag, name=f"{name_a}>{name_b}", depth=len(net.areas) + 1, cond=cond, seed=seed,
+               n_a=n_a, n_b=n_b, n_val=n_val, n_test=n_test, config=cfg, at_switch=at_switch, end=end,
+               timeline=rows,
+               forgetting_val=at_switch["A_val"]["acc"]["net"] - end["A_val"]["acc"]["net"],
+               acc_B_first1000=float(np.mean(hits[n_a:n_a + 1000])),
+               acc_B_last1000=float(np.mean(hits[-1000:])),
+               created_after=[int(a.created) - c for a, c in zip(net.areas, at_switch["created"])],
+               reopens=[int(getattr(a, "reopens", 0)) for a in net.areas],
+               secs=time.time() - t0)
+    RUNS.mkdir(parents=True, exist_ok=True)
+    (RUNS / f"{tag}_shift_d{res['depth']}_{cond}_s{seed}.json").write_text(json.dumps(res, default=float))
+    print(f"[{tag} cambio {cond} s{seed}] fin: A {end['A_test']['acc']['net']:.4f} B {end['B_test']['acc']['net']:.4f} "
+          f"olvido(val) {res['forgetting_val']:.4f} reaperturas {res['reopens']}", flush=True)
+    return res
+
+
+def summarize_shift(tag: str):
+    runs = [json.loads(p.read_text()) for p in sorted(RUNS.glob(f"{tag}_shift_*.json"))]
+    groups = {}
+    for r in runs:
+        groups.setdefault(r["cond"], []).append(r)
+    table = []
+    for cond, rs in sorted(groups.items()):
+        L = rs[0]["depth"]
+        row = dict(cond=cond, seeds=sorted(r["seed"] for r in rs), n_a=rs[0]["n_a"], n_b=rs[0]["n_b"],
+                   A_before_val=_ms([r["at_switch"]["A_val"]["acc"]["net"] for r in rs]),
+                   A_after_val=_ms([r["end"]["A_val"]["acc"]["net"] for r in rs]),
+                   forgetting_val=_ms([r["forgetting_val"] for r in rs]),
+                   A_test=_ms([r["end"]["A_test"]["acc"]["net"] for r in rs]),
+                   B_test=_ms([r["end"]["B_test"]["acc"]["net"] for r in rs]),
+                   B_val=_ms([r["end"]["B_val"]["acc"]["net"] for r in rs]),
+                   acc_B_first1000=_ms([r["acc_B_first1000"] for r in rs]),
+                   acc_B_last1000=_ms([r["acc_B_last1000"] for r in rs]),
+                   phi_at_switch=[_ms([r["at_switch"]["phi"][i] for r in rs]) for i in range(L - 1)],
+                   reopens=[_ms([r["reopens"][i] for r in rs]) for i in range(L - 1)],
+                   created_after=[_ms([r["created_after"][i] for r in rs]) for i in range(L - 1)])
+        for dom in ("A_test", "B_test"):
+            row[f"{dom}_probe"] = [_ms([r["end"][dom]["probe"][i] for r in rs]) for i in range(L)]
+            keys = sorted(rs[0]["end"][dom]["probe_sub"])
+            row[f"{dom}_probe_sub"] = {k: _ms([r["end"][dom]["probe_sub"][k] for r in rs]) for k in keys}
+        row["timeline_steps"] = [t["step"] for t in rs[0]["timeline"]]
+        row["timeline_acc"] = [float(np.mean([r["timeline"][k]["acc"] for r in rs]))
+                               for k in range(len(row["timeline_steps"]))]
+        row["timeline_phi"] = [np.mean([r["timeline"][k]["phi"] for r in rs], axis=0).tolist()
+                               for k in range(len(row["timeline_steps"]))]
+        table.append(row)
+    (RESULTS / f"predictivo_{tag}_shift.json").write_text(json.dumps(table, indent=1, default=float))
+    fmt = lambda m: "" if m is None else f"{m[0]:.4f}±{m[1]:.4f}"
+    with (RESULTS / f"predictivo_{tag}_shift.csv").open("w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["cond", "n_seeds", "A_before_val", "A_after_val", "forgetting_val", "A_test", "B_test",
+                    "acc_B_first1000", "acc_B_last1000", "phi_at_switch", "reopens", "created_after",
+                    "B_test_probe_by_level", "B_test_probe_sub", "A_test_probe_by_level"])
+        for r in table:
+            j = lambda k: " | ".join(fmt(m) for m in r[k])
+            w.writerow([r["cond"], len(r["seeds"]), fmt(r["A_before_val"]), fmt(r["A_after_val"]),
+                        fmt(r["forgetting_val"]), fmt(r["A_test"]), fmt(r["B_test"]),
+                        fmt(r["acc_B_first1000"]), fmt(r["acc_B_last1000"]), j("phi_at_switch"),
+                        j("reopens"), j("created_after"), j("B_test_probe"),
+                        " | ".join(f"{k}:{fmt(v)}" for k, v in r["B_test_probe_sub"].items()),
+                        j("A_test_probe")])
+            print(r["cond"], "A", fmt(r["A_test"]), "B", fmt(r["B_test"]), "olvido", fmt(r["forgetting_val"]),
+                  "B primeras 1000", fmt(r["acc_B_first1000"]), "phi", j("phi_at_switch"),
+                  "sondas B", j("B_test_probe"))
+    return table
+
+
 def summarize_surprise(tag: str):
     """Resumen del estímulo inesperado por condición: media, desvío y n entre semillas."""
     runs = [json.loads(p.read_text()) for p in sorted(RUNS.glob(f"{tag}_*.json"))]
@@ -526,6 +691,11 @@ def summarize(tag: str, out: str | None = None):
         for part in ("val", "test"):
             for k in sorted({k for r in rs if r[part] for k in r[part]["acc"]}):
                 row[f"{part}_{k}"] = _ms([r[part]["acc"].get(k) for r in rs if r[part]])
+        for part in ("val", "test"):
+            keys = sorted({k for r in rs if r[part] for k in r[part].get("probe_sub", {})})
+            if keys:
+                row[f"{part}_probe_sub"] = {k: _ms([r[part]["probe_sub"].get(k) for r in rs
+                                                    if r[part] and "probe_sub" in r[part]]) for k in keys}
         row["val_probe"] = [_ms([r["val"]["probe"][i] for r in rs]) for i in range(nL)]
         row["test_probe"] = [_ms([r["test"]["probe"][i] for r in rs if r["test"]]) for i in range(nL)]
         if rs[0]["val"].get("pe"):
@@ -628,7 +798,8 @@ def cnn(name: str, seeds, n_train: int, n_val: int, n_test: int, n_perturb: int,
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["run", "summarize", "cnn", "surprise", "summarize_surprise"])
+    ap.add_argument("cmd", choices=["run", "summarize", "cnn", "surprise", "summarize_surprise",
+                                    "shift", "summarize_shift"])
     ap.add_argument("name", nargs="?", default="mnist")
     ap.add_argument("--depths", default="1,2,3")
     ap.add_argument("--seeds", default="0,1,2")
@@ -655,6 +826,9 @@ def main():
     if args.cmd == "summarize_surprise":
         summarize_surprise(args.name)
         return
+    if args.cmd == "summarize_shift":
+        summarize_shift(args.name)
+        return
     n_train = args.train or DEFAULT_TRAIN[args.name]
     seeds = [int(s) for s in args.seeds.split(",")]
     if args.cmd == "cnn":
@@ -663,6 +837,14 @@ def main():
     pred = json.loads(args.pred) if args.pred else None
     fb = json.loads(args.fb) if args.fb else None
     over = json.loads(args.override) if args.override else None
+    if args.cmd == "shift":                               # `name` no se usa: dígitos -> prendas
+        for depth in (int(d) for d in args.depths.split(",")):
+            for seed in seeds:
+                if args.skip_existing and (RUNS / f"{args.tag}_shift_d{depth}_{args.cond}_s{seed}.json").exists():
+                    continue
+                shift(seed, build(depth, pred, fb, args.pred_levels, over), args.cond, args.tag,
+                      n_a=args.train or 6000, n_b=args.train or 6000)
+        return
     if args.cmd == "surprise":
         for depth in (int(d) for d in args.depths.split(",")):
             for seed in seeds:

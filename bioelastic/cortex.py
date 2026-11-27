@@ -348,10 +348,14 @@ class Cortex:
         zs = self._zs if len(self._zs) == len(self.areas) else [None] * len(self.areas)
         sur = self._surprises()
         for i, (a, z) in enumerate(zip(self.areas, zs)):
+            if a.con is not None and i > 0:                   # no cierra si abajo sigue abierto
+                a.hold = self.areas[i - 1].con is not None and self.areas[i - 1].phi > 0.5
             if sur is None:
                 a.learn(target, prior)
             else:
                 a.learn(target, prior, surprise=sur[i])
+            if a.con is not None and a.reopened and i + 1 < len(self.areas):
+                self.areas[i + 1].reopen()                    # su entrada cambió: reabre también
             if z is not None:
                 prior = z if prior is None else prior + z
 

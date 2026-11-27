@@ -373,3 +373,47 @@ def test_critical_period_freezes_the_dictionary_but_not_the_local_reader():
     assert np.array_equal(a.W, W) and a.created == created   # el diccionario ya no cambia
     assert not np.array_equal(a.clf.W, clf)                  # su lector sigue aprendiendo
     assert not np.array_equal(net.areas[1].W, 0 * net.areas[1].W)
+
+
+CON = dict(tau_fast=20, tau_slow=100, tau_close=30, floor=0.05, open=0.3, improve=0.05, warmup=50)
+
+
+def test_consolidation_closes_gradually_and_reopens_on_sustained_error():
+    rng = np.random.default_rng(14)
+    a = FeatureArea((12, 12, 1), rf=3, pool=2, max_features=32, theta=0.9, consolidate=dict(CON))
+    phis = []
+    for _ in range(600):                                     # flujo estacionario: barras
+        a.encode(_bar(rng, bool(rng.integers(2)))); a.learn(); phis.append(a.phi)
+    assert phis[0] == 1.0 and a.phi < 0.2 and a.phi >= 0.05  # cerró de a poco, sin llegar a cero
+    assert np.all(np.diff(phis) <= 1e-9)                     # sin saltos mientras nada cambia
+    created = a.created
+    for _ in range(150):                                     # cambio de dominio: ruido denso
+        x = (rng.random((12, 12, 1)) > 0.5).astype(np.float32)
+        a.encode(x); a.learn()
+        if a.reopened:
+            break
+    assert a.reopens >= 1 and a.phi > 0.9                    # el error sostenido la reabrió
+    for _ in range(50):
+        a.encode((rng.random((12, 12, 1)) > 0.5).astype(np.float32)); a.learn()
+    assert a.created > created                               # y volvió la neurogénesis
+
+
+def test_upper_area_waits_for_the_lower_one_and_reopens_with_it(tmp_path):
+    areas = [dict(AREAS[0], consolidate=dict(CON)), dict(AREAS[1], consolidate=dict(CON))]
+    net = Cortex((8, 8, 1), 4, areas=areas, **KW)
+    rng = np.random.default_rng(15)
+    first_low = first_up = None
+    for t in range(1500):
+        c = int(rng.integers(4)); net.step(_blob(rng, c), c)
+        if first_low is None and net.areas[0].phi < 0.5:
+            first_low = t
+        if first_up is None and net.areas[1].phi < 0.5:
+            first_up = t
+    assert first_low is not None and first_up is not None and first_up > first_low
+    net.save(tmp_path / "con.npz")
+    twin = Cortex.load(tmp_path / "con.npz")
+    assert twin.areas[0].phi == net.areas[0].phi and twin.areas[1]._con_n == net.areas[1]._con_n
+    net.areas[0].reopened = True                             # (como si abajo hubiera reabierto)
+    net.areas[0].phi = 1.0
+    net.areas[1].reopen()
+    assert net.areas[1].phi == 1.0 and net.areas[1].reopens >= 1
