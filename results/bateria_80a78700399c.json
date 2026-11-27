@@ -4,7 +4,7 @@
   "sha": "80a78700399cd469f4da14a654ad1895de3ada06",
   "sucio": false,
   "escala": 1.0,
-  "fecha": "2026-11-26 19:47:44",
+  "fecha": "2026-11-26 20:10:59",
   "python": "3.13.18",
   "numpy": "2.5.3",
   "catalogo": {
@@ -66,12 +66,27 @@
        "max": -1.0275380189066998
       }
      ]
+    },
+    "memoria_de_trabajo": {
+     "nombre": "Memoria de trabajo",
+     "min": 2.321646341463415,
+     "max": 2.321646341463415,
+     "pruebas": [
+      {
+       "prueba": "deteccion_de_cambio",
+       "variantes": [
+        "simbolos"
+       ],
+       "min": 2.321646341463415,
+       "max": 2.321646341463415
+      }
+     ]
     }
    },
    "global_": {
-    "min": -0.25776900945334996,
-    "max": -0.25776900945334996,
-    "dimensiones": 2,
+    "min": 0.602036107518905,
+    "max": 0.602036107518905,
+    "dimensiones": 3,
     "de": 10,
     "convencion": "promedio simple de los promedios por dimensión que tienen al menos un índice; es una convención, sin pesos, y se informa siempre junto al perfil"
    }
@@ -1080,6 +1095,7 @@
    "metrica": "proporción de elecciones de B en el par BD (12 pruebas sin refuerzo por semilla)",
    "protocolo": "sesiones de 10 presentaciones de cada par adyacente hasta 80 % en cada par (máximo 125); después 6 sesiones con 2 pruebas BD intercaladas",
    "desviaciones": [
+    "una respuesta que no es ninguno de los dos ítems cuenta como error (el animal no tiene esa opción); se informa también la proporción entre las respuestas válidas",
     "condición de entrada: símbolos con identidad perfecta, no figuras vistas (palomas: estímulos visuales en teclas; personas: polígonos o figuras en un juego de computadora)",
     "con dos opciones el objetivo equivale a la recompensa; la red recibe el objetivo",
     "la prueba sin refuerzo se hace sobre una copia congelada de la red, sin exploración",
@@ -1101,7 +1117,7 @@
    },
    "commit": "80a78700399c",
    "fuente_resultado": "medicion@80a78700399c",
-   "segundos": 3.4383976459503174,
+   "segundos": 2.0916948318481445,
    "estado": "medido",
    "motivo": "sin referencia humana verificada con la misma métrica: no hay índice normalizado",
    "red": {
@@ -1191,6 +1207,20 @@
       1.0,
       0.0,
       0.0,
+      1.0,
+      1.0
+     ]
+    },
+    "eleccion_B_entre_validas": {
+     "media": 0.6666666666666666,
+     "desvio": 0.4714045207910317,
+     "por_semilla": [
+      0.0,
+      1.0,
+      0.0,
+      1.0,
+      null,
+      null,
       1.0,
       1.0
      ]
@@ -1308,6 +1338,7 @@
    "metrica": "proporción de elecciones correctas en BD, BE y CE (media de los tres; 10 pruebas por par)",
    "protocolo": "sesiones de 10 presentaciones de cada par adyacente hasta menos de 30 % de errores en cada par (máximo 125); después 10 pruebas sin refuerzo de BD, BE y CE",
    "desviaciones": [
+    "una respuesta que no es ninguno de los dos ítems cuenta como error (el animal no tiene esa opción); se informa también la proporción entre las respuestas válidas",
     "condición de entrada: símbolos con identidad perfecta, no figuras vistas (palomas: estímulos visuales en teclas; personas: polígonos o figuras en un juego de computadora)",
     "con dos opciones el objetivo equivale a la recompensa; la red recibe el objetivo",
     "la prueba sin refuerzo se hace sobre una copia congelada de la red, sin exploración",
@@ -1330,7 +1361,7 @@
    },
    "commit": "80a78700399c",
    "fuente_resultado": "medicion@80a78700399c",
-   "segundos": 0.5556967258453369,
+   "segundos": 0.6063766479492188,
    "estado": "medido",
    "motivo": "",
    "red": {
@@ -1428,6 +1459,20 @@
       1.0,
       0.0,
       0.0
+     ]
+    },
+    "correctas_entre_validas": {
+     "media": 0.5238095238095238,
+     "desvio": 0.4312088161017817,
+     "por_semilla": [
+      0.3333333333333333,
+      1.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      null,
+      0.3333333333333333
      ]
     },
     "llego_al_criterio": {
@@ -1605,8 +1650,8 @@
    "metrica": "exactitud en la fase 3 (los 21 pares, con premio); el efecto de distancia es la firma",
    "protocolo": "una sesión con la lista de 7: FG 20 ensayos, adyacentes y pares con F o G 150, los 21 pares 210",
    "desviaciones": [
+    "una respuesta que no es ninguno de los dos ítems cuenta como error (el animal no tiene esa opción); se informa también la proporción entre las respuestas válidas",
     "condición de entrada: símbolos con identidad perfecta, no figuras vistas (palomas: estímulos visuales en teclas; personas: polígonos o figuras en un juego de computadora)",
-    "con dos opciones el objetivo equivale a la recompensa; la red recibe el objetivo",
     "una sesión, como las personas; los monos tuvieron decenas de sesiones con listas nuevas"
    ],
    "semillas": [
@@ -1625,7 +1670,7 @@
    },
    "commit": "80a78700399c",
    "fuente_resultado": "medicion@80a78700399c",
-   "segundos": 4.396774053573608,
+   "segundos": 2.444704294204712,
    "estado": "medido",
    "motivo": "sin referencia humana verificada con la misma métrica: no hay índice normalizado",
    "red": {
@@ -1685,6 +1730,20 @@
    ],
    "indice_normalizado": null,
    "detalle": {
+    "adyacentes_por_debajo": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
     "distancia_1": {
      "media": 1.0,
      "desvio": 0.0,
@@ -1825,6 +1884,20 @@
       0.6666666666666666
      ]
     },
+    "primera_vez_validas": {
+     "media": 0.7083333333333333,
+     "desvio": 0.13819269959814168,
+     "por_semilla": [
+      1.0,
+      0.6666666666666666,
+      0.5,
+      0.6666666666666666,
+      0.8333333333333334,
+      0.6666666666666666,
+      0.6666666666666666,
+      0.6666666666666666
+     ]
+    },
     "validas_fase3": {
      "media": 0.9833333333333334,
      "desvio": 0.007896725691322394,
@@ -1910,8 +1983,13 @@
    },
    "firmas": {
     "efecto_distancia": {
-     "descripcion": "exactitud que crece con la distancia simbólica (monos rhesus sí; personas: no se ve en la exactitud, Jensen et al. 2017)",
+     "descripcion": "pendiente positiva de la exactitud contra la distancia simbólica (monos rhesus sí; personas: no se ve en la exactitud, Jensen et al. 2017)",
      "semillas_con_firma": 8,
+     "semillas": 8
+    },
+    "adyacentes_por_debajo": {
+     "descripcion": "los pares adyacentes con menos exactitud que los no adyacentes, como describe Jensen et al. (2017) el efecto de distancia (firma agregada después de ver que la pendiente sola no distingue un techo)",
+     "semillas_con_firma": 0,
      "semillas": 8
     }
    },
@@ -1953,6 +2031,358 @@
       "max_steps": 10,
       "gate": true,
       "prev_io": true
+     }
+    }
+   }
+  },
+  {
+   "prueba": "deteccion_de_cambio",
+   "variante": "simbolos",
+   "nombre": "Memoria de trabajo visual: detección de cambio y capacidad K",
+   "dimension": "memoria_de_trabajo",
+   "condicion_entrada": "simbolos",
+   "equivalente": {
+    "valor": false,
+    "motivo": "otro procedimiento de prueba y memoria episódica exacta por diseño"
+   },
+   "metrica": "capacidad K (modelo de capacidad fija, prueba de un ítem)",
+   "protocolo": "3000 episodios de entrenamiento en línea con N al azar en (2, 4, 6, 8, 10); 10 lugares y 12 colores como símbolos; cada ítem llega como lugar y color seguidos; prueba de un ítem (cambia con probabilidad 1/2); 100 episodios congelados por tamaño",
+   "desviaciones": [
+    "condición de entrada: símbolos que llegan de a uno, no una pantalla con todos los cuadrados a la vez (la red no tiene que codificar en paralelo una escena breve)",
+    "prueba de un solo ítem (sí/no) con la fórmula de Cowan, no dos ítems y tocar el que cambió con la de Eng",
+    "la memoria rápida del Thinker es una tabla exacta por episodio: si el control aprende a usarla, la capacidad la limita el diseño (o el techo de la prueba, N = 10), no la red",
+    "la demora es un silencio: el Thinker no tiene escala de tiempo"
+   ],
+   "semillas": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "azar": {
+    "valor": 0.0,
+    "derivacion": "K = 0 cuando la exactitud es la de adivinar (50 %)"
+   },
+   "commit": "80a78700399c",
+   "fuente_resultado": "medicion@80a78700399c",
+   "segundos": 63.676560163497925,
+   "estado": "medido",
+   "motivo": "",
+   "red": {
+    "media": 5.71125,
+    "desvio": 4.346879448236401,
+    "por_semilla": [
+     1.79,
+     0.0,
+     10.0,
+     9.43,
+     10.0,
+     4.47,
+     10.0,
+     0.0
+    ]
+   },
+   "referencia_humana": {
+    "id": "elmore2011_humanos_colores",
+    "especie": "humano adulto",
+    "valor": 2.46,
+    "tipo_valor": "media",
+    "n": 6,
+    "cita": "Elmore, Ma, Magnotti, Leising, Passaro, Katz & Wright (2011), Curr. Biol. 21:975",
+    "url": "https://www.cns.nyu.edu/malab/static/files/publications/2011 Elmore Ma Wright.pdf",
+    "verificacion": "primaria",
+    "releida": "2026-11-26",
+    "nota": "colores; error estándar 0,35. Con figuras (clip art): 2,78 (error estándar 0,39). Personas: tamaños 2, 4, 6, 8 y 10; demora de 900 ms con colores y 1 000 ms con figuras",
+    "medida_red": "puntaje",
+    "valor_red": 5.71125,
+    "comparacion": "a la par",
+    "referencia_del_indice": true
+   },
+   "referencias_animales": [
+    {
+     "id": "elmore2011_rhesus_colores",
+     "especie": "mono rhesus",
+     "valor": 0.71,
+     "tipo_valor": "media",
+     "n": 2,
+     "cita": "Elmore et al. (2011), Curr. Biol. 21:975",
+     "url": "https://www.cns.nyu.edu/malab/static/files/publications/2011 Elmore Ma Wright.pdf",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "nota": "colores; error estándar 0,24. Con figuras: 1,02 (error estándar 0,19). Monos: tamaños 2, 4 y 6; la leyenda de la figura 1 da demoras de 50 ms",
+     "medida_red": "puntaje",
+     "valor_red": 5.71125,
+     "comparacion": "especie por debajo"
+    }
+   ],
+   "referencias_maquinas": [],
+   "indice_normalizado": {
+    "contra": "elmore2011_humanos_colores",
+    "min": 2.321646341463415,
+    "max": 2.321646341463415,
+    "media": 2.321646341463415,
+    "desvio": 1.7670241659497568,
+    "por_semilla": [
+     0.7276422764227642,
+     0.0,
+     4.065040650406504,
+     3.8333333333333335,
+     4.065040650406504,
+     1.8170731707317072,
+     4.065040650406504,
+     0.0
+    ],
+    "por_semilla_min": null,
+    "por_semilla_max": null,
+    "referencia": 2.46,
+    "tipo_valor": "media"
+   },
+   "detalle": {
+    "K": {
+     "media": 5.71125,
+     "desvio": 4.346879448236401,
+     "por_semilla": [
+      1.79,
+      0.0,
+      10.0,
+      9.43,
+      10.0,
+      4.47,
+      10.0,
+      0.0
+     ]
+    },
+    "K_N10": {
+     "media": 5.362918752406623,
+     "desvio": 4.622622565132253,
+     "por_semilla": [
+      0.0,
+      0.0,
+      10.0,
+      9.433962264150944,
+      10.0,
+      3.4693877551020407,
+      10.0,
+      0.0
+     ]
+    },
+    "K_N2": {
+     "media": 1.4394654088050314,
+     "desvio": 0.8381753095688419,
+     "por_semilla": [
+      1.6666666666666667,
+      0.0,
+      2.0,
+      1.849056603773585,
+      2.0,
+      2.0,
+      2.0,
+      0.0
+     ]
+    },
+    "K_N4": {
+     "media": 2.774641148325359,
+     "desvio": 1.6611243286981752,
+     "por_semilla": [
+      2.618181818181818,
+      0.0,
+      4.0,
+      3.5789473684210527,
+      4.0,
+      4.0,
+      4.0,
+      0.0
+     ]
+    },
+    "K_N6": {
+     "media": 3.6885375494071146,
+     "desvio": 2.523472956432462,
+     "por_semilla": [
+      1.6,
+      0.0,
+      6.0,
+      5.217391304347826,
+      6.0,
+      4.690909090909091,
+      6.0,
+      0.0
+     ]
+    },
+    "K_N8": {
+     "media": 4.7749234154549764,
+     "desvio": 3.3770513850324946,
+     "por_semilla": [
+      2.046511627906977,
+      0.0,
+      8.0,
+      7.418181818181818,
+      8.0,
+      4.73469387755102,
+      8.0,
+      0.0
+     ]
+    },
+    "exactitud_N10": {
+     "media": 0.7625,
+     "desvio": 0.23847169643376967,
+     "por_semilla": [
+      0.52,
+      0.47,
+      1.0,
+      0.97,
+      1.0,
+      0.68,
+      1.0,
+      0.46
+     ]
+    },
+    "exactitud_N2": {
+     "media": 0.8425,
+     "desvio": 0.237736724129866,
+     "por_semilla": [
+      0.91,
+      0.47,
+      1.0,
+      0.96,
+      1.0,
+      1.0,
+      1.0,
+      0.4
+     ]
+    },
+    "exactitud_N4": {
+     "media": 0.8475,
+     "desvio": 0.20141685629559408,
+     "por_semilla": [
+      0.81,
+      0.53,
+      1.0,
+      0.94,
+      1.0,
+      1.0,
+      1.0,
+      0.5
+     ]
+    },
+    "exactitud_N6": {
+     "media": 0.815,
+     "desvio": 0.20124611797498107,
+     "por_semilla": [
+      0.67,
+      0.53,
+      1.0,
+      0.94,
+      1.0,
+      0.88,
+      1.0,
+      0.5
+     ]
+    },
+    "exactitud_N8": {
+     "media": 0.81,
+     "desvio": 0.19931131427994747,
+     "por_semilla": [
+      0.68,
+      0.55,
+      1.0,
+      0.96,
+      1.0,
+      0.8,
+      1.0,
+      0.49
+     ]
+    },
+    "exactitud_entrenamiento_ultimos500": {
+     "media": 0.776,
+     "desvio": 0.1179109833730514,
+     "por_semilla": [
+      0.738,
+      0.632,
+      0.884,
+      0.816,
+      0.912,
+      0.746,
+      0.904,
+      0.576
+     ]
+    },
+    "techo_de_la_prueba": {
+     "media": 0.375,
+     "desvio": 0.4841229182759271,
+     "por_semilla": [
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      1.0,
+      0.0,
+      1.0,
+      0.0
+     ]
+    }
+   },
+   "firmas": {},
+   "otras_referencias_humanas": [
+    {
+     "id": "cowan2001",
+     "especie": "humano adulto",
+     "valor": 4.0,
+     "tipo_valor": "aproximado",
+     "cita": "Cowan (2001), tal como lo cita el resumen de Elmore et al. (2011): capacidad fija de 4 más o menos 1 ítems",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/21596568/",
+     "verificacion": "secundaria",
+     "medida_red": "puntaje",
+     "valor_red": 5.71125,
+     "comparacion": "a la par"
+    }
+   ],
+   "configuracion": {
+    "elegida": "aprender_a_aprender",
+    "puntajes": {
+     "aprender_a_aprender": {
+      "media": 0.8786666666666667,
+      "desvio": 0.008055363982396388,
+      "por_semilla": [
+       0.89,
+       0.872,
+       0.874
+      ]
+     },
+     "compuerta": {
+      "media": 0.798,
+      "desvio": 0.10941054184431528,
+      "por_semilla": [
+       0.888,
+       0.862,
+       0.644
+      ]
+     }
+    },
+    "criterio": "exactitud en los últimos 500 episodios de entrenamiento (semillas de validación)",
+    "semillas": [
+     100,
+     101,
+     102
+    ],
+    "opciones": {
+     "aprender_a_aprender": {
+      "memory": true,
+      "speak": true,
+      "judge": true,
+      "max_steps": 10,
+      "gate": true,
+      "prev_io": true
+     },
+     "compuerta": {
+      "memory": true,
+      "speak": true,
+      "judge": true,
+      "max_steps": 10,
+      "gate": true
      }
     }
    }

@@ -3,8 +3,10 @@
  "medidas": {
   "exactitud_fase3": 0.9619047619047619,
   "primera_vez_no_vistos": 0.3333333333333333,
+  "primera_vez_validas": 0.5,
   "pendiente_distancia": 0.00986466165413533,
   "efecto_distancia": true,
+  "adyacentes_por_debajo": false,
   "validas_fase3": 0.9714285714285714,
   "exactitud_por_distancia": [
    1.0,
@@ -21,9 +23,9 @@
   "distancia_5": 1.0,
   "distancia_6": 1.0
  },
- "segundos": 0.6413693428039551,
+ "segundos": 0.32064151763916016,
  "semilla": 2,
- "version": 1,
+ "version": 2,
  "escala": 1.0,
  "config": "defecto"
 }

@@ -6,13 +6,14 @@
   "CE": 0.0,
   "media_BD_BE_CE": 0.0,
   "validas": 0.0,
+  "correctas_entre_validas": null,
   "sesiones_al_criterio": 1.0,
   "llego_al_criterio": true,
   "premisas_ultimas10": 0.8
  },
- "segundos": 0.0659031867980957,
+ "segundos": 0.08393168449401855,
  "semilla": 6,
- "version": 1,
+ "version": 2,
  "escala": 1.0,
  "config": "defecto"
 }

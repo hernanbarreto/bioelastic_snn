@@ -3,14 +3,15 @@
  "medidas": {
   "eleccion_B_en_BD": 0.0,
   "validas_BD": 0.0,
+  "eleccion_B_entre_validas": null,
   "eleccion_A_en_AE": 0.0,
   "sesiones_al_criterio": 1.0,
   "llego_al_criterio": true,
   "premisas_ultimas10": 0.8
  },
- "segundos": 0.44402337074279785,
+ "segundos": 0.20687103271484375,
  "semilla": 5,
- "version": 1,
+ "version": 2,
  "escala": 1.0,
  "config": "defecto"
 }
