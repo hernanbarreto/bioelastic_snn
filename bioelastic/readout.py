@@ -14,6 +14,13 @@ Aprendizaje continuo (opcional, apagado por defecto):
                  no se aplica. Así lo que se enseña ahora no deprime a las clases
                  ausentes (análogo local de ER-ACE, Caccia et al. 2022, y del «labels
                  trick», Zeno et al. 2018). El repaso usa el error completo.
+  ace            con `active_window`: la competencia que fija el tercer factor de lo que
+                 llega se resuelve sólo entre las salidas activas (p renormalizada sobre
+                 ellas), como la entropía cruzada enmascarada de ER-ACE. Sin esto, una
+                 clase ausente que se parece a la entrada baja p(objetivo) y agranda el
+                 error positivo del objetivo: la fila nueva crece sobre los rasgos que
+                 comparte con la vieja y después le gana en sus propios ejemplos (sesgo
+                 hacia lo reciente). El repaso sigue usando el error completo.
   row_norm       escalado sináptico de cada salida: tras aprender, el vector de pesos
                  que llega a cada salida se reescala a norma `row_norm`. Una clase no
                  gana por acumular peso sino por parecerse (clasificador por coseno, como
@@ -55,7 +62,7 @@ class Readout:
                  rule: str = "delta", mean_floor: float = 1e-3, floor: float = 0.0,
                  recon_lock: float = 0.0, recon_window: int = 1, recon_kappa: float = 2.0,
                  recon_beta: float = 0.01, recon_rate: float = 1.0,
-                 capacity: int = 256):
+                 capacity: int = 256, ace: bool = False):
         self.C = int(n_outputs)
         self.lr = float(lr)
         self.temperature = float(temperature)
@@ -68,6 +75,7 @@ class Readout:
         self.W = np.zeros((self.C, self.cap), dtype=np.float32)
         self.count = np.zeros(self.cap, dtype=np.float32)   # veces que se modificó cada entrada
         self.active_window = int(active_window)
+        self.ace = bool(ace)
         self.relax = float(relax)
         self.row_norm = float(row_norm)
         self.floor = float(floor)
@@ -182,7 +190,12 @@ class Readout:
             p = self.probs(self.potentials(idx, h) if V is None else V)
         err = -p
         if self.active_window > 0 and not replay:
-            err = np.where(self.active(), err, 0.0)
+            act = self.active()
+            err = np.where(act, err, 0.0)
+            if self.ace:                                    # competencia sólo entre las presentes
+                tot = float(-err.sum())
+                if tot > 0.0:
+                    err = err / tot
         err[target] += 1.0
         lr = self.lr if lr_scale == 1.0 else self.lr * float(lr_scale)
         if self.recon_lock > 0.0:
