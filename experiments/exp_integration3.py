@@ -934,7 +934,8 @@ def fase_f1a(seed, tam, out, variante, extra):
     muestreado, como aprendida_eq). Las 10 k imágenes se nombran al principio (la percepción
     aprende su dígito con la regla local) y después, cada `cada_ancla` episodios, se vuelve a
     nombrar una (ciclando): nombrar de vez en cuando, mientras se aprende a sumar. Las anclas
-    salen de train (no de validación ni de test). variante = k."""
+    salen de train (no de validación ni de test). variante = k. Al final, además de `medir`,
+    la metacognición del sistema (`metacog_sistema`: AUROC del propio error y ECE)."""
     from exp_vision import encoder
     datos, Xt, yt, Xc, yc = preparar(seed, tam)
     E = encoder()
@@ -956,12 +957,15 @@ def fase_f1a(seed, tam, out, variante, extra):
             if anclas and (e + 1) % tam["cada_ancla"] == 0:
                 d, i = anclas[ciclo[0] % len(anclas)]; ciclo[0] += 1
                 v.net.forward(E(datos.X["train"][i])); v.net.teach(d)
-        st: dict = {}; curva: list = []
-        entrenar(th, per, datos, rng, tam["ep"], cfg, st, None, curva, tam["cada"], Xc, yc, al_episodio=renombrar)
+        st: dict = {}; curva: list = []; reg: list = []
+        entrenar(th, per, datos, rng, tam["ep"], cfg, st, None, curva, tam["cada"], Xc, yc, al_episodio=renombrar,
+                 registro=reg)
         var = f"k={k}"
         out("f1a", var, "segundos", round(time.time() - t0, 1), "", f"{10 * k} anclas, {tam['ep']} episodios")
         out("f1a", var, "imágenes nombradas (total, con repeticiones)", len(anclas) + ciclo[0], "", "")
-        medir(out, "f1a", var, th, v, per, datos, rng, tam, st, extra, curva, seed, congelada=False)
+        res = medir(out, "f1a", var, th, v, per, datos, rng, tam, st, extra, curva, seed, congelada=False)
+        # metacognición del sistema entrenado (F2): después de medir, no cambia lo de arriba
+        metacog_sistema(out, "f1a", var, th, v, datos, rng, tam, reg, res, extra)
 
 
 def fase_f1(seed, tam, out, variante, extra, variantes=None, fase="f1"):
@@ -1360,6 +1364,48 @@ VARIANTES_F2 = {
 }
 
 
+def metacog_sistema(out, fase, var, th, v, datos, rng, tam, reg, res, extra):
+    """F2 sobre un sistema de L3 ya entrenado: calibración (ECE) de la percepción y del
+    sistema y detección del propio error antes del feedback (AUROC de cada señal interna),
+    prequential en el flujo de entrenamiento (`reg`, el registro de `entrenar`) y en test
+    con todo congelado (el calibrador online también). `res`: lo que devolvió `medir`."""
+    from bioelastic.metacog import auroc, ece
+    sig, ok, feats, _ = senales_columna(reg)
+    cal, pre = calibrar(feats, ok)
+    mitad = np.arange(len(ok)) >= len(ok) // 2
+    out(fase, var, "acierto columna prequential (2.a mitad)", float(ok[mitad].mean()), 0.1, "")
+    for k, sc in sig.items():
+        out(fase, var, f"AUROC error prequential (2.a mitad): {k}", auroc(sc[mitad], ~ok[mitad]), 0.5, "azar")
+    out(fase, var, "AUROC error prequential (2.a mitad): 1-calibrada", auroc(1 - pre[mitad], ~ok[mitad]), 0.5, "")
+    e_raw, _ = ece(1 - sig["1-confianza cruda del sistema"][mitad], ok[mitad])
+    e_cal, curva_cal = ece(pre[mitad], ok[mitad])
+    out(fase, var, "ECE sistema cruda (prequential, 2.a mitad)", e_raw, 0.0, "P(respuesta) o pa*pb*pt")
+    out(fase, var, "ECE sistema calibrada (prequential, 2.a mitad)", e_cal, 0.0, "")
+    # test: señales con todo congelado (el calibrador también)
+    rt = registrar_eval(th, Percepcion3(v), datos, rng, 3, tam["ep_eval"])
+    sig_t, ok_t, feats_t, filas_t = senales_columna(rt)
+    p_cal = np.array([cal.predict(f) for f in feats_t])
+    out(fase, var, "acierto columna (test)", float(ok_t.mean()), 0.1, "")
+    for k, sc in sig_t.items():
+        out(fase, var, f"AUROC error test: {k}", auroc(sc, ~ok_t), 0.5, "azar")
+    out(fase, var, "AUROC error test: 1-calibrada", auroc(1 - p_cal, ~ok_t), 0.5, "")
+    e_raw_t, curva_raw_t = ece(1 - sig_t["1-confianza cruda del sistema"], ok_t)
+    e_cal_t, curva_cal_t = ece(p_cal, ok_t)
+    out(fase, var, "ECE sistema cruda (test)", e_raw_t, 0.0, "")
+    out(fase, var, "ECE sistema calibrada (test)", e_cal_t, 0.0, "")
+    # percepción por imagen (test): confianza vs acierto según el código final
+    pi = res.get("pi", np.arange(10))
+    pp = np.array([f[k] for f in filas_t for k in ("ppa", "ppb")])
+    okp = np.array([f[f"s_{k}"] == pi[f[f"dig_{k}"]] for f in filas_t for k in ("a", "b")])
+    e_p, curva_p = ece(pp, okp)
+    out(fase, var, "ECE percepción (test, código final)", e_p, 0.0, "")
+    out(fase, var, "AUROC error percepción (test): 1-p", auroc(1 - pp, ~okp), 0.5, "")
+    cx = np.array([f.get(f"conf_cx{k}", 0.0) for f in filas_t for k in ("a", "b")])
+    out(fase, var, "AUROC error percepción (test): conflicto Cortex", auroc(cx, ~okp), 0.5, "")
+    extra[f"{fase}_{var}"] = dict(confiabilidad_sistema_test=curva_cal_t, confiabilidad_cruda_test=curva_raw_t,
+                                  confiabilidad_percepcion_test=curva_p, calibrador=cal.w.tolist())
+
+
 def fase_f2(seed, tam, out, variante, extra):
     """Metacognición en L3: calibración (ECE) de la percepción y del sistema, detección
     del propio error antes del feedback (AUROC de cada señal interna, prequential en el
@@ -1378,40 +1424,7 @@ def fase_f2(seed, tam, out, variante, extra):
         out("f2", var, "segundos entrenamiento", round(time.time() - t0, 1), "",
             f"sistema {SISTEMA[0]}, currículo {CURRICULO[0]}")
         res = medir(out, "f2", var, th, v, per, datos, rng, tam, st, extra, curva, seed, congelada=False)
-        sig, ok, feats, _ = senales_columna(reg)
-        cal, pre = calibrar(feats, ok)
-        mitad = np.arange(len(ok)) >= len(ok) // 2
-        out("f2", var, "acierto columna prequential (2.a mitad)", float(ok[mitad].mean()), 0.1, "")
-        for k, sc in sig.items():
-            out("f2", var, f"AUROC error prequential (2.a mitad): {k}", auroc(sc[mitad], ~ok[mitad]), 0.5, "azar")
-        out("f2", var, "AUROC error prequential (2.a mitad): 1-calibrada", auroc(1 - pre[mitad], ~ok[mitad]), 0.5, "")
-        e_raw, _ = ece(1 - sig["1-confianza cruda del sistema"][mitad], ok[mitad])
-        e_cal, curva_cal = ece(pre[mitad], ok[mitad])
-        out("f2", var, "ECE sistema cruda (prequential, 2.a mitad)", e_raw, 0.0, "P(respuesta) o pa*pb*pt")
-        out("f2", var, "ECE sistema calibrada (prequential, 2.a mitad)", e_cal, 0.0, "")
-        # test: señales con todo congelado (el calibrador también)
-        rt = registrar_eval(th, Percepcion3(v), datos, rng, 3, tam["ep_eval"])
-        sig_t, ok_t, feats_t, filas_t = senales_columna(rt)
-        p_cal = np.array([cal.predict(f) for f in feats_t])
-        out("f2", var, "acierto columna (test)", float(ok_t.mean()), 0.1, "")
-        for k, sc in sig_t.items():
-            out("f2", var, f"AUROC error test: {k}", auroc(sc, ~ok_t), 0.5, "azar")
-        out("f2", var, "AUROC error test: 1-calibrada", auroc(1 - p_cal, ~ok_t), 0.5, "")
-        e_raw_t, curva_raw_t = ece(1 - sig_t["1-confianza cruda del sistema"], ok_t)
-        e_cal_t, curva_cal_t = ece(p_cal, ok_t)
-        out("f2", var, "ECE sistema cruda (test)", e_raw_t, 0.0, "")
-        out("f2", var, "ECE sistema calibrada (test)", e_cal_t, 0.0, "")
-        # percepción por imagen (test): confianza vs acierto según el código final
-        pi = res.get("pi", np.arange(10))
-        pp = np.array([f[k] for f in filas_t for k in ("ppa", "ppb")])
-        okp = np.array([f[f"s_{k}"] == pi[f[f"dig_{k}"]] for f in filas_t for k in ("a", "b")])
-        e_p, curva_p = ece(pp, okp)
-        out("f2", var, "ECE percepción (test, código final)", e_p, 0.0, "")
-        out("f2", var, "AUROC error percepción (test): 1-p", auroc(1 - pp, ~okp), 0.5, "")
-        cx = np.array([f.get(f"conf_cx{k}", 0.0) for f in filas_t for k in ("a", "b")])
-        out("f2", var, "AUROC error percepción (test): conflicto Cortex", auroc(cx, ~okp), 0.5, "")
-        extra[f"f2_{var}"] = dict(confiabilidad_sistema_test=curva_cal_t, confiabilidad_cruda_test=curva_raw_t,
-                                  confiabilidad_percepcion_test=curva_p, calibrador=cal.w.tolist())
+        metacog_sistema(out, "f2", var, th, v, datos, rng, tam, reg, res, extra)
         out("f2", var, "segundos", round(time.time() - t0, 1), "", "")
 
 
