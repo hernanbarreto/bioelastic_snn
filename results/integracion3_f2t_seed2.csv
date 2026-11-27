@@ -1,0 +1,98 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+f2t,oraculo,2,AUROC error prequential (2.a mitad): 1-p Thinker,0.8029,0.5000,
+f2t,oraculo,2,errores de razonamiento prequential (n),1685,,en todo el flujo
+f2t,oraculo,2,AUROC error de razonamiento prequential: 1-p Thinker,0.8045,0.5000,todo el flujo
+f2t,oraculo,2,ECE razonamiento prequential: p Thinker cruda,0.2058,0.0500,
+f2t,oraculo,2,acierto columna (test),0.9713,0.1000,
+f2t,oraculo,2,acierto de razonamiento (test),0.9713,,respuesta = suma de lo percibido
+f2t,oraculo,2,"errores (test, n)",43,,
+f2t,oraculo,2,"errores de razonamiento (test, n)",43,,
+f2t,oraculo,2,AUROC error test: 1-p Thinker,0.9472,0.5000,criterio >= 0.85
+f2t,oraculo,2,AUROC error de razonamiento test: 1-p Thinker,0.9472,0.5000,criterio >= 0.85
+f2t,oraculo,2,AUROC error test: no establecido (Thinker),0.8415,0.5000,azar
+f2t,oraculo,2,AUROC error de razonamiento test: no establecido (Thinker),0.8415,0.5000,azar
+f2t,oraculo,2,AUROC error test: conflicto percepción-Thinker,0.0579,0.5000,azar
+f2t,oraculo,2,AUROC error de razonamiento test: conflicto percepción-Thinker,0.0579,0.5000,azar
+f2t,oraculo,2,AUROC error test: 1-confianza calibrada (sistema),0.9472,0.5000,
+f2t,oraculo,2,ECE test: p Thinker cruda,0.2268,0.0500,criterio <= 0.05
+f2t,oraculo,2,ECE razonamiento test: p Thinker cruda,0.2268,0.0500,contra el acierto de razonamiento
+f2t,oraculo,2,ECE test: calibrada (sistema),0.0328,0.0500,
+f2t,oraculo,2,acierto columna (test n=6),0.9593,0.1000,
+f2t,oraculo,2,acierto de razonamiento (test n=6),0.9593,,respuesta = suma de lo percibido
+f2t,oraculo,2,"errores (test n=6, n)",122,,
+f2t,oraculo,2,"errores de razonamiento (test n=6, n)",122,,
+f2t,oraculo,2,AUROC error test n=6: 1-p Thinker,0.9104,0.5000,criterio >= 0.85
+f2t,oraculo,2,AUROC error de razonamiento test n=6: 1-p Thinker,0.9104,0.5000,criterio >= 0.85
+f2t,oraculo,2,AUROC error test n=6: no establecido (Thinker),0.7807,0.5000,azar
+f2t,oraculo,2,AUROC error de razonamiento test n=6: no establecido (Thinker),0.7807,0.5000,azar
+f2t,oraculo,2,AUROC error test n=6: conflicto percepción-Thinker,0.0823,0.5000,azar
+f2t,oraculo,2,AUROC error de razonamiento test n=6: conflicto percepción-Thinker,0.0823,0.5000,azar
+f2t,oraculo,2,AUROC error test n=6: 1-confianza calibrada (sistema),0.9105,0.5000,
+f2t,oraculo,2,ECE test n=6: p Thinker cruda,0.2290,0.0500,criterio <= 0.05
+f2t,oraculo,2,ECE razonamiento test n=6: p Thinker cruda,0.2290,0.0500,contra el acierto de razonamiento
+f2t,oraculo,2,ECE test n=6: calibrada (sistema),0.0318,0.0500,
+f2t,ruido 0.8,2,AUROC error prequential (2.a mitad): 1-p Thinker,0.6173,0.5000,
+f2t,ruido 0.8,2,errores de razonamiento prequential (n),3293,,en todo el flujo
+f2t,ruido 0.8,2,AUROC error de razonamiento prequential: 1-p Thinker,0.7583,0.5000,todo el flujo
+f2t,ruido 0.8,2,ECE razonamiento prequential: p Thinker cruda,0.1638,0.0500,
+f2t,ruido 0.8,2,acierto columna (test),0.5227,0.1000,
+f2t,ruido 0.8,2,acierto de razonamiento (test),0.8473,,respuesta = suma de lo percibido
+f2t,ruido 0.8,2,"errores (test, n)",716,,
+f2t,ruido 0.8,2,"errores de razonamiento (test, n)",229,,
+f2t,ruido 0.8,2,AUROC error test: 1-p Thinker,0.6146,0.5000,criterio >= 0.85
+f2t,ruido 0.8,2,AUROC error de razonamiento test: 1-p Thinker,0.8654,0.5000,criterio >= 0.85
+f2t,ruido 0.8,2,AUROC error test: no establecido (Thinker),0.5667,0.5000,azar
+f2t,ruido 0.8,2,AUROC error de razonamiento test: no establecido (Thinker),0.7119,0.5000,azar
+f2t,ruido 0.8,2,AUROC error test: conflicto percepción-Thinker,0.3846,0.5000,azar
+f2t,ruido 0.8,2,AUROC error de razonamiento test: conflicto percepción-Thinker,0.1896,0.5000,azar
+f2t,ruido 0.8,2,AUROC error test: 1-confianza calibrada (sistema),0.6152,0.5000,
+f2t,ruido 0.8,2,ECE test: p Thinker cruda,0.1041,0.0500,criterio <= 0.05
+f2t,ruido 0.8,2,ECE razonamiento test: p Thinker cruda,0.2480,0.0500,contra el acierto de razonamiento
+f2t,ruido 0.8,2,ECE test: calibrada (sistema),0.0285,0.0500,
+f2t,ruido 0.8,2,acierto columna (test n=6),0.4863,0.1000,
+f2t,ruido 0.8,2,acierto de razonamiento (test n=6),0.7730,,respuesta = suma de lo percibido
+f2t,ruido 0.8,2,"errores (test n=6, n)",1541,,
+f2t,ruido 0.8,2,"errores de razonamiento (test n=6, n)",681,,
+f2t,ruido 0.8,2,AUROC error test n=6: 1-p Thinker,0.6123,0.5000,criterio >= 0.85
+f2t,ruido 0.8,2,AUROC error de razonamiento test n=6: 1-p Thinker,0.8308,0.5000,criterio >= 0.85
+f2t,ruido 0.8,2,AUROC error test n=6: no establecido (Thinker),0.5521,0.5000,azar
+f2t,ruido 0.8,2,AUROC error de razonamiento test n=6: no establecido (Thinker),0.6631,0.5000,azar
+f2t,ruido 0.8,2,AUROC error test n=6: conflicto percepción-Thinker,0.3990,0.5000,azar
+f2t,ruido 0.8,2,AUROC error de razonamiento test n=6: conflicto percepción-Thinker,0.2564,0.5000,azar
+f2t,ruido 0.8,2,AUROC error test n=6: 1-confianza calibrada (sistema),0.6131,0.5000,
+f2t,ruido 0.8,2,ECE test n=6: p Thinker cruda,0.1037,0.0500,criterio <= 0.05
+f2t,ruido 0.8,2,ECE razonamiento test n=6: p Thinker cruda,0.2227,0.0500,contra el acierto de razonamiento
+f2t,ruido 0.8,2,ECE test n=6: calibrada (sistema),0.0275,0.0500,
+f2t,ruido 0.65,2,AUROC error prequential (2.a mitad): 1-p Thinker,0.5992,0.5000,
+f2t,ruido 0.65,2,errores de razonamiento prequential (n),5121,,en todo el flujo
+f2t,ruido 0.65,2,AUROC error de razonamiento prequential: 1-p Thinker,0.6965,0.5000,todo el flujo
+f2t,ruido 0.65,2,ECE razonamiento prequential: p Thinker cruda,0.1189,0.0500,
+f2t,ruido 0.65,2,acierto columna (test),0.3047,0.1000,
+f2t,ruido 0.65,2,acierto de razonamiento (test),0.6680,,respuesta = suma de lo percibido
+f2t,ruido 0.65,2,"errores (test, n)",1043,,
+f2t,ruido 0.65,2,"errores de razonamiento (test, n)",498,,
+f2t,ruido 0.65,2,AUROC error test: 1-p Thinker,0.6165,0.5000,criterio >= 0.85
+f2t,ruido 0.65,2,AUROC error de razonamiento test: 1-p Thinker,0.7616,0.5000,criterio >= 0.85
+f2t,ruido 0.65,2,AUROC error test: no establecido (Thinker),0.5208,0.5000,azar
+f2t,ruido 0.65,2,AUROC error de razonamiento test: no establecido (Thinker),0.5319,0.5000,azar
+f2t,ruido 0.65,2,AUROC error test: conflicto percepción-Thinker,0.4798,0.5000,azar
+f2t,ruido 0.65,2,AUROC error de razonamiento test: conflicto percepción-Thinker,0.4586,0.5000,azar
+f2t,ruido 0.65,2,AUROC error test: 1-confianza calibrada (sistema),0.6166,0.5000,
+f2t,ruido 0.65,2,ECE test: p Thinker cruda,0.1291,0.0500,criterio <= 0.05
+f2t,ruido 0.65,2,ECE razonamiento test: p Thinker cruda,0.2342,0.0500,contra el acierto de razonamiento
+f2t,ruido 0.65,2,ECE test: calibrada (sistema),0.0312,0.0500,
+f2t,ruido 0.65,2,acierto columna (test n=6),0.2690,0.1000,
+f2t,ruido 0.65,2,acierto de razonamiento (test n=6),0.5847,,respuesta = suma de lo percibido
+f2t,ruido 0.65,2,"errores (test n=6, n)",2193,,
+f2t,ruido 0.65,2,"errores de razonamiento (test n=6, n)",1246,,
+f2t,ruido 0.65,2,AUROC error test n=6: 1-p Thinker,0.6051,0.5000,criterio >= 0.85
+f2t,ruido 0.65,2,AUROC error de razonamiento test n=6: 1-p Thinker,0.7637,0.5000,criterio >= 0.85
+f2t,ruido 0.65,2,AUROC error test n=6: no establecido (Thinker),0.5138,0.5000,azar
+f2t,ruido 0.65,2,AUROC error de razonamiento test n=6: no establecido (Thinker),0.5401,0.5000,azar
+f2t,ruido 0.65,2,AUROC error test n=6: conflicto percepción-Thinker,0.4798,0.5000,azar
+f2t,ruido 0.65,2,AUROC error de razonamiento test n=6: conflicto percepción-Thinker,0.4607,0.5000,azar
+f2t,ruido 0.65,2,AUROC error test n=6: 1-confianza calibrada (sistema),0.6054,0.5000,
+f2t,ruido 0.65,2,ECE test n=6: p Thinker cruda,0.1521,0.0500,criterio <= 0.05
+f2t,ruido 0.65,2,ECE razonamiento test n=6: p Thinker cruda,0.1636,0.0500,contra el acierto de razonamiento
+f2t,ruido 0.65,2,ECE test n=6: calibrada (sistema),0.0201,0.0500,
+f2t,total,2,segundos,243.8000,,
