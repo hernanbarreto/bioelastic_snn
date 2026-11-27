@@ -184,8 +184,9 @@ def group_diag(pcts=(1,), seed=0):
 # explica la búsqueda retrospectiva.
 SERIAL = dict(memory=True, judge=True, copy=False, speak=False, back=True, prev_io=False, cogmap=False,
               modulators=False, max_steps=10, budget=128,
-              serial=dict(glance=(-3, 0), ctl=(-4, 4), dwell=10, prior=3.0, xsit=0.3, gist=False, realign=True))
-SERIAL_KEYS = ("glance", "ctl", "dwell", "prior", "xsit", "gist", "realign", "ret", "cls", "trial_td", "reuse", "td_actor")
+              serial=dict(glance=(-3, 0), ctl=(-4, 4), dwell=10, prior=3.0, xsit=0.3, gist=False, realign=True,
+                          imitate=3.0))
+SERIAL_KEYS = ("glance", "ctl", "dwell", "prior", "xsit", "gist", "realign", "ret", "cls", "trial_td", "reuse", "td_actor", "imitate")
 
 
 def cfg(**over):
@@ -220,7 +221,7 @@ def serial_item(net, cmd, acts, V, learn, free=False, max_len=X.SCAN_MAX, log=No
     for t in range(max_len + 1 if free else len(gold)):
         out = net.answer(None, explore=learn and not free)
         if log is not None:
-            log.append(("-".join(NAMES[a][:3] for a in net._path), int(out), net._ptr.p, net._ptr.d - 1))
+            log.append(("-".join(net.action_names()[a] for a in net._path), int(out), net._ptr.p, net._ptr.d - 1))
         if free:
             if out == EOS:
                 return outs == gold[:-1], outs
@@ -291,7 +292,38 @@ def scan_serial_run(pct, seed, conf=None, passes=1, n_test=1000, n_seen=300, val
     return out
 
 
-GROUPS = {"diag": group_diag}
+SCAN_PASSES = 20    # elegido en validación al 1 % (10/20/30 pasadas: 0.00/0.05/0.00, exploratorio)
+
+
+def group_scan_exp1(pcts=(1, 2, 4, 8), seeds=(0, 1, 2), passes=SCAN_PASSES):
+    """Experimento 1 de Lake y Baroni (2018) con el modo serial: el train de cada proporción,
+    `passes` pasadas en línea (las mismas en todos los puntos de la curva; presentaciones =
+    comandos x pasadas, el artículo usó 100 000), test congelado sobre una muestra fija de 1000
+    comandos del test de esa proporción (desviación declarada: el artículo usa el test entero),
+    tocado una vez. Una condición por (proporción, semilla)."""
+    st = Store("scan_exp1")
+    HEAD = "E2 SCAN, experimento 1 (proporción de comandos), modo serial"
+    for pct in pcts:
+        for sd in seeds:
+            def fn(log, pct=pct, sd=sd):
+                r = scan_serial_run(pct, sd, SERIAL, passes=passes, n_test=1000, n_seen=300)
+                SYS = f"Thinker serial, semilla {sd}"
+                T = f"{pct} % ({r['n_train']} comandos x {passes} pasadas = {r['n_train'] * passes} presentaciones)"
+                for part, label in (("seen", "comandos vistos (300)"), ("test", "test (muestra de 1000)")):
+                    for k in ("exact", "token", "length_ok", "no_fin"):
+                        log.row(HEAD, SYS, T + ", " + label, k, float(r[part][k]), 0.0, 1)
+                for t_, (v, n) in sorted(r["test"]["by"].items()):
+                    log.row(HEAD, SYS, T + ", test por tipo", f"{t_} (n={n})", v, 0.0, 1)
+                log.row(HEAD, SYS, T, "ms por símbolo (entrenamiento)", r["ms_per_step"], 0.0, 1)
+                if pct in X.SCAN_EXP1_PUBLISHED:
+                    log.row(HEAD, "seq2seq, mejor en conjunto (publicado, 100 000 presentaciones; no equivalente)",
+                            f"{pct} %", "secuencia exacta, test completo", X.SCAN_EXP1_PUBLISHED[pct], 0.0, 0)
+                return r
+            st.run(f"scan exp1 {pct}% semilla {sd}", fn)
+    st.finish()
+
+
+GROUPS = {"diag": group_diag, "scan_exp1": group_scan_exp1}
 
 
 def main():

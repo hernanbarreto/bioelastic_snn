@@ -558,6 +558,9 @@ class Thinker:
             self._serial_prior(float(sc["prior"]))
         self._sol_focus = None
         self._td_actor = not (self.serial and sc.get("td_actor", True) is False)   # (ablación del actor por TD)
+        # peso de la imitación de la búsqueda (el control aprende el camino que halló la búsqueda
+        # retrospectiva), relativo al de TD; 1 es la versión anterior
+        self._imitate = float(sc.get("imitate", 1.0)) if self.serial else 1.0
         # juicio (estado -> respuesta): prototipos conjuntivos sobre el estado, para que un
         # estado ambiguo quede ambiguo y no herede confianza de los vecinos
         self.judge = BioElasticNet(self.D_state, N, seed=seed + 1) if judge else None
@@ -707,6 +710,13 @@ class Thinker:
                 continue
             best, top = w, dp
         return best
+
+    def _xs_process(self, target: int) -> bool:
+        """¿El símbolo es del proceso y no de ninguna palabra? Con evidencia: apareció en bastantes
+        episodios (al menos 5, de al menos 10) y ninguna palabra de la oración lo explica. Antes de
+        eso no se le enseña nada al juicio (al principio ningún símbolo tiene causa todavía)."""
+        X = self._xs
+        return X["n"] >= 10 and X["s"][target] >= 5 and self._xs_cause(target) is None
 
     def _serial_focus(self) -> _Ptr:
         """El puntero al empezar una respuesta: donde quedó la respuesta anterior (con una
@@ -1408,9 +1418,10 @@ class Thinker:
                 if paths is not None and [a for _, _, a in paths[0]] != list(self._path):
                     self._teach_control(paths)
             self.blame[0 if strategy_error else 1] += int(wrong)
-            if strategy_error and self._path and self._path[-1] == JUDGE:
+            if strategy_error and self._path and self._path[-1] == JUDGE and not self.serial:
                 # el juicio es sobre este estado: si falló, ese estado no basta para juzgar
-                # (aunque otro camino sí habría servido)
+                # (aunque otro camino sí habría servido). En modo serial el juicio es «terminé»
+                # y no ve el estado: juzgar a destiempo es de la estrategia.
                 self._m_outcome("judge", self._js, False)
             conflict = None
             if not strategy_error:
@@ -1459,21 +1470,35 @@ class Thinker:
                         self._hindsight(target)             # recae justamente en lo que leyó de los registros
                 elif last == JUDGE:
                     if wrong:
-                        self._m_outcome("judge", self._js, False)
-                        if not (xs and cause is not None):
+                        if not xs or self._xs_process(target):
+                            # (modo serial: juzgar «terminé» cuando faltaba un símbolo de una palabra
+                            # es un error de cuándo juzgar, no del juicio)
+                            self._m_outcome("judge", self._js, False)
                             conflict = self._correct("judge", self._js, target, cue, ep, False)
-                    elif not (xs and cause is not None):
+                    elif not xs or self._xs_process(target):
                         self.judge.teach(target)
                         self.kver += 1
                         self._confirm("judge", self._js, target, cue, ep)
                 elif (wrong and self._cm_judge and self.judge is not None and not reg_only
                       and self._path and self._path[-1] in (COPY, EMIT)):
                     self._judge_candidate(target, cue, ep)
+                if (wrong and xs and cause is None and last != JUDGE and self.judge is not None
+                        and not reg_only and self._xs_process(target)):
+                    # modo serial: ningún significado de palabra explica el objetivo (FIN): el
+                    # módulo candidato es el juicio sobre el proceso, aunque haya respondido otro
+                    self.judge.forward(self._base(self._fs))
+                    self._judge_candidate(target, cue, ep)
                 if wrong and not reg_only:                  # error sin explicar: queda para repetir
                     self._remember(ep, target)
             if not wrong:                                   # la cadena acertó: sus eslabones también
+                xs_ok = None
+                if self.serial and self._sc["xsit"] > 0.0:  # (modo serial: si la evidencia dice que la
+                    w_ = self._xs_cause(target)             # causa es otra palabra, acertar mirando esta
+                    if w_ is not None:                      # es una coincidencia y no la confirma)
+                        xs_ok = _key(self._content((w_,)))
                 for c, _ in self._consults:
-                    self._m_outcome("say", c, True)
+                    if xs_ok is None or _key(c) == xs_ok:
+                        self._m_outcome("say", c, True)
                 if self._path and self._path[-1] == JUDGE:
                     self._m_outcome("judge", self._js, True)
             if conflict is not None:
@@ -1872,7 +1897,7 @@ class Thinker:
     def _teach_control(self, paths):
         """Corrige el control hacia las secuencias que habrían funcionado (regla delta local,
         repartida entre los caminos)."""
-        w = self.lr * self._ctl_gain / len(paths)
+        w = self.lr * self._ctl_gain * self._imitate / len(paths)
         for path in paths:
             for (s_idx, s_val), allowed, a in path:
                 p = self._policy(s_idx, s_val, allowed)

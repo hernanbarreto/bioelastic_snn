@@ -156,19 +156,21 @@ def test_fin_and_word_meanings_generalize_to_new_and_longer_sentences():
 def test_the_output_order_is_learned_by_the_control_not_by_the_knowledge():
     """«a b c» -> «C B A FIN»: la salida no sigue el orden de la entrada (no es icónica). El
     crédito transituacional le enseña a lo de largo plazo el significado de la palabra que causó
-    cada símbolo aunque el control haya mirado otra; el orden al revés lo aprende el control. Sin
-    ese crédito (se corrige la palabra mirada, como antes) los significados quedan mezclados."""
+    cada símbolo aunque el control haya mirado otra: queda una neurona por palabra. Sin ese
+    crédito (se corrige la palabra mirada, como antes) también termina sabiendo los significados,
+    pero con prototipos de más (las correcciones sobre palabras mal miradas). Medido, semillas 0-2,
+    200 oraciones: con el crédito, 6 neuronas y el léxico completo en las tres; sin él, 9-13
+    neuronas. (El crédito no hace más rápido este caso: exacta 0.98/0.98/0.70 contra
+    0.52/0.82/0.80 con 200 oraciones, 1.00/0.86/0.50 contra 0.88/1.00/1.00 con 400.)"""
     W = 6
     rev = lambda seq: [w + W for w in seq[::-1]]                   # noqa: E731
     net, rng = _trained(rev, W, n_train=400, lens=(2, 3))
     assert _lexicon(net, W) == W and net.say.layer.n == W
     assert _accuracy(net, rng, rev, W, lengths=(2, 3)) >= 0.8
-    # con 100 oraciones (medido, semillas 0-2): con el crédito, el léxico completo en las tres (6
-    # neuronas); sin él, 3 de 6 palabras en dos semillas (8-14 neuronas) y exacta 0.00-0.26 en ellas
-    on = [_lexicon(_trained(rev, W, n_train=100, lens=(2, 3), seed=sd)[0], W) for sd in (0, 1, 2)]
-    off = [_lexicon(_trained(rev, W, n_train=100, lens=(2, 3), seed=sd, serial=dict(SER, xsit=0.0))[0], W)
-           for sd in (0, 1, 2)]
-    assert min(on) == W and min(off) < W, (on, off)
+    on = [_trained(rev, W, n_train=200, lens=(2, 3), seed=sd)[0] for sd in (0, 1, 2)]
+    off = [_trained(rev, W, n_train=200, lens=(2, 3), seed=sd, serial=dict(SER, xsit=0.0))[0] for sd in (0, 1, 2)]
+    assert all(_lexicon(t, W) == W and t.say.layer.n == W for t in on)
+    assert min(t.say.layer.n for t in off) > W
 
 
 def test_the_count_of_answers_in_a_position_repeats_and_stops():
