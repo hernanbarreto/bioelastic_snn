@@ -1,0 +1,5 @@
+prueba,sistema,tramo,medida,media,desvio,semillas
+"E1 mini-SCAN (gramática de juguete propia, 30 % del train, 15 pasadas)","Thinker serial, imitate=1.0",90 comandos x 15 pasadas,"secuencia exacta, train",0.7407,0.0516,3
+"E1 mini-SCAN (gramática de juguete propia, 30 % del train, 15 pasadas)","Thinker serial, imitate=1.0",90 comandos x 15 pasadas,"secuencia exacta, test",0.6444,0.0760,3
+"E1 mini-SCAN (gramática de juguete propia, 30 % del train, 15 pasadas)","Thinker serial, imitate=3.0",90 comandos x 15 pasadas,"secuencia exacta, train",0.9111,0.0091,3
+"E1 mini-SCAN (gramática de juguete propia, 30 % del train, 15 pasadas)","Thinker serial, imitate=3.0",90 comandos x 15 pasadas,"secuencia exacta, test",0.8476,0.0255,3

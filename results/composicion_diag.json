@@ -1,0 +1,45 @@
+{
+ "diag scan 1% semilla 0": {
+  "train": {
+   "exact": 0.0,
+   "token": 0.3318553633959207,
+   "length_ok": 0.0,
+   "no_fin": 1.0
+  },
+  "test": {
+   "exact": 0.0,
+   "token": 0.27982656960915475,
+   "length_ok": 0.0,
+   "no_fin": 1.0
+  },
+  "secs": 54.28811168670654,
+  "final": {
+   "copiar": 315,
+   "decir": 1151,
+   "juzgar": 1169,
+   "emitir": 372
+  },
+  "outcome": {
+   "error de conocimiento": 1636,
+   "acierto": 699,
+   "error de estrategia": 672
+  },
+  "corrections": {
+   "marcada (sin escribir)": 464,
+   "escrita": 16
+  },
+  "fin_steps": {
+   "emitir | dijo FIN=False": 36,
+   "juzgar | dijo FIN=False": 79,
+   "copiar | dijo FIN=False": 20,
+   "decir | dijo FIN=False": 74
+  },
+  "say_contents": 181,
+  "say_contents_multi": 15,
+  "say_neurons": 32,
+  "winners_with_several_targets": 20,
+  "winners_used": 21,
+  "bag_ambiguity_train": 0.03827751196172249,
+  "bag_ambiguity_test": 0.095
+ }
+}
