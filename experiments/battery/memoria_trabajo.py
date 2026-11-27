@@ -122,6 +122,8 @@ PRUEBAS = [
             "la demora es un silencio: el Thinker no tiene escala de tiempo",
         ],
         correr=correr, version=1, semillas=tuple(range(8)),
+        variabilidad="la semilla cambia el Thinker (pesos iniciales y exploración: aprende o no la política) y los "
+                     "episodios de entrenamiento y de prueba",
         configs=CONFIGS, validar=validar, perfiles=True,
         criterio_validacion="exactitud en los últimos 500 episodios de entrenamiento (semillas de validación)",
         equivalente=False, motivo_equivalencia="otro procedimiento de prueba y memoria episódica exacta por diseño",

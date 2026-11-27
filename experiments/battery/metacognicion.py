@@ -166,6 +166,8 @@ PRUEBAS = [
             "la referencia humana es un rango entre sujetos: el índice se informa contra los dos extremos",
         ],
         correr=correr, version=1, semillas=(0, 1, 2),
+        variabilidad="la semilla cambia la red (orden de las 20 000 imágenes de entrenamiento) y los estímulos de "
+                     "prueba (dígitos del test y ruido)",
         equivalente=True,
         motivo_equivalencia="decisión perceptiva sobre imágenes con dificultad igualada; cambia la tarea (10 clases)",
         firmas={"firma_opuesta": "confianza de aciertos que sube y de errores que baja con la facilidad (ratas)",

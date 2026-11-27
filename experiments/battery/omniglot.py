@@ -222,6 +222,8 @@ PRUEBAS = [
                               "de la batería: la red no tiene una vía publicada para clases nuevas con un ejemplo",
                               "V1 sin el error local de depth2 (con 964 clases, depth2 tarda ~100 min por semilla aquí)"],
         correr=correr_imagenes, version=1, semillas=(0, 1, 2),
+        variabilidad="la semilla cambia V1 (orden del conjunto de fondo y semilla del área); las 20 corridas de prueba "
+                     "son siempre las oficiales y el lector de un ejemplo es determinista",
         equivalente=True, motivo_equivalencia="mismas imágenes y mismo protocolo de 20 opciones, a menor resolución",
         techo=1.0,
         comparar={"bpl": "puntaje", "convnet_simple": "puntaje", "prototipos": "puntaje", "hausdorff": "puntaje"},
@@ -232,6 +234,7 @@ PRUEBAS = [
         protocolo="por corrida, un área de asociación nueva aprende un ejemplo de cada carácter sobre los píxeles",
         desviaciones=_DESV + ["sin conjunto de fondo: control de lo que aporta lo aprendido antes"],
         correr=correr_pixeles, version=1, semillas=(0, 1, 2),
+        variabilidad="determinista: el lector de un ejemplo no usa la semilla y las corridas son las oficiales",
         equivalente=True, motivo_equivalencia="mismas imágenes y mismo protocolo, a menor resolución",
         techo=1.0,
         comparar={"hausdorff": "puntaje", "convnet_simple": "puntaje"},

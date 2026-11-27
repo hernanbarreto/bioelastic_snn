@@ -153,6 +153,7 @@ def fila_resultado(prueba, crudos: list[dict], catalogo: dict, commit: str) -> d
                 equivalente=dict(valor=bool(prueba.equivalente), motivo=prueba.motivo_equivalencia),
                 metrica=prueba.metrica, protocolo=prueba.protocolo,
                 desviaciones=list(prueba.desviaciones), semillas=[c["semilla"] for c in crudos],
+                variabilidad=getattr(prueba, "variabilidad", ""),
                 azar=dict(valor=azar_v, derivacion=azar_d), commit=commit,
                 fuente_resultado=f"medicion@{commit}",
                 segundos=float(sum(c.get("segundos", 0.0) for c in crudos)))
@@ -334,7 +335,7 @@ def _ix(ix):
 
 COLUMNAS_CSV = ("prueba", "variante", "perfil", "dimension", "condicion_entrada", "equivalente", "motivo_equivalencia", "estado",
                 "red_media", "red_desvio", "red_mediana", "red_min", "red_max", "semillas_en_azar", "semillas_en_techo",
-                "semillas_identicas",
+                "semillas_identicas", "variabilidad",
                 "n_semillas", "azar", "referencia_humana",
                 "referencia_valor", "referencia_fuente", "indice_min", "indice_max",
                 "especies_por_encima", "especies_por_debajo", "a_la_par", "sistemas_por_encima",
@@ -366,6 +367,7 @@ def fila_csv(f: dict) -> dict:
                 semillas_en_azar="" if red.get("semillas_en_azar") is None else red["semillas_en_azar"],
                 semillas_en_techo="" if red.get("semillas_en_techo") is None else red["semillas_en_techo"],
                 semillas_identicas="sí" if red.get("semillas_identicas") else "",
+                variabilidad=f.get("variabilidad") or "",
                 n_semillas=len(f.get("semillas") or []), azar=_num((f.get("azar") or {}).get("valor"), 4),
                 referencia_humana=rh.get("id", ""), referencia_valor=rv,
                 referencia_fuente=rh.get("cita", ""), indice_min=_num(ix.get("min"), 3),

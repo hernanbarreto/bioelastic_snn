@@ -203,6 +203,8 @@ PRUEBAS = [
                   f"{MAX_SESIONES}); después 6 sesiones con 2 pruebas BD intercaladas",
         desviaciones=_DESV + [f"largo de la sesión ({SESION} por par) elegido por la batería: el del artículo no se leyó"],
         correr=correr_5, version=2, semillas=tuple(range(8)),
+        variabilidad="la semilla cambia qué símbolo ocupa cada lugar del orden, el orden de los ensayos y el Thinker "
+                     "(con la configuración por defecto, sólo el entorno)",
         configs=CONFIGS_ELECCION, validar=_validador(correr_5), perfiles=True,
         criterio_validacion="exactitud en los pares entrenados al final del entrenamiento (semillas de validación)",
         equivalente=False, motivo_equivalencia="símbolos en lugar de estímulos visuales",
@@ -216,6 +218,8 @@ PRUEBAS = [
         desviaciones=_DESV + ["las personas traen conocimiento previo del orden y de la consigna del juego; la red empieza sin nada",
                               f"{N_PRUEBA_6} pruebas por par y largo de sesión elegidos por la batería"],
         correr=correr_6, version=2, semillas=tuple(range(8)),
+        variabilidad="la semilla cambia qué símbolo ocupa cada lugar del orden, el orden de los ensayos y el Thinker "
+                     "(con la configuración por defecto, sólo el entorno)",
         configs=CONFIGS_ELECCION, validar=_validador(correr_6), perfiles=True,
         criterio_validacion="exactitud en los pares entrenados al final del entrenamiento (semillas de validación)",
         equivalente=False, motivo_equivalencia="símbolos en lugar de figuras; las personas traen la idea de orden",
@@ -227,6 +231,8 @@ PRUEBAS = [
         protocolo="una sesión con la lista de 7: FG 20 ensayos, adyacentes y pares con F o G 150, los 21 pares 210",
         desviaciones=_DESV[:2] + ["una sesión, como las personas; los monos tuvieron decenas de sesiones con listas nuevas"],
         correr=correr_7, version=2, semillas=tuple(range(8)),
+        variabilidad="la semilla cambia la lista, los pares sorteados en cada fase y el Thinker (con la configuración "
+                     "por defecto, sólo el entorno)",
         configs=CONFIGS_ELECCION, validar=_validador(correr_7), perfiles=True,
         criterio_validacion="exactitud en los pares entrenados al final del entrenamiento (semillas de validación)",
         equivalente=False, motivo_equivalencia="símbolos en lugar de fotografías",

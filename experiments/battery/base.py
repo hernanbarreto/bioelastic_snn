@@ -59,6 +59,7 @@ class Prueba:
     perfil: str = "defecto"
     perfiles: bool = False
     config_base: dict | None = None           # sin `configs`: la configuración que se le pasa a `correr`
+    variabilidad: str = ""                    # de dónde sale el ± entre semillas (qué cambia la semilla)
 
     @property
     def clave(self) -> str:

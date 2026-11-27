@@ -214,6 +214,8 @@ PRUEBAS = [
                               "carácter y con la copia corrida 2 píxeles, para ver si el concepto va más allá de la "
                               "identidad de los píxeles"],
         correr=correr_imagenes, version=2, semillas=(0, 1, 2),
+        variabilidad="la semilla cambia la red (depth2), qué caracteres forman cada conjunto, los ensayos y los "
+                     "caracteres nuevos de transferencia",
         equivalente=True, motivo_equivalencia="la red ve las figuras como imágenes, igual que los animales",
         referencia=None, comparar=_COMP,
         firmas={},
@@ -225,6 +227,8 @@ PRUEBAS = [
         desviaciones=_DESV + ["condición de entrada: símbolos; la igualdad de dos símbolos la detecta la compuerta "
                               "por diseño (detección de coincidencia), no la aprende la red"],
         correr=correr_simbolos, version=1, semillas=(0, 1, 2, 3, 4),
+        variabilidad="la semilla cambia los símbolos de cada conjunto, los ensayos y el Thinker (con la configuración "
+                     "por defecto, sólo el entorno)",
         equivalente=False, motivo_equivalencia="la identidad de los símbolos viene dada",
         referencia=None, comparar=_COMP,
         configs=CONFIGS_ELECCION, validar=validar_simbolos, perfiles=True,

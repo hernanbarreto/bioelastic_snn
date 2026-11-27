@@ -552,6 +552,8 @@ PRUEBAS = [
             "semillas que medir (n = 1 en los hechos)",
         ],
         correr=correr, version=5, semillas=(0, 1),
+        variabilidad="determinista: la red de texto no usa la semilla para aprender y el corpus va siempre en el mismo "
+                     "orden; los intervalos salen del bootstrap por bloques del tramo de prueba (en la curva)",
         equivalente=False,
         motivo_equivalencia=("la cifra humana publicada es una referencia no equivalente: las personas no aprendieron "
                              "con 600 KB; la comparación que decide (criterio F) es contra n-gramas con los mismos datos"),

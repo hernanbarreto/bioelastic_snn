@@ -232,6 +232,8 @@ PRUEBAS = [
             "los monos tuvieron entrenamiento previo con el aparato; la red empieza sin nada",
         ],
         correr=correr, version=2, semillas=(0, 1, 2, 3, 4), perfiles=True, config_base=CONFIG,
+        variabilidad="la semilla cambia el Thinker (pesos iniciales del escritor de registros y la exploración) y el "
+                     "entorno (qué objeto se premia, el orden en cada ensayo)",
         equivalente=False,
         motivo_equivalencia="con símbolos la red no tiene que percibir ni reconocer los objetos",
         comparar=_COMPARAR, experiencia=_EXPERIENCIA, curva=CURVA,
@@ -251,6 +253,8 @@ PRUEBAS = [
             "sin los 112 problemas de reversión; problemas 201 a 400 como extensión",
         ],
         correr=correr_imagenes, version=2, semillas=(0, 1, 2), perfiles=True, config_base=CONFIG,
+        variabilidad="la semilla cambia la percepción (orden de las imágenes de MNIST), los objetos de Omniglot, el "
+                     "Thinker y el entorno",
         equivalente=True,
         motivo_equivalencia="la red ve los objetos como imágenes; su percepción los nombra con un vocabulario chico",
         comparar=_COMPARAR, experiencia=_EXPERIENCIA, curva=CURVA,

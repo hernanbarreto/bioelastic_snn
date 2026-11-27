@@ -28,6 +28,16 @@ ESCALAS = (200_000, 600_000, 1_800_000)
 N_FIN = 60_000
 
 
+def datos_barajados(k: int, n: int) -> bytes:
+    """Una «semilla de datos»: las emisiones del corpus (sin el tramo fijo del final) en un
+    orden al azar con semilla k, y los primeros n bytes. Es otra condición de datos: mezcla
+    las edades, que en AO-CHILDES vienen en orden."""
+    todo = L.CORPUS.read_bytes()[:-2 * N_FIN]
+    lineas = todo.split(b"\n")
+    orden = np.random.default_rng(1000 + k).permutation(len(lineas))
+    return b"\n".join(lineas[i] for i in orden)[:n]
+
+
 def tramos_fijos(corto: bool = False) -> dict:
     todo = L.CORPUS.read_bytes()
     t = dict(validacion=todo[-2 * N_FIN:-N_FIN], prueba=todo[-N_FIN:])
@@ -41,12 +51,14 @@ def _cfg(tope: int | None):
     return cfg
 
 
-def entrenar_serie(semilla: int, n: int, cfg: dict, etiqueta: str, desde: tuple | None = None, log=None):
-    """Como `lenguaje.entrenar`, con otra configuración (`etiqueta` en el nombre de la cache)
-    y, si `desde` = (nombre de la corrida previa, posición), continuando su pasada."""
+def entrenar_serie(semilla: int, n: int, cfg: dict, etiqueta: str, desde: tuple | None = None, log=None,
+                   crudo: bytes | None = None):
+    """Como `lenguaje.entrenar`, con otra configuración (`etiqueta` en el nombre de la cache),
+    otros datos (`crudo`) y, si `desde` = (nombre de la corrida previa, posición), continuando
+    su pasada."""
     from bioelastic import BioElasticNet, TextEncoder
     base = L.CACHE / f"texto_{L._huella()}_s{semilla}_n{n}{etiqueta}"
-    data = TextEncoder()(L.corpus(n))
+    data = TextEncoder()(L.corpus(n) if crudo is None else crudo)
     patron = re.compile(re.escape(base.name) + r"_(\d+)\.npz$")
     hechos = sorted(int(m.group(1)) for p in (L.CACHE.glob(base.name + "_*.npz") if L.CACHE.exists() else [])
                     if (m := patron.match(p.name)))
@@ -102,6 +114,35 @@ def red_en(semilla: int, n: int, tope: int | None = None, log=None):
     return entrenar_serie(semilla, n, _cfg(tope), f"{etq}_desde{previo_n}", (previo, previo_n - 1), log)
 
 
+def bits_por_posicion_red(net, datos: bytes) -> np.ndarray:
+    """Bits de cada byte del tramo (a partir del segundo) según la red, sin aprender."""
+    net.reset_context()
+    out = np.empty(len(datos) - 1, dtype=np.float64)
+    for i in range(len(datos) - 1):
+        net.forward(int(datos[i]))
+        p = net.readout.probs(net._last.V)
+        out[i] = -np.log2(max(float(p[datos[i + 1]]), 1e-12))
+    return out
+
+
+def bits_por_posicion_kn(kb, datos: bytes) -> np.ndarray:
+    return np.array([-kb.logp(datos[max(0, i - kb.k + 1):i], datos[i]) / np.log(2) for i in range(1, len(datos))])
+
+
+BLOQUE, B_REMUESTRAS = 1000, 2000
+
+
+def bootstrap_bloques(x: np.ndarray, semilla: int = 0) -> dict:
+    """Intervalo del 95 % de la media por bootstrap por bloques contiguos de `BLOQUE` bytes
+    (respeta la dependencia entre bytes vecinos)."""
+    nb = len(x) // BLOQUE
+    medias = x[:nb * BLOQUE].reshape(nb, BLOQUE).mean(axis=1)
+    rng = np.random.default_rng(semilla)
+    rem = medias[rng.integers(nb, size=(B_REMUESTRAS, nb))].mean(axis=1)
+    return dict(media=float(x.mean()), ic95=[float(np.quantile(rem, 0.025)), float(np.quantile(rem, 0.975))],
+                bloques=int(nb))
+
+
 def evaluar_red(net, clave: str, pares: list, corto: bool = False) -> dict:
     """Bits por byte en los tramos fijos y BLiMP, con caches por clave (reanudable)."""
     cb = L.CACHE / f"bitsfin2_{clave}{'_corto' if corto else ''}.json"
@@ -132,7 +173,13 @@ def evaluar_red(net, clave: str, pares: list, corto: bool = False) -> dict:
     pp = [float(np.mean([x for x, u in zip(red, uids) if u == uid])) for uid in por_uid]
     st = net.stats()
     f_val = min(bits["validacion"][2], key=bits["validacion"][2].get)
+    cp = L.CACHE / f"bitsposfin_{clave}{'_corto' if corto else ''}.npy"
+    if not cp.exists():
+        if vencido(margen=len(tramos_fijos(corto)["prueba"]) * 3e-3):
+            raise Pendiente(f"curva: bits por posición de {clave}")
+        np.save(cp, bits_por_posicion_red(net, tramos_fijos(corto)["prueba"]))
     return dict(bits_prueba=bits["prueba"][0], acierto_byte_prueba=bits["prueba"][1],
+                bits_por_posicion=str(cp),
                 bits_validacion=bits["validacion"][0], factor_temperatura=float(f_val),
                 bits_prueba_temperatura_validada=bits["prueba"][2][f_val], blimp=float(np.mean(pp)),
                 p_signo_blimp=L._signo(int(np.sum(red == 1)), int(np.sum(red != 0.5))),
@@ -140,14 +187,14 @@ def evaluar_red(net, clave: str, pares: list, corto: bool = False) -> dict:
                 desalojadas=float(st.get("evicted", 0)))
 
 
-def kn_en(n: int, pares: list, corto: bool = False) -> dict:
+def kn_en(n: int, pares: list, corto: bool = False, crudo: bytes | None = None, etiqueta: str = "") -> dict:
     """KN de bytes con los mismos n bytes: orden elegido con el tramo fijo de validación,
-    bits por byte en el de prueba y BLiMP. Determinista: una sola vez por escala."""
-    ruta = L.CACHE / f"kn_escala_n{n}_p{len(pares)}{'_corto' if corto else ''}.json"
+    bits por byte en el de prueba (también por posición) y BLiMP. Determinista."""
+    ruta = L.CACHE / f"kn_escala_n{n}{etiqueta}_p{len(pares)}{'_corto' if corto else ''}.json"
     if ruta.exists():
         return json.loads(ruta.read_text())
     tr = tramos_fijos(corto)
-    kb = L.KneserNey(L.ORDEN_MAX_BYTES, 256).entrenar([L.CORPUS.read_bytes()[:n]])
+    kb = L.KneserNey(L.ORDEN_MAX_BYTES, 256).entrenar([L.CORPUS.read_bytes()[:n] if crudo is None else crudo])
     hval = {}
     for K in range(1, L.ORDEN_MAX_BYTES + 1):
         kb.orden(K)
@@ -155,11 +202,14 @@ def kn_en(n: int, pares: list, corto: bool = False) -> dict:
     K = min(hval, key=hval.get)
     kb.orden(K)
     bits = -kb.secuencia(tr["prueba"]) / max(1, len(tr["prueba"]) - 1) / np.log(2)
+    cp = ruta.with_suffix(".npy")
+    np.save(cp, bits_por_posicion_kn(kb, tr["prueba"]))
     v = np.array([1.0 if (g := kb.secuencia(b"\n" + p["buena"] + b"\n")) > (b := kb.secuencia(b"\n" + p["mala"] + b"\n"))
                   else (0.5 if g == b else 0.0) for p in pares])
     uids = [p["uid"] for p in pares]
     blimp = float(np.mean([np.mean([x for x, u in zip(v, uids) if u == uid]) for uid in dict.fromkeys(uids)]))
-    out = dict(orden=K, bits_prueba=float(bits), validacion={str(k): float(h) for k, h in hval.items()}, blimp=blimp,
+    out = dict(orden=K, bits_prueba=float(bits), bits_por_posicion=str(cp),
+               validacion={str(k): float(h) for k, h in hval.items()}, blimp=blimp,
                p_signo_blimp=L._signo(int(np.sum(v == 1)), int(np.sum(v != 0.5))))
     L.CACHE.mkdir(parents=True, exist_ok=True)
     ruta.write_text(json.dumps(out))
@@ -179,12 +229,33 @@ def correr(semilla: int, escala: float = 1.0, tope: int | None = None) -> dict:
             net, clave = red_en(semilla, n, tope, log=L._log)
         r = evaluar_red(net, clave, pares, corto=escala < 1.0)
         k = kn_en(n, pares, corto=escala < 1.0)
+        br = np.load(r.pop("bits_por_posicion")); bk_ = np.load(k["bits_por_posicion"])
+        r["bootstrap_red"] = bootstrap_bloques(br, 1); r["bootstrap_kn"] = bootstrap_bloques(bk_, 2)
+        r["bootstrap_red_menos_kn"] = bootstrap_bloques(br - bk_, 3)
         mb = n / 1e6
         for c, v in r.items():
+            if isinstance(v, dict):
+                med[f"{c}_media_{mb:g}MB"] = v["media"]
+                med[f"{c}_ic95_inf_{mb:g}MB"] = v["ic95"][0]; med[f"{c}_ic95_sup_{mb:g}MB"] = v["ic95"][1]
+                continue
             med[f"{c}_{mb:g}MB"] = v
         med[f"kn_bits_prueba_{mb:g}MB"] = k["bits_prueba"]; med[f"kn_orden_{mb:g}MB"] = float(k["orden"])
         med[f"kn_blimp_{mb:g}MB"] = k["blimp"]; med[f"kn_p_signo_blimp_{mb:g}MB"] = k["p_signo_blimp"]
         curva.append(dict(bytes=n, red=r, kn=k))
+    # variabilidad por muestra de datos, sólo en la escala menor (otra condición: edades mezcladas)
+    if tope is None and escala >= 1.0:
+        n0 = escalas[0]
+        for kd in (1, 2):
+            crudo = datos_barajados(kd, n0)
+            net, nombre = entrenar_serie(semilla, n0, _cfg(None), f"_barajado{kd}", None, L._log, crudo=crudo)
+            r = evaluar_red(net, nombre, pares)
+            k = kn_en(n0, pares, crudo=crudo, etiqueta=f"_barajado{kd}")
+            br = np.load(r.pop("bits_por_posicion")); bk_ = np.load(k["bits_por_posicion"])
+            med[f"barajado{kd}_bits_red_{n0 / 1e6:g}MB"] = r["bits_prueba"]
+            med[f"barajado{kd}_bits_kn_{n0 / 1e6:g}MB"] = k["bits_prueba"]
+            med[f"barajado{kd}_red_menos_kn_{n0 / 1e6:g}MB"] = float((br - bk_).mean())
+            med[f"barajado{kd}_blimp_red_{n0 / 1e6:g}MB"] = r["blimp"]; med[f"barajado{kd}_blimp_kn_{n0 / 1e6:g}MB"] = k["blimp"]
+            med[f"barajado{kd}_neuronas_{n0 / 1e6:g}MB"] = r["neuronas"]
     tope_n = (tope or L.CFG["layer"]["max_neurons"])
     b = [c["red"]["bits_prueba"] for c in curva]; bk = [c["kn"]["bits_prueba"] for c in curva]
     bt = [c["red"]["bits_prueba_temperatura_validada"] for c in curva]
@@ -194,6 +265,8 @@ def correr(semilla: int, escala: float = 1.0, tope: int | None = None) -> dict:
                curva_baja_bits=bool(b[0] > b[1] > b[2]), red_menos_bits_que_kn_al_final=bool(b[-1] < bk[-1]),
                mejora_bits_ultimo_tramo=float(b[1] - b[2]), mejora_bits_kn_ultimo_tramo=float(bk[1] - bk[2]),
                curva_bits=b, curva_bits_kn=bk, curva_bits_temperatura_validada=bt,
+               curva_red_menos_kn=[c["red"]["bootstrap_red_menos_kn"]["media"] for c in curva],
+               curva_red_menos_kn_ic95=[c["red"]["bootstrap_red_menos_kn"]["ic95"] for c in curva],
                red_menos_bits_que_kn_al_final_temperatura_validada=bool(bt[-1] < bk[-1]), curva_blimp=[c["red"]["blimp"] for c in curva],
                curva_blimp_kn=[c["kn"]["blimp"] for c in curva], curva_neuronas=[c["red"]["neuronas"] for c in curva])
     return dict(puntaje=b[-1], medidas=med, segundos=time.time() - t0, curva=curva)

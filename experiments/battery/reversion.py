@@ -196,6 +196,8 @@ PRUEBAS = [
             "sin sesiones diarias: una sesión continua",
         ],
         correr=correr_serial, version=1, semillas=(0, 1, 2, 3, 4),
+        variabilidad="la semilla cambia el entorno (lados y objeto premiado al empezar) y el Thinker; con la "
+                     "configuración por defecto (sólo DECIR) el Thinker no usa la semilla: el ± es del entorno",
         configs=CONFIGS_ELECCION, validar=validar_serial, validar_mayor=False, perfiles=True,
         criterio_validacion="errores por fase en semillas de validación (menos es mejor)",
         equivalente=False, motivo_equivalencia="símbolos en lugar de estímulos percibidos",
@@ -218,6 +220,8 @@ PRUEBAS = [
             "ajuste por máxima verosimilitud en una grilla, no la estimación bayesiana del original",
         ],
         correr=correr_volatil, version=1, semillas=(0, 1, 2, 3, 4, 5),
+        variabilidad="la semilla cambia el calendario (largos de 30 o 40, desenlaces sorteados, orden de las fases) y el "
+                     "Thinker; con la configuración por defecto el Thinker no usa la semilla: el ± es del entorno",
         configs=CONFIGS_ELECCION, validar=validar_volatil, semillas_validacion=(100, 101, 102, 103), perfiles=True,
         criterio_validacion="proporción de elecciones correctas en semillas de validación",
         equivalente=False, motivo_equivalencia="sin magnitudes de premio y con símbolos",

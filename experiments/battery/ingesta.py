@@ -42,6 +42,7 @@ class Fuente:
     pendiente: str = ""                 # qué falta si el archivo no está
     agregado: bool = False              # la fuente sólo publica media ± desvío (sin valores por semilla)
     patron: str = ""                    # archivos por semilla ({s}): todos cuentan para el commit
+    variabilidad: str = ""              # de dónde sale el ± de la fuente
 
 
 def commit_de(archivos) -> str:
@@ -148,6 +149,8 @@ def fuentes() -> list[Fuente]:
                               "Fashion: 1 000 imágenes al azar del test, 3 etiquetas por imagen y voto mayoritario; los "
                               "mantenedores no verificaron esa fila"],
                 archivo=res / f"{ds}_final_summary.csv", leer=leer_vision(modelo),
+                variabilidad="la semilla de exp_vision cambia el orden de las 55 000 imágenes y la semilla de la red; el "
+                             "test es siempre el mismo",
                 equivalente=True, motivo_equivalencia="la red y las personas ven las mismas imágenes de 28 x 28",
             ))
     for depth in (2, 3):
@@ -161,6 +164,7 @@ def fuentes() -> list[Fuente]:
                           "la fuente publica media ± desvío de 3 semillas, sin los valores por semilla"],
             archivo=WT / "predictivo" / "results" / "predictivo_f0.json",
             leer=leer_predictivo_f0("cifar10", depth), agente="predictivo", agregado=True,
+            variabilidad="semillas 0 a 2 de la rama predictivo: orden de las imágenes y semilla de la red",
             equivalente=True, motivo_equivalencia="la red y las personas ven las mismas imágenes de 32 x 32",
             pendiente="todavía no hay resultados de CIFAR-10 en la rama predictivo",
         ))
@@ -182,6 +186,8 @@ def fuentes() -> list[Fuente]:
                                    "ECE suma (test)": "ece_suma"}, sem),
             agente="integracion3", equivalente=True,
             motivo_equivalencia="la misma tarea de pares de MNIST que las cifras publicadas (sin referencia humana)",
+            variabilidad="semillas de la rama integracion3: armado de los pares, orden y semilla de la red; el test "
+                         "(5 000 pares) es el mismo",
             comparar={"deepproblog": "puntaje", "cnn_base": "puntaje", "deepstochlog": "puntaje", "anesi": "puntaje",
                       "referencia_099": "puntaje"},
         ))
@@ -202,6 +208,7 @@ def fuentes() -> list[Fuente]:
                               range(3)),
         agente="integracion3", equivalente=False,
         motivo_equivalencia="dificultad no igualada y flujo con clases nuevas: otro procedimiento que Fleming et al.",
+        variabilidad="semillas 0 a 2 de la rama integracion3: el flujo continuo (orden de las muestras) y la red",
     ))
     cons = WT / "consolidacion" / "results" / "consolidacion_f6_split.csv"
     out.append(Fuente(
@@ -214,6 +221,7 @@ def fuentes() -> list[Fuente]:
                       "100 por clase de la tabla publicada",
                       "semillas 3 a 5 (las de la rama)"],
         archivo=cons, leer=leer_split("mnist", "c2"), agente="consolidacion", equivalente=True,
+        variabilidad="semillas 3 a 5 de la rama consolidacion: asignación de dígitos a tareas, orden y red",
         motivo_equivalencia="el mismo escenario incremental por clases sobre las mismas imágenes (sin referencia humana)",
         comparar={k: "puntaje" for k in ("conjunto", "ninguno", "ewc", "si", "lwf", "agem", "fromp", "er", "dgr",
                                          "icarl", "clasificador_generativo", "bir")},
@@ -224,6 +232,7 @@ def fuentes() -> list[Fuente]:
         protocolo="rama consolidacion, F6: el mismo procedimiento que Split-MNIST sobre Fashion-MNIST",
         desviaciones=["sin referencias publicadas verificadas por la batería"],
         archivo=cons, leer=leer_split("fashion", "c2"), agente="consolidacion", equivalente=True,
+        variabilidad="semillas 3 a 5 de la rama consolidacion",
         motivo_equivalencia="el mismo escenario incremental por clases (sin referencia humana ni de máquina verificada)",
     ))
     r3 = WT / "razonamiento3" / "results"
@@ -236,6 +245,7 @@ def fuentes() -> list[Fuente]:
                       "las palabras llegan como símbolos ya separados; las cifras publicadas son de redes que leen texto",
                       "azar: respuesta mayoritaria por tarea, tomada de la misma tabla de la rama"],
         archivo=r3 / "razonamiento3_f6_babi.csv", leer=leer_babi, agente="razonamiento3", equivalente=False,
+        variabilidad="una sola semilla: no hay ± entre semillas",
         motivo_equivalencia="sin referencia humana medida; las palabras llegan como símbolos",
         comparar={"memnn": "puntaje", "lstm": "puntaje", "ngramas": "puntaje"}, referencia=None,
         azar=None, azar_derivacion="respuesta mayoritaria por tarea (de la tabla de la rama)",
@@ -251,6 +261,8 @@ def fuentes() -> list[Fuente]:
                       "MLC se meta-entrenó con 100 000 episodios; acá, 300 como máximo",
                       "la fuente publica media ± desvío de 3 semillas, sin los valores por semilla"],
         archivo=r3 / "razonamiento3_f6_mlc.csv", leer=leer_mlc, agente="razonamiento3", agregado=True,
+        variabilidad="3 semillas del Thinker en la rama razonamiento3; el episodio de prueba es el mismo (el de las "
+                     "personas)",
         equivalente=False, motivo_equivalencia="símbolos en lugar de palabras y colores vistos; meta-entrenamiento mínimo",
         comparar={"mlc": "puntaje"},
         pendiente="Lake y Baroni: todavía no hay resultados en la rama razonamiento3",
@@ -294,7 +306,7 @@ def fila_de(f: Fuente, catalogo: dict) -> dict:
     p = Prueba(id=f.prueba, variante=f.variante, condicion=f.condicion, metrica=f.metrica, protocolo=f.protocolo,
                desviaciones=list(f.desviaciones), correr=None, equivalente=f.equivalente,
                motivo_equivalencia=f.motivo_equivalencia, comparar=dict(f.comparar), referencia=f.referencia,
-               azar=f.azar, azar_derivacion=f.azar_derivacion, firmas=dict(f.firmas))
+               azar=f.azar, azar_derivacion=f.azar_derivacion, firmas=dict(f.firmas), variabilidad=f.variabilidad)
     if not f.archivo.exists():
         fila = esquema.fila_resultado(p, [], catalogo, "")
         fila.update(estado="pendiente", motivo=f.pendiente or f"todavía no existe {f.archivo}",
