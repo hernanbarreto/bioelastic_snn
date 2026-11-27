@@ -1,0 +1,87 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+f1a,k=10,1,segundos,432.9000,,"100 anclas, 4000 episodios"
+f1a,k=10,1,"imágenes nombradas (total, con repeticiones)",500,,
+f1a,k=10,1,curva columna ep=500,0.4083,,
+f1a,k=10,1,curva pureza ep=500,0.8000,,
+f1a,k=10,1,curva identidad ep=500,0.8000,,
+f1a,k=10,1,curva usados ep=500,10,,
+f1a,k=10,1,curva columna ep=1000,0.6318,,
+f1a,k=10,1,curva pureza ep=1000,0.8680,,
+f1a,k=10,1,curva identidad ep=1000,0.8680,,
+f1a,k=10,1,curva usados ep=1000,10,,
+f1a,k=10,1,curva columna ep=1500,0.7361,,
+f1a,k=10,1,curva pureza ep=1500,0.8980,,
+f1a,k=10,1,curva identidad ep=1500,0.8980,,
+f1a,k=10,1,curva usados ep=1500,10,,
+f1a,k=10,1,curva columna ep=2000,0.7830,,
+f1a,k=10,1,curva pureza ep=2000,0.9180,,
+f1a,k=10,1,curva identidad ep=2000,0.9180,,
+f1a,k=10,1,curva usados ep=2000,10,,
+f1a,k=10,1,curva columna ep=2500,0.8364,,
+f1a,k=10,1,curva pureza ep=2500,0.9260,,
+f1a,k=10,1,curva identidad ep=2500,0.9260,,
+f1a,k=10,1,curva usados ep=2500,10,,
+f1a,k=10,1,curva columna ep=3000,0.8618,,
+f1a,k=10,1,curva pureza ep=3000,0.9360,,
+f1a,k=10,1,curva identidad ep=3000,0.9360,,
+f1a,k=10,1,curva usados ep=3000,10,,
+f1a,k=10,1,curva columna ep=3500,0.8593,,
+f1a,k=10,1,curva pureza ep=3500,0.9500,,
+f1a,k=10,1,curva identidad ep=3500,0.9500,,
+f1a,k=10,1,curva usados ep=3500,10,,
+f1a,k=10,1,curva columna ep=4000,0.8660,,
+f1a,k=10,1,curva pureza ep=4000,0.9540,,
+f1a,k=10,1,curva identidad ep=4000,0.9540,,
+f1a,k=10,1,curva usados ep=4000,10,,
+f1a,k=10,1,pureza percepción (test),0.9545,0.1000,mejor biyección
+f1a,k=10,1,identidad percepción (test),0.9545,0.1000,símbolo == dígito
+f1a,k=10,1,símbolos usados,10,10,
+f1a,k=10,1,código es identidad (dígitos),10,10,dígitos cuyo símbolo en la mejor biyección es el propio dígito
+f1a,k=10,1,créditos a la percepción,20112,,
+f1a,k=10,1,precisión del crédito (código final),0.9159,0.1000,
+f1a,k=10,1,precisión del crédito (identidad),0.9159,0.1000,
+f1a,k=10,1,"precisión del crédito, 2.a mitad (código final)",0.9654,0.1000,
+f1a,k=10,1,exacta n=3 (test),0.7400,0.0005,azar
+f1a,k=10,1,columna n=3 (test),0.8813,0.1000,azar
+f1a,k=10,1,fin (acarreo) n=3 (test),0.9740,0.5005,mejor constante
+f1a,k=10,1,exacta n=1 (test),0.9200,0.0550,azar
+f1a,k=10,1,cota pureza^6 (Thinker perfecto),0.7562,,
+f1a,k=10,1,exacta n=3 | imágenes bien (código),1.0000,,
+f1a,k=10,1,fracción episodios con las 6 imágenes bien (código),0.7600,0.7562,pureza^6
+f1a,k=10,1,Thinker con código-oráculo: exacta n=3,1.0000,,símbolos = código final perfecto
+f1a,k=10,1,Thinker con código-oráculo: columna n=3,1.0000,0.1000,
+f1a,k=10,1,clases fundidas (símbolo mayoritario de >=2 dígitos),0,0,
+f1a,k=10,1,masa en s = d (identidad),0.9545,0.1000,fracción de imágenes
+f1a,k=10,1,masa en s = d +- 1 (vecinos),0.0085,0.2000,
+f1a,k=10,1,masa en s = d + 5,0.0180,0.1000,invisible para el dígito módulo 10
+f1a,k=10,1,converge a una permutación (pureza - identidad),0.0000,,alto: código consistente pero permutado
+f1a,k=10,1,acierto columna prequential (2.a mitad),0.8250,0.1000,
+f1a,k=10,1,AUROC error prequential (2.a mitad): 1-p percepción (pa*pb),0.8138,0.5000,azar
+f1a,k=10,1,"AUROC error prequential (2.a mitad): conflicto Cortex (máx a, b)",0.8175,0.5000,azar
+f1a,k=10,1,AUROC error prequential (2.a mitad): 1-acuerdo votantes (mín),0.7194,0.5000,azar
+f1a,k=10,1,AUROC error prequential (2.a mitad): 1-p Thinker,0.5000,0.5000,azar
+f1a,k=10,1,AUROC error prequential (2.a mitad): no establecido (Thinker),0.5000,0.5000,azar
+f1a,k=10,1,AUROC error prequential (2.a mitad): conflicto percepción-Thinker,0.5000,0.5000,azar
+f1a,k=10,1,AUROC error prequential (2.a mitad): 1-p sistema (pa*pb*pt),0.8138,0.5000,azar
+f1a,k=10,1,"AUROC error prequential (2.a mitad): 1-P(respuesta | percepción, regla)",0.7851,0.5000,azar
+f1a,k=10,1,AUROC error prequential (2.a mitad): 1-confianza cruda del sistema,0.7851,0.5000,azar
+f1a,k=10,1,AUROC error prequential (2.a mitad): 1-calibrada,0.7987,0.5000,
+f1a,k=10,1,"ECE sistema cruda (prequential, 2.a mitad)",0.1754,0.0000,P(respuesta) o pa*pb*pt
+f1a,k=10,1,"ECE sistema calibrada (prequential, 2.a mitad)",0.0094,0.0000,
+f1a,k=10,1,acierto columna (test),0.9027,0.1000,
+f1a,k=10,1,AUROC error test: 1-p percepción (pa*pb),0.8125,0.5000,azar
+f1a,k=10,1,"AUROC error test: conflicto Cortex (máx a, b)",0.8157,0.5000,azar
+f1a,k=10,1,AUROC error test: 1-acuerdo votantes (mín),0.7138,0.5000,azar
+f1a,k=10,1,AUROC error test: 1-p Thinker,0.5000,0.5000,azar
+f1a,k=10,1,AUROC error test: no establecido (Thinker),0.5000,0.5000,azar
+f1a,k=10,1,AUROC error test: conflicto percepción-Thinker,0.5000,0.5000,azar
+f1a,k=10,1,AUROC error test: 1-p sistema (pa*pb*pt),0.8125,0.5000,azar
+f1a,k=10,1,"AUROC error test: 1-P(respuesta | percepción, regla)",0.7836,0.5000,azar
+f1a,k=10,1,AUROC error test: 1-confianza cruda del sistema,0.7836,0.5000,azar
+f1a,k=10,1,AUROC error test: 1-calibrada,0.8055,0.5000,
+f1a,k=10,1,ECE sistema cruda (test),0.1864,0.0000,
+f1a,k=10,1,ECE sistema calibrada (test),0.0392,0.0000,
+f1a,k=10,1,"ECE percepción (test, código final)",0.0057,0.0000,
+f1a,k=10,1,AUROC error percepción (test): 1-p,0.9389,0.5000,
+f1a,k=10,1,AUROC error percepción (test): conflicto Cortex,0.9418,0.5000,
+f1a,total,1,segundos,516.7000,,

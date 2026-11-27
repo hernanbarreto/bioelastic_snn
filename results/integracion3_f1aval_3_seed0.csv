@@ -1,0 +1,58 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+f1aval,k=3,0,segundos,538.6000,,"30 anclas, 4000 episodios"
+f1aval,k=3,0,"imágenes nombradas (total, con repeticiones)",430,,
+f1aval,k=3,0,curva columna ep=500,0.2293,,
+f1aval,k=3,0,curva pureza ep=500,0.4460,,
+f1aval,k=3,0,curva identidad ep=500,0.4020,,
+f1aval,k=3,0,curva usados ep=500,10,,
+f1aval,k=3,0,curva columna ep=1000,0.2622,,
+f1aval,k=3,0,curva pureza ep=1000,0.5200,,
+f1aval,k=3,0,curva identidad ep=1000,0.4940,,
+f1aval,k=3,0,curva usados ep=1000,10,,
+f1aval,k=3,0,curva columna ep=1500,0.2925,,
+f1aval,k=3,0,curva pureza ep=1500,0.5400,,
+f1aval,k=3,0,curva identidad ep=1500,0.5320,,
+f1aval,k=3,0,curva usados ep=1500,10,,
+f1aval,k=3,0,curva columna ep=2000,0.3301,,
+f1aval,k=3,0,curva pureza ep=2000,0.6020,,
+f1aval,k=3,0,curva identidad ep=2000,0.5560,,
+f1aval,k=3,0,curva usados ep=2000,10,,
+f1aval,k=3,0,curva columna ep=2500,0.3655,,
+f1aval,k=3,0,curva pureza ep=2500,0.6120,,
+f1aval,k=3,0,curva identidad ep=2500,0.5660,,
+f1aval,k=3,0,curva usados ep=2500,10,,
+f1aval,k=3,0,curva columna ep=3000,0.3729,,
+f1aval,k=3,0,curva pureza ep=3000,0.6680,,
+f1aval,k=3,0,curva identidad ep=3000,0.6060,,
+f1aval,k=3,0,curva usados ep=3000,10,,
+f1aval,k=3,0,curva columna ep=3500,0.4611,,
+f1aval,k=3,0,curva pureza ep=3500,0.6920,,
+f1aval,k=3,0,curva identidad ep=3500,0.6180,,
+f1aval,k=3,0,curva usados ep=3500,10,,
+f1aval,k=3,0,curva columna ep=4000,0.4552,,
+f1aval,k=3,0,curva pureza ep=4000,0.7000,,
+f1aval,k=3,0,curva identidad ep=4000,0.6420,,
+f1aval,k=3,0,curva usados ep=4000,10,,
+f1aval,k=3,0,pureza percepción (test),0.6860,0.1000,mejor biyección
+f1aval,k=3,0,identidad percepción (test),0.6265,0.1000,símbolo == dígito
+f1aval,k=3,0,símbolos usados,10,10,
+f1aval,k=3,0,código es identidad (dígitos),7,10,dígitos cuyo símbolo en la mejor biyección es el propio dígito
+f1aval,k=3,0,créditos a la percepción,20124,,
+f1aval,k=3,0,precisión del crédito (código final),0.5515,0.1000,
+f1aval,k=3,0,precisión del crédito (identidad),0.5137,0.1000,
+f1aval,k=3,0,"precisión del crédito, 2.a mitad (código final)",0.6410,0.1000,
+f1aval,k=3,0,exacta n=3 (test),0.0640,0.0005,azar
+f1aval,k=3,0,columna n=3 (test),0.3740,0.1000,azar
+f1aval,k=3,0,fin (acarreo) n=3 (test),0.7080,0.5005,mejor constante
+f1aval,k=3,0,exacta n=1 (test),0.4760,0.0550,azar
+f1aval,k=3,0,cota pureza^6 (Thinker perfecto),0.1042,,
+f1aval,k=3,0,exacta n=3 | imágenes bien (código),0.5294,,
+f1aval,k=3,0,fracción episodios con las 6 imágenes bien (código),0.1360,0.1042,pureza^6
+f1aval,k=3,0,Thinker con código-oráculo: exacta n=3,0.2980,,símbolos = código final perfecto
+f1aval,k=3,0,Thinker con código-oráculo: columna n=3,0.6333,0.1000,
+f1aval,k=3,0,clases fundidas (símbolo mayoritario de >=2 dígitos),2,0,
+f1aval,k=3,0,masa en s = d (identidad),0.6265,0.1000,fracción de imágenes
+f1aval,k=3,0,masa en s = d +- 1 (vecinos),0.0250,0.2000,
+f1aval,k=3,0,masa en s = d + 5,0.1090,0.1000,invisible para el dígito módulo 10
+f1aval,k=3,0,converge a una permutación (pureza - identidad),0.0595,,alto: código consistente pero permutado
+f1aval,total,0,segundos,638.5000,,

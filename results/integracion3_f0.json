@@ -8843,6 +8843,16 @@
   "columnas": 10000,
   "cada_col": 1250,
   "col_tabular": 10000,
+  "n_nosup": 10000,
+  "marcas_nosup": [
+   2500,
+   10000,
+   40000
+  ],
+  "cada_ancla": 10,
+  "g_ref": 20,
+  "g_sondas": 3,
+  "g_obs": 2000,
   "f0": [
    "rep",
    "a_oraculo",

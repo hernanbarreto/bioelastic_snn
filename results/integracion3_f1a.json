@@ -1,0 +1,4165 @@
+{
+ "fase": "f1a",
+ "metricas": {
+  "k=10": {
+   "AUROC error percepción (test): 1-p": {
+    "media": 0.9056000000000001,
+    "desvio": 0.08773952359113879,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9675,
+     0.9736,
+     0.8154,
+     0.9643,
+     0.9389,
+     0.7739
+    ],
+    "referencia": "0.5000",
+    "nota": ""
+   },
+   "AUROC error percepción (test): conflicto Cortex": {
+    "media": 0.9010833333333333,
+    "desvio": 0.09220621273356082,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9645,
+     0.9688,
+     0.8108,
+     0.9622,
+     0.9418,
+     0.7584
+    ],
+    "referencia": "0.5000",
+    "nota": ""
+   },
+   "AUROC error prequential (2.a mitad): 1-P(respuesta | percepción, regla)": {
+    "media": 0.8230666666666666,
+    "desvio": 0.022729686902081752,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.8488,
+     0.8136,
+     0.8405,
+     0.8314,
+     0.7851,
+     0.819
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error prequential (2.a mitad): 1-acuerdo votantes (mín)": {
+    "media": 0.7136666666666667,
+    "desvio": 0.06519526567678567,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.7719,
+     0.7471,
+     0.6232,
+     0.7754,
+     0.7194,
+     0.645
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error prequential (2.a mitad): 1-calibrada": {
+    "media": 0.83255,
+    "desvio": 0.021203655345246496,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.8591,
+     0.83,
+     0.8428,
+     0.8443,
+     0.7987,
+     0.8204
+    ],
+    "referencia": "0.5000",
+    "nota": ""
+   },
+   "AUROC error prequential (2.a mitad): 1-confianza cruda del sistema": {
+    "media": 0.8230666666666666,
+    "desvio": 0.022729686902081752,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.8488,
+     0.8136,
+     0.8405,
+     0.8314,
+     0.7851,
+     0.819
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error prequential (2.a mitad): 1-p Thinker": {
+    "media": 0.5,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.5,
+     0.5,
+     0.5,
+     0.5,
+     0.5,
+     0.5
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error prequential (2.a mitad): 1-p percepción (pa*pb)": {
+    "media": 0.8055833333333332,
+    "desvio": 0.07307933816522057,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.8721,
+     0.8477,
+     0.7063,
+     0.869,
+     0.8138,
+     0.7246
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error prequential (2.a mitad): 1-p sistema (pa*pb*pt)": {
+    "media": 0.8055833333333332,
+    "desvio": 0.07307933816522057,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.8721,
+     0.8477,
+     0.7063,
+     0.869,
+     0.8138,
+     0.7246
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error prequential (2.a mitad): conflicto Cortex (máx a, b)": {
+    "media": 0.8070499999999999,
+    "desvio": 0.06767450775587511,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.8677,
+     0.8457,
+     0.7147,
+     0.8652,
+     0.8175,
+     0.7315
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error prequential (2.a mitad): conflicto percepción-Thinker": {
+    "media": 0.5,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.5,
+     0.5,
+     0.5,
+     0.5,
+     0.5,
+     0.5
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error prequential (2.a mitad): no establecido (Thinker)": {
+    "media": 0.5,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.5,
+     0.5,
+     0.5,
+     0.5,
+     0.5,
+     0.5
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error test: 1-P(respuesta | percepción, regla)": {
+    "media": 0.8108,
+    "desvio": 0.020377340356386067,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.7985,
+     0.8316,
+     0.837,
+     0.8114,
+     0.7836,
+     0.8027
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error test: 1-acuerdo votantes (mín)": {
+    "media": 0.6640499999999999,
+    "desvio": 0.06253654131785669,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.7027,
+     0.7192,
+     0.5846,
+     0.6777,
+     0.7138,
+     0.5863
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error test: 1-calibrada": {
+    "media": 0.8252999999999999,
+    "desvio": 0.020334601053376967,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.8214,
+     0.857,
+     0.8402,
+     0.8231,
+     0.8055,
+     0.8046
+    ],
+    "referencia": "0.5000",
+    "nota": ""
+   },
+   "AUROC error test: 1-confianza cruda del sistema": {
+    "media": 0.8108,
+    "desvio": 0.020377340356386067,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.7985,
+     0.8316,
+     0.837,
+     0.8114,
+     0.7836,
+     0.8027
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error test: 1-p Thinker": {
+    "media": 0.5,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.5,
+     0.5,
+     0.5,
+     0.5,
+     0.5,
+     0.5
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error test: 1-p percepción (pa*pb)": {
+    "media": 0.8048833333333333,
+    "desvio": 0.085813598378501,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.8635,
+     0.902,
+     0.7087,
+     0.85,
+     0.8125,
+     0.6926
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error test: 1-p sistema (pa*pb*pt)": {
+    "media": 0.8048833333333333,
+    "desvio": 0.085813598378501,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.8635,
+     0.902,
+     0.7087,
+     0.85,
+     0.8125,
+     0.6926
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error test: conflicto Cortex (máx a, b)": {
+    "media": 0.8021166666666667,
+    "desvio": 0.08418081531243725,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.8534,
+     0.896,
+     0.7078,
+     0.85,
+     0.8157,
+     0.6898
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error test: conflicto percepción-Thinker": {
+    "media": 0.5,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.5,
+     0.5,
+     0.5,
+     0.5,
+     0.5,
+     0.5
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "AUROC error test: no establecido (Thinker)": {
+    "media": 0.5,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.5,
+     0.5,
+     0.5,
+     0.5,
+     0.5,
+     0.5
+    ],
+    "referencia": "0.5000",
+    "nota": "azar"
+   },
+   "ECE percepción (test, código final)": {
+    "media": 0.03225,
+    "desvio": 0.03979265007510809,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0112,
+     0.0069,
+     0.0699,
+     0.0047,
+     0.0057,
+     0.0951
+    ],
+    "referencia": "0.0000",
+    "nota": ""
+   },
+   "ECE sistema calibrada (prequential, 2.a mitad)": {
+    "media": 0.015583333333333333,
+    "desvio": 0.013709765376061936,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0039,
+     0.0058,
+     0.0313,
+     0.0083,
+     0.0094,
+     0.0348
+    ],
+    "referencia": "0.0000",
+    "nota": ""
+   },
+   "ECE sistema calibrada (test)": {
+    "media": 0.031900000000000005,
+    "desvio": 0.010677265567550524,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0254,
+     0.0341,
+     0.0197,
+     0.0247,
+     0.0392,
+     0.0483
+    ],
+    "referencia": "0.0000",
+    "nota": ""
+   },
+   "ECE sistema cruda (prequential, 2.a mitad)": {
+    "media": 0.1304833333333333,
+    "desvio": 0.03386073931069236,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0991,
+     0.1244,
+     0.0884,
+     0.1605,
+     0.1754,
+     0.1351
+    ],
+    "referencia": "0.0000",
+    "nota": "P(respuesta) o pa*pb*pt"
+   },
+   "ECE sistema cruda (test)": {
+    "media": 0.12170000000000002,
+    "desvio": 0.04499519974397269,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0674,
+     0.1172,
+     0.0767,
+     0.1507,
+     0.1864,
+     0.1318
+    ],
+    "referencia": "0.0000",
+    "nota": ""
+   },
+   "Thinker con código-oráculo: columna n=3": {
+    "media": 0.9641166666666665,
+    "desvio": 0.05559066168581432,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     1.0,
+     1.0,
+     0.892,
+     1.0,
+     1.0,
+     0.8927
+    ],
+    "referencia": "0.1000",
+    "nota": ""
+   },
+   "Thinker con código-oráculo: exacta n=3": {
+    "media": 0.9093333333333332,
+    "desvio": 0.1406025130168969,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     1.0,
+     1.0,
+     0.738,
+     1.0,
+     1.0,
+     0.718
+    ],
+    "referencia": "",
+    "nota": "símbolos = código final perfecto"
+   },
+   "acierto columna (test)": {
+    "media": 0.8757833333333335,
+    "desvio": 0.08668075718789416,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.942,
+     0.9487,
+     0.7753,
+     0.9293,
+     0.9027,
+     0.7567
+    ],
+    "referencia": "0.1000",
+    "nota": ""
+   },
+   "acierto columna prequential (2.a mitad)": {
+    "media": 0.83455,
+    "desvio": 0.0904556631726284,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9356,
+     0.906,
+     0.7575,
+     0.8807,
+     0.825,
+     0.7025
+    ],
+    "referencia": "0.1000",
+    "nota": ""
+   },
+   "clases fundidas (símbolo mayoritario de >=2 dígitos)": {
+    "media": 0.16666666666666666,
+    "desvio": 0.408248290463863,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     1.0
+    ],
+    "referencia": "0",
+    "nota": ""
+   },
+   "columna n=3 (test)": {
+    "media": 0.8711166666666667,
+    "desvio": 0.08871616350286267,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.946,
+     0.9467,
+     0.782,
+     0.9287,
+     0.8813,
+     0.742
+    ],
+    "referencia": "0.1000",
+    "nota": "azar"
+   },
+   "converge a una permutación (pureza - identidad)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "referencia": "",
+    "nota": "alto: código consistente pero permutado"
+   },
+   "cota pureza^6 (Thinker perfecto)": {
+    "media": 0.7187333333333333,
+    "desvio": 0.1985506753115352,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.8831,
+     0.8858,
+     0.4987,
+     0.8459,
+     0.7562,
+     0.4427
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "créditos a la percepción": {
+    "media": 30057.666666666668,
+    "desvio": 10924.212404867762,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     40004.0,
+     40044.0,
+     40042.0,
+     20124.0,
+     20112.0,
+     20020.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva columna ep=1000": {
+    "media": 0.6425666666666667,
+    "desvio": 0.06108003492686186,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.7156,
+     0.6318,
+     0.5803,
+     0.7156,
+     0.6318,
+     0.5803
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva columna ep=1500": {
+    "media": 0.7413,
+    "desvio": 0.06934574247926115,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.8213,
+     0.7361,
+     0.6665,
+     0.8213,
+     0.7361,
+     0.6665
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva columna ep=2000": {
+    "media": 0.7808,
+    "desvio": 0.06817665289525439,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.8559,
+     0.783,
+     0.7035,
+     0.8559,
+     0.783,
+     0.7035
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva columna ep=2500": {
+    "media": 0.8180333333333335,
+    "desvio": 0.07124494835893046,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.8869,
+     0.8364,
+     0.7308,
+     0.8869,
+     0.8364,
+     0.7308
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva columna ep=3000": {
+    "media": 0.8413333333333334,
+    "desvio": 0.051514683990748385,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.8859,
+     0.8618,
+     0.7763,
+     0.8859,
+     0.8618,
+     0.7763
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva columna ep=3500": {
+    "media": 0.8484666666666666,
+    "desvio": 0.06711675399381788,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9175,
+     0.8593,
+     0.7686,
+     0.9175,
+     0.8593,
+     0.7686
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva columna ep=4000": {
+    "media": 0.8613666666666667,
+    "desvio": 0.057489639646345535,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9232,
+     0.866,
+     0.7949,
+     0.9232,
+     0.866,
+     0.7949
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva columna ep=4500": {
+    "media": 0.8722333333333333,
+    "desvio": 0.058191866556532926,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9185,
+     0.8913,
+     0.8069
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva columna ep=500": {
+    "media": 0.4204666666666667,
+    "desvio": 0.05365015066769771,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.4856,
+     0.4083,
+     0.3675,
+     0.4856,
+     0.4083,
+     0.3675
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva columna ep=5000": {
+    "media": 0.8775333333333334,
+    "desvio": 0.07025448977348946,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9228,
+     0.9132,
+     0.7966
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva columna ep=5500": {
+    "media": 0.8916333333333334,
+    "desvio": 0.07966193151897163,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.951,
+     0.9228,
+     0.8011
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva columna ep=6000": {
+    "media": 0.8906999999999999,
+    "desvio": 0.07974039127067284,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9446,
+     0.9284,
+     0.7991
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva columna ep=6500": {
+    "media": 0.8943,
+    "desvio": 0.07001971151040255,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9487,
+     0.9189,
+     0.8153
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva columna ep=7000": {
+    "media": 0.9072,
+    "desvio": 0.09177123732412022,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9742,
+     0.9448,
+     0.8026
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva columna ep=7500": {
+    "media": 0.9144,
+    "desvio": 0.05535819722498199,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9548,
+     0.9371,
+     0.8513
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva columna ep=8000": {
+    "media": 0.9069666666666666,
+    "desvio": 0.08085804433285124,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.97,
+     0.9351,
+     0.8158
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva identidad ep=1000": {
+    "media": 0.888,
+    "desvio": 0.0341291664123225,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.932,
+     0.868,
+     0.864,
+     0.932,
+     0.868,
+     0.864
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva identidad ep=1500": {
+    "media": 0.9039999999999999,
+    "desvio": 0.029879759035172933,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.94,
+     0.898,
+     0.874,
+     0.94,
+     0.898,
+     0.874
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva identidad ep=2000": {
+    "media": 0.9166666666666666,
+    "desvio": 0.023278029698981514,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.942,
+     0.918,
+     0.89,
+     0.942,
+     0.918,
+     0.89
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva identidad ep=2500": {
+    "media": 0.9246666666666666,
+    "desvio": 0.03758013659723266,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.966,
+     0.926,
+     0.882,
+     0.966,
+     0.926,
+     0.882
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva identidad ep=3000": {
+    "media": 0.93,
+    "desvio": 0.036964848166873336,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.968,
+     0.936,
+     0.886,
+     0.968,
+     0.936,
+     0.886
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva identidad ep=3500": {
+    "media": 0.9346666666666666,
+    "desvio": 0.03016399619855872,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.958,
+     0.95,
+     0.896,
+     0.958,
+     0.95,
+     0.896
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva identidad ep=4000": {
+    "media": 0.9406666666666667,
+    "desvio": 0.0389598083499735,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.976,
+     0.954,
+     0.892,
+     0.976,
+     0.954,
+     0.892
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva identidad ep=4500": {
+    "media": 0.9420000000000001,
+    "desvio": 0.04422668877499194,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.976,
+     0.958,
+     0.892
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva identidad ep=500": {
+    "media": 0.8406666666666666,
+    "desvio": 0.03161434273659133,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.864,
+     0.8,
+     0.858,
+     0.864,
+     0.8,
+     0.858
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva identidad ep=5000": {
+    "media": 0.94,
+    "desvio": 0.04084115571332425,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.972,
+     0.954,
+     0.894
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva identidad ep=5500": {
+    "media": 0.9453333333333332,
+    "desvio": 0.04346646216720808,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.978,
+     0.962,
+     0.896
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva identidad ep=6000": {
+    "media": 0.9473333333333334,
+    "desvio": 0.043143172499635805,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.978,
+     0.966,
+     0.898
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva identidad ep=6500": {
+    "media": 0.9513333333333334,
+    "desvio": 0.05001333155602945,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.986,
+     0.974,
+     0.894
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva identidad ep=7000": {
+    "media": 0.9500000000000001,
+    "desvio": 0.047286361670147534,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.984,
+     0.97,
+     0.896
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva identidad ep=7500": {
+    "media": 0.952,
+    "desvio": 0.045738386504117066,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.986,
+     0.97,
+     0.9
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva identidad ep=8000": {
+    "media": 0.9540000000000001,
+    "desvio": 0.04915282290977801,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.99,
+     0.974,
+     0.898
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva pureza ep=1000": {
+    "media": 0.888,
+    "desvio": 0.0341291664123225,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.932,
+     0.868,
+     0.864,
+     0.932,
+     0.868,
+     0.864
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva pureza ep=1500": {
+    "media": 0.9039999999999999,
+    "desvio": 0.029879759035172933,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.94,
+     0.898,
+     0.874,
+     0.94,
+     0.898,
+     0.874
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva pureza ep=2000": {
+    "media": 0.9166666666666666,
+    "desvio": 0.023278029698981514,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.942,
+     0.918,
+     0.89,
+     0.942,
+     0.918,
+     0.89
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva pureza ep=2500": {
+    "media": 0.9246666666666666,
+    "desvio": 0.03758013659723266,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.966,
+     0.926,
+     0.882,
+     0.966,
+     0.926,
+     0.882
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva pureza ep=3000": {
+    "media": 0.93,
+    "desvio": 0.036964848166873336,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.968,
+     0.936,
+     0.886,
+     0.968,
+     0.936,
+     0.886
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva pureza ep=3500": {
+    "media": 0.9346666666666666,
+    "desvio": 0.03016399619855872,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.958,
+     0.95,
+     0.896,
+     0.958,
+     0.95,
+     0.896
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva pureza ep=4000": {
+    "media": 0.9406666666666667,
+    "desvio": 0.0389598083499735,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.976,
+     0.954,
+     0.892,
+     0.976,
+     0.954,
+     0.892
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva pureza ep=4500": {
+    "media": 0.9420000000000001,
+    "desvio": 0.04422668877499194,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.976,
+     0.958,
+     0.892
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva pureza ep=500": {
+    "media": 0.8406666666666666,
+    "desvio": 0.03161434273659133,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.864,
+     0.8,
+     0.858,
+     0.864,
+     0.8,
+     0.858
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva pureza ep=5000": {
+    "media": 0.94,
+    "desvio": 0.04084115571332425,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.972,
+     0.954,
+     0.894
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva pureza ep=5500": {
+    "media": 0.9453333333333332,
+    "desvio": 0.04346646216720808,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.978,
+     0.962,
+     0.896
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva pureza ep=6000": {
+    "media": 0.9473333333333334,
+    "desvio": 0.043143172499635805,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.978,
+     0.966,
+     0.898
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva pureza ep=6500": {
+    "media": 0.9513333333333334,
+    "desvio": 0.05001333155602945,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.986,
+     0.974,
+     0.894
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva pureza ep=7000": {
+    "media": 0.9500000000000001,
+    "desvio": 0.047286361670147534,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.984,
+     0.97,
+     0.896
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva pureza ep=7500": {
+    "media": 0.952,
+    "desvio": 0.045738386504117066,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.986,
+     0.97,
+     0.9
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva pureza ep=8000": {
+    "media": 0.9540000000000001,
+    "desvio": 0.04915282290977801,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.99,
+     0.974,
+     0.898
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva usados ep=1000": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     10.0,
+     10.0,
+     10.0,
+     10.0,
+     10.0,
+     10.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva usados ep=1500": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     10.0,
+     10.0,
+     10.0,
+     10.0,
+     10.0,
+     10.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva usados ep=2000": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     10.0,
+     10.0,
+     10.0,
+     10.0,
+     10.0,
+     10.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva usados ep=2500": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     10.0,
+     10.0,
+     10.0,
+     10.0,
+     10.0,
+     10.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva usados ep=3000": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     10.0,
+     10.0,
+     10.0,
+     10.0,
+     10.0,
+     10.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva usados ep=3500": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     10.0,
+     10.0,
+     10.0,
+     10.0,
+     10.0,
+     10.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva usados ep=4000": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     10.0,
+     10.0,
+     10.0,
+     10.0,
+     10.0,
+     10.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva usados ep=4500": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     10.0,
+     10.0,
+     10.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva usados ep=500": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     10.0,
+     10.0,
+     10.0,
+     10.0,
+     10.0,
+     10.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva usados ep=5000": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     10.0,
+     10.0,
+     10.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva usados ep=5500": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     10.0,
+     10.0,
+     10.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva usados ep=6000": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     10.0,
+     10.0,
+     10.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva usados ep=6500": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     10.0,
+     10.0,
+     10.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva usados ep=7000": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     10.0,
+     10.0,
+     10.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva usados ep=7500": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     10.0,
+     10.0,
+     10.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva usados ep=8000": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     10.0,
+     10.0,
+     10.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "código es identidad (dígitos)": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     10.0,
+     10.0,
+     10.0,
+     10.0,
+     10.0,
+     10.0
+    ],
+    "referencia": "10",
+    "nota": "dígitos cuyo símbolo en la mejor biyección es el propio dígito"
+   },
+   "exacta n=1 (test)": {
+    "media": 0.898,
+    "desvio": 0.07758350340117413,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.964,
+     0.958,
+     0.82,
+     0.944,
+     0.92,
+     0.782
+    ],
+    "referencia": "0.0550",
+    "nota": "azar"
+   },
+   "exacta n=3 (test)": {
+    "media": 0.7166666666666667,
+    "desvio": 0.18823673038667738,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.876,
+     0.88,
+     0.516,
+     0.836,
+     0.74,
+     0.452
+    ],
+    "referencia": "0.0005",
+    "nota": "azar"
+   },
+   "exacta n=3 | imágenes bien (código)": {
+    "media": 0.9382333333333334,
+    "desvio": 0.09636332635742016,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     1.0,
+     1.0,
+     0.8327,
+     1.0,
+     1.0,
+     0.7967
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "fin (acarreo) n=3 (test)": {
+    "media": 0.9649999999999999,
+    "desvio": 0.020928449536456367,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.986,
+     0.982,
+     0.938,
+     0.97,
+     0.974,
+     0.94
+    ],
+    "referencia": "0.5005",
+    "nota": "mejor constante"
+   },
+   "fracción episodios con las 6 imágenes bien (código)": {
+    "media": 0.7366666666666667,
+    "desvio": 0.1831662268723868,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.902,
+     0.876,
+     0.526,
+     0.864,
+     0.76,
+     0.492
+    ],
+    "referencia": "0.8831",
+    "nota": "pureza^6"
+   },
+   "identidad percepción (test)": {
+    "media": 0.9416666666666668,
+    "desvio": 0.047643117726138245,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9795,
+     0.98,
+     0.8905,
+     0.9725,
+     0.9545,
+     0.873
+    ],
+    "referencia": "0.1000",
+    "nota": "símbolo == dígito"
+   },
+   "imágenes nombradas (total, con repeticiones)": {
+    "media": 700.0,
+    "desvio": 219.08902300206645,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     900.0,
+     900.0,
+     900.0,
+     500.0,
+     500.0,
+     500.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "masa en s = d (identidad)": {
+    "media": 0.9416666666666668,
+    "desvio": 0.047643117726138245,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9795,
+     0.98,
+     0.8905,
+     0.9725,
+     0.9545,
+     0.873
+    ],
+    "referencia": "0.1000",
+    "nota": "fracción de imágenes"
+   },
+   "masa en s = d + 5": {
+    "media": 0.007916666666666666,
+    "desvio": 0.005209766469494258,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.005,
+     0.006,
+     0.0035,
+     0.0065,
+     0.018,
+     0.0085
+    ],
+    "referencia": "0.1000",
+    "nota": "invisible para el dígito módulo 10"
+   },
+   "masa en s = d +- 1 (vecinos)": {
+    "media": 0.006416666666666667,
+    "desvio": 0.0022894686428659963,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0035,
+     0.0045,
+     0.006,
+     0.0065,
+     0.0085,
+     0.0095
+    ],
+    "referencia": "0.2000",
+    "nota": ""
+   },
+   "precisión del crédito (código final)": {
+    "media": 0.9239833333333333,
+    "desvio": 0.04435846781243315,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9748,
+     0.9515,
+     0.8837,
+     0.9557,
+     0.9159,
+     0.8623
+    ],
+    "referencia": "0.1000",
+    "nota": ""
+   },
+   "precisión del crédito (identidad)": {
+    "media": 0.9239833333333333,
+    "desvio": 0.04435846781243315,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9748,
+     0.9515,
+     0.8837,
+     0.9557,
+     0.9159,
+     0.8623
+    ],
+    "referencia": "0.1000",
+    "nota": ""
+   },
+   "precisión del crédito, 2.a mitad (código final)": {
+    "media": 0.9547666666666665,
+    "desvio": 0.04594451726448617,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.994,
+     0.9874,
+     0.9051,
+     0.9875,
+     0.9654,
+     0.8892
+    ],
+    "referencia": "0.1000",
+    "nota": ""
+   },
+   "pureza percepción (test)": {
+    "media": 0.9416666666666668,
+    "desvio": 0.047643117726138245,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9795,
+     0.98,
+     0.8905,
+     0.9725,
+     0.9545,
+     0.873
+    ],
+    "referencia": "0.1000",
+    "nota": "mejor biyección"
+   },
+   "segundos": {
+    "media": 672.4166666666666,
+    "desvio": 267.91024927513814,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     940.8,
+     901.6,
+     895.5,
+     507.5,
+     432.9,
+     356.2
+    ],
+    "referencia": "",
+    "nota": "100 anclas, 8000 episodios"
+   },
+   "símbolos usados": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     10.0,
+     10.0,
+     10.0,
+     10.0,
+     10.0,
+     10.0
+    ],
+    "referencia": "10",
+    "nota": ""
+   }
+  },
+  "total": {
+   "segundos": {
+    "media": 757.8499999999999,
+    "desvio": 266.8054253571317,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     1021.3,
+     990.8,
+     977.5,
+     601.3,
+     516.7,
+     439.5
+    ],
+    "referencia": "",
+    "nota": ""
+   }
+  }
+ },
+ "por_corrida": {
+  "integracion3_f1a_10_ep8000_seed0": {
+   "k=10": {
+    "confusion": [
+     [
+      204,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1
+     ],
+     [
+      0,
+      217,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      3,
+      2,
+      197,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      1,
+      200,
+      0,
+      2,
+      0,
+      1,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      179,
+      0,
+      1,
+      0,
+      0,
+      3
+     ],
+     [
+      0,
+      0,
+      0,
+      3,
+      0,
+      155,
+      1,
+      1,
+      1,
+      0
+     ],
+     [
+      1,
+      0,
+      0,
+      0,
+      1,
+      1,
+      193,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      1,
+      3,
+      0,
+      0,
+      0,
+      0,
+      206,
+      0,
+      2
+     ],
+     [
+      2,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      198,
+      0
+     ],
+     [
+      1,
+      0,
+      1,
+      2,
+      2,
+      1,
+      0,
+      0,
+      0,
+      210
+     ]
+    ],
+    "codigo": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "desplazamientos": [
+     0.9795,
+     0.001,
+     0.004,
+     0.001,
+     0.0025,
+     0.005,
+     0.001,
+     0.0,
+     0.0035,
+     0.0025
+    ]
+   },
+   "f1a_k=10": {
+    "confiabilidad_sistema_test": [
+     [
+      0.2920579427955061,
+      1.0,
+      1
+     ],
+     [
+      0.393570948031841,
+      0.0,
+      1
+     ],
+     [
+      0.4629717521393095,
+      0.3333333333333333,
+      3
+     ],
+     [
+      0.5712988427359672,
+      0.375,
+      8
+     ],
+     [
+      0.6566088396318924,
+      0.5294117647058824,
+      17
+     ],
+     [
+      0.7562643912442503,
+      0.5217391304347826,
+      23
+     ],
+     [
+      0.8597380890846991,
+      0.7380952380952381,
+      42
+     ],
+     [
+      0.9810498877332263,
+      0.9651245551601424,
+      1405
+     ]
+    ],
+    "confiabilidad_cruda_test": [
+     [
+      0.3541077468929479,
+      0.5,
+      2
+     ],
+     [
+      0.45609232123572097,
+      0.3,
+      10
+     ],
+     [
+      0.5505170279089855,
+      0.56,
+      25
+     ],
+     [
+      0.6528460742001325,
+      0.5714285714285714,
+      28
+     ],
+     [
+      0.7557651725445585,
+      0.8225806451612904,
+      62
+     ],
+     [
+      0.8654325296600145,
+      0.9491525423728814,
+      649
+     ],
+     [
+      0.9305986465879454,
+      0.9834254143646409,
+      724
+     ]
+    ],
+    "confiabilidad_percepcion_test": [
+     [
+      0.3511255383491516,
+      1.0,
+      1
+     ],
+     [
+      0.46168211847543716,
+      0.25,
+      4
+     ],
+     [
+      0.56256243761848,
+      0.4117647058823529,
+      17
+     ],
+     [
+      0.6516497532526652,
+      0.6666666666666666,
+      21
+     ],
+     [
+      0.7471797719146266,
+      0.6363636363636364,
+      33
+     ],
+     [
+      0.8430969031845651,
+      0.8048780487804879,
+      41
+     ],
+     [
+      0.9978812465103724,
+      0.9895941727367326,
+      2883
+     ]
+    ],
+    "calibrador": [
+     0.5842880145184084,
+     1.381789084542074,
+     -1.3847429112166685,
+     0.0,
+     0.5842880145184084
+    ]
+   }
+  },
+  "integracion3_f1a_10_ep8000_seed1": {
+   "k=10": {
+    "confusion": [
+     [
+      209,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      220,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      212,
+      1,
+      0,
+      0,
+      0,
+      5,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      1,
+      178,
+      0,
+      2,
+      0,
+      1,
+      0,
+      1
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      194,
+      0,
+      1,
+      0,
+      0,
+      2
+     ],
+     [
+      0,
+      0,
+      0,
+      1,
+      0,
+      173,
+      1,
+      1,
+      0,
+      0
+     ],
+     [
+      0,
+      2,
+      0,
+      0,
+      1,
+      0,
+      172,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      203,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      2,
+      196,
+      1
+     ],
+     [
+      3,
+      2,
+      0,
+      1,
+      3,
+      1,
+      0,
+      0,
+      0,
+      203
+     ]
+    ],
+    "codigo": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "desplazamientos": [
+     0.98,
+     0.003,
+     0.003,
+     0.0,
+     0.002,
+     0.006,
+     0.002,
+     0.0005,
+     0.002,
+     0.0015
+    ]
+   },
+   "f1a_k=10": {
+    "confiabilidad_sistema_test": [
+     [
+      0.238409262766613,
+      0.0,
+      2
+     ],
+     [
+      0.35839172250067935,
+      0.8571428571428571,
+      7
+     ],
+     [
+      0.44476983899585043,
+      0.375,
+      16
+     ],
+     [
+      0.5491467124098722,
+      0.4666666666666667,
+      15
+     ],
+     [
+      0.645165211312393,
+      0.782608695652174,
+      23
+     ],
+     [
+      0.7487758504440579,
+      0.7297297297297297,
+      37
+     ],
+     [
+      0.8648894997584516,
+      0.7916666666666666,
+      96
+     ],
+     [
+      0.9578933805811458,
+      0.9838957055214724,
+      1304
+     ]
+    ],
+    "confiabilidad_cruda_test": [
+     [
+      0.2726639270170709,
+      0.0,
+      2
+     ],
+     [
+      0.3659903833218115,
+      0.625,
+      8
+     ],
+     [
+      0.4527116362950148,
+      0.42857142857142855,
+      28
+     ],
+     [
+      0.5529796104523123,
+      0.7857142857142857,
+      28
+     ],
+     [
+      0.6565260322832291,
+      0.78,
+      50
+     ],
+     [
+      0.7650244414217305,
+      0.924901185770751,
+      253
+     ],
+     [
+      0.8524802380034364,
+      0.9759036144578314,
+      747
+     ],
+     [
+      0.9240166385295715,
+      0.9947916666666666,
+      384
+     ]
+    ],
+    "confiabilidad_percepcion_test": [
+     [
+      0.3585280105471611,
+      0.5,
+      4
+     ],
+     [
+      0.4681620272723111,
+      0.5454545454545454,
+      11
+     ],
+     [
+      0.5356063508987426,
+      0.4,
+      25
+     ],
+     [
+      0.6539778411388397,
+      0.7307692307692307,
+      26
+     ],
+     [
+      0.7448383226539149,
+      0.7878787878787878,
+      33
+     ],
+     [
+      0.8546364869062717,
+      0.7115384615384616,
+      52
+     ],
+     [
+      0.9968390479636803,
+      0.995085995085995,
+      2849
+     ]
+    ],
+    "calibrador": [
+     0.5793227171604601,
+     1.1526739296861053,
+     -1.629215477538844,
+     0.0,
+     0.5793227171604601
+    ]
+   }
+  },
+  "integracion3_f1a_10_ep8000_seed2": {
+   "k=10": {
+    "confusion": [
+     [
+      179,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      0,
+      1
+     ],
+     [
+      0,
+      235,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+     ],
+     [
+      2,
+      1,
+      198,
+      1,
+      1,
+      0,
+      1,
+      1,
+      2,
+      0
+     ],
+     [
+      0,
+      0,
+      4,
+      114,
+      0,
+      93,
+      0,
+      1,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      1,
+      0,
+      183,
+      0,
+      3,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      79,
+      0,
+      103,
+      0,
+      0,
+      0,
+      1
+     ],
+     [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      183,
+      0,
+      0,
+      0
+     ],
+     [
+      1,
+      0,
+      2,
+      0,
+      1,
+      0,
+      0,
+      208,
+      0,
+      0
+     ],
+     [
+      1,
+      0,
+      0,
+      2,
+      0,
+      3,
+      0,
+      1,
+      171,
+      1
+     ],
+     [
+      2,
+      0,
+      1,
+      2,
+      0,
+      0,
+      0,
+      3,
+      0,
+      207
+     ]
+    ],
+    "codigo": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "desplazamientos": [
+     0.8905,
+     0.0025,
+     0.049,
+     0.0015,
+     0.0025,
+     0.0035,
+     0.0015,
+     0.003,
+     0.0425,
+     0.0035
+    ]
+   },
+   "f1a_k=10": {
+    "confiabilidad_sistema_test": [
+     [
+      0.09157390459725982,
+      1.0,
+      1
+     ],
+     [
+      0.17034922516442977,
+      0.3076923076923077,
+      13
+     ],
+     [
+      0.24438592861668118,
+      0.36363636363636365,
+      11
+     ],
+     [
+      0.35947472061992075,
+      0.42105263157894735,
+      38
+     ],
+     [
+      0.45834527217650645,
+      0.4094488188976378,
+      127
+     ],
+     [
+      0.5499280083438056,
+      0.511520737327189,
+      217
+     ],
+     [
+      0.642920961543331,
+      0.621301775147929,
+      169
+     ],
+     [
+      0.7443558637809429,
+      0.7435897435897436,
+      39
+     ],
+     [
+      0.8697576664742075,
+      0.8961038961038961,
+      77
+     ],
+     [
+      0.9590807007203153,
+      0.9554455445544554,
+      808
+     ]
+    ],
+    "confiabilidad_cruda_test": [
+     [
+      0.18660913687393485,
+      0.3333333333333333,
+      3
+     ],
+     [
+      0.2645145835311199,
+      0.26666666666666666,
+      15
+     ],
+     [
+      0.3654868237395332,
+      0.41509433962264153,
+      53
+     ],
+     [
+      0.45541768795316884,
+      0.4984423676012461,
+      321
+     ],
+     [
+      0.5321846608182175,
+      0.5684210526315789,
+      190
+     ],
+     [
+      0.6394004396682379,
+      0.8421052631578947,
+      38
+     ],
+     [
+      0.7666198421082764,
+      0.9157303370786517,
+      178
+     ],
+     [
+      0.8512293708950042,
+      0.9375,
+      448
+     ],
+     [
+      0.9236827866655725,
+      0.9960629921259843,
+      254
+     ]
+    ],
+    "confiabilidad_percepcion_test": [
+     [
+      0.2763129472732544,
+      1.0,
+      1
+     ],
+     [
+      0.3519676774740219,
+      0.3,
+      10
+     ],
+     [
+      0.4579459374601191,
+      0.36363636363636365,
+      11
+     ],
+     [
+      0.5481858020243437,
+      0.5869565217391305,
+      46
+     ],
+     [
+      0.6550939404047452,
+      0.6346153846153846,
+      52
+     ],
+     [
+      0.7480281580169246,
+      0.5094339622641509,
+      53
+     ],
+     [
+      0.8575849456362205,
+      0.6039603960396039,
+      101
+     ],
+     [
+      0.99279461587866,
+      0.9317681584739546,
+      2726
+     ]
+    ],
+    "calibrador": [
+     0.22521882116391773,
+     1.5231156636833014,
+     -0.5282704807427134,
+     0.0,
+     0.22521882116391773
+    ]
+   }
+  },
+  "integracion3_f1a_10_seed0": {
+   "k=10": {
+    "confusion": [
+     [
+      203,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      217,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      2,
+      2,
+      195,
+      2,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      201,
+      1,
+      1,
+      0,
+      0,
+      1,
+      1
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      179,
+      0,
+      1,
+      0,
+      0,
+      3
+     ],
+     [
+      0,
+      0,
+      0,
+      3,
+      0,
+      154,
+      2,
+      1,
+      0,
+      1
+     ],
+     [
+      2,
+      0,
+      1,
+      0,
+      1,
+      1,
+      191,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      1,
+      3,
+      0,
+      0,
+      0,
+      0,
+      208,
+      0,
+      0
+     ],
+     [
+      2,
+      1,
+      2,
+      1,
+      0,
+      0,
+      0,
+      1,
+      194,
+      0
+     ],
+     [
+      3,
+      0,
+      1,
+      2,
+      5,
+      1,
+      0,
+      1,
+      1,
+      203
+     ]
+    ],
+    "codigo": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "desplazamientos": [
+     0.9725,
+     0.004,
+     0.0025,
+     0.001,
+     0.004,
+     0.0065,
+     0.0035,
+     0.0,
+     0.0035,
+     0.0025
+    ]
+   },
+   "f1a_k=10": {
+    "confiabilidad_sistema_test": [
+     [
+      0.1480480798039921,
+      0.0,
+      2
+     ],
+     [
+      0.2495512357927108,
+      0.0,
+      1
+     ],
+     [
+      0.34496848847782663,
+      0.3333333333333333,
+      3
+     ],
+     [
+      0.4437984739818805,
+      0.2222222222222222,
+      9
+     ],
+     [
+      0.5419742118392733,
+      0.56,
+      25
+     ],
+     [
+      0.6596476080606034,
+      0.5,
+      30
+     ],
+     [
+      0.7445049525105781,
+      0.5918367346938775,
+      49
+     ],
+     [
+      0.8643026818022054,
+      0.8848920863309353,
+      139
+     ],
+     [
+      0.9589801746928713,
+      0.9742351046698873,
+      1242
+     ]
+    ],
+    "confiabilidad_cruda_test": [
+     [
+      0.1832026256386648,
+      0.0,
+      2
+     ],
+     [
+      0.2800227451031779,
+      0.5,
+      2
+     ],
+     [
+      0.3669825479338461,
+      0.2,
+      10
+     ],
+     [
+      0.4476344284770186,
+      0.5405405405405406,
+      37
+     ],
+     [
+      0.5518071277423588,
+      0.5692307692307692,
+      65
+     ],
+     [
+      0.6618678141271567,
+      0.9078947368421053,
+      152
+     ],
+     [
+      0.7612095087955313,
+      0.9700214132762313,
+      467
+     ],
+     [
+      0.8468960014258567,
+      0.9639934533551555,
+      611
+     ],
+     [
+      0.9184862847317308,
+      1.0,
+      154
+     ]
+    ],
+    "confiabilidad_percepcion_test": [
+     [
+      0.3148576319217682,
+      0.0,
+      3
+     ],
+     [
+      0.4616054128855467,
+      0.3125,
+      16
+     ],
+     [
+      0.5523812294006347,
+      0.5428571428571428,
+      35
+     ],
+     [
+      0.6578250637179927,
+      0.6578947368421053,
+      38
+     ],
+     [
+      0.7505087912082672,
+      0.6,
+      50
+     ],
+     [
+      0.8616764648755392,
+      0.8533333333333334,
+      75
+     ],
+     [
+      0.9941611875315771,
+      0.9949694574200503,
+      2783
+     ]
+    ],
+    "calibrador": [
+     0.5962945321230434,
+     1.4003900433398124,
+     -1.164984022837118,
+     0.0,
+     0.5962945321230434
+    ]
+   }
+  },
+  "integracion3_f1a_10_seed1": {
+   "k=10": {
+    "confusion": [
+     [
+      206,
+      1,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      219,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0
+     ],
+     [
+      3,
+      0,
+      204,
+      3,
+      0,
+      0,
+      0,
+      4,
+      5,
+      0
+     ],
+     [
+      0,
+      1,
+      1,
+      170,
+      1,
+      5,
+      0,
+      1,
+      2,
+      2
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      185,
+      0,
+      1,
+      0,
+      0,
+      11
+     ],
+     [
+      1,
+      0,
+      0,
+      0,
+      0,
+      170,
+      2,
+      2,
+      1,
+      0
+     ],
+     [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      173,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      1,
+      1,
+      0,
+      1,
+      0,
+      0,
+      201,
+      0,
+      1
+     ],
+     [
+      0,
+      0,
+      0,
+      1,
+      0,
+      2,
+      0,
+      2,
+      193,
+      4
+     ],
+     [
+      2,
+      1,
+      0,
+      1,
+      14,
+      1,
+      1,
+      4,
+      1,
+      188
+     ]
+    ],
+    "codigo": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "desplazamientos": [
+     0.9545,
+     0.0065,
+     0.005,
+     0.0005,
+     0.002,
+     0.018,
+     0.005,
+     0.0025,
+     0.004,
+     0.002
+    ]
+   },
+   "f1a_k=10": {
+    "confiabilidad_sistema_test": [
+     [
+      0.27085170923273727,
+      0.0,
+      1
+     ],
+     [
+      0.3707302552935655,
+      0.45454545454545453,
+      11
+     ],
+     [
+      0.4511491943989218,
+      0.5454545454545454,
+      22
+     ],
+     [
+      0.5495363576352823,
+      0.4117647058823529,
+      34
+     ],
+     [
+      0.6517004390178868,
+      0.6111111111111112,
+      54
+     ],
+     [
+      0.7564319533016468,
+      0.7863247863247863,
+      117
+     ],
+     [
+      0.8628331819246037,
+      0.9217002237136466,
+      447
+     ],
+     [
+      0.9424269368500668,
+      0.9656019656019657,
+      814
+     ]
+    ],
+    "confiabilidad_cruda_test": [
+     [
+      0.2696298462612515,
+      0.42857142857142855,
+      7
+     ],
+     [
+      0.34993632619883586,
+      0.5116279069767442,
+      43
+     ],
+     [
+      0.45355784454776465,
+      0.5645161290322581,
+      62
+     ],
+     [
+      0.557244757323188,
+      0.8068965517241379,
+      145
+     ],
+     [
+      0.6535791451871921,
+      0.9047619047619048,
+      336
+     ],
+     [
+      0.7526061104229639,
+      0.9498910675381264,
+      459
+     ],
+     [
+      0.8462403640764777,
+      0.9739583333333334,
+      384
+     ],
+     [
+      0.9151892061350164,
+      0.984375,
+      64
+     ]
+    ],
+    "confiabilidad_percepcion_test": [
+     [
+      0.36111971363425255,
+      0.5,
+      8
+     ],
+     [
+      0.4592260832969959,
+      0.4230769230769231,
+      26
+     ],
+     [
+      0.5517437363212759,
+      0.5454545454545454,
+      44
+     ],
+     [
+      0.649183452129364,
+      0.6046511627906976,
+      43
+     ],
+     [
+      0.7591587250049298,
+      0.8153846153846154,
+      65
+     ],
+     [
+      0.860145888003436,
+      0.8454545454545455,
+      110
+     ],
+     [
+      0.9920693131373126,
+      0.9892751479289941,
+      2704
+     ]
+    ],
+    "calibrador": [
+     0.6337992177132649,
+     1.1181219942826002,
+     -1.1377936698665878,
+     0.0,
+     0.6337992177132649
+    ]
+   }
+  },
+  "integracion3_f1a_10_seed2": {
+   "k=10": {
+    "confusion": [
+     [
+      179,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      2
+     ],
+     [
+      0,
+      236,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      1,
+      0,
+      197,
+      1,
+      1,
+      1,
+      1,
+      2,
+      3,
+      0
+     ],
+     [
+      0,
+      0,
+      8,
+      106,
+      0,
+      97,
+      1,
+      0,
+      1,
+      0
+     ],
+     [
+      0,
+      2,
+      1,
+      0,
+      179,
+      0,
+      3,
+      0,
+      0,
+      2
+     ],
+     [
+      2,
+      0,
+      0,
+      89,
+      0,
+      89,
+      2,
+      0,
+      0,
+      1
+     ],
+     [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      183,
+      0,
+      0,
+      0
+     ],
+     [
+      1,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      206,
+      0,
+      2
+     ],
+     [
+      0,
+      0,
+      1,
+      4,
+      0,
+      2,
+      0,
+      0,
+      171,
+      1
+     ],
+     [
+      3,
+      0,
+      1,
+      3,
+      2,
+      0,
+      1,
+      4,
+      1,
+      200
+     ]
+    ],
+    "codigo": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "desplazamientos": [
+     0.873,
+     0.004,
+     0.0515,
+     0.0025,
+     0.003,
+     0.0085,
+     0.002,
+     0.0025,
+     0.0475,
+     0.0055
+    ]
+   },
+   "f1a_k=10": {
+    "confiabilidad_sistema_test": [
+     [
+      0.15502318942101492,
+      0.3333333333333333,
+      15
+     ],
+     [
+      0.25729174700958346,
+      0.29411764705882354,
+      17
+     ],
+     [
+      0.34381520140268085,
+      0.5555555555555556,
+      27
+     ],
+     [
+      0.46447190089235674,
+      0.53125,
+      96
+     ],
+     [
+      0.5538253642924629,
+      0.4830917874396135,
+      207
+     ],
+     [
+      0.6454588956350463,
+      0.5144508670520231,
+      173
+     ],
+     [
+      0.7459842267566227,
+      0.6428571428571429,
+      98
+     ],
+     [
+      0.8578393208691943,
+      0.8861209964412812,
+      281
+     ],
+     [
+      0.9494334813816175,
+      0.9522184300341296,
+      586
+     ]
+    ],
+    "confiabilidad_cruda_test": [
+     [
+      0.16903917390093318,
+      0.38461538461538464,
+      13
+     ],
+     [
+      0.25776962058748143,
+      0.36363636363636365,
+      33
+     ],
+     [
+      0.3665767492063092,
+      0.5207100591715976,
+      169
+     ],
+     [
+      0.4430723748258503,
+      0.4808362369337979,
+      287
+     ],
+     [
+      0.5441687420365477,
+      0.6865671641791045,
+      134
+     ],
+     [
+      0.6543887107008508,
+      0.8657407407407407,
+      216
+     ],
+     [
+      0.7511299040514742,
+      0.9333333333333333,
+      315
+     ],
+     [
+      0.8552386588836974,
+      0.9534883720930233,
+      301
+     ],
+     [
+      0.9120987800919995,
+      1.0,
+      32
+     ]
+    ],
+    "confiabilidad_percepcion_test": [
+     [
+      0.3555821081002553,
+      0.3333333333333333,
+      3
+     ],
+     [
+      0.46619807018174064,
+      0.2222222222222222,
+      9
+     ],
+     [
+      0.5426273517883741,
+      0.4423076923076923,
+      52
+     ],
+     [
+      0.6549010336399078,
+      0.6,
+      70
+     ],
+     [
+      0.7505805986992856,
+      0.7021276595744681,
+      47
+     ],
+     [
+      0.8555468225184782,
+      0.6049382716049383,
+      81
+     ],
+     [
+      0.9946742640567401,
+      0.9028487947406866,
+      2738
+     ]
+    ],
+    "calibrador": [
+     0.43354358189369574,
+     1.4555611334412841,
+     -0.5258349945148549,
+     0.0,
+     0.43354358189369574
+    ]
+   }
+  }
+ },
+ "tamanos": {
+  "n_pre": 10000,
+  "n_test_pureza": 2000,
+  "n_curva": 500,
+  "ep": 4000,
+  "cada": 500,
+  "ep_eval": 500,
+  "homeostasis": 0.02,
+  "congelada": true,
+  "ep_f3": 4000,
+  "columnas": 10000,
+  "cada_col": 1250,
+  "col_tabular": 10000,
+  "n_nosup": 10000,
+  "marcas_nosup": [
+   2500,
+   10000,
+   40000
+  ],
+  "cada_ancla": 10,
+  "g_ref": 20,
+  "g_sondas": 3,
+  "g_obs": 2000,
+  "f0": [
+   "rep",
+   "a_oraculo",
+   "a_ruido_0.65",
+   "a_ruido_0.8",
+   "a_ruido_0.9",
+   "b_refuerzo",
+   "b_cred2",
+   "c_barajadas",
+   "rep_v02"
+  ]
+ }
+}

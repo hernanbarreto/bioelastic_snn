@@ -1,0 +1,357 @@
+{
+ "fase": "f1upval",
+ "metricas": {
+  "theta=0.55": {
+   "neuronas ganadoras n=10000": {
+    "media": 46.0,
+    "desvio": 1.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     45.0,
+     46.0,
+     47.0
+    ],
+    "referencia": "10",
+    "nota": "56 creadas"
+   },
+   "neuronas ganadoras n=2500": {
+    "media": 33.333333333333336,
+    "desvio": 2.516611478423583,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     33.0,
+     36.0,
+     31.0
+    ],
+    "referencia": "10",
+    "nota": "40 creadas"
+   },
+   "neuronas ganadoras n=40000": {
+    "media": 69.66666666666667,
+    "desvio": 4.509249752822894,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     65.0,
+     74.0,
+     70.0
+    ],
+    "referencia": "10",
+    "nota": "76 creadas"
+   },
+   "pureza sin etiquetas n=10000": {
+    "media": 0.7426666666666666,
+    "desvio": 0.02138535324312727,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.738,
+     0.766,
+     0.724
+    ],
+    "referencia": "0.1000",
+    "nota": "cota por imagen de una ligadura perfecta"
+   },
+   "pureza sin etiquetas n=2500": {
+    "media": 0.684,
+    "desvio": 0.04303486958270001,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.686,
+     0.726,
+     0.64
+    ],
+    "referencia": "0.1000",
+    "nota": "cota por imagen de una ligadura perfecta"
+   },
+   "pureza sin etiquetas n=40000": {
+    "media": 0.7886666666666667,
+    "desvio": 0.03700450423034115,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.746,
+     0.812,
+     0.808
+    ],
+    "referencia": "0.1000",
+    "nota": "cota por imagen de una ligadura perfecta"
+   },
+   "segundos n=10000": {
+    "media": 63.73333333333333,
+    "desvio": 6.047589051294184,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     61.4,
+     70.6,
+     59.2
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "segundos n=2500": {
+    "media": 18.633333333333336,
+    "desvio": 1.6010413278030433,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     17.0,
+     20.2,
+     18.7
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "segundos n=40000": {
+    "media": 247.29999999999998,
+    "desvio": 9.824459272652106,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     237.9,
+     257.5,
+     246.5
+    ],
+    "referencia": "",
+    "nota": ""
+   }
+  },
+  "theta=0.7": {
+   "neuronas ganadoras n=10000": {
+    "media": 216.33333333333334,
+    "desvio": 12.897028081435403,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     202.0,
+     227.0,
+     220.0
+    ],
+    "referencia": "10",
+    "nota": "567 creadas"
+   },
+   "neuronas ganadoras n=2500": {
+    "media": 150.33333333333334,
+    "desvio": 9.60902353693305,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     152.0,
+     159.0,
+     140.0
+    ],
+    "referencia": "10",
+    "nota": "289 creadas"
+   },
+   "neuronas ganadoras n=40000": {
+    "media": 323.6666666666667,
+    "desvio": 5.131601439446884,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     318.0,
+     328.0,
+     325.0
+    ],
+    "referencia": "10",
+    "nota": "799 creadas"
+   },
+   "pureza sin etiquetas n=10000": {
+    "media": 0.7353333333333333,
+    "desvio": 0.0030550504633038962,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.736,
+     0.732,
+     0.738
+    ],
+    "referencia": "0.1000",
+    "nota": "cota por imagen de una ligadura perfecta"
+   },
+   "pureza sin etiquetas n=2500": {
+    "media": 0.758,
+    "desvio": 0.01907878402833893,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.76,
+     0.776,
+     0.738
+    ],
+    "referencia": "0.1000",
+    "nota": "cota por imagen de una ligadura perfecta"
+   },
+   "pureza sin etiquetas n=40000": {
+    "media": 0.6873333333333332,
+    "desvio": 0.0190087699058443,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.688,
+     0.706,
+     0.668
+    ],
+    "referencia": "0.1000",
+    "nota": "cota por imagen de una ligadura perfecta"
+   },
+   "segundos n=10000": {
+    "media": 66.33333333333333,
+    "desvio": 6.368935023481813,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     71.1,
+     59.1,
+     68.8
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "segundos n=2500": {
+    "media": 19.099999999999998,
+    "desvio": 0.4582575694955851,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     19.6,
+     18.7,
+     19.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "segundos n=40000": {
+    "media": 251.20000000000002,
+    "desvio": 17.73922207989967,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     259.8,
+     230.8,
+     263.0
+    ],
+    "referencia": "",
+    "nota": ""
+   }
+  },
+  "total": {
+   "segundos": {
+    "media": 249.6,
+    "desvio": 13.026434661871223,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     238.2,
+     257.9,
+     246.9,
+     260.2,
+     231.1,
+     263.3
+    ],
+    "referencia": "",
+    "nota": ""
+   }
+  }
+ },
+ "por_corrida": {},
+ "tamanos": {
+  "n_pre": 10000,
+  "n_test_pureza": 2000,
+  "n_curva": 500,
+  "ep": 4000,
+  "cada": 500,
+  "ep_eval": 500,
+  "homeostasis": 0.02,
+  "congelada": true,
+  "ep_f3": 4000,
+  "columnas": 10000,
+  "cada_col": 1250,
+  "col_tabular": 10000,
+  "n_nosup": 10000,
+  "marcas_nosup": [
+   2500,
+   10000,
+   40000
+  ],
+  "cada_ancla": 10,
+  "g_ref": 20,
+  "g_sondas": 3,
+  "g_obs": 2000,
+  "f0": [
+   "rep",
+   "a_oraculo",
+   "a_ruido_0.65",
+   "a_ruido_0.8",
+   "a_ruido_0.9",
+   "b_refuerzo",
+   "b_cred2",
+   "c_barajadas",
+   "rep_v02"
+  ]
+ }
+}

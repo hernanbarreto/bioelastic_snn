@@ -1,0 +1,353 @@
+{
+ "fase": "f0g",
+ "metricas": {
+  "10 anclas por dígito": {
+   "cambio propio medio (log p)": {
+    "media": 3.6792,
+    "desvio": 0.4020037313259666,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     3.6812,
+     3.2762,
+     4.0802
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "g - h (específica del dígito)": {
+    "media": 0.18183333333333332,
+    "desvio": 0.022577939085163055,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.2079,
+     0.1684,
+     0.1692
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "g: transferencia al mismo dígito / propia": {
+    "media": 0.3352,
+    "desvio": 0.01715604849608441,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.3531,
+     0.3336,
+     0.3189
+    ],
+    "referencia": "0.0979",
+    "nota": "desvío entre sondas en referencia"
+   },
+   "h: transferencia a otros dígitos / propia": {
+    "media": 0.1534,
+    "desvio": 0.010548459603183779,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.1452,
+     0.1653,
+     0.1497
+    ],
+    "referencia": "0.0313",
+    "nota": "desvío entre sondas en referencia"
+   },
+   "pureza de partida (argmax en referencia)": {
+    "media": 0.6183333333333333,
+    "desvio": 0.037527767497325705,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.58,
+     0.655,
+     0.62
+    ],
+    "referencia": "0.1000",
+    "nota": ""
+   },
+   "sondas con efecto": {
+    "media": 30.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     30.0,
+     30.0,
+     30.0
+    ],
+    "referencia": "30",
+    "nota": "de en referencia"
+   }
+  },
+  "2000 observadas sin etiqueta": {
+   "cambio propio medio (log p)": {
+    "media": 2.2896666666666667,
+    "desvio": 0.001721433511156731,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     2.2877,
+     2.2904,
+     2.2909
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "g - h (específica del dígito)": {
+    "media": 0.22929999999999998,
+    "desvio": 0.03034913507828517,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.2642,
+     0.2146,
+     0.2091
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "g: transferencia al mismo dígito / propia": {
+    "media": 0.412,
+    "desvio": 0.033214906292205595,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.4503,
+     0.3911,
+     0.3946
+    ],
+    "referencia": "0.1169",
+    "nota": "desvío entre sondas en referencia"
+   },
+   "h: transferencia a otros dígitos / propia": {
+    "media": 0.18263333333333334,
+    "desvio": 0.005320087718575082,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.186,
+     0.1765,
+     0.1854
+    ],
+    "referencia": "0.0344",
+    "nota": "desvío entre sondas en referencia"
+   },
+   "pureza de partida (argmax en referencia)": {
+    "media": 0.10000000000000002,
+    "desvio": 1.6996749443881478e-17,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.1,
+     0.1,
+     0.1
+    ],
+    "referencia": "0.1000",
+    "nota": ""
+   },
+   "sondas con efecto": {
+    "media": 30.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     30.0,
+     30.0,
+     30.0
+    ],
+    "referencia": "30",
+    "nota": "de en referencia"
+   }
+  },
+  "desde cero": {
+   "cambio propio medio (log p)": {
+    "media": 2.15,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     2.15,
+     2.15,
+     2.15
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "g - h (específica del dígito)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "g: transferencia al mismo dígito / propia": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío entre sondas en referencia"
+   },
+   "h: transferencia a otros dígitos / propia": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "referencia": "0.0000",
+    "nota": "desvío entre sondas en referencia"
+   },
+   "pureza de partida (argmax en referencia)": {
+    "media": 0.10000000000000002,
+    "desvio": 1.6996749443881478e-17,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.1,
+     0.1,
+     0.1
+    ],
+    "referencia": "0.1000",
+    "nota": ""
+   },
+   "sondas con efecto": {
+    "media": 30.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     30.0,
+     30.0,
+     30.0
+    ],
+    "referencia": "30",
+    "nota": "de en referencia"
+   }
+  },
+  "total": {
+   "segundos": {
+    "media": 81.10000000000001,
+    "desvio": 9.933780750550115,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     92.5,
+     74.3,
+     76.5
+    ],
+    "referencia": "",
+    "nota": ""
+   }
+  }
+ },
+ "por_corrida": {},
+ "tamanos": {
+  "n_pre": 10000,
+  "n_test_pureza": 2000,
+  "n_curva": 500,
+  "ep": 4000,
+  "cada": 500,
+  "ep_eval": 500,
+  "homeostasis": 0.02,
+  "congelada": true,
+  "ep_f3": 4000,
+  "columnas": 10000,
+  "cada_col": 1250,
+  "col_tabular": 10000,
+  "n_nosup": 10000,
+  "marcas_nosup": [
+   2500,
+   10000,
+   40000
+  ],
+  "cada_ancla": 10,
+  "g_ref": 20,
+  "g_sondas": 3,
+  "g_obs": 2000,
+  "f0": [
+   "rep",
+   "a_oraculo",
+   "a_ruido_0.65",
+   "a_ruido_0.8",
+   "a_ruido_0.9",
+   "b_refuerzo",
+   "b_cred2",
+   "c_barajadas",
+   "rep_v02"
+  ]
+ }
+}

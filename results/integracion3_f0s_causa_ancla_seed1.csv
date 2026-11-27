@@ -1,0 +1,58 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+f0s,causa K=3 ancla | 10000 columnas,1,pureza (media de 6),0.9969,0.0001,desvío en referencia
+f0s,causa K=3 ancla | 10000 columnas,1,columna_final (media de 6),0.9902,0.0035,desvío en referencia
+f0s,causa K=3 ancla | 10000 columnas,1,digitos_repartidos (media de 6),0.0000,0.0000,desvío en referencia
+f0s,causa K=3 ancla | 10000 columnas,1,simbolos_compartidos (media de 6),0.0000,0.0000,desvío en referencia
+f0s,causa K=3 ancla | 10000 columnas,1,religadas (media de 6),0.0000,0.0000,desvío en referencia
+f0s,causa K=3 ancla | 10000 columnas,1,perfil_max (media de 6),0.8573,0.0441,desvío en referencia
+f0s,causa K=3 ancla | 10000 columnas,1,perfil_margen_distintos (media de 6),0.0000,0.0000,desvío en referencia
+f0s,causa K=3 ancla | 10000 columnas,1,causa_es_codigo (media de 6),1.0000,0.0000,desvío en referencia
+f0s,causa K=3 ancla | 10000 columnas,1,ligadura_es_codigo (media de 6),1.0000,0.0000,desvío en referencia
+f0s,causa K=3 ancla | 10000 columnas,1,causa_precision_pares (media de 6),1.0000,0.0000,desvío en referencia
+f0s,causa K=3 ancla | 10000 columnas,1,causa_recall_pares (media de 6),1.0000,0.0000,desvío en referencia
+f0s,causa K=3 ancla | 10000 columnas,1,ligadura_precision_pares (media de 6),1.0000,0.0000,desvío en referencia
+f0s,causa K=3 ancla | 10000 columnas,1,ligadura_recall_pares (media de 6),1.0000,0.0000,desvío en referencia
+f0s,causa K=3 ancla | 10000 columnas,1,fracción con pureza >= 0.99,1.0000,,
+f0s,causa K=10 ancla | 10000 columnas,1,pureza (media de 6),0.9889,0.0008,desvío en referencia
+f0s,causa K=10 ancla | 10000 columnas,1,columna_final (media de 6),0.9320,0.0873,desvío en referencia
+f0s,causa K=10 ancla | 10000 columnas,1,digitos_repartidos (media de 6),0.0000,0.0000,desvío en referencia
+f0s,causa K=10 ancla | 10000 columnas,1,simbolos_compartidos (media de 6),0.0000,0.0000,desvío en referencia
+f0s,causa K=10 ancla | 10000 columnas,1,religadas (media de 6),0.0000,0.0000,desvío en referencia
+f0s,causa K=10 ancla | 10000 columnas,1,perfil_max (media de 6),0.7961,0.0862,desvío en referencia
+f0s,causa K=10 ancla | 10000 columnas,1,perfil_margen_distintos (media de 6),0.0000,0.0000,desvío en referencia
+f0s,causa K=10 ancla | 10000 columnas,1,causa_es_codigo (media de 6),1.0000,0.0000,desvío en referencia
+f0s,causa K=10 ancla | 10000 columnas,1,ligadura_es_codigo (media de 6),1.0000,0.0000,desvío en referencia
+f0s,causa K=10 ancla | 10000 columnas,1,causa_precision_pares (media de 6),1.0000,0.0000,desvío en referencia
+f0s,causa K=10 ancla | 10000 columnas,1,causa_recall_pares (media de 6),1.0000,0.0000,desvío en referencia
+f0s,causa K=10 ancla | 10000 columnas,1,ligadura_precision_pares (media de 6),1.0000,0.0000,desvío en referencia
+f0s,causa K=10 ancla | 10000 columnas,1,ligadura_recall_pares (media de 6),1.0000,0.0000,desvío en referencia
+f0s,causa K=10 ancla | 10000 columnas,1,fracción con pureza >= 0.99,0.0000,,
+f0s,"causa K=3 ancla + g, h del Cortex | 10000 columnas",1,pureza (media de 6),0.1252,0.0021,desvío en referencia
+f0s,"causa K=3 ancla + g, h del Cortex | 10000 columnas",1,columna_final (media de 6),0.1107,0.0145,desvío en referencia
+f0s,"causa K=3 ancla + g, h del Cortex | 10000 columnas",1,digitos_repartidos (media de 6),0.6000,0.2000,desvío en referencia
+f0s,"causa K=3 ancla + g, h del Cortex | 10000 columnas",1,simbolos_compartidos (media de 6),0.6409,0.1437,desvío en referencia
+f0s,"causa K=3 ancla + g, h del Cortex | 10000 columnas",1,religadas (media de 6),0.0000,0.0000,desvío en referencia
+f0s,"causa K=3 ancla + g, h del Cortex | 10000 columnas",1,perfil_max (media de 6),0.1015,0.0001,desvío en referencia
+f0s,"causa K=3 ancla + g, h del Cortex | 10000 columnas",1,perfil_margen_distintos (media de 6),0.0017,0.0002,desvío en referencia
+f0s,"causa K=3 ancla + g, h del Cortex | 10000 columnas",1,causa_es_codigo (media de 6),0.0833,0.0461,desvío en referencia
+f0s,"causa K=3 ancla + g, h del Cortex | 10000 columnas",1,ligadura_es_codigo (media de 6),0.2611,0.0487,desvío en referencia
+f0s,"causa K=3 ancla + g, h del Cortex | 10000 columnas",1,causa_precision_pares (media de 6),0.0628,0.0405,desvío en referencia
+f0s,"causa K=3 ancla + g, h del Cortex | 10000 columnas",1,causa_recall_pares (media de 6),0.1167,0.0764,desvío en referencia
+f0s,"causa K=3 ancla + g, h del Cortex | 10000 columnas",1,ligadura_precision_pares (media de 6),0.0978,0.0232,desvío en referencia
+f0s,"causa K=3 ancla + g, h del Cortex | 10000 columnas",1,ligadura_recall_pares (media de 6),0.5556,0.1583,desvío en referencia
+f0s,"causa K=3 ancla + g, h del Cortex | 10000 columnas",1,fracción con pureza >= 0.99,0.0000,,
+f0s,causa K=3 ancla + fuga 0.03 | 10000 columnas,1,pureza (media de 6),0.1805,0.0113,desvío en referencia
+f0s,causa K=3 ancla + fuga 0.03 | 10000 columnas,1,columna_final (media de 6),0.1012,0.0135,desvío en referencia
+f0s,causa K=3 ancla + fuga 0.03 | 10000 columnas,1,digitos_repartidos (media de 6),0.7000,0.2160,desvío en referencia
+f0s,causa K=3 ancla + fuga 0.03 | 10000 columnas,1,simbolos_compartidos (media de 6),0.6853,0.0801,desvío en referencia
+f0s,causa K=3 ancla + fuga 0.03 | 10000 columnas,1,religadas (media de 6),0.0000,0.0000,desvío en referencia
+f0s,causa K=3 ancla + fuga 0.03 | 10000 columnas,1,perfil_max (media de 6),0.1027,0.0002,desvío en referencia
+f0s,causa K=3 ancla + fuga 0.03 | 10000 columnas,1,perfil_margen_distintos (media de 6),0.0029,0.0002,desvío en referencia
+f0s,causa K=3 ancla + fuga 0.03 | 10000 columnas,1,causa_es_codigo (media de 6),0.1389,0.0591,desvío en referencia
+f0s,causa K=3 ancla + fuga 0.03 | 10000 columnas,1,ligadura_es_codigo (media de 6),0.4778,0.0598,desvío en referencia
+f0s,causa K=3 ancla + fuga 0.03 | 10000 columnas,1,causa_precision_pares (media de 6),0.0740,0.0203,desvío en referencia
+f0s,causa K=3 ancla + fuga 0.03 | 10000 columnas,1,causa_recall_pares (media de 6),0.1222,0.0416,desvío en referencia
+f0s,causa K=3 ancla + fuga 0.03 | 10000 columnas,1,ligadura_precision_pares (media de 6),0.2278,0.0466,desvío en referencia
+f0s,causa K=3 ancla + fuga 0.03 | 10000 columnas,1,ligadura_recall_pares (media de 6),0.4833,0.1619,desvío en referencia
+f0s,causa K=3 ancla + fuga 0.03 | 10000 columnas,1,fracción con pureza >= 0.99,0.0000,,
+f0s,total,1,segundos,512.5000,,

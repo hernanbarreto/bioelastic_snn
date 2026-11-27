@@ -1,0 +1,20 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+f0g,desde cero,1,g: transferencia al mismo dígito / propia,1.0000,0.0000,desvío entre sondas en referencia
+f0g,desde cero,1,h: transferencia a otros dígitos / propia,1.0000,0.0000,desvío entre sondas en referencia
+f0g,desde cero,1,g - h (específica del dígito),0.0000,,
+f0g,desde cero,1,cambio propio medio (log p),2.1500,,
+f0g,desde cero,1,sondas con efecto,30,30,de en referencia
+f0g,desde cero,1,pureza de partida (argmax en referencia),0.1000,0.1000,
+f0g,10 anclas por dígito,1,g: transferencia al mismo dígito / propia,0.3336,0.1002,desvío entre sondas en referencia
+f0g,10 anclas por dígito,1,h: transferencia a otros dígitos / propia,0.1653,0.0761,desvío entre sondas en referencia
+f0g,10 anclas por dígito,1,g - h (específica del dígito),0.1684,,
+f0g,10 anclas por dígito,1,cambio propio medio (log p),3.2762,,
+f0g,10 anclas por dígito,1,sondas con efecto,30,30,de en referencia
+f0g,10 anclas por dígito,1,pureza de partida (argmax en referencia),0.6550,0.1000,
+f0g,2000 observadas sin etiqueta,1,g: transferencia al mismo dígito / propia,0.3911,0.1006,desvío entre sondas en referencia
+f0g,2000 observadas sin etiqueta,1,h: transferencia a otros dígitos / propia,0.1765,0.0244,desvío entre sondas en referencia
+f0g,2000 observadas sin etiqueta,1,g - h (específica del dígito),0.2146,,
+f0g,2000 observadas sin etiqueta,1,cambio propio medio (log p),2.2904,,
+f0g,2000 observadas sin etiqueta,1,sondas con efecto,30,30,de en referencia
+f0g,2000 observadas sin etiqueta,1,pureza de partida (argmax en referencia),0.1000,0.1000,
+f0g,total,1,segundos,74.3000,,
