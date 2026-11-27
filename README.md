@@ -344,8 +344,10 @@ lento como el del mono.
 - **Selección de hiperparámetros.** Parte de la exploración previa miró subconjuntos del test de
   MNIST y Fashion: esas cifras son algo optimistas. Los resultados de la v0.3 usan validación
   separada.
-- **Escala.** La mayor instancia medida tiene 10 millones de neuronas. La escala humana es una
-  extrapolación de costo (~0.9 PB), no un experimento.
+- **Escala.** La mayor instancia medida tiene 10 millones de neuronas y 3.2 × 10⁸ sinapsis, en una
+  lámina de columnas independientes que cuenta el costo, sin hacer ninguna tarea. Su tiempo por paso
+  se extrapola de 2 000 columnas. La escala humana es una extrapolación de costo (~0.9 PB), no un
+  experimento.
 
 ## En curso: mecanismos del aprendizaje humano
 
@@ -410,6 +412,36 @@ se aplana, el límite es de diseño y hay que corregirlo.
 - G: si al pasar la memoria de trabajo a neuronas se pierde el razonamiento ya logrado, el
   Thinker es un programa con control aprendido y no una red.
 
+**Reglas para la próxima etapa: consolidar y falsar, no expandir.**
+- No entra ningún mecanismo nuevo sin dos cosas fijadas antes de implementarlo: un criterio de
+  abandono y un benchmark externo con cifra publicada o línea base local con los mismos datos.
+- Compuerta de integración: con todo encendido, la red rinde al menos lo mismo que con cada
+  mecanismo solo, y el arbitraje elige solo. Elegir mecanismos a mano según la tarea no vale.
+  El mecanismo que no pasa la compuerta se saca.
+- Las líneas se prueban por separado antes de integrarlas: núcleo de aprendizaje continuo,
+  sistema cognitivo e integración entre percepción y razonamiento.
+
+**Prioridades de la próxima etapa,** de mayor a menor:
+1. **Núcleo de aprendizaje continuo.**
+   - Split-CIFAR-10 y Split-CIFAR-100 en una pasada, con los tamaños de memoria estándar del
+     aprendizaje continuo en línea y cifras publicadas de ER y ER-ACE.
+   - Presupuestos de memoria idénticos a los publicados.
+   - `ace` en el flujo de 200 000 pasos.
+   - El olvido de Split-Fashion por debajo del de ER-ACE.
+2. **Crédito posterior entre percepción y razonamiento** (escalón B), como línea principal.
+   - Bajar de 10 a 3 o menos imágenes nombradas por dígito, atacando la causa medida: desde
+     cero, enseñar una imagen generaliza igual a su dígito que a los demás (g = h).
+   - MNIST-addition con 2, 4 y 15 cifras contra A-NeSI publicado.
+   - Reglas desconocidas que no sean la suma, y conceptos nuevos.
+3. **Lenguaje:** la serie con tope triple decide el criterio F. Si se cumple, se reemplaza el
+   mecanismo de secuencias.
+4. **Jerarquía:** no se agregan niveles. El área recurrente de atención, solo como prueba
+   barata en MNIST y después en el régimen válido. Si no pasa su criterio, la línea se cierra
+   por ahora.
+5. **Razonamiento:** se congela el Thinker y se mide con benchmarks externos (SCAN, MLC, bAbI),
+   con prioridad en la transferencia a reglas nuevas. Después, las regresiones con todo
+   encendido.
+
 ## Estado de las ramas y cómo continuar
 
 `main`, `master` y `v0.3-dev` tienen todo lo integrado. Lo nuevo de cada rama entra como opción
@@ -459,20 +491,26 @@ Los datos externos no están versionados; las fuentes están en el docstring de
 
 | | Cerebro humano | Transformer abierto de referencia | Esta red |
 |---|---|---|---|
-| Unidades | 86 mil millones de neuronas (16 mil millones en la corteza) | Llama 3.1 405B: 126 capas × 16 384 de ancho | 10 millones instanciadas (medido) |
-| Conexiones | ~1.5 × 10¹⁴ sinapsis en la neocorteza | 4.05 × 10¹¹ parámetros | 3.2 × 10⁸ sinapsis (medido) |
+| Unidades | 86 mil millones de neuronas (16 mil millones en la corteza) | Llama 3.1 405B: 126 capas × 16 384 de ancho | 10 millones instanciadas: memoria medida, 3.2 GB de RSS (`results/scaling.csv`) |
+| Conexiones | ~1.5 × 10¹⁴ sinapsis en la neocorteza | 4.05 × 10¹¹ parámetros | 3.2 × 10⁸ sinapsis instanciadas (medido) |
 | Organización | 180 áreas por hemisferio, 6 láminas, ~10 niveles en la jerarquía visual | capas idénticas en serie | áreas apilables; probado hasta 3 sensoriales + asociación + Thinker |
 
-Cada neurona guarda a lo sumo `fan_in` sinapsis y las columnas son independientes: el costo por
-sinapsis medido es constante (2.4–2.9 ns) de 100 mil a 10 millones de neuronas.
+Cada neurona guarda a lo sumo `fan_in` sinapsis y las columnas son independientes. El costo por
+sinapsis es constante, 2.8–3.0 ns, de 100 mil a 10 millones de neuronas, con la máquina libre
+(`python experiments/exp_scaling.py 10000000`). Con la máquina cargada por otros procesos
+subió a 5.5–7.4 ns. Qué está medido y qué no:
+
+- **Medido:** la memoria y el RSS de la lámina entera, y el tiempo sobre una muestra de hasta
+  2 000 columnas.
+- **Extrapolado:** el tiempo del paso completo, como costo por columna × columnas.
 
 ![escala](results/scaling.png)
 
 | Escala | Neuronas | Sinapsis | Memoria | Núcleo-segundos por paso |
 |---|---|---|---|---|
-| 10⁻⁴ | 1.6 M | 11.2 mil M | 89.6 GB | 30 |
-| 10⁻² | 160 M | 1.12 × 10¹² | 8.96 TB | 3 000 |
-| **1 (corteza humana)** | **16 mil M** | **1.12 × 10¹⁴** | **896 TB** | **303 000** |
+| 10⁻⁴ | 1.6 M | 11.2 mil M | 89.6 GB | 31 |
+| 10⁻² | 160 M | 1.12 × 10¹² | 8.96 TB | 3 120 |
+| **1 (corteza humana)** | **16 mil M** | **1.12 × 10¹⁴** | **896 TB** | **312 000** |
 
 Igualar la cantidad no iguala la capacidad. Lo que mide la profundidad útil de esta red es la
 sección de resultados, no esta tabla.
