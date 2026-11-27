@@ -417,3 +417,61 @@ def test_upper_area_waits_for_the_lower_one_and_reopens_with_it(tmp_path):
     net.areas[0].phi = 1.0
     net.areas[1].reopen()
     assert net.areas[1].phi == 1.0 and net.areas[1].reopens >= 1
+
+
+def test_conjunction_sparse_index_matches_the_dense_dictionary(tmp_path):
+    from scipy import sparse
+    net = Cortex((8, 8, 1), 4, areas=[AREAS[0], dict(AREAS[1], support=6, theta=0.7, probation=40,
+                                                     survival_hits=3, maintain_every=20)], **KW)
+    _stream(net, 500)
+    a = net.areas[1]
+    n = a.n
+    rows = np.arange(n)[:, None]
+    dense = np.zeros_like(a.W[:n]); dense[rows, a.Si[:n]] = np.where(a.Sv[:n], a.W[rows, a.Si[:n]], 0.0)
+    assert np.array_equal(dense, a.W[:n])                    # el índice describe todo el diccionario
+    mask = np.zeros_like(a.M[:n]); mask[rows, a.Si[:n]] = a.Sv[:n]
+    mask[:, 0] = a.M[:n, 0]                                  # (el relleno apunta a la columna 0)
+    assert np.array_equal(mask, a.M[:n])
+    net.save(tmp_path / "s.npz"); twin = Cortex.load(tmp_path / "s.npz")
+    x = _blob(np.random.default_rng(1), 2)
+    assert np.array_equal(twin.areas[1].encode(twin.areas[0].encode(x)), a.encode(net.areas[0].encode(x)))
+
+
+def test_clapp_learns_which_neighbours_go_together_and_separates_images():
+    rng = np.random.default_rng(16)
+    a = FeatureArea((12, 12, 1), rf=3, pool=2, max_features=16, theta=0.8, k=1, floor=0.3,
+                    clapp=dict(lr=0.05, lr_pred=0.5))
+
+    def img(kind):                                           # dos «objetos»: columnas o filas largas
+        x = np.zeros((12, 12, 1), dtype=np.float32)
+        j = int(rng.integers(2, 9))
+        if kind:
+            x[1:11, j, 0] = 1.0
+        else:
+            x[j, 1:11, 0] = 1.0; x[min(j + 4, 10), 1:11, 0] = 1.0
+        return x
+    for _ in range(400):
+        a.encode(img(int(rng.integers(2)))); a.learn()
+    assert np.isfinite(a.W).all() and np.isfinite(a.Pp).all()
+    assert a.Pp.max() > 0 and a.Pp.min() < 0                 # predice lo propio, rechaza lo ajeno
+    code = a.encode(img(1)); Z = code.reshape(-1, a.F)
+    ctx = Z[:-a.pw]; tgt = Z[a.pw:]
+    u_same = float(np.einsum("qj,qj->", tgt, ctx @ a.Pp.T))
+    other = a.encode(img(0)).reshape(-1, a.F)
+    u_other = float(np.einsum("qj,qj->", other[a.pw:], ctx @ a.Pp.T))
+    assert u_same > u_other                                  # el vecino de la misma imagen se predice mejor
+
+
+def test_local_reader_shock_reopens_a_consolidated_area():
+    con = dict(CON, open=10.0)                               # (sin reapertura por cuantización)
+    net = Cortex((8, 8, 1), 8, areas=[dict(AREAS[0], consolidate=con), dict(AREAS[1], consolidate=con)], **KW)
+    rng = np.random.default_rng(17)
+    for _ in range(1500):                                    # clases 0-3
+        c = int(rng.integers(4)); net.step(_blob(rng, c), c)
+    assert net.areas[0].phi < 0.5 and net.areas[0].reopens == 0
+    for t in range(200):                                     # las mismas figuras, etiquetas nuevas 4-7
+        c = int(rng.integers(4)); net.step(_blob(rng, c), 4 + c)
+        if net.areas[0].phi > 0.9:
+            break
+    assert net.areas[0].phi > 0.9 and net.areas[0].reopens == 1 and t < 150
+    assert net.areas[1].phi > 0.9                            # y el área de arriba con ella

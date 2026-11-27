@@ -65,8 +65,23 @@ cada parche (o `pe` con signal="pe"), con dos medias móviles (rápida y lenta):
                                    `floor` (plasticidad adulta, nunca cero)
   rápida > lenta * (1 + open)      error sostenido por encima de su media: phi vuelve a 1
                                    (reapertura, tipo noradrenalina) y `reopened` avisa
+También reabre si el lector local del área empieza a fallar de golpe: la probabilidad que le
+da a la clase correcta cae `err_open` por debajo de su media lenta (sorpresa de resultado).
 Un área no cierra mientras la de abajo siga abierta (`hold`), y si la de abajo reabre, la de
 arriba también (su entrada cambió): lo coordina `Cortex`.
+
+Predicción contrastiva local (opcional, `clapp=dict(lr, lr_pred, margin)`; CLAPP, Illing et
+al. 2021, de la familia de Greedy InfoMax y LPL): el área aprende pesos laterales P que
+predicen el código de la célula compleja de abajo (q + una fila) desde el de q,
+u = z_{q'}^T P c_q. Pares de la misma imagen son positivos (y = +1); como negativos se usa
+la predicción dendrítica que dejó la imagen anterior (tras una «sacada», y = -1). Con la
+bisagra max(0, margin - y u) activa:
+  dP    = lr_pred * y * z c^T                               (Hebb con compuerta)
+  dW_j  = lr * y * (P c)_j * (x̂_j - a_j W_j)                (pre, post, predicción dendrítica
+                                                            y un factor difundido y)
+y lo simétrico para las células de contexto con P^T z (sólo en los positivos). El objetivo
+no se satisface copiando la entrada: pide rasgos que el vecindario pueda predecir y que
+distingan una imagen de otra.
 
 Regla de traza (opcional, `trace=dict(lr, decay)`; Földiák 1991): cada célula compleja
 guarda una traza de su actividad en las vistas anteriores de la misma secuencia (micro-
@@ -114,7 +129,8 @@ class FeatureArea:
                  local: dict | None = None, n_classes: int = 0, seed: int = 0,
                  predictive: dict | None = None, lateral: dict | None = None,
                  support: int = 0, passthrough: bool = False, trace: dict | None = None,
-                 soft: dict | None = None, critical: int = 0, consolidate: dict | None = None):
+                 soft: dict | None = None, critical: int = 0, consolidate: dict | None = None,
+                 clapp: dict | None = None):
         H, W, C = (int(v) for v in in_shape)
         self.in_shape = (H, W, C)
         self.rf = _pair(rf); self.stride = _pair(stride); self.pool = _pair(pool)
@@ -143,6 +159,8 @@ class FeatureArea:
             if self.floor < 0.0:
                 raise ValueError("support requiere floor >= 0")
             self.M = np.zeros((self.F, self.D), dtype=bool)       # soporte de cada rasgo
+            self.Si = np.zeros((self.F, self.S), dtype=np.int32)  # sus índices (para productos dispersos)
+            self.Sv = np.zeros((self.F, self.S), dtype=bool)      # cuáles de esos índices valen
             self._den = None
         self.alive = np.zeros(self.F, dtype=bool)
         self.wins = np.zeros(self.F, dtype=np.int64)
@@ -170,8 +188,8 @@ class FeatureArea:
 
         self.con = None; self.phi = 1.0; self.hold = False; self.reopened = False; self.reopens = 0
         if consolidate:
-            spec = dict(tau_fast=100.0, tau_slow=1000.0, tau_close=1000.0, floor=0.02, open=0.15,
-                        improve=0.02, eps=0.002, warmup=300, signal="match")
+            spec = dict(tau_fast=200.0, tau_slow=1000.0, tau_close=1000.0, floor=0.02, open=0.3,
+                        improve=0.02, eps=0.002, warmup=300, signal="match", err_open=0.15)
             unknown = set(consolidate) - set(spec)
             if unknown:
                 raise ValueError(f"opciones de `consolidate` desconocidas: {sorted(unknown)}")
@@ -180,6 +198,21 @@ class FeatureArea:
                 raise ValueError(f"signal desconocida: {spec['signal']}")
             self.con = spec
             self._e_fast = 0.0; self._e_slow = 0.0; self._con_n = 0; self._cdebt = 0.0
+            self._m_fast = 0.0; self._m_slow = 0.0; self._m_n = 0; self._lmiss = None
+
+        self.cl = None
+        if clapp:
+            spec = dict(lr=0.02, lr_pred=0.05, margin=1.0)
+            unknown = set(clapp) - set(spec)
+            if unknown:
+                raise ValueError(f"opciones de `clapp` desconocidas: {sorted(unknown)}")
+            spec.update(clapp)
+            if self.ph < 2:
+                raise ValueError("clapp necesita al menos dos filas de células complejas")
+            self.cl = spec
+            self.Pp = np.zeros((self.F, self.F), dtype=np.float32)   # predicción lateral q -> q + fila
+            self._cl_prev = None                                     # (contexto, predicción) anteriores
+            self.cl_loss = 0.0
 
         self.soft = None
         if soft:
@@ -284,7 +317,11 @@ class FeatureArea:
         act = None; arg = None
         code = np.zeros(self.out_shape, dtype=np.float32)
         if n and mx > 0 and self.S:                               # conjunciones: coseno sobre el soporte
-            Ws = sparse.csr_matrix(self.W[:n]); Ms = sparse.csr_matrix(self.M[:n].astype(np.float32))
+            Si = self.Si[:n]; Sv = self.Sv[:n]                    # CSR directo desde el soporte: sin
+            ptr = np.arange(0, n * self.S + 1, self.S)            # recorrer el diccionario denso
+            wv = np.where(Sv, self.W[np.arange(n)[:, None], Si], np.float32(0.0)).astype(np.float32)
+            Ws = sparse.csr_matrix((wv.ravel(), Si.ravel(), ptr), shape=(n, self.D))
+            Ms = sparse.csr_matrix((Sv.astype(np.float32).ravel(), Si.ravel(), ptr), shape=(n, self.D))
             num = np.asarray((Ws @ Pm[vr].T).T, dtype=np.float32)
             den = np.sqrt(np.asarray((Ms @ (Pm[vr] * Pm[vr]).T).T, dtype=np.float32))
             self._den = np.zeros((P, n), dtype=np.float32); self._den[vr] = den
@@ -334,7 +371,7 @@ class FeatureArea:
             else:
                 sheet = out
             ph, pw = self.ph, self.pw; a, b = self.pool
-            if self.local is None and self.pc is None and self.tr is None:
+            if self.local is None and self.pc is None and self.tr is None and self.cl is None:
                 o = sheet.reshape(self.oh, self.ow, n)[:ph * a, :pw * b].reshape(ph, a, pw * b * n)
                 code[:, :, :n] = o.max(axis=1).reshape(ph, pw, b, n).max(axis=2)   # células complejas
             else:                                                 # se recuerda qué célula simple ganó
@@ -449,6 +486,8 @@ class FeatureArea:
         p = R.probs(V)
         self.local_seen += 1; self.local_hits += int(np.argmax(V) == target)
         wrong = int(np.argmax(V)) != target
+        if self.con is not None:                                  # sorpresa del lector local
+            self._lmiss = 1.0 - float(p[target])
         err = -p; err[target] += 1.0
         err = err.astype(np.float32)
         g = R.W[:, cols].T @ err                                  # error dendrítico de cada célula compleja
@@ -511,6 +550,8 @@ class FeatureArea:
                               prior if self.local.get("residual") else None, scale=g)
         if self.tr is not None and act is not None:
             self._learn_trace(Pm, norms, vr, act, code, g)
+        if self.cl is not None and act is not None and arg is not None:
+            self._learn_clapp(Pm, norms, vr, act, arg, code, g)
         self.t += 1
         n = self.n
         if act is not None:
@@ -685,7 +726,14 @@ class FeatureArea:
             return
         rho = self._e_fast / self._e_slow
         gain = self._e_slow - self._e_fast                        # cuánto baja el error todavía
-        if rho > 1.0 + float(c["open"]) and -gain > float(c["eps"]):   # sorpresa sostenida: reabrir
+        shock = False
+        if self._lmiss is not None and c["err_open"] > 0.0:       # el lector local falla de golpe
+            self._m_n += 1
+            self._m_fast += (self._lmiss - self._m_fast) / min(self._m_n, float(c["tau_fast"]))
+            self._m_slow += (self._lmiss - self._m_slow) / min(self._m_n, float(c["tau_slow"]))
+            shock = self._m_n >= c["warmup"] and self._m_fast - self._m_slow > float(c["err_open"])
+            self._lmiss = None
+        if shock or (rho > 1.0 + float(c["open"]) and -gain > float(c["eps"])):   # sorpresa sostenida
             if self.phi < 0.5:
                 self.reopened = True; self.reopens += 1
             self.phi = 1.0
@@ -723,6 +771,58 @@ class FeatureArea:
         Wn[~live] = 0.0
         self.W[:n] = Wn
         self.wins[np.unique(top)] += 1
+
+    def _learn_clapp(self, Pm, norms, vr, act, arg, code, g: float = 1.0):
+        """Predicción contrastiva local entre células complejas vecinas (ver módulo)."""
+        n = self.n; Q = self.ph * self.pw
+        Z = code[:, :, :n].reshape(Q, n)
+        ctx = np.arange(Q - self.pw); tgt = ctx + self.pw         # q -> la célula de la fila de abajo
+        Zc = sparse.csr_matrix(Z[ctx]); Zt = sparse.csr_matrix(Z[tgt])
+        P = self.Pp[:n, :n]
+        m = np.float32(self.cl["margin"])
+        D = np.asarray(Zc @ P.T, dtype=np.float32)                # predicción dendrítica de z_{q'}
+        u = np.asarray(Zt.multiply(D).sum(axis=1)).ravel()
+        on_p = (u < m) & (np.asarray(Zt.sum(axis=1)).ravel() > 0) & (np.asarray(Zc.sum(axis=1)).ravel() > 0)
+        coef = D * on_p[:, None]                                  # tercer factor (y = +1)
+        dP = (Zt.multiply(on_p[:, None]).T @ Zc).toarray()
+        loss = float(np.maximum(m - u, 0.0)[on_p].sum())
+        prev = self._cl_prev
+        if prev is not None and prev[0].shape == Zc.shape:        # negativos: la imagen anterior
+            Zc0, D0 = prev
+            if D0.shape[1] < n:
+                D0 = np.pad(D0, ((0, 0), (0, n - D0.shape[1])))
+                Zc0 = sparse.csr_matrix((Zc0.data, Zc0.indices, Zc0.indptr), shape=(Zc0.shape[0], n))
+            un = np.asarray(Zt.multiply(D0).sum(axis=1)).ravel()
+            on_n = (un > -m) & (np.asarray(Zt.sum(axis=1)).ravel() > 0)
+            coef = coef - D0 * on_n[:, None]
+            dP = dP - (Zt.multiply(on_n[:, None]).T @ Zc0).toarray()
+            loss += float(np.maximum(m + un, 0.0)[on_n].sum())
+        self.cl_loss += 0.01 * (loss / max(len(ctx), 1) - self.cl_loss)
+        pairs = np.float32(max(len(ctx), 1))
+        # células predichas (q'): dW_j = lr * coef_j * (x̂ - a W_j), parche de la simple ganadora
+        a_full = np.zeros((self.oh * self.ow, n), dtype=np.float32); a_full[vr] = act
+        rows, f = Zt.nonzero()
+        w = coef[rows, f]
+        Rr = np.asarray(Zt.multiply(on_p[:, None]) @ P, dtype=np.float32)   # retrodicción al contexto
+        rc, fc = Zc.nonzero()
+        wc = Rr[rc, fc]
+        q_all = np.concatenate([tgt[rows], ctx[rc]]); f_all = np.concatenate([f, fc])
+        w_all = np.concatenate([w, wc]).astype(np.float32)
+        keep = w_all != 0.0
+        if keep.any():
+            q_all, f_all, w_all = q_all[keep], f_all[keep], w_all[keep]
+            pos = self._pool_pos[q_all, arg[q_all, f_all]]
+            if self.S:
+                X = Pm[pos] * self.M[f_all] / np.maximum(self._den[pos, f_all], 1e-6)[:, None]
+            else:
+                X = Pm[pos] / np.maximum(norms[pos], 1e-6)[:, None]
+            uq, sx = _segment_sum(f_all, X, w_all)
+            sa = np.bincount(np.searchsorted(uq, f_all), weights=w_all * a_full[pos, f_all],
+                             minlength=len(uq)).astype(np.float32)
+            Wn = self.W[uq] + np.float32(self.cl["lr"] * g) / pairs * (sx - sa[:, None] * self.W[uq])
+            self.W[uq] = Wn / np.maximum(np.linalg.norm(Wn, axis=1, keepdims=True), 1e-8)
+        P += np.float32(self.cl["lr_pred"]) / pairs * dP.astype(np.float32)
+        self._cl_prev = (Zc, D)
 
     def reset_trace(self):
         """Comienza otra secuencia: se borra la traza."""
@@ -800,6 +900,9 @@ class FeatureArea:
         self.W[f] = p; self.alive[f] = True
         if self.S:
             self.M[f] = sup
+            ids = np.flatnonzero(sup)
+            self.Si[f] = 0; self.Sv[f] = False
+            self.Si[f, :len(ids)] = ids; self.Sv[f, :len(ids)] = True
         if self.pc is not None:                                   # predice el parche que lo creó
             self.G[f] = np.float32(self.pc["init"]) * Pm[c]
         if self.lat is not None:                                  # sin inhibición aprendida
@@ -833,7 +936,7 @@ class FeatureArea:
             self.alive[f] = False
             self.W[f] = 0.0
             if self.S:
-                self.M[f] = False
+                self.M[f] = False; self.Sv[f] = False
             if self.pc is not None:
                 self.G[f] = 0.0
             if self.lat is not None:
@@ -848,6 +951,7 @@ class FeatureArea:
         self.W[:, f::C] = 0.0
         if self.S:
             self.M[:, f::C] = False
+            self.Sv &= self.M[np.arange(self.F)[:, None], self.Si]
         if self.pc is not None:                                   # y su predicción de ese canal
             self.G[:, f::C] = 0.0
 
@@ -878,14 +982,16 @@ class FeatureArea:
 
     def state(self) -> dict:
         out = dict(W=self.W, alive=self.alive, wins=self.wins, born=self.born,
-                   **({"M": self.M} if self.S else {}),
+                   **({"M": self.M, "Si": self.Si, "Sv": self.Sv} if self.S else {}),
                    free=np.array(self.free, dtype=np.int64),
                    meta=np.array([self.n, self.t, self.created, self.pruned], dtype=np.int64))
         if self.local is not None:
             out["clf"] = self.clf.W
+        if self.cl is not None:
+            out["Pp"] = self.Pp
         if self.con is not None:
             out["con"] = np.array([self.phi, self._e_fast, self._e_slow, self._con_n, self.reopens,
-                                   self._cdebt], dtype=np.float64)
+                                   self._cdebt, self._m_fast, self._m_slow, self._m_n], dtype=np.float64)
         if self.lat is not None:
             out["V"] = self.V; out["lat_m"] = self.lat_m; out["lat_n"] = np.array([self.lat_n])
             out["lat_b"] = self.lat_b
@@ -897,16 +1003,19 @@ class FeatureArea:
     def restore(self, z, prefix: str = ""):
         self.W[:] = z[prefix + "W"]; self.alive[:] = z[prefix + "alive"]
         if self.S:
-            self.M[:] = z[prefix + "M"]
+            self.M[:] = z[prefix + "M"]; self.Si[:] = z[prefix + "Si"]; self.Sv[:] = z[prefix + "Sv"]
         self.wins[:] = z[prefix + "wins"]; self.born[:] = z[prefix + "born"]
         self.free = [int(v) for v in z[prefix + "free"]]
         self.n, self.t, self.created, self.pruned = (int(v) for v in z[prefix + "meta"])
         if self.local is not None and prefix + "clf" in z:
             self.clf.W[:] = z[prefix + "clf"]
+        if self.cl is not None and prefix + "Pp" in z:
+            self.Pp[:] = z[prefix + "Pp"]
         if self.con is not None and prefix + "con" in z:
             v = [float(x) for x in z[prefix + "con"]]
             self.phi, self._e_fast, self._e_slow = v[0], v[1], v[2]
             self._con_n, self.reopens, self._cdebt = int(v[3]), int(v[4]), v[5]
+            self._m_fast, self._m_slow, self._m_n = v[6], v[7], int(v[8])
         if self.lat is not None and prefix + "V" in z:
             self.V[:] = z[prefix + "V"]; self.lat_m[:] = z[prefix + "lat_m"]
             self.lat_n = int(z[prefix + "lat_n"][0]); self.lat_b[:] = z[prefix + "lat_b"]
