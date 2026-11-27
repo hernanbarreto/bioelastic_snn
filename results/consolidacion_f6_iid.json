@@ -1,0 +1,326 @@
+{
+ "phase": "f6iid",
+ "config": {
+  "seeds": [
+   3,
+   4,
+   5
+  ],
+  "rule": "Control sin secuencia en Split-Fashion-MNIST (semillas 3-5): un solo pase por las\nmismas im\u00e1genes de entrenamiento mezcladas, c2 y ER / ER-ACE con los mismos bytes.\nSepara el techo del aprendiz (lo que logra cada modelo sin olvido posible) de la\ndin\u00e1mica continua: si c2 ya pierde contra el repaso sin secuencia, la brecha de f6s\nes del aprendiz y no del olvido.",
+  "protocol": "las mismas im\u00e1genes de f6s (sin las 500 por clase de validaci\u00f3n) en un solo pase, mezcladas; test oficial completo, argmax entre las 10 clases",
+  "compare": "consolidacion_f6_split.json (secuencia por tareas)"
+ },
+ "summary": [
+  {
+   "scenario": "fashion",
+   "order": "iid",
+   "family": "c2",
+   "seeds": 3,
+   "acc": [
+    0.8830333333333332,
+    0.002196208854670565
+   ],
+   "slow_acc": [
+    0.8489333333333334,
+    0.006819335255971301
+   ],
+   "fast_acc": [
+    0.7583666666666667,
+    0.002542308662089111
+   ],
+   "task1": [
+    0.9146666666666666,
+    0.010299676370320228
+   ],
+   "task2": [
+    0.8405,
+    0.008760707733967652
+   ],
+   "task3": [
+    0.9058333333333333,
+    0.008948929172439184
+   ],
+   "task4": [
+    0.8028333333333334,
+    0.014868871286460614
+   ],
+   "task5": [
+    0.9513333333333334,
+    0.016921386861996044
+   ],
+   "bytes": [
+    8788042.666666666,
+    7328.372625169474
+   ],
+   "neurons": [
+    1996.3333333333333,
+    2.5166114784235836
+   ],
+   "evicted": [
+    12687.0,
+    205.3850043211529
+   ],
+   "seconds": [
+    901.1769548257192,
+    123.40243160493947
+   ]
+  },
+  {
+   "scenario": "fashion",
+   "order": "iid",
+   "family": "erace",
+   "seeds": 3,
+   "acc": [
+    0.8550666666666666,
+    0.003295957119462141
+   ],
+   "task1": [
+    0.8795000000000001,
+    0.018186533479473233
+   ],
+   "task2": [
+    0.8145000000000001,
+    0.04461782155148321
+   ],
+   "task3": [
+    0.8663333333333334,
+    0.060192053739121815
+   ],
+   "task4": [
+    0.7593333333333333,
+    0.009115005942583498
+   ],
+   "task5": [
+    0.9556666666666667,
+    0.022001893857878072
+   ],
+   "bytes": [
+    8787366.0,
+    0.0
+   ],
+   "neurons": [
+    256.0,
+    0.0
+   ],
+   "seconds": [
+    46.17545906702677,
+    2.5548311195123383
+   ]
+  },
+  {
+   "scenario": "fashion",
+   "order": "iid",
+   "family": "er",
+   "seeds": 3,
+   "acc": [
+    0.8515,
+    0.009597395480024778
+   ],
+   "task1": [
+    0.8766666666666666,
+    0.025696951829610733
+   ],
+   "task2": [
+    0.8130000000000001,
+    0.03675255093187411
+   ],
+   "task3": [
+    0.8798333333333334,
+    0.03625373543972167
+   ],
+   "task4": [
+    0.7358333333333333,
+    0.040909452860351685
+   ],
+   "task5": [
+    0.9521666666666665,
+    0.020434855843223684
+   ],
+   "bytes": [
+    8787366.0,
+    0.0
+   ],
+   "neurons": [
+    256.0,
+    0.0
+   ],
+   "seconds": [
+    42.64410138130188,
+    0.4494535449671514
+   ]
+  }
+ ],
+ "rows": [
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "c2",
+   "seed": 3,
+   "acc": 0.8842,
+   "forgetting": NaN,
+   "seconds": 1037.7515637874603,
+   "bytes": 8795808,
+   "neurons": 1999,
+   "evicted": 12450,
+   "slow_acc": 0.8549,
+   "fast_acc": 0.7589,
+   "task1": 0.9185,
+   "task2": 0.832,
+   "task3": 0.9135,
+   "task4": 0.787,
+   "task5": 0.97,
+   "family": "c2",
+   "order": "iid"
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "c2",
+   "seed": 4,
+   "acc": 0.8805,
+   "forgetting": NaN,
+   "seconds": 868.084710597992,
+   "bytes": 8787072,
+   "neurons": 1996,
+   "evicted": 12813,
+   "slow_acc": 0.8415,
+   "fast_acc": 0.7606,
+   "task1": 0.903,
+   "task2": 0.8495,
+   "task3": 0.908,
+   "task4": 0.805,
+   "task5": 0.937,
+   "family": "c2",
+   "order": "iid"
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "c2",
+   "seed": 5,
+   "acc": 0.8844,
+   "forgetting": NaN,
+   "seconds": 797.6945900917053,
+   "bytes": 8781248,
+   "neurons": 1994,
+   "evicted": 12798,
+   "slow_acc": 0.8504,
+   "fast_acc": 0.7556,
+   "task1": 0.9225,
+   "task2": 0.84,
+   "task3": 0.896,
+   "task4": 0.8165,
+   "task5": 0.947,
+   "family": "c2",
+   "order": "iid"
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "erace+bytes=8788042+iters=3",
+   "seed": 3,
+   "acc": 0.858,
+   "forgetting": NaN,
+   "seconds": 48.76980257034302,
+   "bytes": 8787366,
+   "neurons": 256,
+   "task1": 0.899,
+   "task2": 0.866,
+   "task3": 0.798,
+   "task4": 0.7675,
+   "task5": 0.9595,
+   "family": "erace",
+   "order": "iid"
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "erace+bytes=8788042+iters=3",
+   "seed": 4,
+   "acc": 0.8515,
+   "forgetting": NaN,
+   "seconds": 46.094510316848755,
+   "bytes": 8787366,
+   "neurons": 256,
+   "task1": 0.863,
+   "task2": 0.79,
+   "task3": 0.9115,
+   "task4": 0.761,
+   "task5": 0.932,
+   "family": "erace",
+   "order": "iid"
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "erace+bytes=8788042+iters=3",
+   "seed": 5,
+   "acc": 0.8557,
+   "forgetting": NaN,
+   "seconds": 43.66206431388855,
+   "bytes": 8787366,
+   "neurons": 256,
+   "task1": 0.8765,
+   "task2": 0.7875,
+   "task3": 0.8895,
+   "task4": 0.7495,
+   "task5": 0.9755,
+   "family": "erace",
+   "order": "iid"
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "er+bytes=8788042+iters=3",
+   "seed": 3,
+   "acc": 0.8616,
+   "forgetting": NaN,
+   "seconds": 42.540770053863525,
+   "bytes": 8787366,
+   "neurons": 256,
+   "task1": 0.904,
+   "task2": 0.85,
+   "task3": 0.8625,
+   "task4": 0.7425,
+   "task5": 0.949,
+   "family": "er",
+   "order": "iid"
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "er+bytes=8788042+iters=3",
+   "seed": 4,
+   "acc": 0.8425,
+   "forgetting": NaN,
+   "seconds": 43.13622188568115,
+   "bytes": 8787366,
+   "neurons": 256,
+   "task1": 0.853,
+   "task2": 0.8125,
+   "task3": 0.9215,
+   "task4": 0.692,
+   "task5": 0.9335,
+   "family": "er",
+   "order": "iid"
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "er+bytes=8788042+iters=3",
+   "seed": 5,
+   "acc": 0.8504,
+   "forgetting": NaN,
+   "seconds": 42.25531220436096,
+   "bytes": 8787366,
+   "neurons": 256,
+   "task1": 0.873,
+   "task2": 0.7765,
+   "task3": 0.8555,
+   "task4": 0.773,
+   "task5": 0.974,
+   "family": "er",
+   "order": "iid"
+  }
+ ]
+}
