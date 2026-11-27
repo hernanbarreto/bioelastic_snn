@@ -55,26 +55,43 @@ def _elegidas(todas, spec: str):
 
 
 def _herencia(p, info, almacen, escala):
-    """Para una prueba que no usa el Thinker y no se corrió en este commit: los resultados de
-    otro commit con la misma huella de percepción (mismo código, mismo resultado). Sólo con las
-    opciones por defecto: la comprobación de identidad no cubre perfiles como `metacog`."""
+    """Resultados de otro commit para una prueba que no se corrió en este. Dos casos:
+      * «arbol»: el árbol bioelastic/ es idéntico (mismo hash git): vale para toda prueba,
+        con su validación y sus controles, porque el código medido es el mismo;
+      * «percepcion»: misma huella de percepción (o equivalencia comprobada bit a bit) y la
+        prueba no usa el Thinker ni un perfil de opciones (la comprobación no los cubre).
+    Devuelve (crudos, carpeta del otro commit, caso) o (None, None, None)."""
     from battery import almacen as alm
+    dirs = sorted(almacen.dir.parent.iterdir()) if almacen.dir.parent.exists() else []
+    otros = [d for d in dirs if d.is_dir() and d.name != almacen.dir.name and (d / p.clave).exists()]
+
+    def cargar(d):
+        otro = alm.Almacen(d.name, almacen.dir.parent.parent)
+        return [c for s in p.semillas if (c := otro.cargar(p.clave, s, p.version, escala)) is not None]
+    if not info.get("sucio"):
+        propio = version.arbol_bioelastic(info["sha"])
+        for d in otros:
+            if "+" in d.name:
+                continue
+            try:
+                if version.arbol_bioelastic(d.name) != propio:
+                    continue
+            except Exception:
+                continue
+            if crudos := cargar(d):
+                return crudos, d.name, "arbol"
     if p.perfiles or p.usa_thinker or p.perfil != "defecto":
-        return None, None
+        return None, None, None
     propia = version.huella_equivalente(version.huella_percepcion(info["sha"]))
-    for d in sorted(almacen.dir.parent.iterdir()) if almacen.dir.parent.exists() else []:
-        if d.name == almacen.dir.name or not (d / p.clave).exists():
-            continue
+    for d in otros:
         try:
             if version.huella_equivalente(version.huella_percepcion(d.name.split("+")[0])) != propia:
                 continue
         except Exception:
             continue
-        otro = alm.Almacen(d.name, almacen.dir.parent.parent)
-        crudos = [c for s in p.semillas if (c := otro.cargar(p.clave, s, p.version, escala)) is not None]
-        if crudos:
-            return crudos, d.name
-    return None, None
+        if crudos := cargar(d):
+            return crudos, d.name, "percepcion"
+    return None, None, None
 
 
 def informe(info: dict, pruebas, almacen, catalogo, resultados: Path, escala: float, log=print) -> dict:
@@ -83,18 +100,24 @@ def informe(info: dict, pruebas, almacen, catalogo, resultados: Path, escala: fl
     for p in pruebas:
         crudos = [c for s in p.semillas
                   if (c := almacen.cargar(p.clave, s, p.version, escala)) is not None]
-        heredado = None
+        heredado = caso = None
         if not crudos:
-            crudos, heredado = _herencia(p, info, almacen, escala)
+            crudos, heredado, caso = _herencia(p, info, almacen, escala)
         if not crudos:
             continue
-        sel = registro.seleccionar(p, almacen, escala, log=lambda *a: None, calcular=False) if p.configs else None
+        from battery import almacen as alm
+        fuente = alm.Almacen(heredado, almacen.dir.parent.parent) if caso == "arbol" else almacen
+        sel = registro.seleccionar(p, fuente, escala, log=lambda *a: None, calcular=False) if p.configs else None
         ctrl = None
         if sel and sel.get("elegida"):
             crudos = [c for c in crudos if c.get("config") == sel["elegida"]]
-            ctrl = registro.controles(p, almacen, escala, sel, limite=0.0, log=lambda *a: None)
+            ctrl = registro.controles(p, fuente, escala, sel, limite=0.0, log=lambda *a: None)
         f = registro.fila(p, crudos, sel, catalogo, info["commit"], ctrl)
-        if heredado:
+        if caso == "arbol":
+            f["fuente_resultado"] = (f"medicion@{heredado} (heredado: el árbol bioelastic/ de {info['commit']} es "
+                                     f"idéntico, mismo hash git)")
+            f["commit"] = heredado
+        elif caso == "percepcion":
             f["fuente_resultado"] = (f"medicion@{heredado} (heredado: la percepción de {info['commit']} es la misma, "
                                      f"por archivos idénticos o por la comprobación bit a bit de "
                                      f"results/bateria/equivalencias.json, y la prueba no usa el Thinker)")
