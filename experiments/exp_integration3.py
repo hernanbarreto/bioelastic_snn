@@ -1144,22 +1144,42 @@ def tabular_cadena(conocida: bool, curriculo: str, seed: int, columnas: int = 10
                 columna_final=float(np.mean(hits[-1000:])))
 
 
-def tabular_protos(K: int, seed: int, columnas: int = 10000, lr: float = 0.5, balance: float = 1.0) -> dict:
+def tabular_protos(K: int, seed: int, columnas: int = 10000, lr: float = 0.5, balance: float = 1.0,
+                   causa: str | None = None, delta: float = 0.15, m: int = 30, r: float = 0.05,
+                   templar: float = 0.0, cada_templar: int = 1000, cercania: float = 0.0,
+                   fuga: float = 0.0) -> dict:
     """Como `tabular_cadena` con la regla aprendida, objetivo muestreado y equipartición,
     pero con K prototipos independientes por dígito (cada ejemplar cae en uno al azar y
     cada prototipo tiene su propia tabla de símbolos): el modelo mínimo de una percepción
     que memoriza ejemplares. Sin ancla, todos los prototipos de un dígito tienen que caer
-    en el mismo símbolo arbitrario y la única presión es la estadística de las respuestas."""
+    en el mismo símbolo arbitrario y la única presión es la estadística de las respuestas.
+
+    Perfil de contexto (siempre se mide; con `causa="contexto"` además se usa): para cada
+    prototipo, la media móvil (tasa `r`) de su marginal posterior SIN su propio prior (qué
+    símbolo le asignan el otro sumando, el acarreo y la regla, con su prior reemplazado por
+    el uniforme). No depende de a qué símbolo está ligado el prototipo, sólo de su causa y
+    del resto del sistema: los prototipos de un mismo dígito tienen el mismo perfil
+    esperado aunque estén ligados a símbolos distintos (perfil de respuestas
+    intercambiable). Con `causa="contexto"`, antes de cambiar el peso se infiere la causa:
+    si el perfil (con >= m apariciones) señala otro símbolo que el ligado con un margen >=
+    `delta`, el objetivo es ese símbolo y no la muestra del posterior (que incluye el prior
+    propio y por eso se auto-confirma).
+
+    `templar` > 0: cada `cada_templar` columnas las ligaduras se ablandan (W *= 1 - templar)
+    sin tocar la regla: el prior propio pesa menos y la verosimilitud de la regla (que
+    resume a la mayoría) puede mover a los prototypos minoritarios (recocido)."""
     from scipy.optimize import linear_sum_assignment
-    from bioelastic.posterior import ChainRule, Equipartition
+    from bioelastic.posterior import ChainRule, Equipartition, chain_posterior
     rng = np.random.default_rng(seed)
     W = rng.normal(0, 0.1, (10, K, 10))
+    L = np.full((10, K, 10), 0.1); N = np.zeros((10, K), dtype=np.int64)
     regla = ChainRule(seed=seed); eq = Equipartition(10, balance) if balance > 0 else None
+    u = np.full(10, 0.1)
 
     def P(d, j):
         e = np.exp(W[d, j] - W[d, j].max())
         return e / e.sum()
-    usado = 0; hits = []
+    usado = 0; hits = []; religadas = 0
     while usado < columnas:
         n = int(rng.integers(1, 5)); A = rng.integers(10, size=n); B = rng.integers(10, size=n)
         JA = rng.integers(K, size=n); JB = rng.integers(K, size=n)
@@ -1171,24 +1191,63 @@ def tabular_protos(K: int, seed: int, columnas: int = 10000, lr: float = 0.5, ba
         regla.reset()
         for x, z, d in zip(sa, sb, digs):
             hits.append(regla.answer((x, 10 + z)) == d)
-        qa, qb, _, _, _ = regla.learn([eq(x) for x in pa] if eq else pa, [eq(x) for x in pb] if eq else pb, digs, c)
+        pa_e = [eq(x) for x in pa] if eq else pa; pb_e = [eq(x) for x in pb] if eq else pb
+        factors = [regla.factor(d) for d in digs]; fin = regla.end_lik(c)
+        for i in range(n):                                    # perfil de contexto (sin el prior propio)
+            for lado, (D, J) in enumerate(((A, JA), (B, JB))):
+                pr = [list(pa_e), list(pb_e)]; pr[lado][i] = u
+                qf = chain_posterior(pr[0], pr[1], factors, fin)[lado][i]
+                L[D[i], J[i]] = (1 - r) * L[D[i], J[i]] + r * qf / qf.sum(); N[D[i], J[i]] += 1
+        qa, qb, _, _, _ = regla.learn(pa_e, pb_e, digs, c)
         for d, j, q in list(zip(A, JA, qa)) + list(zip(B, JB, qb)):
-            t = np.eye(10)[int(rng.choice(10, p=q / q.sum()))]
-            W[d, j] += lr * (t - P(d, j))
+            k = int(rng.choice(10, p=q / q.sum()))
+            if causa == "contexto" and N[d, j] >= m:
+                lig = int(np.argmax(W[d, j])); cau = int(np.argmax(L[d, j]))
+                if cau != lig and L[d, j, cau] - L[d, j, lig] >= delta:
+                    k = cau; religadas += 1
+            W[d, j] += lr * (np.eye(10)[k] - P(d, j))
+            if cercania > 0 or fuga > 0:
+                for d2 in range(10):
+                    w_ = cercania if d2 == d else fuga
+                    if w_ <= 0:
+                        continue
+                    for j2 in range(K):
+                        if (d2, j2) != (d, j):
+                            W[d2, j2] += lr * w_ * (np.eye(10)[k] - P(d2, j2))
+        if templar > 0 and (usado + n) // cada_templar > usado // cada_templar:
+            W *= 1.0 - templar
         usado += n
     C = np.zeros((10, 10))
     for d in range(10):
         for j in range(K):
             C[d] += P(d, j) / K
-    r, cc = linear_sum_assignment(-C)
+    r_, cc = linear_sum_assignment(-C)
+    codigo = np.empty(10, dtype=np.int64); codigo[r_] = cc
     # diagnóstico: ¿los prototipos de un mismo dígito se reparten entre símbolos distintos?
     sim = np.array([[int(np.argmax(W[d, j])) for j in range(K)] for d in range(10)])
+    cau = np.array([[int(np.argmax(L[d, j])) for j in range(K)] for d in range(10)])
     repartidos = float(np.mean([len(set(sim[d])) > 1 for d in range(10)]))
     simbolos_compartidos = float(np.mean([len({d2 for d2 in range(10) if s_ in sim[d2]}) > 1
                                           for s_ in set(sim.ravel().tolist())]))
-    return dict(pureza=float(C[r, cc].sum() / 10), columna_final=float(np.mean(hits[-1000:])),
+
+    def pares(etq):                                           # ¿misma etiqueta <=> mismo dígito?
+        dig = np.repeat(np.arange(10), K); e = etq.ravel()
+        mismo_d = dig[:, None] == dig[None, :]; mismo_e = e[:, None] == e[None, :]
+        fuera = ~np.eye(len(e), dtype=bool)
+        prec = float((mismo_d & mismo_e & fuera).sum() / max((mismo_e & fuera).sum(), 1))
+        rec = float((mismo_d & mismo_e & fuera).sum() / max((mismo_d & fuera).sum(), 1)) if K > 1 else float("nan")
+        return prec, rec
+    pc, rc = pares(cau); pl, rl = pares(sim)
+    Lmax = L.max(axis=2); Llig = np.take_along_axis(L, sim[:, :, None], axis=2)[:, :, 0]
+    distinto = cau != sim
+    return dict(perfil_max=float(Lmax.mean()), perfil_margen_distintos=float((Lmax - Llig)[distinto].mean())
+                if distinto.any() else 0.0, perfil_distintos=float(distinto.mean()),
+                perfil_margen_max=float((Lmax - Llig).max()),pureza=float(C[r_, cc].sum() / 10), columna_final=float(np.mean(hits[-1000:])),
                 digitos_repartidos=repartidos, simbolos_compartidos=simbolos_compartidos,
-                simbolos=sim.tolist())
+                simbolos=sim.tolist(), causas=cau.tolist(), religadas=int(religadas),
+                causa_es_codigo=float(np.mean(cau == codigo[:, None])),
+                ligadura_es_codigo=float(np.mean(sim == codigo[:, None])),
+                causa_precision_pares=pc, causa_recall_pares=rc, ligadura_precision_pares=pl, ligadura_recall_pares=rl)
 
 
 def fase_f0s(seed, tam, out, variante, extra):
@@ -1197,6 +1256,33 @@ def fase_f0s(seed, tam, out, variante, extra):
     identidad, en +5 o en un código de desplazamientos que se compensan). Con
     `variante="conjunto"`, el modelo de co-adaptación `tabular_conjunto`; con "fin", el
     posterior que también usa el acarreo final."""
+    if variante == "causa":                          # ligadura con causa compartida antes de ligar
+        base = tam["col_tabular"]
+        conds = [("K=1 sin", 1, {}), ("K=3 sin", 3, {}), ("K=3 perfil de contexto", 3, dict(causa="contexto")),
+                 ("K=3 recocido 0.5", 3, dict(templar=0.5)), ("K=3 cercanía 0.05", 3, dict(cercania=0.05)),
+                 ("K=3 cercanía 0.1", 3, dict(cercania=0.1)), ("K=3 cercanía 0.3", 3, dict(cercania=0.3)),
+                 ("K=3 cercanía 0.3 fuga 0.15", 3, dict(cercania=0.3, fuga=0.15)),
+                 ("K=3 cercanía 0.5 fuga 0.3", 3, dict(cercania=0.5, fuga=0.3)),
+                 ("K=3 cercanía 1 fuga 1", 3, dict(cercania=1.0, fuga=1.0)),
+                 ("K=10 sin", 10, {}), ("K=10 cercanía 0.1", 10, dict(cercania=0.1)),
+                 ("K=10 cercanía 0.3", 10, dict(cercania=0.3))]
+        largos = ("K=3 sin", "K=3 perfil de contexto", "K=3 cercanía 0.05")
+        for nombre, K, kw in conds:
+            for mult, n_sub in ((1, 6), (4, 3)):
+                if mult > 1 and nombre not in largos:
+                    continue
+                R = [tabular_protos(K, 100 * seed + k, base * mult, **kw) for k in range(n_sub)]
+                var = f"causa {nombre} | {base * mult} columnas"
+                for m_ in ("pureza", "columna_final", "digitos_repartidos", "simbolos_compartidos", "religadas",
+                           "perfil_max", "perfil_margen_distintos", "causa_es_codigo", "ligadura_es_codigo",
+                           "causa_precision_pares", "causa_recall_pares", "ligadura_precision_pares",
+                           "ligadura_recall_pares"):
+                    v = np.array([x[m_] for x in R], dtype=np.float64)
+                    ok_ = np.isfinite(v)
+                    out("f0s", var, f"{m_} (media de {n_sub})", float(v[ok_].mean()) if ok_.any() else float("nan"),
+                        float(v[ok_].std()) if ok_.any() else "", "desvío en referencia")
+                out("f0s", var, "fracción con pureza >= 0.99", float(np.mean([x["pureza"] >= 0.99 for x in R])), "", "")
+        return
     if variante and variante.startswith("protos"):   # escalado: prototipos por dígito x presupuesto
         base = tam["col_tabular"]
         Ks = (1, 3, 10) if variante == "protos" else (int(variante[len("protos"):]),)
@@ -1244,6 +1330,73 @@ def fase_f0s(seed, tam, out, variante, extra):
             out("f0s", var, "fracción que termina en +5", float(np.mean([r["mas5"] == 1.0 for r in R])), "", "")
             out("f0s", var, "fracción con >= 60 % de dígitos en d+-1", float(np.mean([r["vecinos"] >= 0.6 for r in R])), "", "")
             extra[var] = [r["codigo"] for r in R]
+
+
+def fase_f0g(seed, tam, out, variante, extra):
+    """F0g: ¿cuánto generaliza la percepción de L3 una enseñanza? El puente entre el modelo
+    tabular de prototipos (`tabular_protos(cercania=g)`: con g >= 0.1 la ligadura de K = 3
+    deja de partirse) y el Cortex con imágenes. Se le enseña al Cortex UNA imagen x (dígito
+    d) con un objetivo t (un símbolo al azar distinto de su decisión) y se mide el cambio
+    de log p(t) en imágenes no enseñadas del mismo dígito y de los otros, relativo al
+    cambio en la propia x: g = mismo dígito / propia, h = otros dígitos / propia. Cada
+    sonda parte del mismo estado (copia). Estados: desde cero, después de 10 anclas por
+    dígito (como f1a con k = 10) y después de observar imágenes sin etiqueta."""
+    import copy
+    from exp_vision import encoder
+    datos = ei.Digitos(tam["n_pre"])
+    E = encoder()
+    rng = np.random.default_rng(9000 + seed)
+    X, y = datos.X["train"], datos.y["train"]
+    ref = np.concatenate([rng.choice(datos.por["train"][d], tam["g_ref"], replace=False) for d in range(10)])
+    usados = set(ref.tolist())
+    sondas = []
+    for d in range(10):
+        libres = np.array([i for i in datos.por["train"][d][:5000] if i not in usados])
+        sondas += [int(i) for i in rng.choice(libres, tam["g_sondas"], replace=False)]
+    usados |= set(sondas)
+    v, per, th, cfg = construir(VARIANTES_F1C["aprendida_eq"], seed, tam)
+    estados = {"desde cero": copy.deepcopy(v.net)}
+    ra = np.random.default_rng(7000 + seed)
+    net_a = copy.deepcopy(v.net)
+    for d in range(10):
+        libres = np.array([i for i in datos.por["train"][d][:5000] if i not in usados])
+        for i in ra.choice(libres, 10, replace=False):
+            net_a.forward(E(X[int(i)])); net_a.teach(d)
+    estados["10 anclas por dígito"] = net_a
+    net_o = copy.deepcopy(v.net)
+    for i in rng.choice(len(X), tam["g_obs"], replace=False):
+        net_o.observe(E(X[int(i)]))
+    estados[f"{tam['g_obs']} observadas sin etiqueta"] = net_o
+    yr = y[ref]
+    for nombre, net in estados.items():
+        base = copy.deepcopy(net)
+        P0 = np.zeros((len(ref), 10))
+        for n_, i in enumerate(ref):
+            base.forward(E(X[int(i)])); P0[n_] = base._p()
+        gs, hs, ds = [], [], []
+        for i in sondas:
+            n2 = copy.deepcopy(net)
+            n2.forward(E(X[i])); p_x = n2._p().astype(np.float64)
+            t = int((int(np.argmax(p_x)) + 1 + rng.integers(9)) % 10)
+            n2.teach(t)
+            P1 = np.zeros((len(ref), 10))
+            for n_, j in enumerate(ref):
+                n2.forward(E(X[int(j)])); P1[n_] = n2._p()
+            n2.forward(E(X[i])); d_self = np.log(max(n2._p()[t], 1e-9)) - np.log(max(p_x[t], 1e-9))
+            dl = np.log(np.maximum(P1[:, t], 1e-9)) - np.log(np.maximum(P0[:, t], 1e-9))
+            if d_self <= 1e-6:
+                continue
+            mismo = yr == y[i]
+            gs.append(dl[mismo].mean() / d_self); hs.append(dl[~mismo].mean() / d_self); ds.append(d_self)
+        gs, hs = np.array(gs), np.array(hs)
+        out("f0g", nombre, "g: transferencia al mismo dígito / propia", float(gs.mean()) if len(gs) else float("nan"),
+            float(gs.std()) if len(gs) else "", "desvío entre sondas en referencia")
+        out("f0g", nombre, "h: transferencia a otros dígitos / propia", float(hs.mean()) if len(hs) else float("nan"),
+            float(hs.std()) if len(hs) else "", "desvío entre sondas en referencia")
+        out("f0g", nombre, "g - h (específica del dígito)", float((gs - hs).mean()) if len(gs) else float("nan"), "", "")
+        out("f0g", nombre, "cambio propio medio (log p)", float(np.mean(ds)) if ds else float("nan"), "", "")
+        out("f0g", nombre, "sondas con efecto", len(gs), len(sondas), "de en referencia")
+        out("f0g", nombre, "pureza de partida (argmax en referencia)", float(np.mean(P0.argmax(1) == yr)), 0.1, "")
 
 
 # ====================================================================== sistemas para F2-F5
@@ -1822,16 +1975,17 @@ def fase_f5(seed, tam, out, variante, extra):
 TAM = dict(
     completa=dict(n_pre=10000, n_test_pureza=2000, n_curva=500, ep=4000, cada=500, ep_eval=500,
                   homeostasis=0.02, congelada=True, ep_f3=4000, columnas=10000, cada_col=1250, col_tabular=10000,
-                  n_nosup=10000, marcas_nosup=(2500, 10000, 40000), cada_ancla=10,
+                  n_nosup=10000, marcas_nosup=(2500, 10000, 40000), cada_ancla=10, g_ref=20, g_sondas=3,
+                  g_obs=2000,
                   f0=["rep", "a_oraculo", "a_ruido_0.65", "a_ruido_0.8", "a_ruido_0.9",
                       "b_refuerzo", "b_cred2", "c_barajadas", "rep_v02"]),
     rapida=dict(n_pre=300, n_test_pureza=100, n_curva=50, ep=30, cada=10, ep_eval=10,
                 homeostasis=0.02, congelada=True, ep_f3=800, columnas=80, cada_col=20, col_tabular=300,
-                n_nosup=100, marcas_nosup=(50, 100, 200), cada_ancla=5,
+                n_nosup=100, marcas_nosup=(50, 100, 200), cada_ancla=5, g_ref=3, g_sondas=1, g_obs=50,
                 f0=["rep", "a_oraculo", "a_ruido_0.8", "b_refuerzo", "b_cred2", "c_barajadas"]),
 )
 _sistemas_cadena()
-FASES = dict(f0=fase_f0, f0s=fase_f0s, f1=fase_f1, f1a=fase_f1a, f1c=fase_f1c, f1u=fase_f1u, f1up=fase_f1up,
+FASES = dict(f0=fase_f0, f0g=fase_f0g, f0s=fase_f0s, f1=fase_f1, f1a=fase_f1a, f1c=fase_f1c, f1u=fase_f1u, f1up=fase_f1up,
              f2t=fase_f2t, f3c=fase_f3c, f2=fase_f2, f3=fase_f3, f4=fase_f4, f5=fase_f5)
 
 
