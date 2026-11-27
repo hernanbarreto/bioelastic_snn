@@ -1,0 +1,8352 @@
+{
+ "fase": "suma_mnistval",
+ "metricas": {
+  "ach": {
+   "AUROC error dígito (validación): 1-confianza": {
+    "media": 0.9723,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9723
+    ],
+    "referencia": "0.8500",
+    "nota": "criterio >= 0.85"
+   },
+   "AUROC error suma (validación): 1-confianza": {
+    "media": 0.9577,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9577
+    ],
+    "referencia": "0.8500",
+    "nota": "criterio >= 0.85"
+   },
+   "ECE dígito (validación)": {
+    "media": 0.0027,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0027
+    ],
+    "referencia": "0.0500",
+    "nota": "criterio <= 0.05"
+   },
+   "ECE suma (validación)": {
+    "media": 0.0055,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0055
+    ],
+    "referencia": "0.0500",
+    "nota": "criterio <= 0.05"
+   },
+   "curva gamma par=10000": {
+    "media": 0.9817,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9817
+    ],
+    "referencia": "",
+    "nota": "ACh"
+   },
+   "curva gamma par=2500": {
+    "media": 0.9598,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9598
+    ],
+    "referencia": "",
+    "nota": "ACh"
+   },
+   "curva gamma par=5000": {
+    "media": 0.9874,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9874
+    ],
+    "referencia": "",
+    "nota": "ACh"
+   },
+   "curva gamma par=7500": {
+    "media": 0.9809,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9809
+    ],
+    "referencia": "",
+    "nota": "ACh"
+   },
+   "curva suma prequential par=10000": {
+    "media": 0.9596,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9596
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=2500": {
+    "media": 0.7884,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.7884
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=5000": {
+    "media": 0.9392,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9392
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=7500": {
+    "media": 0.9532,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9532
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "exactitud dígito (validación)": {
+    "media": 0.9878,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9878
+    ],
+    "referencia": "0.9500",
+    "nota": "criterio del proyecto"
+   },
+   "exactitud suma (validación)": {
+    "media": 0.976,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.976
+    ],
+    "referencia": "",
+    "nota": "DeepProbLog 30k pares: 0.972"
+   },
+   "neuronas": {
+    "media": 1764.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     1764.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "pureza dígito (validación)": {
+    "media": 0.9878,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9878
+    ],
+    "referencia": "",
+    "nota": "mejor biyección"
+   },
+   "segundos entrenamiento": {
+    "media": 357.5,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     357.5
+    ],
+    "referencia": "",
+    "nota": "10000 pares"
+   }
+  },
+  "base": {
+   "AUROC error dígito (validación): 1-confianza": {
+    "media": 0.5857499999999999,
+    "desvio": 0.4439830664939073,
+    "semillas": [
+     0,
+     1,
+     2,
+     2
+    ],
+    "valores": [
+     0.9707,
+     0.9682,
+     0.167,
+     0.2371
+    ],
+    "referencia": "0.8500",
+    "nota": "criterio >= 0.85"
+   },
+   "AUROC error suma (validación): 1-confianza": {
+    "media": 0.7132499999999999,
+    "desvio": 0.2703150075991589,
+    "semillas": [
+     0,
+     1,
+     2,
+     2
+    ],
+    "valores": [
+     0.9479,
+     0.9464,
+     0.493,
+     0.4657
+    ],
+    "referencia": "0.8500",
+    "nota": "criterio >= 0.85"
+   },
+   "ECE dígito (validación)": {
+    "media": 0.3684,
+    "desvio": 0.42066974378166694,
+    "semillas": [
+     0,
+     1,
+     2,
+     2
+    ],
+    "valores": [
+     0.0035,
+     0.0058,
+     0.7607,
+     0.7036
+    ],
+    "referencia": "0.0500",
+    "nota": "criterio <= 0.05"
+   },
+   "ECE suma (validación)": {
+    "media": 0.08445,
+    "desvio": 0.086865125338078,
+    "semillas": [
+     0,
+     1,
+     2,
+     2
+    ],
+    "valores": [
+     0.0076,
+     0.0109,
+     0.1573,
+     0.162
+    ],
+    "referencia": "0.0500",
+    "nota": "criterio <= 0.05"
+   },
+   "curva suma prequential par=10000": {
+    "media": 0.7612,
+    "desvio": 0.28510545417441596,
+    "semillas": [
+     0,
+     2
+    ],
+    "valores": [
+     0.9628,
+     0.5596
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=2500": {
+    "media": 0.6992,
+    "desvio": 0.22351429484487115,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     2
+    ],
+    "valores": [
+     0.866,
+     0.8552,
+     0.4544,
+     0.866,
+     0.4544
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=5000": {
+    "media": 0.734,
+    "desvio": 0.28284271247461906,
+    "semillas": [
+     0,
+     2
+    ],
+    "valores": [
+     0.934,
+     0.534
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=7500": {
+    "media": 0.7598,
+    "desvio": 0.28934809486153523,
+    "semillas": [
+     0,
+     2
+    ],
+    "valores": [
+     0.9644,
+     0.5552
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag anclas (0, 18) acumuladas par=1000": {
+    "media": 18.0,
+    "desvio": 5.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     13.0,
+     23.0,
+     18.0
+    ],
+    "referencia": "35",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=1250": {
+    "media": 23.333333333333332,
+    "desvio": 3.0550504633038935,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     20.0,
+     26.0,
+     24.0
+    ],
+    "referencia": "43",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=1500": {
+    "media": 28.333333333333332,
+    "desvio": 3.5118845842842465,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     25.0,
+     32.0,
+     28.0
+    ],
+    "referencia": "52",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=1750": {
+    "media": 32.333333333333336,
+    "desvio": 5.131601439446884,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     28.0,
+     38.0,
+     31.0
+    ],
+    "referencia": "62",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=2000": {
+    "media": 36.0,
+    "desvio": 3.605551275463989,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     35.0,
+     40.0,
+     33.0
+    ],
+    "referencia": "70",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=2250": {
+    "media": 40.666666666666664,
+    "desvio": 5.131601439446884,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     42.0,
+     45.0,
+     35.0
+    ],
+    "referencia": "84",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=250": {
+    "media": 3.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     3.0,
+     3.0,
+     3.0
+    ],
+    "referencia": "7",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=2500": {
+    "media": 47.0,
+    "desvio": 2.6457513110645907,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     48.0,
+     49.0,
+     44.0
+    ],
+    "referencia": "99",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=2750": {
+    "media": 49.666666666666664,
+    "desvio": 2.309401076758503,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     51.0,
+     51.0,
+     47.0
+    ],
+    "referencia": "111",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=3000": {
+    "media": 52.0,
+    "desvio": 3.4641016151377544,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     54.0,
+     54.0,
+     48.0
+    ],
+    "referencia": "127",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=500": {
+    "media": 8.0,
+    "desvio": 2.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     8.0,
+     10.0,
+     6.0
+    ],
+    "referencia": "17",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=750": {
+    "media": 12.666666666666666,
+    "desvio": 1.5275252316519468,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     11.0,
+     13.0,
+     14.0
+    ],
+    "referencia": "27",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag certeza declarada par=1000": {
+    "media": 0.8633666666666667,
+    "desvio": 0.1623164296469502,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9484,
+     0.9655,
+     0.6762
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=1250": {
+    "media": 0.8654000000000001,
+    "desvio": 0.16360051955907723,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9582,
+     0.9615,
+     0.6765
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=1500": {
+    "media": 0.8848666666666666,
+    "desvio": 0.128502619947351,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9609,
+     0.9572,
+     0.7365
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=1750": {
+    "media": 0.8944,
+    "desvio": 0.12674379669238253,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9642,
+     0.9709,
+     0.7481
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=2000": {
+    "media": 0.8886,
+    "desvio": 0.13480997737556374,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9625,
+     0.9703,
+     0.733
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=2250": {
+    "media": 0.9069333333333334,
+    "desvio": 0.11525330074810583,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9703,
+     0.9766,
+     0.7739
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=250": {
+    "media": 0.7712666666666667,
+    "desvio": 0.21225659785583426,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.8969,
+     0.8907,
+     0.5262
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=2500": {
+    "media": 0.8652000000000001,
+    "desvio": 0.1852436503635145,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9716,
+     0.9727,
+     0.6513
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=2750": {
+    "media": 0.8987333333333334,
+    "desvio": 0.11913153794580733,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9651,
+     0.9699,
+     0.7612
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=3000": {
+    "media": 0.9028,
+    "desvio": 0.11847835245309583,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9724,
+     0.97,
+     0.766
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=500": {
+    "media": 0.8549000000000001,
+    "desvio": 0.14315596389951765,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9368,
+     0.9383,
+     0.6896
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=750": {
+    "media": 0.8738333333333334,
+    "desvio": 0.13902608867882793,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9539,
+     0.9543,
+     0.7133
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=1000": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=1250": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=1500": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=1750": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=2000": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=2250": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=250": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=2500": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=2750": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=3000": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=500": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=750": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=1000": {
+    "media": 0.6422333333333333,
+    "desvio": 0.5417913374476684,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9633,
+     0.9467,
+     0.0167
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=1250": {
+    "media": 0.65,
+    "desvio": 0.5371004468439772,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9733,
+     0.9467,
+     0.03
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=1500": {
+    "media": 0.6533333333333333,
+    "desvio": 0.5600109135841312,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.98,
+     0.9733,
+     0.0067
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=1750": {
+    "media": 0.6488999999999999,
+    "desvio": 0.5561713045456409,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9733,
+     0.9667,
+     0.0067
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=2000": {
+    "media": 0.6477666666666667,
+    "desvio": 0.5609848155996143,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9733,
+     0.97,
+     0.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=2250": {
+    "media": 0.6522333333333333,
+    "desvio": 0.5619927520291818,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9767,
+     0.9767,
+     0.0033
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=250": {
+    "media": 0.6310999999999999,
+    "desvio": 0.5004343313562729,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9133,
+     0.9267,
+     0.0533
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=2500": {
+    "media": 0.6833333333333332,
+    "desvio": 0.5196866587986777,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.99,
+     0.9767,
+     0.0833
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=2750": {
+    "media": 0.6588999999999999,
+    "desvio": 0.5648438987897452,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.99,
+     0.98,
+     0.0067
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=3000": {
+    "media": 0.6577666666666667,
+    "desvio": 0.5610445288329022,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.99,
+     0.9733,
+     0.01
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=500": {
+    "media": 0.6266666666666667,
+    "desvio": 0.5341771460230523,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9467,
+     0.9233,
+     0.01
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=750": {
+    "media": 0.6311333333333333,
+    "desvio": 0.5379404830772019,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.9367,
+     0.9467,
+     0.01
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=1000": {
+    "media": 0.7613333333333334,
+    "desvio": 0.26449448639495937,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.908,
+     0.92,
+     0.456
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=1250": {
+    "media": 0.7573333333333334,
+    "desvio": 0.22286617808302214,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.888,
+     0.884,
+     0.5
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=1500": {
+    "media": 0.7560000000000001,
+    "desvio": 0.25662423891752706,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.916,
+     0.892,
+     0.46
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=1750": {
+    "media": 0.8039999999999999,
+    "desvio": 0.21154668515483763,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.916,
+     0.936,
+     0.56
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=2000": {
+    "media": 0.7906666666666666,
+    "desvio": 0.22769570337038278,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.932,
+     0.912,
+     0.528
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=2250": {
+    "media": 0.8066666666666666,
+    "desvio": 0.2350943073180066,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.924,
+     0.96,
+     0.536
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=250": {
+    "media": 0.3453333333333333,
+    "desvio": 0.18314293143152788,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.476,
+     0.424,
+     0.136
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=2500": {
+    "media": 0.7999999999999999,
+    "desvio": 0.2404329428343795,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.964,
+     0.912,
+     0.524
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=2750": {
+    "media": 0.7866666666666667,
+    "desvio": 0.23097474609431512,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.916,
+     0.924,
+     0.52
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=3000": {
+    "media": 0.8053333333333333,
+    "desvio": 0.23672205924529577,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.94,
+     0.944,
+     0.532
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=500": {
+    "media": 0.6813333333333333,
+    "desvio": 0.2540341184434353,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.828,
+     0.828,
+     0.388
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=750": {
+    "media": 0.7493333333333334,
+    "desvio": 0.2543173870055552,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.908,
+     0.884,
+     0.456
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=1000": {
+    "media": 0.3289,
+    "desvio": 0.5436934062502505,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0133,
+     0.0167,
+     0.9567
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=1250": {
+    "media": 0.3177666666666667,
+    "desvio": 0.5330675035427814,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.01,
+     0.01,
+     0.9333
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=1500": {
+    "media": 0.32666666666666666,
+    "desvio": 0.5571456033509852,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0033,
+     0.0067,
+     0.97
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=1750": {
+    "media": 0.32780000000000004,
+    "desvio": 0.5533060906948342,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0067,
+     0.01,
+     0.9667
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=2000": {
+    "media": 0.33,
+    "desvio": 0.5542660823106533,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0067,
+     0.0133,
+     0.97
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=2250": {
+    "media": 0.33113333333333334,
+    "desvio": 0.5590795679805634,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0067,
+     0.01,
+     0.9767
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=250": {
+    "media": 0.27776666666666666,
+    "desvio": 0.4522797401314073,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0133,
+     0.02,
+     0.8
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=2500": {
+    "media": 0.30666666666666664,
+    "desvio": 0.5196549079276874,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0033,
+     0.01,
+     0.9067
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=2750": {
+    "media": 0.32776666666666665,
+    "desvio": 0.5562004704540741,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0033,
+     0.01,
+     0.97
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=3000": {
+    "media": 0.3244333333333333,
+    "desvio": 0.5504270735831708,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0033,
+     0.01,
+     0.96
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=500": {
+    "media": 0.3189,
+    "desvio": 0.5263729856290119,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0167,
+     0.0133,
+     0.9267
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=750": {
+    "media": 0.32443333333333335,
+    "desvio": 0.5359569510075723,
+    "semillas": [
+     0,
+     1,
+     2
+    ],
+    "valores": [
+     0.0167,
+     0.0133,
+     0.9433
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "exactitud dígito (validación)": {
+    "media": 0.59192,
+    "desvio": 0.5349735432710668,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     2
+    ],
+    "valores": [
+     0.9794,
+     0.9808,
+     0.003,
+     0.9876,
+     0.0088
+    ],
+    "referencia": "0.9500",
+    "nota": "criterio del proyecto"
+   },
+   "exactitud suma (validación)": {
+    "media": 0.8093600000000001,
+    "desvio": 0.21500671617416978,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     2
+    ],
+    "valores": [
+     0.9596,
+     0.9624,
+     0.5516,
+     0.9756,
+     0.5976
+    ],
+    "referencia": "",
+    "nota": "DeepProbLog 30k pares: 0.972"
+   },
+   "neuronas": {
+    "media": 2564.8,
+    "desvio": 2650.9333639305232,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     2
+    ],
+    "valores": [
+     820.0,
+     817.0,
+     2346.0,
+     1675.0,
+     7166.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "pureza dígito (validación)": {
+    "media": 0.8312799999999999,
+    "desvio": 0.20726864692953442,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     2
+    ],
+    "valores": [
+     0.9794,
+     0.9808,
+     0.6102,
+     0.9876,
+     0.5984
+    ],
+    "referencia": "",
+    "nota": "mejor biyección"
+   },
+   "segundos entrenamiento": {
+    "media": 207.14000000000001,
+    "desvio": 135.45817804769115,
+    "semillas": [
+     0,
+     1,
+     2,
+     0,
+     2
+    ],
+    "valores": [
+     109.3,
+     105.2,
+     119.0,
+     305.2,
+     397.0
+    ],
+    "referencia": "",
+    "nota": "3000 pares"
+   }
+  },
+  "d1": {
+   "curva suma prequential par=10000": {
+    "media": 0.9116,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9116
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=2500": {
+    "media": 0.7572,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.7572
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=5000": {
+    "media": 0.8864,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.8864
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=7500": {
+    "media": 0.9012,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9012
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "exactitud dígito (validación)": {
+    "media": 0.9688,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9688
+    ],
+    "referencia": "0.9500",
+    "nota": "criterio del proyecto"
+   },
+   "exactitud suma (validación)": {
+    "media": 0.938,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.938
+    ],
+    "referencia": "",
+    "nota": "DeepProbLog 30k pares: 0.972"
+   },
+   "neuronas": {
+    "media": 1676.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     1676.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "pureza dígito (validación)": {
+    "media": 0.9688,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9688
+    ],
+    "referencia": "",
+    "nota": "mejor biyección"
+   },
+   "segundos entrenamiento": {
+    "media": 55.1,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     55.1
+    ],
+    "referencia": "",
+    "nota": "10000 pares"
+   }
+  },
+  "duro": {
+   "curva suma prequential par=10000": {
+    "media": 0.9644,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9644
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=2500": {
+    "media": 0.8184,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.8184
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=5000": {
+    "media": 0.9336,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9336
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=7500": {
+    "media": 0.9548,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9548
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "exactitud dígito (validación)": {
+    "media": 0.9868,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9868
+    ],
+    "referencia": "0.9500",
+    "nota": "criterio del proyecto"
+   },
+   "exactitud suma (validación)": {
+    "media": 0.974,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.974
+    ],
+    "referencia": "",
+    "nota": "DeepProbLog 30k pares: 0.972"
+   },
+   "neuronas": {
+    "media": 1735.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     1735.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "pureza dígito (validación)": {
+    "media": 0.9868,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9868
+    ],
+    "referencia": "",
+    "nota": "mejor biyección"
+   },
+   "segundos entrenamiento": {
+    "media": 224.4,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     224.4
+    ],
+    "referencia": "",
+    "nota": "10000 pares"
+   }
+  },
+  "fiab": {
+   "AUROC error dígito (validación): 1-confianza": {
+    "media": 0.9728,
+    "desvio": 0.005610704055642209,
+    "semillas": [
+     2,
+     0,
+     2
+    ],
+    "valores": [
+     0.9674,
+     0.9786,
+     0.9724
+    ],
+    "referencia": "0.8500",
+    "nota": "criterio >= 0.85"
+   },
+   "AUROC error suma (validación): 1-confianza": {
+    "media": 0.9538333333333333,
+    "desvio": 0.009504911011331604,
+    "semillas": [
+     2,
+     0,
+     2
+    ],
+    "valores": [
+     0.9434,
+     0.962,
+     0.9561
+    ],
+    "referencia": "0.8500",
+    "nota": "criterio >= 0.85"
+   },
+   "ECE dígito (validación)": {
+    "media": 0.0034333333333333334,
+    "desvio": 0.0011930353445448855,
+    "semillas": [
+     2,
+     0,
+     2
+    ],
+    "valores": [
+     0.0044,
+     0.0038,
+     0.0021
+    ],
+    "referencia": "0.0500",
+    "nota": "criterio <= 0.05"
+   },
+   "ECE suma (validación)": {
+    "media": 0.0063999999999999994,
+    "desvio": 0.002433105012119288,
+    "semillas": [
+     2,
+     0,
+     2
+    ],
+    "valores": [
+     0.008,
+     0.0076,
+     0.0036
+    ],
+    "referencia": "0.0500",
+    "nota": "criterio <= 0.05"
+   },
+   "curva gamma par=10000": {
+    "media": 0.91875,
+    "desvio": 0.0071417784899841285,
+    "semillas": [
+     0,
+     2
+    ],
+    "valores": [
+     0.9238,
+     0.9137
+    ],
+    "referencia": "",
+    "nota": "ACh"
+   },
+   "curva gamma par=2500": {
+    "media": 0.4348666666666667,
+    "desvio": 0.0541554552499869,
+    "semillas": [
+     2,
+     0,
+     2
+    ],
+    "valores": [
+     0.4036,
+     0.4974,
+     0.4036
+    ],
+    "referencia": "",
+    "nota": "ACh"
+   },
+   "curva gamma par=5000": {
+    "media": 0.8707,
+    "desvio": 0.006929646455628187,
+    "semillas": [
+     0,
+     2
+    ],
+    "valores": [
+     0.8658,
+     0.8756
+    ],
+    "referencia": "",
+    "nota": "ACh"
+   },
+   "curva gamma par=7500": {
+    "media": 0.9024000000000001,
+    "desvio": 0.011879393923934025,
+    "semillas": [
+     0,
+     2
+    ],
+    "valores": [
+     0.9108,
+     0.894
+    ],
+    "referencia": "",
+    "nota": "ACh"
+   },
+   "curva suma prequential par=10000": {
+    "media": 0.9610000000000001,
+    "desvio": 0.0025455844122715264,
+    "semillas": [
+     0,
+     2
+    ],
+    "valores": [
+     0.9628,
+     0.9592
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=2500": {
+    "media": 0.5786666666666668,
+    "desvio": 0.046880841858197644,
+    "semillas": [
+     2,
+     0,
+     2
+    ],
+    "valores": [
+     0.5516,
+     0.6328,
+     0.5516
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=5000": {
+    "media": 0.9386,
+    "desvio": 0.0031112698372207804,
+    "semillas": [
+     0,
+     2
+    ],
+    "valores": [
+     0.9364,
+     0.9408
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=7500": {
+    "media": 0.9534,
+    "desvio": 0.006505382386916227,
+    "semillas": [
+     0,
+     2
+    ],
+    "valores": [
+     0.958,
+     0.9488
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag anclas (0, 18) acumuladas par=1000": {
+    "media": 18.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     18.0
+    ],
+    "referencia": "39",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=1250": {
+    "media": 24.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     24.0
+    ],
+    "referencia": "48",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=1500": {
+    "media": 28.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     28.0
+    ],
+    "referencia": "52",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=1750": {
+    "media": 31.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     31.0
+    ],
+    "referencia": "61",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=2000": {
+    "media": 33.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     33.0
+    ],
+    "referencia": "75",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=2250": {
+    "media": 35.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     35.0
+    ],
+    "referencia": "87",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=250": {
+    "media": 3.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     3.0
+    ],
+    "referencia": "5",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=2500": {
+    "media": 44.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     44.0
+    ],
+    "referencia": "93",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=2750": {
+    "media": 47.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     47.0
+    ],
+    "referencia": "113",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=3000": {
+    "media": 48.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     48.0
+    ],
+    "referencia": "124",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=500": {
+    "media": 6.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     6.0
+    ],
+    "referencia": "18",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=750": {
+    "media": 14.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     14.0
+    ],
+    "referencia": "28",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag certeza declarada par=1000": {
+    "media": 0.2133,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.2133
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=1250": {
+    "media": 0.2692,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.2692
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=1500": {
+    "media": 0.6726,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.6726
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=1750": {
+    "media": 0.9543,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9543
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=2000": {
+    "media": 0.9563,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9563
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=2250": {
+    "media": 0.9624,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9624
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=250": {
+    "media": 0.1962,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1962
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=2500": {
+    "media": 0.9598,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9598
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=2750": {
+    "media": 0.9671,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9671
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=3000": {
+    "media": 0.9708,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9708
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=500": {
+    "media": 0.1795,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1795
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=750": {
+    "media": 0.2089,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.2089
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=1000": {
+    "media": 0.2052,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.2052
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=1250": {
+    "media": 0.3111,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.3111
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=1500": {
+    "media": 0.4448,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.4448
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=1750": {
+    "media": 0.6643,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.6643
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=2000": {
+    "media": 0.7424,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.7424
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=2250": {
+    "media": 0.7402,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.7402
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=250": {
+    "media": 0.021,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.021
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=2500": {
+    "media": 0.7548,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.7548
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=2750": {
+    "media": 0.884,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.884
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=3000": {
+    "media": 0.8624,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.8624
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=500": {
+    "media": 0.0369,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0369
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=750": {
+    "media": 0.1151,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1151
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=1000": {
+    "media": 0.77,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.77
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=1250": {
+    "media": 0.82,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.82
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=1500": {
+    "media": 0.91,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.91
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=1750": {
+    "media": 0.95,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.95
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=2000": {
+    "media": 0.95,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.95
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=2250": {
+    "media": 0.9633,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9633
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=250": {
+    "media": 0.5033,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.5033
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=2500": {
+    "media": 0.9633,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9633
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=2750": {
+    "media": 0.9667,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9667
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=3000": {
+    "media": 0.97,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.97
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=500": {
+    "media": 0.6033,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.6033
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=750": {
+    "media": 0.7133,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.7133
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=1000": {
+    "media": 0.332,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.332
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=1250": {
+    "media": 0.42,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.42
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=1500": {
+    "media": 0.696,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.696
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=1750": {
+    "media": 0.872,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.872
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=2000": {
+    "media": 0.86,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.86
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=2250": {
+    "media": 0.876,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.876
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=250": {
+    "media": 0.152,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.152
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=2500": {
+    "media": 0.904,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.904
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=2750": {
+    "media": 0.944,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.944
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=3000": {
+    "media": 0.94,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.94
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=500": {
+    "media": 0.164,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.164
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=750": {
+    "media": 0.24,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.24
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=1000": {
+    "media": 0.1267,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1267
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=1250": {
+    "media": 0.08,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.08
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=1500": {
+    "media": 0.0267,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0267
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=1750": {
+    "media": 0.0133,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0133
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=2000": {
+    "media": 0.01,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.01
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=2250": {
+    "media": 0.01,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.01
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=250": {
+    "media": 0.1933,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1933
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=2500": {
+    "media": 0.01,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.01
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=2750": {
+    "media": 0.01,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.01
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=3000": {
+    "media": 0.0067,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0067
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=500": {
+    "media": 0.19,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.19
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=750": {
+    "media": 0.14,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.14
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "exactitud dígito (validación)": {
+    "media": 0.9824,
+    "desvio": 0.008834025130143162,
+    "semillas": [
+     2,
+     0,
+     2
+    ],
+    "valores": [
+     0.9722,
+     0.9874,
+     0.9876
+    ],
+    "referencia": "0.9500",
+    "nota": "criterio del proyecto"
+   },
+   "exactitud suma (validación)": {
+    "media": 0.9655999999999999,
+    "desvio": 0.01697527613913838,
+    "semillas": [
+     2,
+     0,
+     2
+    ],
+    "valores": [
+     0.946,
+     0.9752,
+     0.9756
+    ],
+    "referencia": "",
+    "nota": "DeepProbLog 30k pares: 0.972"
+   },
+   "neuronas": {
+    "media": 1377.6666666666667,
+    "desvio": 513.4552885435434,
+    "semillas": [
+     2,
+     0,
+     2
+    ],
+    "valores": [
+     785.0,
+     1660.0,
+     1688.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "pureza dígito (validación)": {
+    "media": 0.9824,
+    "desvio": 0.008834025130143162,
+    "semillas": [
+     2,
+     0,
+     2
+    ],
+    "valores": [
+     0.9722,
+     0.9874,
+     0.9876
+    ],
+    "referencia": "",
+    "nota": "mejor biyección"
+   },
+   "segundos entrenamiento": {
+    "media": 230.03333333333333,
+    "desvio": 104.29431112641443,
+    "semillas": [
+     2,
+     0,
+     2
+    ],
+    "valores": [
+     109.9,
+     282.8,
+     297.4
+    ],
+    "referencia": "",
+    "nota": "3000 pares"
+   }
+  },
+  "fiab_tardia": {
+   "AUROC error dígito (validación): 1-confianza": {
+    "media": 0.7299,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.7299
+    ],
+    "referencia": "0.8500",
+    "nota": "criterio >= 0.85"
+   },
+   "AUROC error suma (validación): 1-confianza": {
+    "media": 0.8411,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.8411
+    ],
+    "referencia": "0.8500",
+    "nota": "criterio >= 0.85"
+   },
+   "ECE dígito (validación)": {
+    "media": 0.0874,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0874
+    ],
+    "referencia": "0.0500",
+    "nota": "criterio <= 0.05"
+   },
+   "ECE suma (validación)": {
+    "media": 0.1678,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1678
+    ],
+    "referencia": "0.0500",
+    "nota": "criterio <= 0.05"
+   },
+   "curva gamma par=10000": {
+    "media": 0.0882,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0882
+    ],
+    "referencia": "",
+    "nota": "ACh"
+   },
+   "curva gamma par=2500": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "",
+    "nota": "ACh"
+   },
+   "curva gamma par=5000": {
+    "media": 0.1021,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1021
+    ],
+    "referencia": "",
+    "nota": "ACh"
+   },
+   "curva gamma par=7500": {
+    "media": 0.0936,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0936
+    ],
+    "referencia": "",
+    "nota": "ACh"
+   },
+   "curva suma prequential par=10000": {
+    "media": 0.29,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.29
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=2500": {
+    "media": 0.4544,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.4544
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=5000": {
+    "media": 0.2436,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.2436
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=7500": {
+    "media": 0.2788,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.2788
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag anclas (0, 18) acumuladas par=1000": {
+    "media": 18.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     18.0
+    ],
+    "referencia": "39",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=10000": {
+    "media": 193.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     193.0
+    ],
+    "referencia": "421",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=1500": {
+    "media": 28.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     28.0
+    ],
+    "referencia": "52",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=2000": {
+    "media": 33.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     33.0
+    ],
+    "referencia": "75",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=2500": {
+    "media": 44.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     44.0
+    ],
+    "referencia": "93",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=3000": {
+    "media": 48.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     48.0
+    ],
+    "referencia": "124",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=3500": {
+    "media": 57.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     57.0
+    ],
+    "referencia": "150",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=4000": {
+    "media": 64.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     64.0
+    ],
+    "referencia": "164",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=4500": {
+    "media": 72.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     72.0
+    ],
+    "referencia": "183",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=500": {
+    "media": 6.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     6.0
+    ],
+    "referencia": "18",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=5000": {
+    "media": 83.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     83.0
+    ],
+    "referencia": "207",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=5500": {
+    "media": 88.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     88.0
+    ],
+    "referencia": "226",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=6000": {
+    "media": 100.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     100.0
+    ],
+    "referencia": "254",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=6500": {
+    "media": 103.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     103.0
+    ],
+    "referencia": "274",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=7000": {
+    "media": 115.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     115.0
+    ],
+    "referencia": "297",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=7500": {
+    "media": 127.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     127.0
+    ],
+    "referencia": "317",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=8000": {
+    "media": 140.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     140.0
+    ],
+    "referencia": "338",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=8500": {
+    "media": 156.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     156.0
+    ],
+    "referencia": "357",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=9000": {
+    "media": 171.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     171.0
+    ],
+    "referencia": "382",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=9500": {
+    "media": 180.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     180.0
+    ],
+    "referencia": "400",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag certeza declarada par=1000": {
+    "media": 0.6762,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.6762
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=10000": {
+    "media": 0.1915,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1915
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=1500": {
+    "media": 0.7365,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.7365
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=2000": {
+    "media": 0.733,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.733
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=2500": {
+    "media": 0.6513,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.6513
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=3000": {
+    "media": 0.2442,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.2442
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=3500": {
+    "media": 0.1957,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1957
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=4000": {
+    "media": 0.191,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.191
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=4500": {
+    "media": 0.1942,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1942
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=500": {
+    "media": 0.6896,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.6896
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=5000": {
+    "media": 0.2265,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.2265
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=5500": {
+    "media": 0.1812,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1812
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=6000": {
+    "media": 0.1987,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1987
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=6500": {
+    "media": 0.2312,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.2312
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=7000": {
+    "media": 0.1615,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1615
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=7500": {
+    "media": 0.2391,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.2391
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=8000": {
+    "media": 0.2165,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.2165
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=8500": {
+    "media": 0.243,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.243
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=9000": {
+    "media": 0.2146,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.2146
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=9500": {
+    "media": 0.2152,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.2152
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=1000": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=10000": {
+    "media": 0.0678,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0678
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=1500": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=2000": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=2500": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=3000": {
+    "media": 0.1639,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1639
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=3500": {
+    "media": 0.091,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.091
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=4000": {
+    "media": 0.0783,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0783
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=4500": {
+    "media": 0.0784,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0784
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=500": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=5000": {
+    "media": 0.099,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.099
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=5500": {
+    "media": 0.0977,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0977
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=6000": {
+    "media": 0.0842,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0842
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=6500": {
+    "media": 0.1022,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1022
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=7000": {
+    "media": 0.0874,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0874
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=7500": {
+    "media": 0.0967,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0967
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=8000": {
+    "media": 0.0817,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0817
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=8500": {
+    "media": 0.0876,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0876
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=9000": {
+    "media": 0.0926,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0926
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=9500": {
+    "media": 0.1115,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1115
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=1000": {
+    "media": 0.0167,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0167
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=10000": {
+    "media": 0.1867,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1867
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=1500": {
+    "media": 0.0067,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0067
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=2000": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=2500": {
+    "media": 0.0833,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0833
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=3000": {
+    "media": 0.0733,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0733
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=3500": {
+    "media": 0.1033,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1033
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=4000": {
+    "media": 0.0533,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0533
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=4500": {
+    "media": 0.0867,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0867
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=500": {
+    "media": 0.01,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.01
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=5000": {
+    "media": 0.1333,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1333
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=5500": {
+    "media": 0.13,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.13
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=6000": {
+    "media": 0.11,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.11
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=6500": {
+    "media": 0.0633,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0633
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=7000": {
+    "media": 0.1433,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1433
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=7500": {
+    "media": 0.1267,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1267
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=8000": {
+    "media": 0.1767,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1767
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=8500": {
+    "media": 0.22,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.22
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=9000": {
+    "media": 0.1933,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1933
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=9500": {
+    "media": 0.1433,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1433
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=1000": {
+    "media": 0.456,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.456
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=10000": {
+    "media": 0.276,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.276
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=1500": {
+    "media": 0.48,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.48
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=2000": {
+    "media": 0.544,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.544
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=2500": {
+    "media": 0.53,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.53
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=3000": {
+    "media": 0.29,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.29
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=3500": {
+    "media": 0.232,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.232
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=4000": {
+    "media": 0.208,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.208
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=4500": {
+    "media": 0.228,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.228
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=500": {
+    "media": 0.262,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.262
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=5000": {
+    "media": 0.26,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.26
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=5500": {
+    "media": 0.254,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.254
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=6000": {
+    "media": 0.29,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.29
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=6500": {
+    "media": 0.26,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.26
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=7000": {
+    "media": 0.316,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.316
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=7500": {
+    "media": 0.274,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.274
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=8000": {
+    "media": 0.298,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.298
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=8500": {
+    "media": 0.274,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.274
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=9000": {
+    "media": 0.32,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.32
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=9500": {
+    "media": 0.282,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.282
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=1000": {
+    "media": 0.9567,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9567
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=10000": {
+    "media": 0.7933,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.7933
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=1500": {
+    "media": 0.97,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.97
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=2000": {
+    "media": 0.97,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.97
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=2500": {
+    "media": 0.9067,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9067
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=3000": {
+    "media": 0.9,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=3500": {
+    "media": 0.86,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.86
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=4000": {
+    "media": 0.9067,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9067
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=4500": {
+    "media": 0.88,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.88
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=500": {
+    "media": 0.9267,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9267
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=5000": {
+    "media": 0.8267,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.8267
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=5500": {
+    "media": 0.8367,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.8367
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=6000": {
+    "media": 0.86,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.86
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=6500": {
+    "media": 0.8867,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.8867
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=7000": {
+    "media": 0.8233,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.8233
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=7500": {
+    "media": 0.8467,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.8467
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=8000": {
+    "media": 0.7833,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.7833
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=8500": {
+    "media": 0.74,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.74
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=9000": {
+    "media": 0.7667,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.7667
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=9500": {
+    "media": 0.8233,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.8233
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "exactitud dígito (validación)": {
+    "media": 0.1806,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1806
+    ],
+    "referencia": "0.9500",
+    "nota": "criterio del proyecto"
+   },
+   "exactitud suma (validación)": {
+    "media": 0.214,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.214
+    ],
+    "referencia": "",
+    "nota": "DeepProbLog 30k pares: 0.972"
+   },
+   "neuronas": {
+    "media": 2608.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     2608.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "pureza dígito (validación)": {
+    "media": 0.539,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.539
+    ],
+    "referencia": "",
+    "nota": "mejor biyección"
+   },
+   "segundos entrenamiento": {
+    "media": 380.4,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     380.4
+    ],
+    "referencia": "",
+    "nota": "10000 pares"
+   }
+  },
+  "fiab_tardia_labil": {
+   "AUROC error dígito (validación): 1-confianza": {
+    "media": 0.5839,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.5839
+    ],
+    "referencia": "0.8500",
+    "nota": "criterio >= 0.85"
+   },
+   "AUROC error suma (validación): 1-confianza": {
+    "media": 0.6979,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.6979
+    ],
+    "referencia": "0.8500",
+    "nota": "criterio >= 0.85"
+   },
+   "ECE dígito (validación)": {
+    "media": 0.2959,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.2959
+    ],
+    "referencia": "0.0500",
+    "nota": "criterio <= 0.05"
+   },
+   "ECE suma (validación)": {
+    "media": 0.0739,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0739
+    ],
+    "referencia": "0.0500",
+    "nota": "criterio <= 0.05"
+   },
+   "curva gamma par=10000": {
+    "media": 0.0764,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0764
+    ],
+    "referencia": "",
+    "nota": "ACh"
+   },
+   "curva gamma par=2500": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "",
+    "nota": "ACh"
+   },
+   "curva gamma par=5000": {
+    "media": 0.0961,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0961
+    ],
+    "referencia": "",
+    "nota": "ACh"
+   },
+   "curva gamma par=7500": {
+    "media": 0.0572,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0572
+    ],
+    "referencia": "",
+    "nota": "ACh"
+   },
+   "curva suma prequential par=10000": {
+    "media": 0.2064,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.2064
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=2500": {
+    "media": 0.4544,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.4544
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=5000": {
+    "media": 0.2396,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.2396
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=7500": {
+    "media": 0.1888,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1888
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag anclas (0, 18) acumuladas par=1000": {
+    "media": 18.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     18.0
+    ],
+    "referencia": "39",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=10000": {
+    "media": 193.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     193.0
+    ],
+    "referencia": "421",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=1500": {
+    "media": 28.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     28.0
+    ],
+    "referencia": "52",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=2000": {
+    "media": 33.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     33.0
+    ],
+    "referencia": "75",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=2500": {
+    "media": 44.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     44.0
+    ],
+    "referencia": "93",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=3000": {
+    "media": 48.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     48.0
+    ],
+    "referencia": "124",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=3500": {
+    "media": 57.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     57.0
+    ],
+    "referencia": "150",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=4000": {
+    "media": 64.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     64.0
+    ],
+    "referencia": "164",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=4500": {
+    "media": 72.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     72.0
+    ],
+    "referencia": "183",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=500": {
+    "media": 6.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     6.0
+    ],
+    "referencia": "18",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=5000": {
+    "media": 83.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     83.0
+    ],
+    "referencia": "207",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=5500": {
+    "media": 88.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     88.0
+    ],
+    "referencia": "226",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=6000": {
+    "media": 100.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     100.0
+    ],
+    "referencia": "254",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=6500": {
+    "media": 103.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     103.0
+    ],
+    "referencia": "274",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=7000": {
+    "media": 115.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     115.0
+    ],
+    "referencia": "297",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=7500": {
+    "media": 127.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     127.0
+    ],
+    "referencia": "317",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=8000": {
+    "media": 140.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     140.0
+    ],
+    "referencia": "338",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=8500": {
+    "media": 156.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     156.0
+    ],
+    "referencia": "357",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=9000": {
+    "media": 171.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     171.0
+    ],
+    "referencia": "382",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag anclas (0, 18) acumuladas par=9500": {
+    "media": 180.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     180.0
+    ],
+    "referencia": "400",
+    "nota": "casi anclas (1, 17) en referencia"
+   },
+   "diag certeza declarada par=1000": {
+    "media": 0.6762,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.6762
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=10000": {
+    "media": 0.1793,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1793
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=1500": {
+    "media": 0.7365,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.7365
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=2000": {
+    "media": 0.733,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.733
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=2500": {
+    "media": 0.6513,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.6513
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=3000": {
+    "media": 0.2407,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.2407
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=3500": {
+    "media": 0.206,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.206
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=4000": {
+    "media": 0.1934,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1934
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=4500": {
+    "media": 0.196,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.196
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=500": {
+    "media": 0.6896,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.6896
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=5000": {
+    "media": 0.2159,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.2159
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=5500": {
+    "media": 0.1777,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1777
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=6000": {
+    "media": 0.1984,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1984
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=6500": {
+    "media": 0.2191,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.2191
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=7000": {
+    "media": 0.1715,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1715
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=7500": {
+    "media": 0.23,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.23
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=8000": {
+    "media": 0.1977,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1977
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=8500": {
+    "media": 0.2321,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.2321
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=9000": {
+    "media": 0.2169,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.2169
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag certeza declarada par=9500": {
+    "media": 0.2006,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.2006
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=1000": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=10000": {
+    "media": 0.0699,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0699
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=1500": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=2000": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=2500": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=3000": {
+    "media": 0.1545,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1545
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=3500": {
+    "media": 0.1037,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1037
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=4000": {
+    "media": 0.0954,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0954
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=4500": {
+    "media": 0.078,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.078
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=500": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     1.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=5000": {
+    "media": 0.0489,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0489
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=5500": {
+    "media": 0.0529,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0529
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=6000": {
+    "media": 0.0516,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0516
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=6500": {
+    "media": 0.0668,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0668
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=7000": {
+    "media": 0.0606,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0606
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=7500": {
+    "media": 0.0538,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0538
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=8000": {
+    "media": 0.0713,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0713
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=8500": {
+    "media": 0.0772,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0772
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=9000": {
+    "media": 0.0942,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0942
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag gamma par=9500": {
+    "media": 0.0693,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0693
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=1000": {
+    "media": 0.0167,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0167
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=10000": {
+    "media": 0.4667,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.4667
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=1500": {
+    "media": 0.0067,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0067
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=2000": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=2500": {
+    "media": 0.0833,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0833
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=3000": {
+    "media": 0.0867,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0867
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=3500": {
+    "media": 0.1467,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1467
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=4000": {
+    "media": 0.1733,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1733
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=4500": {
+    "media": 0.3133,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.3133
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=500": {
+    "media": 0.01,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.01
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=5000": {
+    "media": 0.3267,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.3267
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=5500": {
+    "media": 0.42,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.42
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=6000": {
+    "media": 0.3833,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.3833
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=6500": {
+    "media": 0.37,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.37
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=7000": {
+    "media": 0.4033,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.4033
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=7500": {
+    "media": 0.48,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.48
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=8000": {
+    "media": 0.3933,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.3933
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=8500": {
+    "media": 0.3767,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.3767
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=9000": {
+    "media": 0.5,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.5
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag identidad par=9500": {
+    "media": 0.4167,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.4167
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=1000": {
+    "media": 0.456,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.456
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=10000": {
+    "media": 0.194,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.194
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=1500": {
+    "media": 0.48,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.48
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=2000": {
+    "media": 0.544,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.544
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=2500": {
+    "media": 0.53,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.53
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=3000": {
+    "media": 0.276,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.276
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=3500": {
+    "media": 0.27,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.27
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=4000": {
+    "media": 0.26,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.26
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=4500": {
+    "media": 0.21,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.21
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=500": {
+    "media": 0.262,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.262
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=5000": {
+    "media": 0.182,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.182
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=5500": {
+    "media": 0.164,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.164
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=6000": {
+    "media": 0.214,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.214
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=6500": {
+    "media": 0.19,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.19
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=7000": {
+    "media": 0.202,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.202
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=7500": {
+    "media": 0.174,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.174
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=8000": {
+    "media": 0.212,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.212
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=8500": {
+    "media": 0.184,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.184
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=9000": {
+    "media": 0.248,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.248
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag suma prequential par=9500": {
+    "media": 0.194,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.194
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=1000": {
+    "media": 0.9567,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9567
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=10000": {
+    "media": 0.4767,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.4767
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=1500": {
+    "media": 0.97,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.97
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=2000": {
+    "media": 0.97,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.97
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=2500": {
+    "media": 0.9067,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9067
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=3000": {
+    "media": 0.8767,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.8767
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=3500": {
+    "media": 0.7833,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.7833
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=4000": {
+    "media": 0.74,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.74
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=4500": {
+    "media": 0.6267,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.6267
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=500": {
+    "media": 0.9267,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9267
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=5000": {
+    "media": 0.62,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.62
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=5500": {
+    "media": 0.53,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.53
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=6000": {
+    "media": 0.5667,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.5667
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=6500": {
+    "media": 0.52,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.52
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=7000": {
+    "media": 0.5333,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.5333
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=7500": {
+    "media": 0.4567,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.4567
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=8000": {
+    "media": 0.53,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.53
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=8500": {
+    "media": 0.53,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.53
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=9000": {
+    "media": 0.4333,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.4333
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "diag vecinos d+-1 par=9500": {
+    "media": 0.4933,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.4933
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "exactitud dígito (validación)": {
+    "media": 0.476,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.476
+    ],
+    "referencia": "0.9500",
+    "nota": "criterio del proyecto"
+   },
+   "exactitud suma (validación)": {
+    "media": 0.1552,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.1552
+    ],
+    "referencia": "",
+    "nota": "DeepProbLog 30k pares: 0.972"
+   },
+   "neuronas": {
+    "media": 2519.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     2519.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "pureza dígito (validación)": {
+    "media": 0.476,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.476
+    ],
+    "referencia": "",
+    "nota": "mejor biyección"
+   },
+   "segundos entrenamiento": {
+    "media": 351.2,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     351.2
+    ],
+    "referencia": "",
+    "nota": "10000 pares"
+   }
+  },
+  "g0.5": {
+   "curva suma prequential par=10000": {
+    "media": 0.964,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.964
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=2500": {
+    "media": 0.8372,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.8372
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=5000": {
+    "media": 0.9436,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9436
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=7500": {
+    "media": 0.9632,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9632
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "exactitud dígito (validación)": {
+    "media": 0.9878,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9878
+    ],
+    "referencia": "0.9500",
+    "nota": "criterio del proyecto"
+   },
+   "exactitud suma (validación)": {
+    "media": 0.9756,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9756
+    ],
+    "referencia": "",
+    "nota": "DeepProbLog 30k pares: 0.972"
+   },
+   "neuronas": {
+    "media": 1645.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     1645.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "pureza dígito (validación)": {
+    "media": 0.9878,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9878
+    ],
+    "referencia": "",
+    "nota": "mejor biyección"
+   },
+   "segundos entrenamiento": {
+    "media": 298.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     298.0
+    ],
+    "referencia": "",
+    "nota": "10000 pares"
+   }
+  },
+  "h": {
+   "curva suma prequential par=10000": {
+    "media": 0.9572,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9572
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=2500": {
+    "media": 0.872,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.872
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=5000": {
+    "media": 0.938,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.938
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=7500": {
+    "media": 0.9552,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9552
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "exactitud dígito (validación)": {
+    "media": 0.984,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.984
+    ],
+    "referencia": "0.9500",
+    "nota": "criterio del proyecto"
+   },
+   "exactitud suma (validación)": {
+    "media": 0.9684,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9684
+    ],
+    "referencia": "",
+    "nota": "DeepProbLog 30k pares: 0.972"
+   },
+   "neuronas": {
+    "media": 1635.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     1635.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "pureza dígito (validación)": {
+    "media": 0.984,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.984
+    ],
+    "referencia": "",
+    "nota": "mejor biyección"
+   },
+   "segundos entrenamiento": {
+    "media": 299.2,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     299.2
+    ],
+    "referencia": "",
+    "nota": "10000 pares"
+   }
+  },
+  "muestreo": {
+   "AUROC error dígito (validación): 1-confianza": {
+    "media": 0.9801,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9801
+    ],
+    "referencia": "0.8500",
+    "nota": "criterio >= 0.85"
+   },
+   "AUROC error suma (validación): 1-confianza": {
+    "media": 0.9622,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9622
+    ],
+    "referencia": "0.8500",
+    "nota": "criterio >= 0.85"
+   },
+   "ECE dígito (validación)": {
+    "media": 0.0031,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0031
+    ],
+    "referencia": "0.0500",
+    "nota": "criterio <= 0.05"
+   },
+   "ECE suma (validación)": {
+    "media": 0.0055,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.0055
+    ],
+    "referencia": "0.0500",
+    "nota": "criterio <= 0.05"
+   },
+   "curva suma prequential par=10000": {
+    "media": 0.9536,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9536
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=2500": {
+    "media": 0.7444,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.7444
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=5000": {
+    "media": 0.9332,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9332
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=7500": {
+    "media": 0.9476,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9476
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "exactitud dígito (validación)": {
+    "media": 0.9834,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9834
+    ],
+    "referencia": "0.9500",
+    "nota": "criterio del proyecto"
+   },
+   "exactitud suma (validación)": {
+    "media": 0.968,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.968
+    ],
+    "referencia": "",
+    "nota": "DeepProbLog 30k pares: 0.972"
+   },
+   "neuronas": {
+    "media": 2083.0,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     2083.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "pureza dígito (validación)": {
+    "media": 0.9834,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     0.9834
+    ],
+    "referencia": "",
+    "nota": "mejor biyección"
+   },
+   "segundos entrenamiento": {
+    "media": 315.7,
+    "desvio": 0.0,
+    "semillas": [
+     2
+    ],
+    "valores": [
+     315.7
+    ],
+    "referencia": "",
+    "nota": "10000 pares"
+   }
+  },
+  "sin_repaso": {
+   "AUROC error dígito (validación): 1-confianza": {
+    "media": 0.9783,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9783
+    ],
+    "referencia": "0.8500",
+    "nota": "criterio >= 0.85"
+   },
+   "AUROC error suma (validación): 1-confianza": {
+    "media": 0.962,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.962
+    ],
+    "referencia": "0.8500",
+    "nota": "criterio >= 0.85"
+   },
+   "ECE dígito (validación)": {
+    "media": 0.0034,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.0034
+    ],
+    "referencia": "0.0500",
+    "nota": "criterio <= 0.05"
+   },
+   "ECE suma (validación)": {
+    "media": 0.0078,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.0078
+    ],
+    "referencia": "0.0500",
+    "nota": "criterio <= 0.05"
+   },
+   "curva suma prequential par=10000": {
+    "media": 0.9604,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9604
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=2500": {
+    "media": 0.852,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.852
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=5000": {
+    "media": 0.9352,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9352
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva suma prequential par=7500": {
+    "media": 0.9616,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9616
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "exactitud dígito (validación)": {
+    "media": 0.9858,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9858
+    ],
+    "referencia": "0.9500",
+    "nota": "criterio del proyecto"
+   },
+   "exactitud suma (validación)": {
+    "media": 0.9724,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9724
+    ],
+    "referencia": "",
+    "nota": "DeepProbLog 30k pares: 0.972"
+   },
+   "neuronas": {
+    "media": 1626.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     1626.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "pureza dígito (validación)": {
+    "media": 0.9858,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.9858
+    ],
+    "referencia": "",
+    "nota": "mejor biyección"
+   },
+   "segundos entrenamiento": {
+    "media": 299.7,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     299.7
+    ],
+    "referencia": "",
+    "nota": "10000 pares"
+   }
+  },
+  "total": {
+   "segundos": {
+    "media": 285.29090909090905,
+    "desvio": 121.63252405952493,
+    "semillas": [
+     0,
+     1,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     0,
+     2,
+     2
+    ],
+    "valores": [
+     136.2,
+     130.3,
+     151.2,
+     137.4,
+     380.4,
+     412.6,
+     388.2,
+     429.1,
+     308.9,
+     317.7,
+     346.2
+    ],
+    "referencia": "",
+    "nota": ""
+   }
+  }
+ },
+ "por_corrida": {
+  "integracion3_suma_mnistval_ach_p10000_seed2": {
+   "ach": {
+    "confusion": [
+     [
+      485,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1
+     ],
+     [
+      0,
+      529,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ],
+     [
+      1,
+      0,
+      489,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      506,
+      0,
+      1,
+      0,
+      0,
+      2,
+      0
+     ],
+     [
+      0,
+      3,
+      0,
+      0,
+      490,
+      0,
+      1,
+      1,
+      0,
+      4
+     ],
+     [
+      1,
+      0,
+      0,
+      3,
+      0,
+      439,
+      10,
+      0,
+      5,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      1,
+      2,
+      479,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      2,
+      0,
+      1,
+      1,
+      0,
+      0,
+      555,
+      0,
+      4
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      490,
+      2
+     ],
+     [
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      0,
+      2,
+      1,
+      477
+     ]
+    ],
+    "desplazamientos": [
+     0.9878,
+     0.0024,
+     0.0016,
+     0.0012,
+     0.0006,
+     0.0018,
+     0.0008,
+     0.0012,
+     0.0018,
+     0.0008
+    ]
+   }
+  },
+  "integracion3_suma_mnistval_base_p10000_seed0": {
+   "base": {
+    "confusion": [
+     [
+      484,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      2
+     ],
+     [
+      0,
+      529,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ],
+     [
+      1,
+      1,
+      488,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      506,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0
+     ],
+     [
+      0,
+      4,
+      0,
+      0,
+      490,
+      0,
+      0,
+      1,
+      0,
+      4
+     ],
+     [
+      0,
+      0,
+      0,
+      4,
+      0,
+      444,
+      8,
+      0,
+      2,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      481,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      558,
+      0,
+      2
+     ],
+     [
+      1,
+      1,
+      0,
+      1,
+      2,
+      1,
+      2,
+      0,
+      486,
+      0
+     ],
+     [
+      1,
+      0,
+      0,
+      2,
+      3,
+      1,
+      0,
+      3,
+      1,
+      472
+     ]
+    ],
+    "desplazamientos": [
+     0.9876,
+     0.0018,
+     0.0008,
+     0.0008,
+     0.001,
+     0.0028,
+     0.0008,
+     0.0012,
+     0.0022,
+     0.001
+    ]
+   }
+  },
+  "integracion3_suma_mnistval_base_p10000_seed2": {
+   "base": {
+    "confusion": [
+     [
+      27,
+      456,
+      0,
+      2,
+      0,
+      1,
+      1,
+      0,
+      2,
+      0
+     ],
+     [
+      294,
+      1,
+      235,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      281,
+      1,
+      207,
+      1,
+      0,
+      1,
+      1,
+      0,
+      1
+     ],
+     [
+      0,
+      0,
+      268,
+      1,
+      235,
+      0,
+      0,
+      2,
+      1,
+      2
+     ],
+     [
+      2,
+      0,
+      3,
+      249,
+      0,
+      237,
+      0,
+      0,
+      8,
+      0
+     ],
+     [
+      0,
+      1,
+      5,
+      0,
+      242,
+      3,
+      193,
+      10,
+      2,
+      2
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      261,
+      1,
+      220,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      4,
+      4,
+      0,
+      0,
+      299,
+      0,
+      256,
+      0
+     ],
+     [
+      1,
+      0,
+      1,
+      0,
+      1,
+      2,
+      0,
+      183,
+      3,
+      303
+     ],
+     [
+      1,
+      0,
+      1,
+      1,
+      2,
+      1,
+      4,
+      0,
+      466,
+      7
+     ]
+    ],
+    "desplazamientos": [
+     0.0088,
+     0.4686,
+     0.0024,
+     0.001,
+     0.003,
+     0.0018,
+     0.0024,
+     0.0024,
+     0.001,
+     0.5086
+    ]
+   }
+  },
+  "integracion3_suma_mnistval_d1_p10000_seed0": {
+   "d1": {
+    "confusion": [
+     [
+      479,
+      0,
+      3,
+      1,
+      0,
+      0,
+      2,
+      1,
+      2,
+      1
+     ],
+     [
+      0,
+      524,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      3,
+      0
+     ],
+     [
+      2,
+      2,
+      482,
+      1,
+      0,
+      1,
+      0,
+      3,
+      2,
+      0
+     ],
+     [
+      0,
+      1,
+      3,
+      492,
+      0,
+      2,
+      0,
+      0,
+      11,
+      0
+     ],
+     [
+      1,
+      6,
+      0,
+      0,
+      480,
+      0,
+      1,
+      2,
+      0,
+      9
+     ],
+     [
+      2,
+      0,
+      0,
+      13,
+      0,
+      429,
+      7,
+      1,
+      5,
+      1
+     ],
+     [
+      0,
+      1,
+      0,
+      0,
+      1,
+      2,
+      476,
+      0,
+      2,
+      0
+     ],
+     [
+      0,
+      4,
+      0,
+      1,
+      3,
+      0,
+      0,
+      544,
+      0,
+      11
+     ],
+     [
+      2,
+      3,
+      0,
+      1,
+      0,
+      8,
+      0,
+      3,
+      476,
+      1
+     ],
+     [
+      0,
+      0,
+      0,
+      4,
+      6,
+      3,
+      0,
+      7,
+      1,
+      462
+     ]
+    ],
+    "desplazamientos": [
+     0.9688,
+     0.0018,
+     0.0046,
+     0.0024,
+     0.0018,
+     0.0068,
+     0.002,
+     0.0042,
+     0.0052,
+     0.0024
+    ]
+   }
+  },
+  "integracion3_suma_mnistval_duro_p10000_seed0": {
+   "duro": {
+    "confusion": [
+     [
+      483,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      2
+     ],
+     [
+      0,
+      529,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ],
+     [
+      1,
+      1,
+      489,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      1,
+      506,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0
+     ],
+     [
+      0,
+      4,
+      0,
+      0,
+      489,
+      0,
+      0,
+      2,
+      0,
+      4
+     ],
+     [
+      2,
+      0,
+      1,
+      7,
+      1,
+      440,
+      5,
+      0,
+      2,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      481,
+      0,
+      1,
+      0
+     ],
+     [
+      0,
+      1,
+      0,
+      1,
+      2,
+      0,
+      0,
+      559,
+      0,
+      0
+     ],
+     [
+      1,
+      0,
+      1,
+      2,
+      1,
+      1,
+      2,
+      0,
+      485,
+      1
+     ],
+     [
+      1,
+      0,
+      0,
+      5,
+      2,
+      1,
+      0,
+      1,
+      0,
+      473
+     ]
+    ],
+    "desplazamientos": [
+     0.9868,
+     0.0014,
+     0.0008,
+     0.0008,
+     0.0014,
+     0.0026,
+     0.001,
+     0.0018,
+     0.0024,
+     0.001
+    ]
+   }
+  },
+  "integracion3_suma_mnistval_fiab_p10000_seed0": {
+   "fiab": {
+    "confusion": [
+     [
+      484,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1
+     ],
+     [
+      0,
+      529,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ],
+     [
+      1,
+      0,
+      488,
+      0,
+      0,
+      0,
+      0,
+      2,
+      2,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      507,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0
+     ],
+     [
+      0,
+      4,
+      0,
+      0,
+      484,
+      0,
+      0,
+      1,
+      0,
+      10
+     ],
+     [
+      0,
+      0,
+      0,
+      4,
+      0,
+      445,
+      7,
+      0,
+      2,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      481,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      560,
+      0,
+      1
+     ],
+     [
+      0,
+      2,
+      0,
+      0,
+      1,
+      3,
+      1,
+      0,
+      486,
+      1
+     ],
+     [
+      1,
+      1,
+      0,
+      3,
+      1,
+      3,
+      0,
+      1,
+      0,
+      473
+     ]
+    ],
+    "desplazamientos": [
+     0.9874,
+     0.0018,
+     0.0006,
+     0.001,
+     0.0008,
+     0.0032,
+     0.0016,
+     0.0016,
+     0.0016,
+     0.0004
+    ]
+   }
+  },
+  "integracion3_suma_mnistval_fiab_p10000_seed2": {
+   "fiab": {
+    "confusion": [
+     [
+      485,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1
+     ],
+     [
+      0,
+      529,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ],
+     [
+      1,
+      0,
+      490,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      1,
+      505,
+      0,
+      1,
+      0,
+      0,
+      2,
+      0
+     ],
+     [
+      0,
+      4,
+      0,
+      0,
+      489,
+      0,
+      0,
+      1,
+      0,
+      5
+     ],
+     [
+      1,
+      0,
+      0,
+      3,
+      0,
+      439,
+      9,
+      0,
+      6,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      1,
+      2,
+      479,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      1,
+      0,
+      1,
+      2,
+      0,
+      0,
+      557,
+      1,
+      1
+     ],
+     [
+      0,
+      1,
+      0,
+      0,
+      0,
+      2,
+      2,
+      0,
+      489,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      1,
+      2,
+      1,
+      0,
+      2,
+      1,
+      476
+     ]
+    ],
+    "desplazamientos": [
+     0.9876,
+     0.002,
+     0.0006,
+     0.0016,
+     0.0004,
+     0.0022,
+     0.0008,
+     0.0018,
+     0.002,
+     0.001
+    ]
+   }
+  },
+  "integracion3_suma_mnistval_g0.5_p10000_seed0": {
+   "g0.5": {
+    "confusion": [
+     [
+      483,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      3
+     ],
+     [
+      0,
+      528,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ],
+     [
+      1,
+      0,
+      489,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      505,
+      0,
+      0,
+      0,
+      0,
+      4,
+      0
+     ],
+     [
+      0,
+      4,
+      0,
+      0,
+      488,
+      0,
+      0,
+      1,
+      0,
+      6
+     ],
+     [
+      1,
+      0,
+      0,
+      5,
+      0,
+      443,
+      6,
+      0,
+      3,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      481,
+      0,
+      1,
+      0
+     ],
+     [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      560,
+      0,
+      1
+     ],
+     [
+      0,
+      1,
+      0,
+      0,
+      0,
+      2,
+      1,
+      0,
+      489,
+      1
+     ],
+     [
+      1,
+      0,
+      0,
+      2,
+      1,
+      3,
+      0,
+      2,
+      1,
+      473
+     ]
+    ],
+    "desplazamientos": [
+     0.9878,
+     0.0018,
+     0.0006,
+     0.001,
+     0.0008,
+     0.003,
+     0.0008,
+     0.0014,
+     0.002,
+     0.0008
+    ]
+   }
+  },
+  "integracion3_suma_mnistval_h_p10000_seed0": {
+   "h": {
+    "confusion": [
+     [
+      481,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      3,
+      3
+     ],
+     [
+      0,
+      513,
+      2,
+      2,
+      0,
+      0,
+      0,
+      2,
+      11,
+      0
+     ],
+     [
+      1,
+      0,
+      490,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      503,
+      0,
+      2,
+      0,
+      0,
+      4,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      493,
+      0,
+      0,
+      1,
+      1,
+      4
+     ],
+     [
+      0,
+      0,
+      0,
+      3,
+      1,
+      449,
+      4,
+      0,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      1,
+      4,
+      476,
+      0,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      1,
+      2,
+      0,
+      0,
+      556,
+      1,
+      3
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      2,
+      3,
+      1,
+      0,
+      488,
+      0
+     ],
+     [
+      1,
+      0,
+      0,
+      2,
+      4,
+      4,
+      0,
+      0,
+      1,
+      471
+     ]
+    ],
+    "desplazamientos": [
+     0.984,
+     0.0018,
+     0.0018,
+     0.0004,
+     0.0006,
+     0.0028,
+     0.0018,
+     0.0032,
+     0.0018,
+     0.0018
+    ]
+   }
+  },
+  "integracion3_suma_mnistval_muestreo_p10000_seed2": {
+   "muestreo": {
+    "confusion": [
+     [
+      482,
+      0,
+      3,
+      0,
+      1,
+      0,
+      1,
+      0,
+      2,
+      0
+     ],
+     [
+      0,
+      527,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0
+     ],
+     [
+      0,
+      1,
+      489,
+      1,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0
+     ],
+     [
+      0,
+      0,
+      1,
+      503,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0
+     ],
+     [
+      0,
+      3,
+      1,
+      0,
+      485,
+      0,
+      0,
+      1,
+      1,
+      8
+     ],
+     [
+      1,
+      0,
+      0,
+      6,
+      0,
+      438,
+      8,
+      1,
+      3,
+      1
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      1,
+      2,
+      478,
+      0,
+      1,
+      0
+     ],
+     [
+      0,
+      2,
+      1,
+      1,
+      1,
+      0,
+      0,
+      553,
+      0,
+      5
+     ],
+     [
+      0,
+      1,
+      0,
+      2,
+      0,
+      1,
+      0,
+      0,
+      489,
+      1
+     ],
+     [
+      0,
+      0,
+      0,
+      2,
+      2,
+      2,
+      0,
+      1,
+      3,
+      473
+     ]
+    ],
+    "desplazamientos": [
+     0.9834,
+     0.0022,
+     0.002,
+     0.001,
+     0.0014,
+     0.0038,
+     0.0014,
+     0.0012,
+     0.0022,
+     0.0014
+    ]
+   }
+  },
+  "integracion3_suma_mnistval_sin_repaso_p10000_seed0": {
+   "sin_repaso": {
+    "confusion": [
+     [
+      485,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      2
+     ],
+     [
+      0,
+      528,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ],
+     [
+      1,
+      1,
+      487,
+      1,
+      0,
+      0,
+      0,
+      2,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      1,
+      505,
+      0,
+      0,
+      0,
+      1,
+      2,
+      0
+     ],
+     [
+      0,
+      4,
+      0,
+      0,
+      486,
+      0,
+      0,
+      1,
+      0,
+      8
+     ],
+     [
+      1,
+      0,
+      0,
+      4,
+      0,
+      441,
+      10,
+      0,
+      2,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      1,
+      2,
+      479,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      560,
+      0,
+      1
+     ],
+     [
+      0,
+      2,
+      0,
+      0,
+      1,
+      3,
+      2,
+      0,
+      485,
+      1
+     ],
+     [
+      1,
+      0,
+      0,
+      2,
+      1,
+      4,
+      0,
+      1,
+      1,
+      473
+     ]
+    ],
+    "desplazamientos": [
+     0.9858,
+     0.0028,
+     0.0004,
+     0.001,
+     0.0008,
+     0.0028,
+     0.0016,
+     0.0016,
+     0.0018,
+     0.0014
+    ]
+   }
+  }
+ },
+ "tamanos": {
+  "n_pre": 10000,
+  "n_test_pureza": 2000,
+  "n_curva": 500,
+  "ep": 4000,
+  "cada": 500,
+  "ep_eval": 500,
+  "homeostasis": 0.02,
+  "congelada": true,
+  "ep_f3": 4000,
+  "columnas": 10000,
+  "cada_col": 1250,
+  "col_tabular": 10000,
+  "f0": [
+   "rep",
+   "a_oraculo",
+   "a_ruido_0.65",
+   "a_ruido_0.8",
+   "a_ruido_0.9",
+   "b_refuerzo",
+   "b_cred2",
+   "c_barajadas",
+   "rep_v02"
+  ]
+ }
+}

@@ -137,6 +137,7 @@ from collections import deque
 
 import numpy as np
 
+from .metacog import SurpriseTracker
 from .network import BioElasticNet
 
 SAY, COPY, FOLLOW, SPEAK, EMIT, JUDGE, FOCUS, HOLD = range(8)
@@ -326,6 +327,7 @@ class Thinker:
                  task_sets: bool | dict = False, cogmap: bool | str = False, modulators: bool | dict = False,
                  doubt: float = 0.0, explain: str = "refutadas", reg_credit: str = "simple",
                  reg_reset: str = "cero", prev_io: bool | str = False, back: bool | str = False,
+                 hypercorrect: float = 0.0, neuromod: dict | None = None,
                  seed: int = 0, say: dict | None = None):
         N = self.N = int(n_symbols)
         self.R = int(registers)
@@ -375,6 +377,15 @@ class Thinker:
         self.explain = str(explain)
         self.reg_credit = str(reg_credit)      # "simple" o "conocido" (ver docstring)
         self.reg_reset = str(reg_reset)        # "cero" o "silencio" (ver docstring)
+        # metacognición y neuromodulación (opcionales, ver `signals` y `_modulate`)
+        self.hypercorrect = float(hypercorrect)
+        self.neuromod = None if not neuromod else dict(
+            dict(slow=0.002, fast=0.05, ne_reset=3.0, window=200, eps_boost=0.3, warmup=200, var0=1.0),
+            **neuromod)
+        self._surprise = SurpriseTracker(self.neuromod["slow"], self.neuromod["fast"], self.neuromod["warmup"],
+                                         self.neuromod["var0"]) if self.neuromod else None
+        self._reset_left = 0; self._saved_nm = None; self.resets = 0
+        self._lr_gain = 1.0
         self.abstained = 0                     # respuestas de las que no aprendió por duda perceptiva
         self.blamed_inputs = 0                 # errores explicados por una sola ranura mal percibida
         self.input_credit: list = []           # [(ranura, símbolo)] de la última respuesta
@@ -858,7 +869,13 @@ class Thinker:
         net = self._net(mod)
         if refresh:
             net.forward(c)
-        net.teach(int(target))
+        if self._lr_gain != 1.0:                           # hipercorrección (ver `_modulate`)
+            lr = net.readout.lr
+            net.readout.lr = lr * self._lr_gain
+            net.teach(int(target))
+            net.readout.lr = lr
+        else:
+            net.teach(int(target))
         self.kver += 1
 
     def _confirm(self, mod, c, out, cue, episode):
@@ -1062,14 +1079,18 @@ class Thinker:
         return (items, cue, reg, given, events)
 
     def feedback(self, target: int | None = None, reward: float | None = None,
-                 alternatives=None):
+                 alternatives=None, trust: float | None = None):
         """Consecuencia de la última respuesta: el objetivo correcto y/o una recompensa.
         Con sólo el objetivo, la recompensa es +1 si acertó y -1 si no.
 
         `alternatives`: por cada ranura de la pregunta (en el orden en que llegó a
         `answer`), los símbolos que la percepción también consideraba (p. ej. su segunda
         opción, o todos). Con eso, un error puede quedar explicado como de percepción
-        (ver `input_credit`)."""
+        (ver `input_credit`).
+
+        `trust` (opcional): cuánto creer, ya con el objetivo a la vista, que lo percibido
+        era correcto (p. ej. el posterior de `bioelastic.posterior`). Se combina con la
+        certeza de la respuesta (el mínimo) y, como ella, sólo cuenta si `doubt` > 0."""
         if self.prev_io and (target is not None or reward is not None):   # estado, no plasticidad
             ok = (reward > 0) if reward is not None else (self._out == int(target))
             self._prev = (int(self._out), bool(ok))
@@ -1080,6 +1101,10 @@ class Thinker:
 
         if not self.plastic:
             return
+        if trust is not None:
+            self._trust = min(self._trust, float(trust))
+        if target is not None and (self.hypercorrect or self.neuromod):
+            self._modulate(self._out == int(target))
         self.input_credit = []
         reg_only = False
         if target is not None and (alternatives is not None or self.doubt > 0.0):
@@ -1257,6 +1282,129 @@ class Thinker:
                 toks = tuple(sym if j == i else x for j, x in enumerate(toks))
             m.bind(toks, c)
         return tuple(m.events)
+
+    # ------------------------------------------------------------------ metacognición
+    def answer_confidence(self) -> tuple:
+        """(probabilidad, establecido) de la última respuesta según el módulo que respondió:
+        la lectura del conocimiento de largo plazo (DECIR) o del juicio (JUZGAR); la memoria
+        episódica y el foco cuentan como seguros."""
+        a = self._path[-1] if self._path else -1
+        if a == SAY and self.say._last is not None and self._cf is not None:
+            V = self.say._last.V
+            return float(self.say.readout.probs(V)[int(np.argmax(V))]), bool(self._know(self._cf)[1])
+        if a == JUDGE and self.judge is not None and self.judge._last is not None:
+            V = self.judge._last.V
+            return float(self.judge.readout.probs(V)[int(np.argmax(V))]), bool(self._know(self._js, self.judge)[1])
+        return 1.0, True
+
+    def content_outputs(self, candidates, reg=None):
+        """Qué respondería el conocimiento de largo plazo (y si lo da por establecido) si
+        las ranuras de la última pregunta fueran cada combinación de `candidates`, sin
+        efectos. Sirve para el conflicto entre percepción y razonamiento antes del feedback
+        (ver `bioelastic.posterior.predictive_conflict`)."""
+        first = list(self._q[0][0])
+        reg = self._q[2] if reg is None else np.asarray(reg)
+        shape = tuple(len(c) for c in candidates)
+        outs = np.zeros(shape, dtype=np.int64); sure = np.zeros(shape, dtype=bool)
+        for pos in np.ndindex(*shape):
+            alt = list(first)
+            for i, j in enumerate(pos):
+                alt[i] = int(candidates[i][j])
+            outs[pos], sure[pos] = self._know(self._content(tuple(alt), reg=reg))
+        return outs, sure
+
+    @property
+    def expected_uncertainty(self) -> float:
+        """ACh: sorpresa media esperada de sus respuestas (0 sin `neuromod`)."""
+        return self._surprise.expected if self._surprise is not None else 0.0
+
+    @property
+    def unexpected_uncertainty(self) -> float:
+        """NE: exceso reciente de sorpresa sobre lo esperado (0 sin `neuromod`)."""
+        return self._surprise.unexpected if self._surprise is not None else 0.0
+
+    @property
+    def last_surprise(self) -> float:
+        return self._surprise.last if self._surprise is not None else 0.0
+
+    def signals(self) -> dict:
+        """Señales internas de la última respuesta (antes del feedback) y del estado
+        neuromodulador: confianza, si salió de conocimiento establecido, sorpresa del
+        último desenlace, incertidumbre esperada (ACh) e inesperada (NE)."""
+        c, sure = self.answer_confidence()
+        return dict(confidence=c, established=sure, surprise=self.last_surprise,
+                    expected_uncertainty=self.expected_uncertainty,
+                    unexpected_uncertainty=self.unexpected_uncertainty, reset=self._reset_left > 0)
+
+    def _modulate(self, correct: bool):
+        """Antes de aprender del desenlace. Hipercorrección (`hypercorrect` > 0): un error
+        dicho con confianza c corrige el conocimiento con la tasa multiplicada por
+        1 + hypercorrect * c. Neuromodulación (`neuromod`): la sorpresa del desenlace,
+        -log P(desenlace | confianza), se promedia lento (ACh) y rápido; si el exceso
+        normalizado (NE) pasa `ne_reset`, durante `window` respuestas se reinician las
+        hipótesis: las correcciones se consolidan al primer intento (capture=1), lo
+        establecido deja de estar protegido y el control explora más (`eps_boost`)."""
+        c, _ = self.answer_confidence()
+        self._lr_gain = 1.0 + self.hypercorrect * c if (self.hypercorrect and not correct) else 1.0
+        nm = self.neuromod
+        if not nm:
+            return
+        self._surprise.update(SurpriseTracker.surprise(c, correct))
+        if self._reset_left > 0:
+            self._reset_left -= 1
+            if self._reset_left == 0:                      # fin del reinicio: vuelve lo de antes
+                self.capture, self.protect, self.epsilon = self._saved_nm
+        elif self.unexpected_uncertainty > nm["ne_reset"]:
+            self._saved_nm = (self.capture, self.protect, self.epsilon)
+            self.capture, self.protect = 1, False
+            self.epsilon = max(self.epsilon, float(nm["eps_boost"]))
+            self._reset_left = int(nm["window"])
+            self.resets += 1
+
+    def consistency(self, target: int, candidates, regs=None) -> np.ndarray:
+        """Qué asignaciones de las ranuras de la última pregunta son consistentes con el
+        objetivo según el conocimiento actual, sin efectos (la misma búsqueda retrospectiva
+        de `_explain_inputs`, pero sobre asignaciones conjuntas y sin elegir una).
+
+        `candidates`: por ranura (en el orden en que llegó a `answer`), los símbolos a
+        considerar. `regs`: valores de los registros a considerar (por defecto, sólo los
+        que se leyeron). Devuelve un arreglo de forma (len(regs), len(c_1), ..., len(c_k))
+        con +1 si el control llega al objetivo con conocimiento establecido, -1 si llega
+        con conocimiento establecido a otra respuesta (refutada) y 0 si no lo sabe.
+        Llamar después de `answer` y antes de `feedback`."""
+        items, cue, reg, given, events = self._episode()
+        first = list(items[0])
+        regs = [reg] if regs is None else [np.asarray(r, dtype=np.int64) for r in regs]
+        shape = (len(regs),) + tuple(len(c) for c in candidates)
+        out = np.zeros(shape, dtype=np.int8)
+        for ri, r in enumerate(regs):
+            for pos in np.ndindex(*shape[1:]):
+                alt = list(first)
+                for i, j in enumerate(pos):
+                    alt[i] = int(candidates[i][j])
+                its = (tuple(alt),) + tuple(items[1:])
+                if isinstance(items, _Items):              # con `prev_io`: el mismo estado previo
+                    its = _items(its, items.prev)
+                ep = (its, cue, r, given, events)
+                if self._search(target, start=ep) is not None:
+                    out[(ri,) + pos] = 1
+                elif self._search(target, start=ep, refute=True) is not None:
+                    out[(ri,) + pos] = -1
+        return out
+
+    def teach_content(self, tokens, target: int, reg=None, confirm: bool = True):
+        """Escribe en el conocimiento de largo plazo que el contenido (`tokens` en el foco
+        y los registros `reg`) responde `target`, fuera de un episodio (p. ej. al
+        consolidar evidencia acumulada entre episodios). El modelo interno ve la respuesta
+        nueva del módulo y, con `confirm`, la registra como acertada."""
+        if not self.plastic:
+            return
+        c = self._content(self._tok(tokens), reg=self.reg if reg is None else np.asarray(reg))
+        self._teach("say", c, int(target))
+        o = int(self.say.peek(c))
+        self.M.observe(("say", _key(c)), o)
+        if confirm and o == int(target):
+            self.M.outcome(("say", _key(c)), o, True)
 
     def _abstain(self):
         """No aprende de la última respuesta: se descartan las trazas (TD no la cierra ni

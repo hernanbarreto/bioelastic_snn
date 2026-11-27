@@ -1,0 +1,906 @@
+{
+ "fase": "f1c",
+ "metricas": {
+  "aprendida_eq": {
+   "Thinker con código-oráculo: columna n=3": {
+    "media": 0.084,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.084
+    ],
+    "referencia": "0.1000",
+    "nota": ""
+   },
+   "Thinker con código-oráculo: exacta n=3": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "",
+    "nota": "símbolos = código final perfecto"
+   },
+   "clases fundidas (símbolo mayoritario de >=2 dígitos)": {
+    "media": 3.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     3.0
+    ],
+    "referencia": "0",
+    "nota": ""
+   },
+   "columna n=3 (test)": {
+    "media": 0.1147,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.1147
+    ],
+    "referencia": "0.1000",
+    "nota": "azar"
+   },
+   "converge a una permutación (pureza - identidad)": {
+    "media": 0.0345,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.0345
+    ],
+    "referencia": "",
+    "nota": "alto: código consistente pero permutado"
+   },
+   "cota pureza^6 (Thinker perfecto)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "créditos a la percepción": {
+    "media": 20124.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     20124.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva columna ep=1000": {
+    "media": 0.2179,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.2179
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva columna ep=1500": {
+    "media": 0.2197,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.2197
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva columna ep=2000": {
+    "media": 0.2063,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.2063
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva columna ep=2500": {
+    "media": 0.2251,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.2251
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva columna ep=3000": {
+    "media": 0.2196,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.2196
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva columna ep=3500": {
+    "media": 0.1991,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.1991
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva columna ep=4000": {
+    "media": 0.2237,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.2237
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva columna ep=500": {
+    "media": 0.2201,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.2201
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva identidad ep=1000": {
+    "media": 0.092,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.092
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva identidad ep=1500": {
+    "media": 0.088,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.088
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva identidad ep=2000": {
+    "media": 0.094,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.094
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva identidad ep=2500": {
+    "media": 0.096,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.096
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva identidad ep=3000": {
+    "media": 0.078,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.078
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva identidad ep=3500": {
+    "media": 0.126,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.126
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva identidad ep=4000": {
+    "media": 0.096,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.096
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva identidad ep=500": {
+    "media": 0.158,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.158
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva pureza ep=1000": {
+    "media": 0.194,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.194
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva pureza ep=1500": {
+    "media": 0.192,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.192
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva pureza ep=2000": {
+    "media": 0.23,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.23
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva pureza ep=2500": {
+    "media": 0.176,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.176
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva pureza ep=3000": {
+    "media": 0.188,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.188
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva pureza ep=3500": {
+    "media": 0.224,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.224
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva pureza ep=4000": {
+    "media": 0.172,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.172
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva pureza ep=500": {
+    "media": 0.24,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.24
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva usados ep=1000": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     10.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva usados ep=1500": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     10.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva usados ep=2000": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     10.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva usados ep=2500": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     10.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva usados ep=3000": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     10.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva usados ep=3500": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     10.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva usados ep=4000": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     10.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "curva usados ep=500": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     10.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "código es identidad (dígitos)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "10",
+    "nota": "dígitos cuyo símbolo en la mejor biyección es el propio dígito"
+   },
+   "exacta n=1 (test)": {
+    "media": 0.06,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.06
+    ],
+    "referencia": "0.0550",
+    "nota": "azar"
+   },
+   "exacta n=3 (test)": {
+    "media": 0.002,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.002
+    ],
+    "referencia": "0.0005",
+    "nota": "azar"
+   },
+   "exacta n=3 | imágenes bien (código)": {
+    "media": NaN,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     NaN
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "fin (acarreo) n=3 (test)": {
+    "media": 0.54,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.54
+    ],
+    "referencia": "0.5005",
+    "nota": "mejor constante"
+   },
+   "fracción episodios con las 6 imágenes bien (código)": {
+    "media": 0.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.0
+    ],
+    "referencia": "0.0000",
+    "nota": "pureza^6"
+   },
+   "identidad percepción (test)": {
+    "media": 0.107,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.107
+    ],
+    "referencia": "0.1000",
+    "nota": "símbolo == dígito"
+   },
+   "masa en s = d (identidad)": {
+    "media": 0.107,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.107
+    ],
+    "referencia": "0.1000",
+    "nota": "fracción de imágenes"
+   },
+   "masa en s = d + 5": {
+    "media": 0.086,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.086
+    ],
+    "referencia": "0.1000",
+    "nota": "invisible para el dígito módulo 10"
+   },
+   "masa en s = d +- 1 (vecinos)": {
+    "media": 0.1995,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.1995
+    ],
+    "referencia": "0.2000",
+    "nota": ""
+   },
+   "posterior: ensenadas": {
+    "media": 20124.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     20124.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "posterior: episodios": {
+    "media": 4000.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     4000.0
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "posterior: verosimilitud_media": {
+    "media": 0.504,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.504
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "precisión del crédito (código final)": {
+    "media": 0.1106,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.1106
+    ],
+    "referencia": "0.1000",
+    "nota": ""
+   },
+   "precisión del crédito (identidad)": {
+    "media": 0.0995,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.0995
+    ],
+    "referencia": "0.1000",
+    "nota": ""
+   },
+   "precisión del crédito, 2.a mitad (código final)": {
+    "media": 0.1066,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.1066
+    ],
+    "referencia": "0.1000",
+    "nota": ""
+   },
+   "pureza percepción (test)": {
+    "media": 0.1415,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     0.1415
+    ],
+    "referencia": "0.1000",
+    "nota": "mejor biyección"
+   },
+   "segundos": {
+    "media": 901.7,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     901.7
+    ],
+    "referencia": "",
+    "nota": ""
+   },
+   "segundos entrenamiento": {
+    "media": 726.1,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     726.1
+    ],
+    "referencia": "",
+    "nota": "4000 episodios"
+   },
+   "símbolos usados": {
+    "media": 10.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     10.0
+    ],
+    "referencia": "10",
+    "nota": ""
+   }
+  },
+  "total": {
+   "segundos": {
+    "media": 902.0,
+    "desvio": 0.0,
+    "semillas": [
+     0
+    ],
+    "valores": [
+     902.0
+    ],
+    "referencia": "",
+    "nota": ""
+   }
+  }
+ },
+ "por_corrida": {
+  "integracion3_f1c_aprendida_eq_seed0": {
+   "aprendida_eq": {
+    "confusion": [
+     [
+      24,
+      17,
+      16,
+      8,
+      45,
+      15,
+      12,
+      28,
+      19,
+      22
+     ],
+     [
+      30,
+      17,
+      28,
+      18,
+      17,
+      23,
+      19,
+      15,
+      27,
+      23
+     ],
+     [
+      31,
+      10,
+      29,
+      12,
+      30,
+      17,
+      20,
+      21,
+      16,
+      16
+     ],
+     [
+      21,
+      27,
+      24,
+      15,
+      27,
+      12,
+      24,
+      25,
+      8,
+      22
+     ],
+     [
+      16,
+      25,
+      20,
+      15,
+      26,
+      12,
+      20,
+      13,
+      15,
+      21
+     ],
+     [
+      19,
+      8,
+      19,
+      17,
+      23,
+      13,
+      17,
+      10,
+      13,
+      22
+     ],
+     [
+      14,
+      18,
+      15,
+      29,
+      20,
+      14,
+      24,
+      26,
+      15,
+      21
+     ],
+     [
+      25,
+      20,
+      14,
+      21,
+      24,
+      18,
+      14,
+      18,
+      28,
+      30
+     ],
+     [
+      18,
+      28,
+      13,
+      16,
+      21,
+      19,
+      17,
+      22,
+      18,
+      29
+     ],
+     [
+      14,
+      22,
+      27,
+      17,
+      21,
+      17,
+      29,
+      25,
+      15,
+      30
+     ]
+    ],
+    "codigo": [
+     4,
+     5,
+     0,
+     7,
+     1,
+     2,
+     3,
+     8,
+     9,
+     6
+    ],
+    "desplazamientos": [
+     0.107,
+     0.105,
+     0.0955,
+     0.0965,
+     0.107,
+     0.086,
+     0.0815,
+     0.1185,
+     0.1085,
+     0.0945
+    ]
+   }
+  }
+ },
+ "tamanos": {
+  "n_pre": 10000,
+  "n_test_pureza": 2000,
+  "n_curva": 500,
+  "ep": 4000,
+  "cada": 500,
+  "ep_eval": 500,
+  "homeostasis": 0.02,
+  "congelada": true,
+  "ep_f3": 4000,
+  "columnas": 10000,
+  "cada_col": 1250,
+  "col_tabular": 10000,
+  "f0": [
+   "rep",
+   "a_oraculo",
+   "a_ruido_0.65",
+   "a_ruido_0.8",
+   "a_ruido_0.9",
+   "b_refuerzo",
+   "b_cred2",
+   "c_barajadas",
+   "rep_v02"
+  ]
+ }
+}

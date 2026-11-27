@@ -1,0 +1,11 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+suma_mnistval,duro,0,curva suma prequential par=2500,0.8184,,
+suma_mnistval,duro,0,curva suma prequential par=5000,0.9336,,
+suma_mnistval,duro,0,curva suma prequential par=7500,0.9548,,
+suma_mnistval,duro,0,curva suma prequential par=10000,0.9644,,
+suma_mnistval,duro,0,segundos entrenamiento,224.4000,,10000 pares
+suma_mnistval,duro,0,exactitud suma (validación),0.9740,,DeepProbLog 30k pares: 0.972
+suma_mnistval,duro,0,exactitud dígito (validación),0.9868,0.9500,criterio del proyecto
+suma_mnistval,duro,0,pureza dígito (validación),0.9868,,mejor biyección
+suma_mnistval,duro,0,neuronas,1735,,
+suma_mnistval,total,0,segundos,,,

@@ -1,0 +1,61 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+f4,rep | conteo,1,segundos entrenamiento,261.0000,,10000 columnas
+f4,rep | conteo,1,episodios,5596,,
+f4,rep | conteo,1,información por ranura en la 1.a etapa (bits),0.6122,0.0000,aleatorio
+f4,rep | conteo,1,curva columna ep=1250,0.6720,,
+f4,rep | conteo,1,curva etapa ep=1250,1,,
+f4,rep | conteo,1,curva pureza ep=1250,0.4400,,
+f4,rep | conteo,1,curva identidad ep=1250,0.1820,,
+f4,rep | conteo,1,curva columna ep=2500,0.5496,,
+f4,rep | conteo,1,curva etapa ep=2500,2,,
+f4,rep | conteo,1,curva pureza ep=2500,0.5380,,
+f4,rep | conteo,1,curva identidad ep=2500,0.1920,,
+f4,rep | conteo,1,curva columna ep=3751,0.4141,,
+f4,rep | conteo,1,curva etapa ep=3751,3,,
+f4,rep | conteo,1,curva pureza ep=3751,0.5960,,
+f4,rep | conteo,1,curva identidad ep=3751,0.1620,,
+f4,rep | conteo,1,curva columna ep=5000,0.2258,,
+f4,rep | conteo,1,curva etapa ep=5000,3,,
+f4,rep | conteo,1,curva pureza ep=5000,0.7580,,
+f4,rep | conteo,1,curva identidad ep=5000,0.1780,,
+f4,rep | conteo,1,curva columna ep=6251,0.1079,,
+f4,rep | conteo,1,curva etapa ep=6251,3,,
+f4,rep | conteo,1,curva pureza ep=6251,0.3240,,
+f4,rep | conteo,1,curva identidad ep=6251,0.0620,,
+f4,rep | conteo,1,curva columna ep=7502,0.1031,,
+f4,rep | conteo,1,curva etapa ep=7502,3,,
+f4,rep | conteo,1,curva pureza ep=7502,0.3660,,
+f4,rep | conteo,1,curva identidad ep=7502,0.0660,,
+f4,rep | conteo,1,curva columna ep=8753,0.1383,,
+f4,rep | conteo,1,curva etapa ep=8753,3,,
+f4,rep | conteo,1,curva pureza ep=8753,0.5840,,
+f4,rep | conteo,1,curva identidad ep=8753,0.1600,,
+f4,rep | conteo,1,curva columna ep=10002,0.1625,,
+f4,rep | conteo,1,curva etapa ep=10002,3,,
+f4,rep | conteo,1,curva pureza ep=10002,0.3580,,
+f4,rep | conteo,1,curva identidad ep=10002,0.0380,,
+f4,rep | conteo,1,pureza percepción (test),0.3335,0.1000,mejor biyección
+f4,rep | conteo,1,identidad percepción (test),0.0305,0.1000,símbolo == dígito
+f4,rep | conteo,1,símbolos usados,9,10,
+f4,rep | conteo,1,código es identidad (dígitos),0,10,dígitos cuyo símbolo en la mejor biyección es el propio dígito
+f4,rep | conteo,1,créditos a la percepción,44,,
+f4,rep | conteo,1,precisión del crédito (código final),0.4545,0.1000,
+f4,rep | conteo,1,precisión del crédito (identidad),0.0682,0.1000,
+f4,rep | conteo,1,"precisión del crédito, 2.a mitad (código final)",0.5000,0.1000,
+f4,rep | conteo,1,abstenciones Thinker,0,,
+f4,rep | conteo,1,exacta n=3 (test),0.0020,0.0005,azar
+f4,rep | conteo,1,columna n=3 (test),0.1133,0.1000,azar
+f4,rep | conteo,1,fin (acarreo) n=3 (test),0.5440,0.5005,mejor constante
+f4,rep | conteo,1,exacta n=1 (test),0.0480,0.0550,azar
+f4,rep | conteo,1,cota pureza^6 (Thinker perfecto),0.0014,,
+f4,rep | conteo,1,exacta n=3 | imágenes bien (código),nan,,
+f4,rep | conteo,1,fracción episodios con las 6 imágenes bien (código),0.0000,0.0014,pureza^6
+f4,rep | conteo,1,Thinker con código-oráculo: exacta n=3,0.0000,,símbolos = código final perfecto
+f4,rep | conteo,1,Thinker con código-oráculo: columna n=3,0.1913,0.1000,
+f4,rep | conteo,1,clases fundidas (símbolo mayoritario de >=2 dígitos),2,0,
+f4,rep | conteo,1,masa en s = d (identidad),0.0305,0.1000,fracción de imágenes
+f4,rep | conteo,1,masa en s = d +- 1 (vecinos),0.1870,0.2000,
+f4,rep | conteo,1,masa en s = d + 5,0.1365,0.1000,invisible para el dígito módulo 10
+f4,rep | conteo,1,converge a una permutación (pureza - identidad),0.3030,,alto: código consistente pero permutado
+f4,rep | conteo,1,segundos,325.3000,,
+f4,total,1,segundos,325.6000,,

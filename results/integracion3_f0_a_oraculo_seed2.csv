@@ -1,0 +1,18 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+f0,a_oraculo,2,segundos entrenamiento,21.4000,,4000 episodios
+f0,a_oraculo,2,curva columna ep=500,0.4817,,
+f0,a_oraculo,2,curva columna ep=1000,0.7107,,
+f0,a_oraculo,2,curva columna ep=1500,0.8218,,
+f0,a_oraculo,2,curva columna ep=2000,0.8724,,
+f0,a_oraculo,2,curva columna ep=2500,0.9066,,
+f0,a_oraculo,2,curva columna ep=3000,0.9302,,
+f0,a_oraculo,2,curva columna ep=3500,0.9120,,
+f0,a_oraculo,2,curva columna ep=4000,0.9362,,
+f0,a_oraculo,2,abstenciones Thinker,0,,
+f0,a_oraculo,2,exacta n=3 (test),0.8500,0.0005,azar
+f0,a_oraculo,2,columna n=3 (test),0.9553,0.1000,azar
+f0,a_oraculo,2,fin (acarreo) n=3 (test),0.9660,0.5005,mejor constante
+f0,a_oraculo,2,exacta n=1 (test),0.9380,0.0550,azar
+f0,a_oraculo,2,Thinker con oráculo: exacta n=3,0.8280,,
+f0,a_oraculo,2,segundos,24.8000,,
+f0,total,2,segundos,25.1000,,

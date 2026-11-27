@@ -1,0 +1,61 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+f4,rep | aleatorio,1,segundos entrenamiento,304.3000,,10000 columnas
+f4,rep | aleatorio,1,episodios,3976,,
+f4,rep | aleatorio,1,información por ranura en la 1.a etapa (bits),0.0000,0.0000,aleatorio
+f4,rep | aleatorio,1,curva columna ep=1251,0.0959,,
+f4,rep | aleatorio,1,curva etapa ep=1251,0,,
+f4,rep | aleatorio,1,curva pureza ep=1251,0.3600,,
+f4,rep | aleatorio,1,curva identidad ep=1251,0.0780,,
+f4,rep | aleatorio,1,curva columna ep=2500,0.1113,,
+f4,rep | aleatorio,1,curva etapa ep=2500,0,,
+f4,rep | aleatorio,1,curva pureza ep=2500,0.4440,,
+f4,rep | aleatorio,1,curva identidad ep=2500,0.0820,,
+f4,rep | aleatorio,1,curva columna ep=3750,0.1008,,
+f4,rep | aleatorio,1,curva etapa ep=3750,0,,
+f4,rep | aleatorio,1,curva pureza ep=3750,0.4100,,
+f4,rep | aleatorio,1,curva identidad ep=3750,0.0560,,
+f4,rep | aleatorio,1,curva columna ep=5001,0.1351,,
+f4,rep | aleatorio,1,curva etapa ep=5001,0,,
+f4,rep | aleatorio,1,curva pureza ep=5001,0.5040,,
+f4,rep | aleatorio,1,curva identidad ep=5001,0.0840,,
+f4,rep | aleatorio,1,curva columna ep=6253,0.1254,,
+f4,rep | aleatorio,1,curva etapa ep=6253,0,,
+f4,rep | aleatorio,1,curva pureza ep=6253,0.5060,,
+f4,rep | aleatorio,1,curva identidad ep=6253,0.1000,,
+f4,rep | aleatorio,1,curva columna ep=7501,0.1202,,
+f4,rep | aleatorio,1,curva etapa ep=7501,0,,
+f4,rep | aleatorio,1,curva pureza ep=7501,0.5340,,
+f4,rep | aleatorio,1,curva identidad ep=7501,0.1100,,
+f4,rep | aleatorio,1,curva columna ep=8751,0.1592,,
+f4,rep | aleatorio,1,curva etapa ep=8751,0,,
+f4,rep | aleatorio,1,curva pureza ep=8751,0.5240,,
+f4,rep | aleatorio,1,curva identidad ep=8751,0.1060,,
+f4,rep | aleatorio,1,curva columna ep=10001,0.1504,,
+f4,rep | aleatorio,1,curva etapa ep=10001,0,,
+f4,rep | aleatorio,1,curva pureza ep=10001,0.4420,,
+f4,rep | aleatorio,1,curva identidad ep=10001,0.0440,,
+f4,rep | aleatorio,1,pureza percepción (test),0.4260,0.1000,mejor biyección
+f4,rep | aleatorio,1,identidad percepción (test),0.0570,0.1000,símbolo == dígito
+f4,rep | aleatorio,1,símbolos usados,10,10,
+f4,rep | aleatorio,1,código es identidad (dígitos),1,10,dígitos cuyo símbolo en la mejor biyección es el propio dígito
+f4,rep | aleatorio,1,créditos a la percepción,52,,
+f4,rep | aleatorio,1,precisión del crédito (código final),0.3654,0.1000,
+f4,rep | aleatorio,1,precisión del crédito (identidad),0.0962,0.1000,
+f4,rep | aleatorio,1,"precisión del crédito, 2.a mitad (código final)",0.4231,0.1000,
+f4,rep | aleatorio,1,abstenciones Thinker,0,,
+f4,rep | aleatorio,1,exacta n=3 (test),0.0040,0.0005,azar
+f4,rep | aleatorio,1,columna n=3 (test),0.1333,0.1000,azar
+f4,rep | aleatorio,1,fin (acarreo) n=3 (test),0.4660,0.5005,mejor constante
+f4,rep | aleatorio,1,exacta n=1 (test),0.0760,0.0550,azar
+f4,rep | aleatorio,1,cota pureza^6 (Thinker perfecto),0.0060,,
+f4,rep | aleatorio,1,exacta n=3 | imágenes bien (código),0.0000,,
+f4,rep | aleatorio,1,fracción episodios con las 6 imágenes bien (código),0.0040,0.0060,pureza^6
+f4,rep | aleatorio,1,Thinker con código-oráculo: exacta n=3,0.0040,,símbolos = código final perfecto
+f4,rep | aleatorio,1,Thinker con código-oráculo: columna n=3,0.1873,0.1000,
+f4,rep | aleatorio,1,clases fundidas (símbolo mayoritario de >=2 dígitos),1,0,
+f4,rep | aleatorio,1,masa en s = d (identidad),0.0570,0.1000,fracción de imágenes
+f4,rep | aleatorio,1,masa en s = d +- 1 (vecinos),0.2785,0.2000,
+f4,rep | aleatorio,1,masa en s = d + 5,0.1010,0.1000,invisible para el dígito módulo 10
+f4,rep | aleatorio,1,converge a una permutación (pureza - identidad),0.3690,,alto: código consistente pero permutado
+f4,rep | aleatorio,1,segundos,379.6000,,
+f4,total,1,segundos,379.8000,,

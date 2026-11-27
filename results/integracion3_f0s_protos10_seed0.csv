@@ -1,0 +1,8 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+f0s,protos K=10 | 10000 columnas,0,pureza (media de 6),0.2179,0.0168,desvío en referencia
+f0s,protos K=10 | 10000 columnas,0,columna_final (media de 6),0.1067,0.0068,desvío en referencia
+f0s,protos K=10 | 40000 columnas,0,pureza (media de 6),0.2932,0.0299,desvío en referencia
+f0s,protos K=10 | 40000 columnas,0,columna_final (media de 6),0.1317,0.0087,desvío en referencia
+f0s,protos K=10 | 160000 columnas,0,pureza (media de 3),0.4856,0.1132,desvío en referencia
+f0s,protos K=10 | 160000 columnas,0,columna_final (media de 3),0.2807,0.0678,desvío en referencia
+f0s,total,0,segundos,443.1000,,

@@ -1,0 +1,13 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+suma_mnist,ach,3,curva suma prequential par=2500,0.8480,,
+suma_mnist,ach,3,curva gamma par=2500,0.9656,,ACh
+suma_mnist,ach,3,segundos entrenamiento,73.5000,,3000 pares
+suma_mnist,ach,3,AUROC error dígito (test): 1-confianza,0.9666,0.8500,criterio >= 0.85
+suma_mnist,ach,3,ECE dígito (test),0.0059,0.0500,criterio <= 0.05
+suma_mnist,ach,3,AUROC error suma (test): 1-confianza,0.9412,0.8500,criterio >= 0.85
+suma_mnist,ach,3,ECE suma (test),0.0103,0.0500,criterio <= 0.05
+suma_mnist,ach,3,exactitud suma (test),0.9456,0.9720,DeepProbLog 30k pares: 0.972
+suma_mnist,ach,3,exactitud dígito (test),0.9720,0.9500,criterio del proyecto
+suma_mnist,ach,3,pureza dígito (test),0.9720,,mejor biyección
+suma_mnist,ach,3,neuronas,871,,
+suma_mnist,total,3,segundos,117.3000,,

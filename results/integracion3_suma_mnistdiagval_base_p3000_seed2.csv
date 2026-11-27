@@ -1,0 +1,84 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+suma_mnistval,base,2,diag identidad par=250,0.0533,,
+suma_mnistval,base,2,diag vecinos d+-1 par=250,0.8000,,
+suma_mnistval,base,2,diag certeza declarada par=250,0.5262,,
+suma_mnistval,base,2,diag suma prequential par=250,0.1360,,
+suma_mnistval,base,2,diag gamma par=250,1.0000,,
+suma_mnistval,base,2,"diag anclas (0, 18) acumuladas par=250",3,5,"casi anclas (1, 17) en referencia"
+suma_mnistval,base,2,diag identidad par=500,0.0100,,
+suma_mnistval,base,2,diag vecinos d+-1 par=500,0.9267,,
+suma_mnistval,base,2,diag certeza declarada par=500,0.6896,,
+suma_mnistval,base,2,diag suma prequential par=500,0.3880,,
+suma_mnistval,base,2,diag gamma par=500,1.0000,,
+suma_mnistval,base,2,"diag anclas (0, 18) acumuladas par=500",6,18,"casi anclas (1, 17) en referencia"
+suma_mnistval,base,2,diag identidad par=750,0.0100,,
+suma_mnistval,base,2,diag vecinos d+-1 par=750,0.9433,,
+suma_mnistval,base,2,diag certeza declarada par=750,0.7133,,
+suma_mnistval,base,2,diag suma prequential par=750,0.4560,,
+suma_mnistval,base,2,diag gamma par=750,1.0000,,
+suma_mnistval,base,2,"diag anclas (0, 18) acumuladas par=750",14,28,"casi anclas (1, 17) en referencia"
+suma_mnistval,base,2,diag identidad par=1000,0.0167,,
+suma_mnistval,base,2,diag vecinos d+-1 par=1000,0.9567,,
+suma_mnistval,base,2,diag certeza declarada par=1000,0.6762,,
+suma_mnistval,base,2,diag suma prequential par=1000,0.4560,,
+suma_mnistval,base,2,diag gamma par=1000,1.0000,,
+suma_mnistval,base,2,"diag anclas (0, 18) acumuladas par=1000",18,39,"casi anclas (1, 17) en referencia"
+suma_mnistval,base,2,diag identidad par=1250,0.0300,,
+suma_mnistval,base,2,diag vecinos d+-1 par=1250,0.9333,,
+suma_mnistval,base,2,diag certeza declarada par=1250,0.6765,,
+suma_mnistval,base,2,diag suma prequential par=1250,0.5000,,
+suma_mnistval,base,2,diag gamma par=1250,1.0000,,
+suma_mnistval,base,2,"diag anclas (0, 18) acumuladas par=1250",24,48,"casi anclas (1, 17) en referencia"
+suma_mnistval,base,2,diag identidad par=1500,0.0067,,
+suma_mnistval,base,2,diag vecinos d+-1 par=1500,0.9700,,
+suma_mnistval,base,2,diag certeza declarada par=1500,0.7365,,
+suma_mnistval,base,2,diag suma prequential par=1500,0.4600,,
+suma_mnistval,base,2,diag gamma par=1500,1.0000,,
+suma_mnistval,base,2,"diag anclas (0, 18) acumuladas par=1500",28,52,"casi anclas (1, 17) en referencia"
+suma_mnistval,base,2,diag identidad par=1750,0.0067,,
+suma_mnistval,base,2,diag vecinos d+-1 par=1750,0.9667,,
+suma_mnistval,base,2,diag certeza declarada par=1750,0.7481,,
+suma_mnistval,base,2,diag suma prequential par=1750,0.5600,,
+suma_mnistval,base,2,diag gamma par=1750,1.0000,,
+suma_mnistval,base,2,"diag anclas (0, 18) acumuladas par=1750",31,61,"casi anclas (1, 17) en referencia"
+suma_mnistval,base,2,diag identidad par=2000,0.0000,,
+suma_mnistval,base,2,diag vecinos d+-1 par=2000,0.9700,,
+suma_mnistval,base,2,diag certeza declarada par=2000,0.7330,,
+suma_mnistval,base,2,diag suma prequential par=2000,0.5280,,
+suma_mnistval,base,2,diag gamma par=2000,1.0000,,
+suma_mnistval,base,2,"diag anclas (0, 18) acumuladas par=2000",33,75,"casi anclas (1, 17) en referencia"
+suma_mnistval,base,2,diag identidad par=2250,0.0033,,
+suma_mnistval,base,2,diag vecinos d+-1 par=2250,0.9767,,
+suma_mnistval,base,2,diag certeza declarada par=2250,0.7739,,
+suma_mnistval,base,2,diag suma prequential par=2250,0.5360,,
+suma_mnistval,base,2,diag gamma par=2250,1.0000,,
+suma_mnistval,base,2,"diag anclas (0, 18) acumuladas par=2250",35,87,"casi anclas (1, 17) en referencia"
+suma_mnistval,base,2,diag identidad par=2500,0.0833,,
+suma_mnistval,base,2,diag vecinos d+-1 par=2500,0.9067,,
+suma_mnistval,base,2,diag certeza declarada par=2500,0.6513,,
+suma_mnistval,base,2,diag suma prequential par=2500,0.5240,,
+suma_mnistval,base,2,diag gamma par=2500,1.0000,,
+suma_mnistval,base,2,"diag anclas (0, 18) acumuladas par=2500",44,93,"casi anclas (1, 17) en referencia"
+suma_mnistval,base,2,curva suma prequential par=2500,0.4544,,
+suma_mnistval,base,2,diag identidad par=2750,0.0067,,
+suma_mnistval,base,2,diag vecinos d+-1 par=2750,0.9700,,
+suma_mnistval,base,2,diag certeza declarada par=2750,0.7612,,
+suma_mnistval,base,2,diag suma prequential par=2750,0.5200,,
+suma_mnistval,base,2,diag gamma par=2750,1.0000,,
+suma_mnistval,base,2,"diag anclas (0, 18) acumuladas par=2750",47,113,"casi anclas (1, 17) en referencia"
+suma_mnistval,base,2,diag identidad par=3000,0.0100,,
+suma_mnistval,base,2,diag vecinos d+-1 par=3000,0.9600,,
+suma_mnistval,base,2,diag certeza declarada par=3000,0.7660,,
+suma_mnistval,base,2,diag suma prequential par=3000,0.5320,,
+suma_mnistval,base,2,diag gamma par=3000,1.0000,,
+suma_mnistval,base,2,"diag anclas (0, 18) acumuladas par=3000",48,124,"casi anclas (1, 17) en referencia"
+suma_mnistval,base,2,segundos entrenamiento,119.0000,,3000 pares
+suma_mnistval,base,2,AUROC error dígito (validación): 1-confianza,0.1670,0.8500,criterio >= 0.85
+suma_mnistval,base,2,ECE dígito (validación),0.7607,0.0500,criterio <= 0.05
+suma_mnistval,base,2,AUROC error suma (validación): 1-confianza,0.4930,0.8500,criterio >= 0.85
+suma_mnistval,base,2,ECE suma (validación),0.1573,0.0500,criterio <= 0.05
+suma_mnistval,base,2,exactitud suma (validación),0.5516,,DeepProbLog 30k pares: 0.972
+suma_mnistval,base,2,exactitud dígito (validación),0.0030,0.9500,criterio del proyecto
+suma_mnistval,base,2,pureza dígito (validación),0.6102,,mejor biyección
+suma_mnistval,base,2,neuronas,2346,,
+suma_mnistval,total,2,segundos,151.2000,,

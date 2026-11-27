@@ -141,9 +141,12 @@ class Readout:
         return pre.astype(np.float32)
 
     def learn(self, idx: np.ndarray, h: np.ndarray, target: int, V: np.ndarray | None = None,
-              p: np.ndarray | None = None, replay: bool = False):
+              p: np.ndarray | None = None, replay: bool = False, soft: np.ndarray | None = None):
         """`p` externo: la competencia entre salidas la resolvió la red completa.
-        `replay`: el ejemplo es un recuerdo (error completo, no cuenta como actividad)."""
+        `replay`: el ejemplo es un recuerdo (error completo, no cuenta como actividad).
+        `soft`: objetivo como distribución (p. ej. un posterior sobre las clases): el tercer
+        factor de cada salida es soft_o - p_o en vez de 1[o = objetivo] - p_o (`target` es
+        entonces la clase más probable, para la actividad y la regla de medias)."""
         if not replay:
             self.mark(target)
         if len(idx) == 0:
@@ -156,7 +159,10 @@ class Readout:
         err = -p
         if self.active_window > 0 and not replay:
             err = np.where(self.active(), err, 0.0)
-        err[target] += 1.0
+        if soft is None:
+            err[target] += 1.0
+        else:
+            err = err + np.asarray(soft, dtype=err.dtype)
         self.W[:, idx] += (self.lr * err)[:, None].astype(np.float32) * self._plasticity(idx, h)[None, :]
         self._scale_rows(err != 0)
 

@@ -73,6 +73,8 @@ class BioElasticNet:
         self.layer.group_of = lambda: self.readout.preferred(np.arange(self.layer.n))
         self.layer.on_merge = self.readout.merge_inputs
         self._pending_cls: int | None = None
+        self._pending_soft = None
+        self.soft_grow = 0.5                # objetivo blando: crecer ante un error sólo si es claro
         self._pending_v: Volley | None = None
         # Huella episódica: cada neurona guarda la volea completa que la creó (uint8, sin el
         # recorte del fan-in). Es lo que se reactiva en el repaso (ver Cortex._replay_one).
@@ -87,6 +89,10 @@ class BioElasticNet:
 
     # ------------------------------------------------------------------ hooks estructurales
     def _on_add(self, j: int):
+        if self._pending_soft is not None:                    # nace con la lectura del objetivo blando
+            self.readout.add_input(None)
+            self.readout.W[:, self.readout.n - 1] = self.readout.w_init * np.asarray(self._pending_soft, dtype=np.float32)
+            return
         self.readout.add_input(self._pending_cls)
         if self.episodes is not None:
             if j >= len(self.episodes):
@@ -213,7 +219,8 @@ class BioElasticNet:
         if self.maintain_every and self.layer.t % self.maintain_every == 0:
             self.layer.maintain()
 
-    def teach(self, target: int, pred: int | None = None, p: np.ndarray | None = None):
+    def teach(self, target: int, pred: int | None = None, p: np.ndarray | None = None,
+              soft: np.ndarray | None = None):
         """Supervisado: corrige la decisión y adapta/crea neuronas ocultas.
 
         `pred` y `p` permiten que varias áreas compartan una misma decisión y un mismo
@@ -223,6 +230,11 @@ class BioElasticNet:
         una clase ausente no cambian ni su lectura ni sus pesos: el error de lo que se
         enseña ahora no reescribe recuerdos que no se pueden contrastar. Si estorban, la
         respuesta es una neurona nueva, no recablear la vieja.
+
+        `soft` (opcional): el objetivo es una distribución sobre las salidas (p. ej. un
+        posterior). La lectura aprende con el tercer factor soft - p; `target` es su clase
+        más probable. Una neurona nueva nace con la lectura soft * w_init, y sólo se crece
+        ante un error si el objetivo es claro (soft[target] >= `soft_grow`).
         """
         st = self._last; v = st.v; L = self.layer; R = self.readout
         pred = st.pred if pred is None else pred
@@ -235,13 +247,17 @@ class BioElasticNet:
             guard = (pref >= 0) & (pref != target) & ~act[np.maximum(pref, 0)]
         if not v.novel:                                       # sin spike presináptico no hay plasticidad
             if guard.any():
-                R.learn(wn[~guard], st.h[~guard], target, st.V, p)
+                R.learn(wn[~guard], st.h[~guard], target, st.V, p, soft=soft)
             else:
-                R.learn(wn, st.h, target, st.V, p)
+                R.learn(wn, st.h, target, st.V, p, soft=soft)
         agree = np.flatnonzero(pref == target)
         best_agree = float(v.cos[agree[0]]) if len(agree) and not v.novel else 0.0
-        grow = v.novel or (self.grow_on_error and pred != target and best_agree < self.rho_sup)
-        if grow and self._recruit(v, target) >= 0:
+        clear = soft is None or float(soft[target]) >= self.soft_grow
+        grow = v.novel or (self.grow_on_error and clear and pred != target and best_agree < self.rho_sup)
+        self._pending_soft = soft
+        recruited = grow and self._recruit(v, target) >= 0
+        self._pending_soft = None
+        if recruited:
             if self.separation > 0.0 and not v.novel:
                 self._separate(L.n - 1, v, pref, target)
         elif len(wn):

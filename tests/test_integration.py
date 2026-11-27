@@ -228,3 +228,137 @@ def test_digitos_tipograficos_tienen_el_formato_de_mnist():
     cy, cx = ndimage.center_of_mass(X.astype(np.float64).sum(0))
     assert abs(cy - 14) < 2 and abs(cx - 14) < 2
     assert (X[:, :2].max() == 0) and (X[:, :, :2].max() == 0)      # margen de MNIST
+
+
+# ---------------------------------------------------------------- ronda 3 (exp_integration3.py)
+import exp_integration3 as e3  # noqa: E402
+
+
+def test_analisis_la_suma_mod_10_no_da_senal_por_ranura():
+    an = e3.analisis()
+    assert an["bits_I_a_d"] < 1e-9                          # L2/L3: una ranura sola no dice nada
+    assert abs(an["bits_I_ab_d"] - np.log2(10)) < 1e-9      # las dos juntas lo dicen todo
+    assert abs(an["bits_I_a_d_dado_b"] - np.log2(10)) < 1e-9  # L1: con b perfecto, todo
+    assert 0.2 < an["bits_I_a_acarreo"] < 0.4               # el acarreo sí depende de cada sumando
+    assert abs(e3.p_acarreo(1) - 0.45) < 1e-12 and abs(e3.p_acarreo(3) - 0.4995) < 1e-12
+    assert e3.ventaja_por_ranura(0.1) == pytest.approx(0.0)
+    assert e3.ventaja_por_ranura(1.0) == pytest.approx(1.0)
+
+
+def test_thinker_oraculo_suma_explica_y_da_consistencia():
+    datos = _sinteticos(4)
+    m = e3.evaluar(e3.ThinkerOraculo(), e3.OraculoP(), datos, np.random.default_rng(0), 3, 50)
+    assert m["exacta"] == 1.0
+    th = e3.ThinkerOraculo(); th.reset()
+    th.answer((8, 15))                                      # vio 8 donde había 3: dice 3, el objetivo es 8
+    th.feedback(target=8, alternatives=[[3], [16]])
+    assert th.input_credit == [(0, 3)]
+    st = th.consistency(8, [np.arange(10), np.arange(10, 20)])[0]
+    assert all(st[a, b] == (1 if (a + b) % 10 == 8 else -1) for a in range(10) for b in range(10))
+    assert th.state_key() == (0,)
+
+
+def test_episodio_con_digitos_dados_regla_nueva_y_objetivo_barajado():
+    datos = _sinteticos(4)
+    rng = np.random.default_rng(0)
+    r = e3.episodio(e3.ThinkerOraculo(), e3.OraculoP(), datos, "test", rng, 0, False, {}, {},
+                    digitos=([7, 2], [5, 1]))
+    assert r["columnas"] == [True, True, True]              # 27 + 15 = 42 (y acarreo final 0)
+    r = e3.episodio(e3.ThinkerOraculo(), e3.OraculoP(), datos, "test", rng, 0, False, dict(regla=3), {},
+                    digitos=([7], [5]))
+    assert r["columnas"][0] is False                         # con la regla nueva el dígito es 5, no 2
+    f = e3.objetivos_barajados(0)
+    ys = [f(0, 1, 4) for _ in range(500)]
+    assert len(set(ys)) == 10 and abs(np.mean(np.array(ys) == 4) - 0.1) < 0.05
+
+
+def test_codigo_y_fusiones():
+    conf = np.eye(10, dtype=int)[:, [3, 1, 2, 0, 4, 5, 6, 7, 8, 9]] * 10
+    assert list(e3.codigo(conf)) == [3, 1, 2, 0, 4, 5, 6, 7, 8, 9]
+    conf2 = np.eye(10, dtype=int) * 10; conf2[1] = conf2[0]
+    assert e3.fusiones(conf2) == 1
+
+
+def test_credito_posterior_en_el_episodio_ensena_a_la_percepcion():
+    """Thinker oráculo y percepción que ve 8 en vez de 3 (3 segunda opción): el crédito
+    posterior le enseña 3 en esa ranura (y nada falso)."""
+    datos = _sinteticos(4)
+    rng = np.random.default_rng(0)
+
+    class VeMal:
+        k = 2
+
+        def __init__(self):
+            self.ensenado = []
+
+        def ver(self, img, d, explore):
+            d = int(d)
+            s = 8 if d == 3 else d
+            self.p = np.full(10, 0.01); self.p[s] = 0.6 if d == 3 else 0.9
+            if d == 3:
+                self.p[3] = 0.3
+            self.p /= self.p.sum()
+            return s, float(self.p[s]), []
+
+        def ensenar(self, img, sym):
+            self.ensenado.append(int(sym))
+
+    per = VeMal(); st = {}
+    cp = e3.CreditoPosterior(k=10, tau=0.5)
+    for _ in range(100):
+        e3.episodio(e3.ThinkerOraculo(), per, datos, "train", rng, 1, True, dict(posterior=cp), st)
+    assert 3 in per.ensenado and st["creditos"] > 0
+    malos = [(d, s) for d, s in st["pares"] if s != d]
+    assert not malos
+
+
+def test_entrenar_con_curriculo_respeta_el_presupuesto_de_columnas():
+    from bioelastic.curriculum import Curriculum, sum_stages
+    datos = _sinteticos(4)
+    cu = Curriculum(sum_stages("mas0"), budget=60)
+    curva = []
+    n = e3.entrenar_curriculo(e3.ThinkerOraculo(), e3.OraculoP(), datos, np.random.default_rng(0), cu,
+                              {}, {}, curva, 20, None, None)
+    etapas = [f["etapa"] for f in curva]
+    assert n > 0 and curva[-1]["ep"] >= 60 and etapas == sorted(etapas) and etapas[-1] == 3
+
+
+# ---------------------------------------------------------------- MNIST-addition (exp_mnist_addition.py)
+def test_posterior_de_la_suma_y_anclas():
+    import exp_mnist_addition as ma
+    u = np.ones(10) / 10
+    q, q1, q2 = ma.posterior_suma(u, u, 0)                    # suma 0: sólo 0 + 0
+    assert q1[0] == 1.0 and q2[0] == 1.0
+    q, q1, q2 = ma.posterior_suma(u, u, 17)                   # suma 17: 8 + 9 o 9 + 8
+    assert abs(q1[8] - 0.5) < 1e-12 and abs(q1[9] - 0.5) < 1e-12
+    q, q1, q2 = ma.posterior_suma(np.eye(10)[3] * 0.9 + 0.01, u, 7, gamma=0.0)
+    np.testing.assert_allclose(q1[:8], 1 / 8)                 # gamma 0: sólo cuenta la suma
+    assert ma.suma_predicha(np.eye(10)[3], np.eye(10)[9]) == 12
+    assert abs(sum(((10 - abs(y - 9)) / 100) ** 2 for y in range(19)) - ma.AZAR_PAR) < 1e-3
+
+
+def test_fiabilidad_arranca_sin_creerle_a_la_percepcion_y_sube_si_acierta():
+    import exp_mnist_addition as ma
+    f = ma.Fiabilidad(modo="potencia", k=2.0, rate=0.05, lo=0.02, hi=1.0)
+    p3, p4 = np.eye(10)[3] * 0.9 + 0.01, np.eye(10)[4] * 0.9 + 0.01
+    assert f.actualizar(p3, p4, 7) == 0.02
+    for _ in range(150):
+        f.actualizar(p3, p4, 7)
+    assert f.gamma > 0.9
+    for _ in range(150):
+        f.actualizar(p3, p4, 9)                               # ahora el par más probable no da la suma
+    assert f.gamma < 0.1
+
+
+def test_pureza_no_supervisada_rotula_con_una_mitad_y_mide_con_la_otra():
+    from bioelastic import Cortex
+    datos = _sinteticos(20)
+    net = Cortex((28, 28, 1), 10, seed=0, heads=[{}])
+    E = ei.encoder()
+    for x in datos.X["train"]:
+        net.observe(E(x))                                     # sin etiquetas
+    X, y = datos.X["test"], datos.y["test"]
+    m = e3.pureza_no_supervisada(net, E, X, y)
+    assert m["neuronas"] >= 10 and m["pureza"] > 0.8          # barras separables: categorías puras
+    m0 = e3.pureza_no_supervisada(Cortex((28, 28, 1), 10, seed=0, heads=[], areas=[]), E, X, y)
+    assert np.isnan(m0["pureza"])

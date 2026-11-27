@@ -1,0 +1,61 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+f1c,aprendida_eq,0,segundos entrenamiento,726.1000,,4000 episodios
+f1c,aprendida_eq,0,posterior: episodios,4000,,
+f1c,aprendida_eq,0,posterior: ensenadas,20124,,
+f1c,aprendida_eq,0,posterior: verosimilitud_media,0.5040,,
+f1c,aprendida_eq,0,curva columna ep=500,0.2201,,
+f1c,aprendida_eq,0,curva pureza ep=500,0.2400,,
+f1c,aprendida_eq,0,curva identidad ep=500,0.1580,,
+f1c,aprendida_eq,0,curva usados ep=500,10,,
+f1c,aprendida_eq,0,curva columna ep=1000,0.2179,,
+f1c,aprendida_eq,0,curva pureza ep=1000,0.1940,,
+f1c,aprendida_eq,0,curva identidad ep=1000,0.0920,,
+f1c,aprendida_eq,0,curva usados ep=1000,10,,
+f1c,aprendida_eq,0,curva columna ep=1500,0.2197,,
+f1c,aprendida_eq,0,curva pureza ep=1500,0.1920,,
+f1c,aprendida_eq,0,curva identidad ep=1500,0.0880,,
+f1c,aprendida_eq,0,curva usados ep=1500,10,,
+f1c,aprendida_eq,0,curva columna ep=2000,0.2063,,
+f1c,aprendida_eq,0,curva pureza ep=2000,0.2300,,
+f1c,aprendida_eq,0,curva identidad ep=2000,0.0940,,
+f1c,aprendida_eq,0,curva usados ep=2000,10,,
+f1c,aprendida_eq,0,curva columna ep=2500,0.2251,,
+f1c,aprendida_eq,0,curva pureza ep=2500,0.1760,,
+f1c,aprendida_eq,0,curva identidad ep=2500,0.0960,,
+f1c,aprendida_eq,0,curva usados ep=2500,10,,
+f1c,aprendida_eq,0,curva columna ep=3000,0.2196,,
+f1c,aprendida_eq,0,curva pureza ep=3000,0.1880,,
+f1c,aprendida_eq,0,curva identidad ep=3000,0.0780,,
+f1c,aprendida_eq,0,curva usados ep=3000,10,,
+f1c,aprendida_eq,0,curva columna ep=3500,0.1991,,
+f1c,aprendida_eq,0,curva pureza ep=3500,0.2240,,
+f1c,aprendida_eq,0,curva identidad ep=3500,0.1260,,
+f1c,aprendida_eq,0,curva usados ep=3500,10,,
+f1c,aprendida_eq,0,curva columna ep=4000,0.2237,,
+f1c,aprendida_eq,0,curva pureza ep=4000,0.1720,,
+f1c,aprendida_eq,0,curva identidad ep=4000,0.0960,,
+f1c,aprendida_eq,0,curva usados ep=4000,10,,
+f1c,aprendida_eq,0,pureza percepción (test),0.1415,0.1000,mejor biyección
+f1c,aprendida_eq,0,identidad percepción (test),0.1070,0.1000,símbolo == dígito
+f1c,aprendida_eq,0,símbolos usados,10,10,
+f1c,aprendida_eq,0,código es identidad (dígitos),0,10,dígitos cuyo símbolo en la mejor biyección es el propio dígito
+f1c,aprendida_eq,0,créditos a la percepción,20124,,
+f1c,aprendida_eq,0,precisión del crédito (código final),0.1106,0.1000,
+f1c,aprendida_eq,0,precisión del crédito (identidad),0.0995,0.1000,
+f1c,aprendida_eq,0,"precisión del crédito, 2.a mitad (código final)",0.1066,0.1000,
+f1c,aprendida_eq,0,exacta n=3 (test),0.0020,0.0005,azar
+f1c,aprendida_eq,0,columna n=3 (test),0.1147,0.1000,azar
+f1c,aprendida_eq,0,fin (acarreo) n=3 (test),0.5400,0.5005,mejor constante
+f1c,aprendida_eq,0,exacta n=1 (test),0.0600,0.0550,azar
+f1c,aprendida_eq,0,cota pureza^6 (Thinker perfecto),0.0000,,
+f1c,aprendida_eq,0,exacta n=3 | imágenes bien (código),nan,,
+f1c,aprendida_eq,0,fracción episodios con las 6 imágenes bien (código),0.0000,0.0000,pureza^6
+f1c,aprendida_eq,0,Thinker con código-oráculo: exacta n=3,0.0000,,símbolos = código final perfecto
+f1c,aprendida_eq,0,Thinker con código-oráculo: columna n=3,0.0840,0.1000,
+f1c,aprendida_eq,0,clases fundidas (símbolo mayoritario de >=2 dígitos),3,0,
+f1c,aprendida_eq,0,masa en s = d (identidad),0.1070,0.1000,fracción de imágenes
+f1c,aprendida_eq,0,masa en s = d +- 1 (vecinos),0.1995,0.2000,
+f1c,aprendida_eq,0,masa en s = d + 5,0.0860,0.1000,invisible para el dígito módulo 10
+f1c,aprendida_eq,0,converge a una permutación (pureza - identidad),0.0345,,alto: código consistente pero permutado
+f1c,aprendida_eq,0,segundos,901.7000,,
+f1c,total,0,segundos,902.0000,,

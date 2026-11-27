@@ -201,7 +201,7 @@ class FeatureArea:
             h = c[idx]
             self.clf.learn(idx, h / np.float32(np.sqrt(h @ h)), int(target))
 
-    def _learn_local(self, target: int, Pm, norms, act, arg, code, prior=None):
+    def _learn_local(self, target: int, Pm, norms, act, arg, code, prior=None, soft=None):
         """Error local de 3 factores: lector propio + rasgos ganadores (ver docstring del módulo).
         `prior`: potenciales de los lectores de las áreas anteriores (error residual)."""
         n = self.n
@@ -218,7 +218,11 @@ class FeatureArea:
             V = V + prior
         p = R.probs(V)
         self.local_seen += 1; self.local_hits += int(np.argmax(V) == target)
-        err = -p; err[target] += 1.0
+        err = -p
+        if soft is None:
+            err[target] += 1.0
+        else:                                                     # objetivo blando: soft - p
+            err = err + np.asarray(soft, dtype=err.dtype)
         err = err.astype(np.float32)
         g = R.W[:, cols].T @ err                                  # error dendrítico de cada célula compleja
         g = (g - hn * float(hn @ g)) / nrm                        # derivada de la normalización del código
@@ -234,7 +238,7 @@ class FeatureArea:
         Wn = self.W[u] + np.float32(self.local["lr"]) * (gx - gs[:, None] * self.W[u])
         self.W[u] = Wn / np.maximum(np.linalg.norm(Wn, axis=1, keepdims=True), 1e-8)
 
-    def learn(self, target: int | None = None, prior: np.ndarray | None = None):
+    def learn(self, target: int | None = None, prior: np.ndarray | None = None, soft=None):
         """Actualiza el diccionario con la última lámina vista. Sin `target` (o sin error
         local configurado) el aprendizaje es puramente no supervisado. Con `prior` (sólo si
         `local["residual"]`), el error local es el de la suma de los lectores hasta esta área."""
@@ -246,7 +250,7 @@ class FeatureArea:
             act_full = np.zeros((len(norms), act.shape[1]), dtype=np.float32)
             act_full[vr] = act                                    # potencial por posición (inválidas: 0)
             self._learn_local(int(target), Pm, norms, act_full, arg, code,
-                              prior if self.local.get("residual") else None)
+                              prior if self.local.get("residual") else None, soft)
         self.t += 1
         n = self.n
         if act is not None:

@@ -1,0 +1,19 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+suma_mnistval,fiab,0,curva suma prequential par=2500,0.6328,,
+suma_mnistval,fiab,0,curva gamma par=2500,0.4974,,ACh
+suma_mnistval,fiab,0,curva suma prequential par=5000,0.9364,,
+suma_mnistval,fiab,0,curva gamma par=5000,0.8658,,ACh
+suma_mnistval,fiab,0,curva suma prequential par=7500,0.9580,,
+suma_mnistval,fiab,0,curva gamma par=7500,0.9108,,ACh
+suma_mnistval,fiab,0,curva suma prequential par=10000,0.9628,,
+suma_mnistval,fiab,0,curva gamma par=10000,0.9238,,ACh
+suma_mnistval,fiab,0,segundos entrenamiento,282.8000,,10000 pares
+suma_mnistval,fiab,0,AUROC error dígito (validación): 1-confianza,0.9786,0.8500,criterio >= 0.85
+suma_mnistval,fiab,0,ECE dígito (validación),0.0038,0.0500,criterio <= 0.05
+suma_mnistval,fiab,0,AUROC error suma (validación): 1-confianza,0.9620,0.8500,criterio >= 0.85
+suma_mnistval,fiab,0,ECE suma (validación),0.0076,0.0500,criterio <= 0.05
+suma_mnistval,fiab,0,exactitud suma (validación),0.9752,,DeepProbLog 30k pares: 0.972
+suma_mnistval,fiab,0,exactitud dígito (validación),0.9874,0.9500,criterio del proyecto
+suma_mnistval,fiab,0,pureza dígito (validación),0.9874,,mejor biyección
+suma_mnistval,fiab,0,neuronas,1660,,
+suma_mnistval,total,0,segundos,308.9000,,
