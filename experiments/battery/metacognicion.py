@@ -51,14 +51,27 @@ def auroc(conf: np.ndarray, ok: np.ndarray) -> float | None:
     return float((r[:len(a)].sum() - len(a) * (len(a) + 1) / 2) / (len(a) * len(e)))
 
 
-def correr(semilla: int, escala: float = 1.0) -> dict:
+def _conf(net, config) -> float:
+    """Con un perfil de opciones (p. ej. `metacog`), la confianza pública de la red
+    (`Cortex.confidence()`: calibrada si hay `metacog`); si no, la probabilidad de la decisión."""
+    if config:
+        return float(net.confidence())
+    return percepcion.confianza(net)
+
+
+def correr(semilla: int, escala: float = 1.0, config: dict | None = None, validacion: bool = False) -> dict:
     t0 = time.time()
     n = percepcion.N_MNIST if escala >= 1.0 else max(1000, int(percepcion.N_MNIST * escala))
-    net, info = percepcion.cortex_mnist(semilla, n, log=percepcion.log_stderr)
+    try:
+        net, info = percepcion.cortex_mnist(semilla, n, log=percepcion.log_stderr, config=config)
+    except TypeError as e:
+        raise NoAplicable(f"el Cortex de este commit no acepta {sorted(config or {})}: {e}") from e
     net = percepcion.congelar(net)
-    _, _, Xte, yte = percepcion.mnist()
+    Xtr, ytr, Xte, yte = percepcion.mnist()
+    if validacion:                                  # las últimas 5 000 de entrenamiento, nunca el test
+        Xte, yte = Xtr[len(Xtr) - 5000:], ytr[len(ytr) - 5000:]
     E = percepcion.encoder()
-    rng = np.random.default_rng(30_000 + semilla)
+    rng = np.random.default_rng((40_000 if validacion else 30_000) + semilla)
     n_tr = N_ENSAYOS if escala >= 1.0 else 120
     c, racha = 1.0, 0
     conf, ok, cs = [], [], []
@@ -66,7 +79,7 @@ def correr(semilla: int, escala: float = 1.0) -> dict:
         i = int(rng.integers(len(Xte)))
         pred = net.forward(E(estimulo(Xte[i], c, rng)))
         hit = bool(pred == yte[i])
-        conf.append(percepcion.confianza(net)); ok.append(hit); cs.append(c)
+        conf.append(_conf(net, config)); ok.append(hit); cs.append(c)
         if hit:
             racha += 1
             if racha == 2:
@@ -91,7 +104,7 @@ def correr(semilla: int, escala: float = 1.0) -> dict:
         for _ in range(n_niv):
             i = int(rng.integers(len(Xte)))
             hs.append(bool(net.forward(E(estimulo(Xte[i], cn, rng))) == yte[i]))
-            cf.append(percepcion.confianza(net))
+            cf.append(_conf(net, config))
         cf = np.array(cf); hs = np.array(hs)
         cc.append(float(cf[hs].mean()) if hs.any() else None)
         ce.append(float(cf[~hs].mean()) if (~hs).any() else None)
@@ -118,6 +131,16 @@ def correr(semilla: int, escala: float = 1.0) -> dict:
     if info:
         med.update(mnist_imagenes=float(info["imagenes"]), mnist_exactitud_en_linea=info["exactitud_en_linea"])
     return dict(puntaje=med["auroc2"], medidas=med, segundos=time.time() - t0)
+
+
+MC = dict(lr=0.05)                     # la de integracion3 (exp_metacog.py)
+CONFIGS_METACOG = {"cal": dict(metacog=MC), "ne": dict(metacog=MC, neuromod=dict(ne_gain=1.0, ach_gain=0.0))}
+
+
+def validar(config: dict, semilla: int, escala: float = 1.0) -> float:
+    """Criterio de validación: AUROC de tipo 2 con el mismo protocolo sobre las imágenes de
+    validación (las últimas 5 000 de entrenamiento), con semillas de validación."""
+    return correr(semilla, escala, config, validacion=True)["medidas"]["auroc2"]
 
 
 def correr_espera(semilla: int, escala: float = 1.0) -> dict:
@@ -153,5 +176,26 @@ PRUEBAS = [
         metrica="firmas de la confianza en el tiempo de espera (ratas)",
         protocolo="el de Kepecs et al. (2008) y Lak et al. (2014)", desviaciones=[], correr=correr_espera, version=1,
         semillas=(0,), equivalente=False, motivo_equivalencia="no se pudo correr", referencia=None,
+    ),
+    Prueba(
+        id="auroc_tipo2", variante="imagenes+metacog", condicion="imagenes",
+        metrica="AUROC de tipo 2 con la confianza calibrada de la red (`metacog`), bloques 2 a 6, acierto igualado",
+        protocolo=("el mismo que «imagenes», con depth2 + `metacog` (calibrador en línea de integracion3) entrenada con "
+                   f"{percepcion.N_MNIST} imágenes; la confianza es `Cortex.confidence()`; variante elegida en validación "
+                   "(cal: sólo el calibrador; ne: + neuromodulación NE)"),
+        desviaciones=[
+            "tarea: clasificar un dígito entre 10, no elegir entre dos intervalos; la escalera iguala el acierto en ~71 %",
+            "el calibrador aprende durante el entrenamiento y queda quieto en la prueba (sin respuesta del resultado)",
+            f"la red se entrenó con {percepcion.N_MNIST} imágenes de MNIST (la configuración publicada usa 55 000)",
+            "la referencia humana es un rango entre sujetos: el índice se informa contra los dos extremos",
+            "perfil metacog: opciones de integracion3, fusionadas en v0.3-dev 1b23db0 (apagadas por defecto)",
+        ],
+        correr=correr, version=1, semillas=(0, 1, 2), perfil="metacog",
+        configs=CONFIGS_METACOG, validar=validar, semillas_validacion=(100, 101),
+        criterio_validacion="AUROC de tipo 2 en imágenes de validación (semillas 100 y 101)",
+        equivalente=True,
+        motivo_equivalencia="decisión perceptiva sobre imágenes con dificultad igualada; cambia la tarea (10 clases)",
+        firmas={"firma_opuesta": "confianza de aciertos que sube y de errores que baja con la facilidad (ratas)",
+                "firma_calibracion": "exactitud que crece con la confianza (ratas)"},
     ),
 ]

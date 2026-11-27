@@ -166,6 +166,9 @@ def fila_resultado(prueba, crudos: list[dict], catalogo: dict, commit: str) -> d
     m, s = media_desvio(puntajes)
     red = dict(media=m, desvio=s, por_semilla=puntajes)
     vals = [float(x) for x in puntajes if x is not None]
+    if len(crudos) > 1:                           # ¿las semillas cambian algo? (redes deterministas)
+        firma = [json.dumps(c.get("medidas", {}), sort_keys=True, default=str) + repr(c.get("puntaje")) for c in crudos]
+        red["semillas_identicas"] = len(set(firma)) == 1
     if vals:                                      # la distribución entre semillas, no sólo media y desvío
         red.update(mediana=float(np.median(vals)), minimo=min(vals), maximo=max(vals))
         if azar_v is not None:
@@ -331,6 +334,7 @@ def _ix(ix):
 
 COLUMNAS_CSV = ("prueba", "variante", "perfil", "dimension", "condicion_entrada", "equivalente", "motivo_equivalencia", "estado",
                 "red_media", "red_desvio", "red_mediana", "red_min", "red_max", "semillas_en_azar", "semillas_en_techo",
+                "semillas_identicas",
                 "n_semillas", "azar", "referencia_humana",
                 "referencia_valor", "referencia_fuente", "indice_min", "indice_max",
                 "especies_por_encima", "especies_por_debajo", "a_la_par", "sistemas_por_encima",
@@ -361,6 +365,7 @@ def fila_csv(f: dict) -> dict:
                 red_max=_num(red.get("maximo"), 4),
                 semillas_en_azar="" if red.get("semillas_en_azar") is None else red["semillas_en_azar"],
                 semillas_en_techo="" if red.get("semillas_en_techo") is None else red["semillas_en_techo"],
+                semillas_identicas="sí" if red.get("semillas_identicas") else "",
                 n_semillas=len(f.get("semillas") or []), azar=_num((f.get("azar") or {}).get("valor"), 4),
                 referencia_humana=rh.get("id", ""), referencia_valor=rv,
                 referencia_fuente=rh.get("cita", ""), indice_min=_num(ix.get("min"), 3),
@@ -480,6 +485,8 @@ def tabla(filas: list[dict]) -> str:
                 dist += f" ≤azar {red['semillas_en_azar']}/{n}"
             if red.get("semillas_en_techo"):
                 dist += f" techo {red['semillas_en_techo']}/{n}"
+            if red.get("semillas_identicas"):
+                dist += " (semillas idénticas: determinista)"
         rows.append((f"{f['prueba']}/{f['variante']}", f["condicion_entrada"],
                      "sí" if (f.get("equivalente") or {}).get("valor") else "NO", _ms(red), dist,
                      _num((f.get("azar") or {}).get("valor"), 2), str(rv), _ix(f.get("indice_normalizado")) or "-",

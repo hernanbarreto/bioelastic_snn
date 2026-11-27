@@ -323,3 +323,27 @@ def test_kneser_ney_distribucion_y_orden():
     s_bien = km.secuencia(_ids("the dog runs .".split(), vocab, 2), desde=1)
     s_mal = km.secuencia(_ids("runs the . dog".split(), vocab, 2), desde=1)
     assert s_bien > s_mal
+
+
+def test_equivalencias_de_percepcion(tmp_path, monkeypatch):
+    from battery import version
+    f = tmp_path / "eq.json"
+    monkeypatch.setattr(version, "EQUIVALENCIAS", f)
+    assert version.huella_equivalente("pB") == "pB"                    # sin archivo: la propia
+    f.write_text(json.dumps({"percepcion": {"pC": {"igual_a": "pB"}, "pB": {"igual_a": "pA"}}}))
+    assert version.huella_equivalente("pC") == "pA"                    # se sigue la cadena
+    f.write_text(json.dumps({"percepcion": {"pX": {"igual_a": "pY"}, "pY": {"igual_a": "pX"}}}))
+    assert version.huella_equivalente("pX") in ("pX", "pY")            # un ciclo no cuelga
+    assert version.huella_percepcion("HEAD") == version.huella_percepcion("HEAD")
+
+
+def test_perfiles_del_thinker():
+    from battery.harlow import PERFILES
+    ps = {p.clave: p for p in registro.pruebas()}
+    for base in ("harlow__simbolos", "reversion_volatil__simbolos", "inferencia_transitiva_5__simbolos",
+                 "deteccion_de_cambio__simbolos"):
+        r3 = ps[base + "+R3"]
+        assert r3.perfil == "R3" and "task_sets" not in next(iter(r3.configs.values()))
+        assert all(all(v[k] == PERFILES["R3"][k] for k in PERFILES["R3"]) for v in r3.configs.values())
+        assert next(iter(ps[base + "+R3+ts"].configs.values()))["task_sets"] is True
+    assert ps["auroc_tipo2__imagenes+metacog"].configs["cal"]["metacog"]

@@ -23,7 +23,7 @@ DEPTH2 = dict(areas=[V1L], heads=[dict(source="input")], projection=dict(source=
 N_MNIST = 20_000
 
 
-from .version import ARCHIVOS_PERCEPCION, huella
+from .version import ARCHIVOS_PERCEPCION, huella, huella_equivalente
 
 
 def _huella_red() -> str:
@@ -32,7 +32,8 @@ def _huella_red() -> str:
     entrenamiento es determinista) y la cache se comparte; el Thinker no entra."""
     import bioelastic
     raiz = Path(bioelastic.__file__).resolve().parent
-    return huella((n, (raiz / n).read_bytes() if (raiz / n).exists() else b"") for n in ARCHIVOS_PERCEPCION)
+    return huella_equivalente(huella((n, (raiz / n).read_bytes() if (raiz / n).exists() else b"")
+                                     for n in ARCHIVOS_PERCEPCION))
 
 
 def encoder():
@@ -46,17 +47,25 @@ def mnist():
     return load_mnist()
 
 
-def cortex_mnist(semilla: int, n: int = N_MNIST, log=None):
-    """La red depth2 entrenada con las primeras `n` imágenes del orden de la semilla.
-    Devuelve (red, info); info es None si salió de la cache."""
+def cortex_mnist(semilla: int, n: int = N_MNIST, log=None, config: dict | None = None):
+    """La red depth2 entrenada con las primeras `n` imágenes del orden de la semilla (con
+    opciones extra de `config`, p. ej. `metacog`). Devuelve (red, info); info es None si salió
+    de la cache. Con `config`, la cache incluye el código entero (no sólo la percepción)."""
     from bioelastic import Cortex
-    ruta = CACHE / f"mnist_depth2_{_huella_red()}_s{semilla}_n{n}.npz"
+    if config:
+        import bioelastic, json as _json
+        raiz = Path(bioelastic.__file__).resolve().parent
+        hc = hashlib.sha1(_json.dumps(config, sort_keys=True).encode()
+                          + b"".join(p.read_bytes() for p in sorted(raiz.glob("*.py")))).hexdigest()[:10]
+        ruta = CACHE / f"mnist_depth2_c{hc}_s{semilla}_n{n}.npz"
+    else:
+        ruta = CACHE / f"mnist_depth2_{_huella_red()}_s{semilla}_n{n}.npz"
     if ruta.exists():
         return Cortex.load(ruta), None
     Xtr, ytr, _, _ = mnist()
     order = np.random.default_rng(semilla).permutation(len(Xtr) - 5000)[:n]
     E = encoder()
-    net = Cortex((28, 28, 1), 10, seed=semilla, **DEPTH2)
+    net = Cortex((28, 28, 1), 10, seed=semilla, **DEPTH2, **(config or {}))
     t0 = time.time(); ok = 0
     for j, i in enumerate(order):
         ok += int(net.step(E(Xtr[i]), int(ytr[i])) == ytr[i])
@@ -64,10 +73,11 @@ def cortex_mnist(semilla: int, n: int = N_MNIST, log=None):
             log(f"    mnist depth2 s{semilla}: {j + 1}/{n} ({time.time() - t0:.0f} s)")
     info = dict(imagenes=n, exactitud_en_linea=ok / n, segundos=time.time() - t0)
     CACHE.mkdir(parents=True, exist_ok=True)
-    tmp = ruta.with_name(ruta.stem + ".tmp.npz")
+    tmp = ruta.with_name(ruta.stem + ".tmp.npz")         # con `metacog`, `save` guarda los calibradores
     net.save(tmp)
     tmp.replace(ruta)
     return net, info
+
 
 
 def congelar(net):

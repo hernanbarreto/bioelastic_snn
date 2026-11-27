@@ -547,8 +547,11 @@ PRUEBAS = [
             f"{PARES} pares por paradigma (las personas: 5 pares por paradigma y 20 validadores)",
             "la probabilidad se lee de la decisión de la red (`readout.probs`), que no fue hecha para puntuar oraciones",
             "las personas juzgan aceptabilidad con toda su competencia; la red sólo predice bytes",
+            "la red de texto es determinista dado el corpus: la semilla sólo cambia la exploración, que el "
+            "entrenamiento no usa; las semillas 0 y 1 dan la misma red bit a bit, así que no hay variabilidad entre "
+            "semillas que medir (n = 1 en los hechos)",
         ],
-        correr=correr, version=5, semillas=(0, 1, 2),
+        correr=correr, version=5, semillas=(0, 1),
         equivalente=False,
         motivo_equivalencia=("la cifra humana publicada es una referencia no equivalente: las personas no aprendieron "
                              "con 600 KB; la comparación que decide (criterio F) es contra n-gramas con los mismos datos"),

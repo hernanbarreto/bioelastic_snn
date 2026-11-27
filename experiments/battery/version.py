@@ -38,6 +38,22 @@ def huella(contenidos) -> str:
     return "p" + h.hexdigest()[:10]
 
 
+EQUIVALENCIAS = ROOT / "results" / "bateria" / "equivalencias.json"
+
+
+def huella_equivalente(h: str) -> str:
+    """La huella canónica: si una comprobación bit a bit (battery/identidad.py) mostró que el
+    código de percepción con huella `h` da lo mismo que otro, se usa la de ese otro."""
+    import json
+    if not EQUIVALENCIAS.exists():
+        return h
+    eq = json.loads(EQUIVALENCIAS.read_text()).get("percepcion", {})
+    vistos = set()
+    while h in eq and h not in vistos:
+        vistos.add(h); h = eq[h]["igual_a"]
+    return h
+
+
 def huella_percepcion(ref: str) -> str:
     """La huella de percepción de un commit, leída con git (sin importar nada)."""
     sha = resolver(ref)

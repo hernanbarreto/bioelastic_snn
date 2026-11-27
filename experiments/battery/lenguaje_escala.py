@@ -216,7 +216,8 @@ PRUEBAS = [
         metrica="bits por byte de la red en el tramo fijo no visto con 1,8 MB (menos es mejor); la curva es el resultado",
         protocolo=("red de texto de exp_text con 0,2, 0,6 y 1,8 MB de AO-CHILDES (una pasada en línea) y KN de bytes con "
                    "los mismos datos; bits por byte en los últimos 60 000 bytes del corpus, BLiMP y neuronas en cada escala"),
-        desviaciones=_DESV, correr=correr, version=1, semillas=(0, 1, 2),
+        desviaciones=_DESV + ["una corrida por escala: la red de texto es determinista dado el corpus (las semillas dan "
+                              "la misma red bit a bit)"], correr=correr, version=1, semillas=(0,),
         equivalente=False, motivo_equivalencia="curva de diagnóstico (hardware contra arquitectura), sin referencia humana",
         referencia=None, azar=8.0, azar_derivacion="8 bits por byte: distribución uniforme sobre 256 bytes",
         mayor_es_mejor=False,

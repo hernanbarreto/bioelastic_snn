@@ -227,14 +227,67 @@ def fuentes() -> list[Fuente]:
         motivo_equivalencia="el mismo escenario incremental por clases (sin referencia humana ni de máquina verificada)",
     ))
     r3 = WT / "razonamiento3" / "results"
-    for pid, nombre in (("scan", "SCAN"), ("babi", "bAbI"), ("instrucciones_pocos_ejemplos", "Lake y Baroni 2023")):
-        out.append(Fuente(
-            prueba=pid, variante="thinker", condicion="simbolos", metrica="(la define la rama razonamiento3)",
-            protocolo=f"{nombre}: lo corre la rama razonamiento3 (guion de F6 en af8d14f)", desviaciones=[],
-            archivo=r3 / f"razonamiento3_f6_{pid}.csv", leer=None, agente="razonamiento3", equivalente=False,
-            pendiente=f"{nombre}: la rama razonamiento3 tiene el guion (af8d14f) pero todavía no hay resultados",
-        ))
+    out.append(Fuente(
+        prueba="babi", variante="thinker_defecto_contexto", condicion="simbolos",
+        metrica="exactitud media de las 20 tareas (1 000 ejemplos de entrenamiento por tarea, test congelado)",
+        protocolo=("rama razonamiento3, F6c (en curso, exploratorio): Thinker con valores por defecto + contexto temporal, "
+                   "entrenado por tarea con los 1 000 ejemplos y medido congelado en el test"),
+        desviaciones=["una sola semilla (exploratorio, según la rama)",
+                      "las palabras llegan como símbolos ya separados; las cifras publicadas son de redes que leen texto",
+                      "azar: respuesta mayoritaria por tarea, tomada de la misma tabla de la rama"],
+        archivo=r3 / "razonamiento3_f6_babi.csv", leer=leer_babi, agente="razonamiento3", equivalente=False,
+        motivo_equivalencia="sin referencia humana medida; las palabras llegan como símbolos",
+        comparar={"memnn": "puntaje", "lstm": "puntaje", "ngramas": "puntaje"}, referencia=None,
+        azar=None, azar_derivacion="respuesta mayoritaria por tarea (de la tabla de la rama)",
+        pendiente="bAbI: todavía no hay resultados en la rama razonamiento3",
+    ))
+    out.append(Fuente(
+        prueba="instrucciones_pocos_ejemplos", variante="thinker_r3_contexto", condicion="simbolos",
+        metrica="proporción de salidas idénticas a la algebraica en el episodio de las personas (300 episodios de "
+                "meta-entrenamiento)",
+        protocolo=("rama razonamiento3, F6b (en curso): Thinker con todo encendido + contexto temporal, meta-entrenado "
+                   "con 0, 30, 100 y 300 episodios de la familia y probado en el episodio de las 25 personas"),
+        desviaciones=["las personas ven pseudopalabras y círculos de colores y traen su lenguaje; el Thinker recibe símbolos",
+                      "MLC se meta-entrenó con 100 000 episodios; acá, 300 como máximo",
+                      "la fuente publica media ± desvío de 3 semillas, sin los valores por semilla"],
+        archivo=r3 / "razonamiento3_f6_mlc.csv", leer=leer_mlc, agente="razonamiento3", agregado=True,
+        equivalente=False, motivo_equivalencia="símbolos en lugar de palabras y colores vistos; meta-entrenamiento mínimo",
+        comparar={"mlc": "puntaje"},
+        pendiente="Lake y Baroni: todavía no hay resultados en la rama razonamiento3",
+    ))
+    out.append(Fuente(
+        prueba="scan", variante="thinker", condicion="simbolos", metrica="(la define la rama razonamiento3)",
+        protocolo="SCAN: lo corre la rama razonamiento3 (F6, curva en curso)", desviaciones=[],
+        archivo=r3 / "razonamiento3_f6_scan.csv", leer=None, agente="razonamiento3", equivalente=False,
+        pendiente="SCAN: la rama razonamiento3 tiene la curva en curso (sólo archivos parciales)",
+    ))
     return out
+
+
+def leer_babi(path: Path):
+    filas = _csv(path)
+    tareas = {}
+    azar = {}
+    for r in filas:
+        if r["sistema"].startswith("Thinker (valores por defecto") and r["tramo"].startswith("test"):
+            tareas[r["medida"]] = _f(r["media"])
+        if r["sistema"] == "azar (mayoritaria)":
+            azar[r["medida"]] = _f(r["media"])
+    if not tareas:
+        return []
+    med = {f"tarea_{k.split(':')[0]}": v for k, v in tareas.items()}
+    med.update(tareas_resueltas_95=float(sum(v >= 0.95 for v in tareas.values())),
+               azar_mayoritaria_media=float(sum(azar.values()) / len(azar)) if azar else None)
+    return [dict(semilla=0, puntaje=float(sum(tareas.values()) / len(tareas)), medidas=med)]
+
+
+def leer_mlc(path: Path):
+    for r in _csv(path):
+        if (r["sistema"].startswith("Thinker") and r["tramo"].startswith("300 episodios")
+                and r["medida"] == "secuencia exacta, episodio de las personas"):
+            return dict(media=_f(r["media"]), desvio=_f(r["desvio"]), n=int(float(r["semillas"])), semillas=[0, 1, 2],
+                        medidas=dict(episodios_meta=300.0))
+    return None
 
 
 def fila_de(f: Fuente, catalogo: dict) -> dict:
@@ -251,6 +304,10 @@ def fila_de(f: Fuente, catalogo: dict) -> dict:
     if f.patron:
         archivos = sorted(f.archivo.parent.glob(f.patron.format(s="*")))
     commit = commit_de(archivos)
+    if f.leer is None:
+        fila = esquema.fila_resultado(p, [], catalogo, commit)
+        fila.update(estado="pendiente", motivo=f.pendiente, fuente_resultado=f"{f.agente}: {f.archivo}")
+        return fila
     if f.agregado:
         a = f.leer(f.archivo)
         if a is None:
