@@ -1,0 +1,18 @@
+{
+ "puntaje": 0.77,
+ "medidas": {
+  "ensayo2_primeros8": 0.375,
+  "ensayo2_1a100": 0.7,
+  "ensayo2_101a200": 0.77,
+  "ensayo2_233a344": 0.7142857142857143,
+  "ensayo2_351a400": 0.74,
+  "colisiones": 0.11574074074074074,
+  "ensayo2_sin_colision_101a200": 0.8241758241758241,
+  "simbolos_distintos": 10.0
+ },
+ "segundos": 6.951944589614868,
+ "semilla": 1,
+ "version": 2,
+ "escala": 1.0,
+ "config": null
+}

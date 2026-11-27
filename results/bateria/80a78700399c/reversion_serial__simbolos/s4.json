@@ -1,0 +1,32 @@
+{
+ "puntaje": 4.0,
+ "medidas": {
+  "errores_discriminacion": 2.0,
+  "errores_reversion1": 2.0,
+  "errores_ultimas3": 4.0,
+  "mejora_errores": -2.0,
+  "pendiente_errores": 0.19393939393939383,
+  "ensayo2_tras_reversion": 0.0,
+  "fases_al_criterio": 1.0,
+  "mejora_con_reversiones": false,
+  "respuestas_invalidas": 0.0,
+  "errores_por_fase": [
+   2,
+   2,
+   2,
+   4,
+   4,
+   4,
+   4,
+   4,
+   4,
+   4,
+   4
+  ]
+ },
+ "segundos": 0.15076470375061035,
+ "semilla": 4,
+ "version": 1,
+ "escala": 1.0,
+ "config": "defecto"
+}

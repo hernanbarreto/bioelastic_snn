@@ -1,0 +1,31 @@
+{
+ "puntaje": 0.4095238095238095,
+ "medidas": {
+  "exactitud_fase3": 0.4095238095238095,
+  "primera_vez_no_vistos": 0.6666666666666666,
+  "primera_vez_validas": 0.6666666666666666,
+  "pendiente_distancia": -0.006509606299522257,
+  "efecto_distancia": false,
+  "adyacentes_por_debajo": true,
+  "validas_fase3": 0.8333333333333334,
+  "exactitud_por_distancia": [
+   0.35294117647058826,
+   0.42857142857142855,
+   0.48484848484848486,
+   0.43243243243243246,
+   0.3333333333333333,
+   0.375
+  ],
+  "distancia_1": 0.35294117647058826,
+  "distancia_2": 0.42857142857142855,
+  "distancia_3": 0.48484848484848486,
+  "distancia_4": 0.43243243243243246,
+  "distancia_5": 0.3333333333333333,
+  "distancia_6": 0.375
+ },
+ "segundos": 1.018733263015747,
+ "semilla": 3,
+ "version": 2,
+ "escala": 1.0,
+ "config": "aprender_a_aprender"
+}

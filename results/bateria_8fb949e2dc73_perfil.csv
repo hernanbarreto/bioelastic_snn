@@ -1,0 +1,11 @@
+conjunto,dimension,nombre,indice_min,indice_max,pruebas,dimensiones_con_indice,dimensiones_total,advertencia
+equivalentes,"(promedio entre dimensiones, convención)",,0.685,2.010,,3,10,
+equivalentes,pocos_ejemplos,Aprender de pocos ejemplos,0.224,0.235,"omniglot (imagenes, pixeles)",,,
+equivalentes,metacognicion,Metacognición,0.991,4.954,auroc_tipo2 (imagenes),,,
+equivalentes,percepcion,Percepción,0.840,0.840,"mnist (depth2, depth3); fashion_mnist (depth2, depth3); cifar10 (depth2_5000, depth3_5000)",,,
+todas,"(promedio entre dimensiones, convención)",,0.354,1.369,,5,10,"mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"
+todas,razonamiento_relacional,Razonamiento relacional y composición,-0.514,-0.514,"inferencia_transitiva_6 (simbolos, simbolos+R3, simbolos+R3+ts); instrucciones_pocos_ejemplos (thinker_r3_contexto)",,,"mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"
+todas,pocos_ejemplos,Aprender de pocos ejemplos,0.224,0.235,"omniglot (imagenes, pixeles)",,,"mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"
+todas,metacognicion,Metacognición,1.266,6.332,"auroc_tipo2 (imagenes, flujo_continuo_integracion3)",,,"mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"
+todas,lenguaje,Lenguaje,-0.047,-0.047,blimp (texto),,,"mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"
+todas,percepcion,Percepción,0.840,0.840,"mnist (depth2, depth3); fashion_mnist (depth2, depth3); cifar10 (depth2_5000, depth3_5000)",,,"mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"

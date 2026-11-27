@@ -1,0 +1,17 @@
+{
+ "puntaje": 0.3333333333333333,
+ "medidas": {
+  "eleccion_B_en_BD": 0.3333333333333333,
+  "validas_BD": 1.0,
+  "eleccion_B_entre_validas": 0.3333333333333333,
+  "eleccion_A_en_AE": 0.6666666666666666,
+  "sesiones_al_criterio": 125.0,
+  "llego_al_criterio": false,
+  "premisas_ultimas10": 0.4375000000000001
+ },
+ "segundos": 3.8668999671936035,
+ "semilla": 3,
+ "version": 2,
+ "escala": 1.0,
+ "config": "aprender_a_aprender"
+}
