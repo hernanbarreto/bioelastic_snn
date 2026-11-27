@@ -1111,9 +1111,10 @@ CONTAMINATION = ("Semillas de test 0 y 1 contaminadas para F7: una elección ant
 
 
 def phase_f7b(a, data):
-    """Prueba (split oficial de test, semillas 0-2) de la configuración elegida en
-    validación, contra c2 y ER-ACE con los mismos bytes, con ablaciones: interferencia CD,
-    cambio de etiqueta 10 <-> 12 y chainF con la misma configuración."""
+    """Prueba (split oficial de test, semillas nuevas 3-5; ver CONTAMINATION) de la
+    configuración elegida en validación, contra c2 y ER-ACE con los mismos bytes, con
+    ablaciones: interferencia CD, cambio de etiqueta 10 <-> 12, chainF y renombre 10 -> 18
+    con la misma configuración."""
     D = split_data(data)["test"]
     spec = chosen_spec()
     rows: list = []
@@ -1127,11 +1128,12 @@ def phase_f7b(a, data):
     for name, sp in abl.items():                     # (chainF sólo para el elegido y las referencias)
         pair_rows(sp, a.seeds, D, tag="f7b", split="test", rows=rows)
     ov = []
-    for sp in (spec, C2):                            # diagnóstico de representación (semilla 0)
+    s0 = a.seeds[0]
+    for sp in (spec, C2):                            # diagnóstico de representación (primera semilla de test)
         def go(sp=sp):
-            r = run_scenario("CD", sp, 0, D, keep_agent=True)
-            return dict(bench="overlap", scenario="CD", model=sp, seed=0, **overlap(r["agent"].net, D[1]))
-        ov.append(cached(dict(b="overlap", spec=sp, seed=0, split="test"), go))
+            r = run_scenario("CD", sp, s0, D, keep_agent=True)
+            return dict(bench="overlap", scenario="CD", model=sp, seed=s0, **overlap(r["agent"].net, D[1]))
+        ov.append(cached(dict(b="overlap", spec=sp, seed=s0, split="test"), go))
         print(f"[f7b] superposición {sp[len(C2):]}: " + " ".join(f"{k}={v:.3f}" for k, v in ov[-1].items()
                                                                 if isinstance(v, float)), flush=True)
     for r in rows:
@@ -1175,7 +1177,7 @@ def phase_f7k(a, data):
        (f1b: 0,932 de una red nueva). Candidatos: el elegido, el elegido con sueño en
        micro-fases y renormalización, y el elegido con el error conjunto. Criterio fijado
        antes de mirar: final - olvido + min(plasticidad, 1).
-    2) Test (semillas 0-2): el ganador contra c2 y ER-ACE con los mismos bytes."""
+    2) Test (semillas nuevas 3-5): el ganador contra c2 y ER-ACE con los mismos bytes."""
     S = split_data(data)
     base = chosen_spec()
     cands = {"elegido": base}
