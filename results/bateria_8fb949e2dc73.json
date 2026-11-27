@@ -4,7 +4,7 @@
   "sha": "8fb949e2dc737dcf82ee326179b58c9d86c81803",
   "sucio": false,
   "escala": 1.0,
-  "fecha": "2026-11-26 23:08:48",
+  "fecha": "2026-11-26 23:29:57",
   "python": "3.13.18",
   "numpy": "2.5.3",
   "catalogo": {
@@ -39,9 +39,19 @@
    "por_dimension": {
     "pocos_ejemplos": {
      "nombre": "Aprender de pocos ejemplos",
-     "min": 0.22412280701754383,
-     "max": 0.23526703499079193,
+     "min": 0.4709502923976608,
+     "max": 0.47652240638428484,
      "pruebas": [
+      {
+       "prueba": "harlow",
+       "variantes": [
+        "imagenes",
+        "imagenes+R3",
+        "imagenes+R3+ts"
+       ],
+       "min": 0.7177777777777777,
+       "max": 0.7177777777777777
+      },
       {
        "prueba": "omniglot",
        "variantes": [
@@ -104,8 +114,8 @@
     }
    },
    "global_": {
-    "min": 0.6849335409598112,
-    "max": 2.0097497737991743,
+    "min": 0.7672093694198502,
+    "max": 2.0901682309303387,
     "dimensiones": 3,
     "de": 10,
     "convencion": "promedio simple de los promedios por dimensión que tienen al menos un índice; es una convención, sin pesos, y se informa siempre junto al perfil"
@@ -113,6 +123,35 @@
   },
   "todas": {
    "por_dimension": {
+    "pocos_ejemplos": {
+     "nombre": "Aprender de pocos ejemplos",
+     "min": 0.500172514619883,
+     "max": 0.505744628606507,
+     "pruebas": [
+      {
+       "prueba": "harlow",
+       "variantes": [
+        "simbolos",
+        "simbolos+R3",
+        "simbolos+R3+ts",
+        "imagenes",
+        "imagenes+R3",
+        "imagenes+R3+ts"
+       ],
+       "min": 0.7762222222222223,
+       "max": 0.7762222222222223
+      },
+      {
+       "prueba": "omniglot",
+       "variantes": [
+        "imagenes",
+        "pixeles"
+       ],
+       "min": 0.22412280701754383,
+       "max": 0.23526703499079193
+      }
+     ]
+    },
     "razonamiento_relacional": {
      "nombre": "Razonamiento relacional y composición",
      "min": -0.5137690094533499,
@@ -138,19 +177,20 @@
       }
      ]
     },
-    "pocos_ejemplos": {
-     "nombre": "Aprender de pocos ejemplos",
-     "min": 0.22412280701754383,
-     "max": 0.23526703499079193,
+    "memoria_de_trabajo": {
+     "nombre": "Memoria de trabajo",
+     "min": 3.2408536585365852,
+     "max": 3.2408536585365852,
      "pruebas": [
       {
-       "prueba": "omniglot",
+       "prueba": "deteccion_de_cambio",
        "variantes": [
-        "imagenes",
-        "pixeles"
+        "simbolos",
+        "simbolos+R3",
+        "simbolos+R3+ts"
        ],
-       "min": 0.22412280701754383,
-       "max": 0.23526703499079193
+       "min": 3.2408536585365852,
+       "max": 3.2408536585365852
       }
      ]
     },
@@ -221,9 +261,9 @@
     }
    },
    "global_": {
-    "min": 0.35395301930197354,
-    "max": 1.3692589786177731,
-    "dimensiones": 5,
+    "min": 0.8811114104414653,
+    "max": 1.726271024206861,
+    "dimensiones": 6,
     "de": 10,
     "convencion": "promedio simple de los promedios por dimensión que tienen al menos un índice; es una convención, sin pesos, y se informa siempre junto al perfil"
    },
@@ -231,7 +271,11 @@
   },
   "sin_indice": [
    "babi/thinker_defecto_contexto",
+   "deteccion_de_cambio/dos_items",
    "igual_distinto/imagenes",
+   "igual_distinto/simbolos",
+   "igual_distinto/simbolos+R3",
+   "igual_distinto/simbolos+R3+ts",
    "inferencia_transitiva_5/simbolos",
    "inferencia_transitiva_5/simbolos+R3",
    "inferencia_transitiva_5/simbolos+R3+ts",
@@ -240,6 +284,9 @@
    "inferencia_transitiva_7/simbolos+R3+ts",
    "mnist_addition/fiab_27500",
    "mnist_addition/fiab_3000",
+   "reversion_serial/simbolos",
+   "reversion_serial/simbolos+R3",
+   "reversion_serial/simbolos+R3+ts",
    "reversion_volatil/simbolos",
    "reversion_volatil/simbolos+R3",
    "reversion_volatil/simbolos+R3+ts",
@@ -249,6 +296,3808 @@
   ]
  },
  "filas": [
+  {
+   "prueba": "harlow",
+   "variante": "simbolos",
+   "perfil": "defecto",
+   "nombre": "Conjuntos de aprendizaje de Harlow: acierto en el ensayo 2 de problemas de discriminación con objetos nuevos",
+   "dimension": "pocos_ejemplos",
+   "condicion_entrada": "simbolos",
+   "equivalente": {
+    "valor": false,
+    "motivo": "con símbolos la red no tiene que percibir ni reconocer los objetos"
+   },
+   "metrica": "acierto en el ensayo 2, problemas de 6 ensayos 101 a 200 (en línea, tras 32 preliminares de 50 ensayos)",
+   "protocolo": "32 problemas de 50 ensayos y 400 de 6 ensayos, dos símbolos nunca vistos por problema, uno premiado al azar, orden al azar en cada ensayo; la red aprende en línea con su exploración; prueba congelada con 100 problemas nuevos tras 200 y tras 400 problemas de 6 ensayos",
+   "desviaciones": [
+    "condición de entrada: símbolos con identidad perfecta, no objetos reales vistos en el aparato de Wisconsin; la red no tiene que reconocer el objeto ni separarlo de la posición",
+    "el resultado llega como recompensa en el estado (`prev_io`), no como percepción del premio bajo el objeto",
+    "sin los 112 problemas de discriminación con reversión de Harlow (su procedimiento no se pudo verificar): los problemas 233 a 344 de la red son de 6 ensayos, comparados con el ensayo 2 de los últimos 112 de Harlow",
+    "los problemas 201 a 400 son una extensión de la batería para comparar con Warren (1965)",
+    "los monos tuvieron entrenamiento previo con el aparato; la red empieza sin nada"
+   ],
+   "semillas": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "variabilidad": "la semilla cambia el Thinker (pesos iniciales del escritor de registros y la exploración) y el entorno (qué objeto se premia, el orden en cada ensayo)",
+   "azar": {
+    "valor": 0.5,
+    "derivacion": "dos objetos; antes de aprender a aprender, el ensayo 2 no supera al 1"
+   },
+   "commit": "8fb949e2dc73",
+   "fuente_resultado": "medicion@8fb949e2dc73",
+   "segundos": 15.906455993652344,
+   "estado": "medido",
+   "motivo": "",
+   "red": {
+    "media": 0.756,
+    "desvio": 0.05388877434122991,
+    "por_semilla": [
+     0.72,
+     0.82,
+     0.82,
+     0.73,
+     0.69
+    ],
+    "semillas_identicas": false,
+    "mediana": 0.73,
+    "minimo": 0.69,
+    "maximo": 0.82,
+    "semillas_en_azar": 0
+   },
+   "referencia_humana": {
+    "id": "hodos1970_nino",
+    "especie": "niño (CI 136), un sujeto",
+    "valor": 1.0,
+    "tipo_valor": "media",
+    "cita": "Hodos (1970), citado por Thomas (2019), «Learning to Learn», Encyclopedia of Animal Cognition and Behavior",
+    "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+    "verificacion": "secundaria",
+    "releida": "2026-11-26",
+    "protocolo": "curva comparada entre 16 especies; no se pudo leer el protocolo original",
+    "nota": "un solo niño; no hay cifra de adultos verificada",
+    "tras_problemas": 100,
+    "medida_red": "ensayo2_101a200",
+    "valor_red": 0.756,
+    "comparacion": "especie por encima",
+    "referencia_del_indice": true
+   },
+   "referencias_animales": [
+    {
+     "id": "harlow1949_primeros8",
+     "especie": "mono rhesus",
+     "valor": 0.52,
+     "tipo_valor": "media",
+     "cita": "Harlow (1949), Psychol. Rev. 56:51, resumido por Medin (1972), Psychol. Bull.",
+     "url": "https://groups.psych.northwestern.edu/medin/documents/Medin1972PsychBull.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tramo": "primeros 8 problemas",
+     "medida_red": "ensayo2_primeros8",
+     "valor_red": 0.5,
+     "comparacion": "a la par"
+    },
+    {
+     "id": "harlow1950_1a100",
+     "especie": "mono rhesus",
+     "valor": 0.82,
+     "tipo_valor": "media",
+     "cita": "Harlow (1950), J. Exp. Psychol. 40:26, resumen de la APA (versión indexada por scilit)",
+     "url": "https://scilit.com/publications/d5853446e00b40505db0bdeed003ca44",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "nota": "11 monos; mismo conjunto de datos que Harlow 1949",
+     "tramo": "problemas de 6 ensayos 1 a 100 (después de los 32 preliminares)",
+     "medida_red": "ensayo2_1a100",
+     "valor_red": 0.758,
+     "comparacion": "especie por encima"
+    },
+    {
+     "id": "harlow1950_101a200",
+     "especie": "mono rhesus",
+     "valor": 0.87,
+     "tipo_valor": "media",
+     "cita": "Harlow (1950), J. Exp. Psychol. 40:26, resumen de la APA (versión indexada por scilit)",
+     "url": "https://scilit.com/publications/d5853446e00b40505db0bdeed003ca44",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "tramo": "problemas de 6 ensayos 101 a 200",
+     "medida_red": "ensayo2_101a200",
+     "valor_red": 0.756,
+     "comparacion": "especie por encima"
+    },
+    {
+     "id": "harlow1949_ultimos112",
+     "especie": "mono rhesus",
+     "valor": 0.9,
+     "tipo_valor": "cota_inferior",
+     "cita": "Harlow (1949), resumido por Medin (1972)",
+     "url": "https://groups.psych.northwestern.edu/medin/documents/Medin1972PsychBull.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "nota": "Medin dice «más de 90 %»; no se pudo leer la cifra exacta del original",
+     "tramo": "últimos 112 problemas de 344",
+     "medida_red": "ensayo2_233a344",
+     "valor_red": 0.7857142857142858,
+     "comparacion": "especie por encima"
+    },
+    {
+     "id": "warren1965_rhesus",
+     "especie": "mono rhesus (el mejor de la comparación)",
+     "valor": 0.85,
+     "tipo_valor": "media",
+     "cita": "Warren (1965), citado por Thomas (2019)",
+     "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 400,
+     "medida_red": "ensayo2_351a400",
+     "valor_red": 0.744,
+     "comparacion": "especie por encima"
+    },
+    {
+     "id": "warren1965_rata_ardilla",
+     "especie": "rata y ardilla (las peores de la comparación)",
+     "valor": 0.6,
+     "tipo_valor": "media",
+     "cita": "Warren (1965), citado por Thomas (2019)",
+     "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 1800,
+     "medida_red": "ensayo2_351a400",
+     "valor_red": 0.744,
+     "comparacion": "especie por debajo (la red con menos problemas)"
+    },
+    {
+     "id": "hodos1970_tupaya",
+     "especie": "tupaya (musaraña arborícola)",
+     "valor": 0.5,
+     "tipo_valor": "media",
+     "cita": "Hodos (1970), citado por Thomas (2019)",
+     "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 1000,
+     "medida_red": "ensayo2_351a400",
+     "valor_red": 0.744,
+     "comparacion": "especie por debajo (la red con menos problemas)"
+    },
+    {
+     "id": "thomas2012_chimpance",
+     "especie": "chimpancé",
+     "valor_min": 0.9,
+     "valor_max": 1.0,
+     "tipo_valor": "rango",
+     "cita": "Thomas (2012), «Learning set formation and conceptualization», Encyclopedia of the Sciences of Learning (sin cita del original)",
+     "url": "https://www.psychology.uga.edu/sites/default/files/inline-files/LSFvCLPreprint.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 200,
+     "medida_red": "ensayo2_101a200",
+     "valor_red": 0.756,
+     "comparacion": "especie por encima"
+    },
+    {
+     "id": "thomas2012_rata",
+     "especie": "rata (objetos visuales)",
+     "valor": 0.55,
+     "tipo_valor": "aproximado",
+     "cita": "Thomas (2012), ídem (sin cita del original)",
+     "url": "https://www.psychology.uga.edu/sites/default/files/inline-files/LSFvCLPreprint.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 1000,
+     "medida_red": "ensayo2_351a400",
+     "valor_red": 0.744,
+     "comparacion": "especie por debajo (la red con menos problemas)"
+    },
+    {
+     "id": "bailey1998_ratas",
+     "especie": "rata (tres)",
+     "valor": 0.87,
+     "tipo_valor": "media",
+     "cita": "Bailey & Thomas (1998), citado por Thomas (2019)",
+     "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "nota": "81 % en los problemas 16 a 60; la modalidad de los estímulos no se pudo leer en la revisión, así que no se compara con la red",
+     "tramo": "problemas 16 a 30",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    }
+   ],
+   "referencias_maquinas": [],
+   "indice_normalizado": {
+    "contra": "hodos1970_nino",
+    "min": 0.5119999999999999,
+    "max": 0.5119999999999999,
+    "media": 0.5119999999999999,
+    "desvio": 0.10777754868245983,
+    "por_semilla": [
+     0.43999999999999995,
+     0.6399999999999999,
+     0.6399999999999999,
+     0.45999999999999996,
+     0.3799999999999999
+    ],
+    "por_semilla_min": null,
+    "por_semilla_max": null,
+    "referencia": 1.0,
+    "tipo_valor": "media"
+   },
+   "detalle": {
+    "congelado_tras200": {
+     "media": 0.9019999999999999,
+     "desvio": 0.12006664815842907,
+     "por_semilla": [
+      0.75,
+      0.76,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "congelado_tras400": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "ensayo1_101a200": {
+     "media": 0.43,
+     "desvio": 0.021908902300206645,
+     "por_semilla": [
+      0.39,
+      0.43,
+      0.45,
+      0.43,
+      0.45
+     ]
+    },
+    "ensayo2_101a200": {
+     "media": 0.756,
+     "desvio": 0.05388877434122991,
+     "por_semilla": [
+      0.72,
+      0.82,
+      0.82,
+      0.73,
+      0.69
+     ]
+    },
+    "ensayo2_1a100": {
+     "media": 0.758,
+     "desvio": 0.03969886648255846,
+     "por_semilla": [
+      0.7,
+      0.79,
+      0.76,
+      0.73,
+      0.81
+     ]
+    },
+    "ensayo2_233a344": {
+     "media": 0.7857142857142858,
+     "desvio": 0.03571428571428569,
+     "por_semilla": [
+      0.8482142857142857,
+      0.7410714285714286,
+      0.7767857142857143,
+      0.7678571428571429,
+      0.7946428571428571
+     ]
+    },
+    "ensayo2_351a400": {
+     "media": 0.744,
+     "desvio": 0.046303347611160915,
+     "por_semilla": [
+      0.7,
+      0.68,
+      0.76,
+      0.8,
+      0.78
+     ]
+    },
+    "ensayo2_preliminares": {
+     "media": 0.6625,
+     "desvio": 0.10532687216470447,
+     "por_semilla": [
+      0.65625,
+      0.59375,
+      0.84375,
+      0.53125,
+      0.6875
+     ]
+    },
+    "ensayo2_primeros8": {
+     "media": 0.5,
+     "desvio": 0.11180339887498948,
+     "por_semilla": [
+      0.625,
+      0.375,
+      0.625,
+      0.375,
+      0.5
+     ]
+    },
+    "_series": {
+     "curva_ensayo2_por25": [
+      [
+       0.76,
+       0.64,
+       0.6,
+       0.8,
+       0.8,
+       0.56,
+       0.72,
+       0.8,
+       0.84,
+       0.88,
+       0.88,
+       0.8,
+       0.64,
+       0.64,
+       0.68,
+       0.72
+      ],
+      [
+       0.8,
+       0.76,
+       0.8,
+       0.8,
+       0.76,
+       0.88,
+       0.8,
+       0.84,
+       0.72,
+       0.8,
+       0.64,
+       0.84,
+       0.8,
+       0.72,
+       0.68,
+       0.68
+      ],
+      [
+       0.76,
+       0.88,
+       0.72,
+       0.68,
+       0.92,
+       0.84,
+       0.8,
+       0.72,
+       0.76,
+       0.76,
+       0.6,
+       0.88,
+       0.92,
+       0.76,
+       0.72,
+       0.8
+      ],
+      [
+       0.76,
+       0.6,
+       0.76,
+       0.8,
+       0.64,
+       0.76,
+       0.72,
+       0.8,
+       0.8,
+       0.84,
+       0.76,
+       0.68,
+       0.8,
+       0.8,
+       0.88,
+       0.72
+      ],
+      [
+       0.72,
+       0.84,
+       0.88,
+       0.8,
+       0.64,
+       0.88,
+       0.52,
+       0.72,
+       0.68,
+       0.8,
+       0.92,
+       0.72,
+       0.8,
+       0.76,
+       0.68,
+       0.88
+      ]
+     ]
+    }
+   },
+   "firmas": {},
+   "curva": [
+    {
+     "tramo": "problemas 1-8 (de 50 ensayos)",
+     "medida": "ensayo2_primeros8",
+     "red_media": 0.5,
+     "red_desvio": 0.11180339887498948,
+     "referencia": "harlow1949_primeros8",
+     "especie": "mono rhesus",
+     "valor": 0.52,
+     "tipo_valor": "media",
+     "comparacion": "a la par"
+    },
+    {
+     "tramo": "problemas 33-132 (1-100 de 6 ensayos)",
+     "medida": "ensayo2_1a100",
+     "red_media": 0.758,
+     "red_desvio": 0.03969886648255846,
+     "referencia": "harlow1950_1a100",
+     "especie": "mono rhesus",
+     "valor": 0.82,
+     "tipo_valor": "media",
+     "comparacion": "especie por encima"
+    },
+    {
+     "tramo": "problemas 133-232 (101-200 de 6 ensayos)",
+     "medida": "ensayo2_101a200",
+     "red_media": 0.756,
+     "red_desvio": 0.05388877434122991,
+     "referencia": "harlow1950_101a200",
+     "especie": "mono rhesus",
+     "valor": 0.87,
+     "tipo_valor": "media",
+     "comparacion": "especie por encima"
+    },
+    {
+     "tramo": "problemas 233-344 (los últimos 112 de Harlow)",
+     "medida": "ensayo2_233a344",
+     "red_media": 0.7857142857142858,
+     "red_desvio": 0.03571428571428569,
+     "referencia": "harlow1949_ultimos112",
+     "especie": "mono rhesus",
+     "valor": 0.9,
+     "tipo_valor": "cota_inferior",
+     "comparacion": "especie por encima"
+    },
+    {
+     "tramo": "problemas 383-432 (351-400 de 6 ensayos)",
+     "medida": "ensayo2_351a400",
+     "red_media": 0.744,
+     "red_desvio": 0.046303347611160915,
+     "referencia": "warren1965_rhesus",
+     "especie": "mono rhesus (el mejor de la comparación)",
+     "valor": 0.85,
+     "tipo_valor": "media",
+     "comparacion": "especie por encima"
+    }
+   ],
+   "otras_referencias_humanas": [],
+   "configuracion": {
+    "elegida": "única documentada para esta prueba"
+   }
+  },
+  {
+   "prueba": "harlow",
+   "variante": "simbolos+R3",
+   "perfil": "R3",
+   "nombre": "Conjuntos de aprendizaje de Harlow: acierto en el ensayo 2 de problemas de discriminación con objetos nuevos",
+   "dimension": "pocos_ejemplos",
+   "condicion_entrada": "simbolos",
+   "equivalente": {
+    "valor": false,
+    "motivo": "con símbolos la red no tiene que percibir ni reconocer los objetos"
+   },
+   "metrica": "acierto en el ensayo 2, problemas de 6 ensayos 101 a 200 (en línea, tras 32 preliminares de 50 ensayos)",
+   "protocolo": "32 problemas de 50 ensayos y 400 de 6 ensayos, dos símbolos nunca vistos por problema, uno premiado al azar, orden al azar en cada ensayo; la red aprende en línea con su exploración; prueba congelada con 100 problemas nuevos tras 200 y tras 400 problemas de 6 ensayos",
+   "desviaciones": [
+    "condición de entrada: símbolos con identidad perfecta, no objetos reales vistos en el aparato de Wisconsin; la red no tiene que reconocer el objeto ni separarlo de la posición",
+    "el resultado llega como recompensa en el estado (`prev_io`), no como percepción del premio bajo el objeto",
+    "sin los 112 problemas de discriminación con reversión de Harlow (su procedimiento no se pudo verificar): los problemas 233 a 344 de la red son de 6 ensayos, comparados con el ensayo 2 de los últimos 112 de Harlow",
+    "los problemas 201 a 400 son una extensión de la batería para comparar con Warren (1965)",
+    "los monos tuvieron entrenamiento previo con el aparato; la red empieza sin nada",
+    "perfil R3: cada configuración candidata + prev_io, back, cogmap y modulators (sin task_sets)"
+   ],
+   "semillas": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "variabilidad": "la semilla cambia el Thinker (pesos iniciales del escritor de registros y la exploración) y el entorno (qué objeto se premia, el orden en cada ensayo)",
+   "azar": {
+    "valor": 0.5,
+    "derivacion": "dos objetos; antes de aprender a aprender, el ensayo 2 no supera al 1"
+   },
+   "commit": "8fb949e2dc73",
+   "fuente_resultado": "medicion@8fb949e2dc73",
+   "segundos": 24.776901483535767,
+   "estado": "medido",
+   "motivo": "",
+   "red": {
+    "media": 0.9960000000000001,
+    "desvio": 0.00489897948556636,
+    "por_semilla": [
+     1.0,
+     0.99,
+     0.99,
+     1.0,
+     1.0
+    ],
+    "semillas_identicas": false,
+    "mediana": 1.0,
+    "minimo": 0.99,
+    "maximo": 1.0,
+    "semillas_en_azar": 0
+   },
+   "referencia_humana": {
+    "id": "hodos1970_nino",
+    "especie": "niño (CI 136), un sujeto",
+    "valor": 1.0,
+    "tipo_valor": "media",
+    "cita": "Hodos (1970), citado por Thomas (2019), «Learning to Learn», Encyclopedia of Animal Cognition and Behavior",
+    "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+    "verificacion": "secundaria",
+    "releida": "2026-11-26",
+    "protocolo": "curva comparada entre 16 especies; no se pudo leer el protocolo original",
+    "nota": "un solo niño; no hay cifra de adultos verificada",
+    "tras_problemas": 100,
+    "medida_red": "ensayo2_101a200",
+    "valor_red": 0.9960000000000001,
+    "comparacion": "a la par",
+    "referencia_del_indice": true
+   },
+   "referencias_animales": [
+    {
+     "id": "harlow1949_primeros8",
+     "especie": "mono rhesus",
+     "valor": 0.52,
+     "tipo_valor": "media",
+     "cita": "Harlow (1949), Psychol. Rev. 56:51, resumido por Medin (1972), Psychol. Bull.",
+     "url": "https://groups.psych.northwestern.edu/medin/documents/Medin1972PsychBull.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tramo": "primeros 8 problemas",
+     "medida_red": "ensayo2_primeros8",
+     "valor_red": 0.825,
+     "comparacion": "especie por debajo"
+    },
+    {
+     "id": "harlow1950_1a100",
+     "especie": "mono rhesus",
+     "valor": 0.82,
+     "tipo_valor": "media",
+     "cita": "Harlow (1950), J. Exp. Psychol. 40:26, resumen de la APA (versión indexada por scilit)",
+     "url": "https://scilit.com/publications/d5853446e00b40505db0bdeed003ca44",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "nota": "11 monos; mismo conjunto de datos que Harlow 1949",
+     "tramo": "problemas de 6 ensayos 1 a 100 (después de los 32 preliminares)",
+     "medida_red": "ensayo2_1a100",
+     "valor_red": 0.9960000000000001,
+     "comparacion": "especie por debajo"
+    },
+    {
+     "id": "harlow1950_101a200",
+     "especie": "mono rhesus",
+     "valor": 0.87,
+     "tipo_valor": "media",
+     "cita": "Harlow (1950), J. Exp. Psychol. 40:26, resumen de la APA (versión indexada por scilit)",
+     "url": "https://scilit.com/publications/d5853446e00b40505db0bdeed003ca44",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "tramo": "problemas de 6 ensayos 101 a 200",
+     "medida_red": "ensayo2_101a200",
+     "valor_red": 0.9960000000000001,
+     "comparacion": "especie por debajo"
+    },
+    {
+     "id": "harlow1949_ultimos112",
+     "especie": "mono rhesus",
+     "valor": 0.9,
+     "tipo_valor": "cota_inferior",
+     "cita": "Harlow (1949), resumido por Medin (1972)",
+     "url": "https://groups.psych.northwestern.edu/medin/documents/Medin1972PsychBull.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "nota": "Medin dice «más de 90 %»; no se pudo leer la cifra exacta del original",
+     "tramo": "últimos 112 problemas de 344",
+     "medida_red": "ensayo2_233a344",
+     "valor_red": 1.0,
+     "comparacion": "no concluyente (la referencia es una cota)"
+    },
+    {
+     "id": "warren1965_rhesus",
+     "especie": "mono rhesus (el mejor de la comparación)",
+     "valor": 0.85,
+     "tipo_valor": "media",
+     "cita": "Warren (1965), citado por Thomas (2019)",
+     "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 400,
+     "medida_red": "ensayo2_351a400",
+     "valor_red": 1.0,
+     "comparacion": "especie por debajo"
+    },
+    {
+     "id": "warren1965_rata_ardilla",
+     "especie": "rata y ardilla (las peores de la comparación)",
+     "valor": 0.6,
+     "tipo_valor": "media",
+     "cita": "Warren (1965), citado por Thomas (2019)",
+     "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 1800,
+     "medida_red": "ensayo2_351a400",
+     "valor_red": 1.0,
+     "comparacion": "especie por debajo (la red con menos problemas)"
+    },
+    {
+     "id": "hodos1970_tupaya",
+     "especie": "tupaya (musaraña arborícola)",
+     "valor": 0.5,
+     "tipo_valor": "media",
+     "cita": "Hodos (1970), citado por Thomas (2019)",
+     "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 1000,
+     "medida_red": "ensayo2_351a400",
+     "valor_red": 1.0,
+     "comparacion": "especie por debajo (la red con menos problemas)"
+    },
+    {
+     "id": "thomas2012_chimpance",
+     "especie": "chimpancé",
+     "valor_min": 0.9,
+     "valor_max": 1.0,
+     "tipo_valor": "rango",
+     "cita": "Thomas (2012), «Learning set formation and conceptualization», Encyclopedia of the Sciences of Learning (sin cita del original)",
+     "url": "https://www.psychology.uga.edu/sites/default/files/inline-files/LSFvCLPreprint.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 200,
+     "medida_red": "ensayo2_101a200",
+     "valor_red": 0.9960000000000001,
+     "comparacion": "a la par"
+    },
+    {
+     "id": "thomas2012_rata",
+     "especie": "rata (objetos visuales)",
+     "valor": 0.55,
+     "tipo_valor": "aproximado",
+     "cita": "Thomas (2012), ídem (sin cita del original)",
+     "url": "https://www.psychology.uga.edu/sites/default/files/inline-files/LSFvCLPreprint.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 1000,
+     "medida_red": "ensayo2_351a400",
+     "valor_red": 1.0,
+     "comparacion": "especie por debajo (la red con menos problemas)"
+    },
+    {
+     "id": "bailey1998_ratas",
+     "especie": "rata (tres)",
+     "valor": 0.87,
+     "tipo_valor": "media",
+     "cita": "Bailey & Thomas (1998), citado por Thomas (2019)",
+     "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "nota": "81 % en los problemas 16 a 60; la modalidad de los estímulos no se pudo leer en la revisión, así que no se compara con la red",
+     "tramo": "problemas 16 a 30",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    }
+   ],
+   "referencias_maquinas": [],
+   "indice_normalizado": {
+    "contra": "hodos1970_nino",
+    "min": 0.992,
+    "max": 0.992,
+    "media": 0.992,
+    "desvio": 0.009797958971132722,
+    "por_semilla": [
+     1.0,
+     0.98,
+     0.98,
+     1.0,
+     1.0
+    ],
+    "por_semilla_min": null,
+    "por_semilla_max": null,
+    "referencia": 1.0,
+    "tipo_valor": "media"
+   },
+   "detalle": {
+    "congelado_tras200": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "congelado_tras400": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "ensayo1_101a200": {
+     "media": 0.5039999999999999,
+     "desvio": 0.038262252939417964,
+     "por_semilla": [
+      0.46,
+      0.48,
+      0.57,
+      0.49,
+      0.52
+     ]
+    },
+    "ensayo2_101a200": {
+     "media": 0.9960000000000001,
+     "desvio": 0.00489897948556636,
+     "por_semilla": [
+      1.0,
+      0.99,
+      0.99,
+      1.0,
+      1.0
+     ]
+    },
+    "ensayo2_1a100": {
+     "media": 0.9960000000000001,
+     "desvio": 0.008000000000000007,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      0.98
+     ]
+    },
+    "ensayo2_233a344": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "ensayo2_351a400": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "ensayo2_preliminares": {
+     "media": 0.94375,
+     "desvio": 0.0125,
+     "por_semilla": [
+      0.9375,
+      0.9375,
+      0.9375,
+      0.9375,
+      0.96875
+     ]
+    },
+    "ensayo2_primeros8": {
+     "media": 0.825,
+     "desvio": 0.06123724356957946,
+     "por_semilla": [
+      0.875,
+      0.75,
+      0.75,
+      0.875,
+      0.875
+     ]
+    },
+    "_series": {
+     "curva_ensayo2_por25": [
+      [
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0
+      ],
+      [
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       0.96,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0
+      ],
+      [
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       0.96,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0
+      ],
+      [
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0
+      ],
+      [
+       0.96,
+       1.0,
+       1.0,
+       0.96,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0
+      ]
+     ]
+    }
+   },
+   "firmas": {},
+   "curva": [
+    {
+     "tramo": "problemas 1-8 (de 50 ensayos)",
+     "medida": "ensayo2_primeros8",
+     "red_media": 0.825,
+     "red_desvio": 0.06123724356957946,
+     "referencia": "harlow1949_primeros8",
+     "especie": "mono rhesus",
+     "valor": 0.52,
+     "tipo_valor": "media",
+     "comparacion": "especie por debajo"
+    },
+    {
+     "tramo": "problemas 33-132 (1-100 de 6 ensayos)",
+     "medida": "ensayo2_1a100",
+     "red_media": 0.9960000000000001,
+     "red_desvio": 0.008000000000000007,
+     "referencia": "harlow1950_1a100",
+     "especie": "mono rhesus",
+     "valor": 0.82,
+     "tipo_valor": "media",
+     "comparacion": "especie por debajo"
+    },
+    {
+     "tramo": "problemas 133-232 (101-200 de 6 ensayos)",
+     "medida": "ensayo2_101a200",
+     "red_media": 0.9960000000000001,
+     "red_desvio": 0.00489897948556636,
+     "referencia": "harlow1950_101a200",
+     "especie": "mono rhesus",
+     "valor": 0.87,
+     "tipo_valor": "media",
+     "comparacion": "especie por debajo"
+    },
+    {
+     "tramo": "problemas 233-344 (los últimos 112 de Harlow)",
+     "medida": "ensayo2_233a344",
+     "red_media": 1.0,
+     "red_desvio": 0.0,
+     "referencia": "harlow1949_ultimos112",
+     "especie": "mono rhesus",
+     "valor": 0.9,
+     "tipo_valor": "cota_inferior",
+     "comparacion": "no concluyente (la referencia es una cota)"
+    },
+    {
+     "tramo": "problemas 383-432 (351-400 de 6 ensayos)",
+     "medida": "ensayo2_351a400",
+     "red_media": 1.0,
+     "red_desvio": 0.0,
+     "referencia": "warren1965_rhesus",
+     "especie": "mono rhesus (el mejor de la comparación)",
+     "valor": 0.85,
+     "tipo_valor": "media",
+     "comparacion": "especie por debajo"
+    }
+   ],
+   "otras_referencias_humanas": [],
+   "configuracion": {
+    "elegida": "documentada",
+    "puntajes": {},
+    "criterio": "única configuración de la prueba con este perfil",
+    "semillas": [],
+    "opciones": {
+     "documentada": {
+      "memory": true,
+      "speak": true,
+      "judge": true,
+      "max_steps": 10,
+      "gate": true,
+      "prev_io": true,
+      "back": true,
+      "cogmap": true,
+      "modulators": true
+     }
+    },
+    "controles": {}
+   }
+  },
+  {
+   "prueba": "harlow",
+   "variante": "simbolos+R3+ts",
+   "perfil": "R3+ts",
+   "nombre": "Conjuntos de aprendizaje de Harlow: acierto en el ensayo 2 de problemas de discriminación con objetos nuevos",
+   "dimension": "pocos_ejemplos",
+   "condicion_entrada": "simbolos",
+   "equivalente": {
+    "valor": false,
+    "motivo": "con símbolos la red no tiene que percibir ni reconocer los objetos"
+   },
+   "metrica": "acierto en el ensayo 2, problemas de 6 ensayos 101 a 200 (en línea, tras 32 preliminares de 50 ensayos)",
+   "protocolo": "32 problemas de 50 ensayos y 400 de 6 ensayos, dos símbolos nunca vistos por problema, uno premiado al azar, orden al azar en cada ensayo; la red aprende en línea con su exploración; prueba congelada con 100 problemas nuevos tras 200 y tras 400 problemas de 6 ensayos",
+   "desviaciones": [
+    "condición de entrada: símbolos con identidad perfecta, no objetos reales vistos en el aparato de Wisconsin; la red no tiene que reconocer el objeto ni separarlo de la posición",
+    "el resultado llega como recompensa en el estado (`prev_io`), no como percepción del premio bajo el objeto",
+    "sin los 112 problemas de discriminación con reversión de Harlow (su procedimiento no se pudo verificar): los problemas 233 a 344 de la red son de 6 ensayos, comparados con el ensayo 2 de los últimos 112 de Harlow",
+    "los problemas 201 a 400 son una extensión de la batería para comparar con Warren (1965)",
+    "los monos tuvieron entrenamiento previo con el aparato; la red empieza sin nada",
+    "perfil R3+ts: R3 + task_sets (marcado: con todo encendido rompe la multitarea, README de 8fb949e)"
+   ],
+   "semillas": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "variabilidad": "la semilla cambia el Thinker (pesos iniciales del escritor de registros y la exploración) y el entorno (qué objeto se premia, el orden en cada ensayo)",
+   "azar": {
+    "valor": 0.5,
+    "derivacion": "dos objetos; antes de aprender a aprender, el ensayo 2 no supera al 1"
+   },
+   "commit": "8fb949e2dc73",
+   "fuente_resultado": "medicion@8fb949e2dc73",
+   "segundos": 26.704110145568848,
+   "estado": "medido",
+   "motivo": "",
+   "red": {
+    "media": 1.0,
+    "desvio": 0.0,
+    "por_semilla": [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "semillas_identicas": false,
+    "mediana": 1.0,
+    "minimo": 1.0,
+    "maximo": 1.0,
+    "semillas_en_azar": 0
+   },
+   "referencia_humana": {
+    "id": "hodos1970_nino",
+    "especie": "niño (CI 136), un sujeto",
+    "valor": 1.0,
+    "tipo_valor": "media",
+    "cita": "Hodos (1970), citado por Thomas (2019), «Learning to Learn», Encyclopedia of Animal Cognition and Behavior",
+    "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+    "verificacion": "secundaria",
+    "releida": "2026-11-26",
+    "protocolo": "curva comparada entre 16 especies; no se pudo leer el protocolo original",
+    "nota": "un solo niño; no hay cifra de adultos verificada",
+    "tras_problemas": 100,
+    "medida_red": "ensayo2_101a200",
+    "valor_red": 1.0,
+    "comparacion": "a la par",
+    "referencia_del_indice": true
+   },
+   "referencias_animales": [
+    {
+     "id": "harlow1949_primeros8",
+     "especie": "mono rhesus",
+     "valor": 0.52,
+     "tipo_valor": "media",
+     "cita": "Harlow (1949), Psychol. Rev. 56:51, resumido por Medin (1972), Psychol. Bull.",
+     "url": "https://groups.psych.northwestern.edu/medin/documents/Medin1972PsychBull.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tramo": "primeros 8 problemas",
+     "medida_red": "ensayo2_primeros8",
+     "valor_red": 0.75,
+     "comparacion": "especie por debajo"
+    },
+    {
+     "id": "harlow1950_1a100",
+     "especie": "mono rhesus",
+     "valor": 0.82,
+     "tipo_valor": "media",
+     "cita": "Harlow (1950), J. Exp. Psychol. 40:26, resumen de la APA (versión indexada por scilit)",
+     "url": "https://scilit.com/publications/d5853446e00b40505db0bdeed003ca44",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "nota": "11 monos; mismo conjunto de datos que Harlow 1949",
+     "tramo": "problemas de 6 ensayos 1 a 100 (después de los 32 preliminares)",
+     "medida_red": "ensayo2_1a100",
+     "valor_red": 1.0,
+     "comparacion": "especie por debajo"
+    },
+    {
+     "id": "harlow1950_101a200",
+     "especie": "mono rhesus",
+     "valor": 0.87,
+     "tipo_valor": "media",
+     "cita": "Harlow (1950), J. Exp. Psychol. 40:26, resumen de la APA (versión indexada por scilit)",
+     "url": "https://scilit.com/publications/d5853446e00b40505db0bdeed003ca44",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "tramo": "problemas de 6 ensayos 101 a 200",
+     "medida_red": "ensayo2_101a200",
+     "valor_red": 1.0,
+     "comparacion": "especie por debajo"
+    },
+    {
+     "id": "harlow1949_ultimos112",
+     "especie": "mono rhesus",
+     "valor": 0.9,
+     "tipo_valor": "cota_inferior",
+     "cita": "Harlow (1949), resumido por Medin (1972)",
+     "url": "https://groups.psych.northwestern.edu/medin/documents/Medin1972PsychBull.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "nota": "Medin dice «más de 90 %»; no se pudo leer la cifra exacta del original",
+     "tramo": "últimos 112 problemas de 344",
+     "medida_red": "ensayo2_233a344",
+     "valor_red": 1.0,
+     "comparacion": "no concluyente (la referencia es una cota)"
+    },
+    {
+     "id": "warren1965_rhesus",
+     "especie": "mono rhesus (el mejor de la comparación)",
+     "valor": 0.85,
+     "tipo_valor": "media",
+     "cita": "Warren (1965), citado por Thomas (2019)",
+     "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 400,
+     "medida_red": "ensayo2_351a400",
+     "valor_red": 1.0,
+     "comparacion": "especie por debajo"
+    },
+    {
+     "id": "warren1965_rata_ardilla",
+     "especie": "rata y ardilla (las peores de la comparación)",
+     "valor": 0.6,
+     "tipo_valor": "media",
+     "cita": "Warren (1965), citado por Thomas (2019)",
+     "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 1800,
+     "medida_red": "ensayo2_351a400",
+     "valor_red": 1.0,
+     "comparacion": "especie por debajo (la red con menos problemas)"
+    },
+    {
+     "id": "hodos1970_tupaya",
+     "especie": "tupaya (musaraña arborícola)",
+     "valor": 0.5,
+     "tipo_valor": "media",
+     "cita": "Hodos (1970), citado por Thomas (2019)",
+     "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 1000,
+     "medida_red": "ensayo2_351a400",
+     "valor_red": 1.0,
+     "comparacion": "especie por debajo (la red con menos problemas)"
+    },
+    {
+     "id": "thomas2012_chimpance",
+     "especie": "chimpancé",
+     "valor_min": 0.9,
+     "valor_max": 1.0,
+     "tipo_valor": "rango",
+     "cita": "Thomas (2012), «Learning set formation and conceptualization», Encyclopedia of the Sciences of Learning (sin cita del original)",
+     "url": "https://www.psychology.uga.edu/sites/default/files/inline-files/LSFvCLPreprint.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 200,
+     "medida_red": "ensayo2_101a200",
+     "valor_red": 1.0,
+     "comparacion": "a la par"
+    },
+    {
+     "id": "thomas2012_rata",
+     "especie": "rata (objetos visuales)",
+     "valor": 0.55,
+     "tipo_valor": "aproximado",
+     "cita": "Thomas (2012), ídem (sin cita del original)",
+     "url": "https://www.psychology.uga.edu/sites/default/files/inline-files/LSFvCLPreprint.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 1000,
+     "medida_red": "ensayo2_351a400",
+     "valor_red": 1.0,
+     "comparacion": "especie por debajo (la red con menos problemas)"
+    },
+    {
+     "id": "bailey1998_ratas",
+     "especie": "rata (tres)",
+     "valor": 0.87,
+     "tipo_valor": "media",
+     "cita": "Bailey & Thomas (1998), citado por Thomas (2019)",
+     "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "nota": "81 % en los problemas 16 a 60; la modalidad de los estímulos no se pudo leer en la revisión, así que no se compara con la red",
+     "tramo": "problemas 16 a 30",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    }
+   ],
+   "referencias_maquinas": [],
+   "indice_normalizado": {
+    "contra": "hodos1970_nino",
+    "min": 1.0,
+    "max": 1.0,
+    "media": 1.0,
+    "desvio": 0.0,
+    "por_semilla": [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "por_semilla_min": null,
+    "por_semilla_max": null,
+    "referencia": 1.0,
+    "tipo_valor": "media"
+   },
+   "detalle": {
+    "congelado_tras200": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "congelado_tras400": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "ensayo1_101a200": {
+     "media": 0.49800000000000005,
+     "desvio": 0.04308131845707602,
+     "por_semilla": [
+      0.46,
+      0.48,
+      0.58,
+      0.47,
+      0.5
+     ]
+    },
+    "ensayo2_101a200": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "ensayo2_1a100": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "ensayo2_233a344": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "ensayo2_351a400": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "ensayo2_preliminares": {
+     "media": 0.91875,
+     "desvio": 0.015309310892394862,
+     "por_semilla": [
+      0.90625,
+      0.90625,
+      0.90625,
+      0.9375,
+      0.9375
+     ]
+    },
+    "ensayo2_primeros8": {
+     "media": 0.75,
+     "desvio": 0.07905694150420949,
+     "por_semilla": [
+      0.75,
+      0.75,
+      0.625,
+      0.875,
+      0.75
+     ]
+    },
+    "_series": {
+     "curva_ensayo2_por25": [
+      [
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0
+      ],
+      [
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0
+      ],
+      [
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0
+      ],
+      [
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       0.96,
+       1.0,
+       1.0,
+       1.0
+      ],
+      [
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0
+      ]
+     ]
+    }
+   },
+   "firmas": {},
+   "curva": [
+    {
+     "tramo": "problemas 1-8 (de 50 ensayos)",
+     "medida": "ensayo2_primeros8",
+     "red_media": 0.75,
+     "red_desvio": 0.07905694150420949,
+     "referencia": "harlow1949_primeros8",
+     "especie": "mono rhesus",
+     "valor": 0.52,
+     "tipo_valor": "media",
+     "comparacion": "especie por debajo"
+    },
+    {
+     "tramo": "problemas 33-132 (1-100 de 6 ensayos)",
+     "medida": "ensayo2_1a100",
+     "red_media": 1.0,
+     "red_desvio": 0.0,
+     "referencia": "harlow1950_1a100",
+     "especie": "mono rhesus",
+     "valor": 0.82,
+     "tipo_valor": "media",
+     "comparacion": "especie por debajo"
+    },
+    {
+     "tramo": "problemas 133-232 (101-200 de 6 ensayos)",
+     "medida": "ensayo2_101a200",
+     "red_media": 1.0,
+     "red_desvio": 0.0,
+     "referencia": "harlow1950_101a200",
+     "especie": "mono rhesus",
+     "valor": 0.87,
+     "tipo_valor": "media",
+     "comparacion": "especie por debajo"
+    },
+    {
+     "tramo": "problemas 233-344 (los últimos 112 de Harlow)",
+     "medida": "ensayo2_233a344",
+     "red_media": 1.0,
+     "red_desvio": 0.0,
+     "referencia": "harlow1949_ultimos112",
+     "especie": "mono rhesus",
+     "valor": 0.9,
+     "tipo_valor": "cota_inferior",
+     "comparacion": "no concluyente (la referencia es una cota)"
+    },
+    {
+     "tramo": "problemas 383-432 (351-400 de 6 ensayos)",
+     "medida": "ensayo2_351a400",
+     "red_media": 1.0,
+     "red_desvio": 0.0,
+     "referencia": "warren1965_rhesus",
+     "especie": "mono rhesus (el mejor de la comparación)",
+     "valor": 0.85,
+     "tipo_valor": "media",
+     "comparacion": "especie por debajo"
+    }
+   ],
+   "otras_referencias_humanas": [],
+   "configuracion": {
+    "elegida": "documentada",
+    "puntajes": {},
+    "criterio": "única configuración de la prueba con este perfil",
+    "semillas": [],
+    "opciones": {
+     "documentada": {
+      "memory": true,
+      "speak": true,
+      "judge": true,
+      "max_steps": 10,
+      "gate": true,
+      "prev_io": true,
+      "back": true,
+      "cogmap": true,
+      "modulators": true,
+      "task_sets": true
+     }
+    },
+    "controles": {}
+   }
+  },
+  {
+   "prueba": "harlow",
+   "variante": "imagenes",
+   "perfil": "defecto",
+   "nombre": "Conjuntos de aprendizaje de Harlow: acierto en el ensayo 2 de problemas de discriminación con objetos nuevos",
+   "dimension": "pocos_ejemplos",
+   "condicion_entrada": "imagenes",
+   "equivalente": {
+    "valor": true,
+    "motivo": "la red ve los objetos como imágenes; su percepción los nombra con un vocabulario chico"
+   },
+   "metrica": "acierto en el ensayo 2, problemas de 6 ensayos 101 a 200 (en línea), con objetos vistos",
+   "protocolo": "el mismo calendario que con símbolos; cada objeto es un carácter de Omniglot nunca visto (una imagen); la red depth2 entrenada en MNIST lo nombra con uno de sus 10 dígitos y el Thinker (misma configuración) recibe ese nombre; si los dos objetos reciben el mismo nombre la elección se resuelve al azar",
+   "desviaciones": [
+    "la percepción tiene un vocabulario de 10 símbolos (los dígitos con que se entrenó): objetos distintos pueden recibir el mismo nombre y entonces no se distinguen",
+    "el mismo objeto se ve siempre con la misma imagen, como en el aparato de Wisconsin",
+    "el resultado llega como recompensa en el estado (`prev_io`)",
+    "sin los 112 problemas de reversión; problemas 201 a 400 como extensión"
+   ],
+   "semillas": [
+    0,
+    1,
+    2
+   ],
+   "variabilidad": "la semilla cambia la percepción (orden de las imágenes de MNIST), los objetos de Omniglot, el Thinker y el entorno",
+   "azar": {
+    "valor": 0.5,
+    "derivacion": "dos objetos; antes de aprender a aprender, el ensayo 2 no supera al 1"
+   },
+   "commit": "8fb949e2dc73",
+   "fuente_resultado": "medicion@8fb949e2dc73",
+   "segundos": 25.158257722854614,
+   "estado": "medido",
+   "motivo": "",
+   "red": {
+    "media": 0.7233333333333333,
+    "desvio": 0.03681787005729086,
+    "por_semilla": [
+     0.68,
+     0.77,
+     0.72
+    ],
+    "semillas_identicas": false,
+    "mediana": 0.72,
+    "minimo": 0.68,
+    "maximo": 0.77,
+    "semillas_en_azar": 0
+   },
+   "referencia_humana": {
+    "id": "hodos1970_nino",
+    "especie": "niño (CI 136), un sujeto",
+    "valor": 1.0,
+    "tipo_valor": "media",
+    "cita": "Hodos (1970), citado por Thomas (2019), «Learning to Learn», Encyclopedia of Animal Cognition and Behavior",
+    "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+    "verificacion": "secundaria",
+    "releida": "2026-11-26",
+    "protocolo": "curva comparada entre 16 especies; no se pudo leer el protocolo original",
+    "nota": "un solo niño; no hay cifra de adultos verificada",
+    "tras_problemas": 100,
+    "medida_red": "ensayo2_101a200",
+    "valor_red": 0.7233333333333333,
+    "comparacion": "especie por encima",
+    "referencia_del_indice": true
+   },
+   "referencias_animales": [
+    {
+     "id": "harlow1949_primeros8",
+     "especie": "mono rhesus",
+     "valor": 0.52,
+     "tipo_valor": "media",
+     "cita": "Harlow (1949), Psychol. Rev. 56:51, resumido por Medin (1972), Psychol. Bull.",
+     "url": "https://groups.psych.northwestern.edu/medin/documents/Medin1972PsychBull.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tramo": "primeros 8 problemas",
+     "medida_red": "ensayo2_primeros8",
+     "valor_red": 0.5,
+     "comparacion": "a la par"
+    },
+    {
+     "id": "harlow1950_1a100",
+     "especie": "mono rhesus",
+     "valor": 0.82,
+     "tipo_valor": "media",
+     "cita": "Harlow (1950), J. Exp. Psychol. 40:26, resumen de la APA (versión indexada por scilit)",
+     "url": "https://scilit.com/publications/d5853446e00b40505db0bdeed003ca44",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "nota": "11 monos; mismo conjunto de datos que Harlow 1949",
+     "tramo": "problemas de 6 ensayos 1 a 100 (después de los 32 preliminares)",
+     "medida_red": "ensayo2_1a100",
+     "valor_red": 0.7000000000000001,
+     "comparacion": "especie por encima"
+    },
+    {
+     "id": "harlow1950_101a200",
+     "especie": "mono rhesus",
+     "valor": 0.87,
+     "tipo_valor": "media",
+     "cita": "Harlow (1950), J. Exp. Psychol. 40:26, resumen de la APA (versión indexada por scilit)",
+     "url": "https://scilit.com/publications/d5853446e00b40505db0bdeed003ca44",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "tramo": "problemas de 6 ensayos 101 a 200",
+     "medida_red": "ensayo2_101a200",
+     "valor_red": 0.7233333333333333,
+     "comparacion": "especie por encima"
+    },
+    {
+     "id": "harlow1949_ultimos112",
+     "especie": "mono rhesus",
+     "valor": 0.9,
+     "tipo_valor": "cota_inferior",
+     "cita": "Harlow (1949), resumido por Medin (1972)",
+     "url": "https://groups.psych.northwestern.edu/medin/documents/Medin1972PsychBull.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "nota": "Medin dice «más de 90 %»; no se pudo leer la cifra exacta del original",
+     "tramo": "últimos 112 problemas de 344",
+     "medida_red": "ensayo2_233a344",
+     "valor_red": 0.7202380952380952,
+     "comparacion": "especie por encima"
+    },
+    {
+     "id": "warren1965_rhesus",
+     "especie": "mono rhesus (el mejor de la comparación)",
+     "valor": 0.85,
+     "tipo_valor": "media",
+     "cita": "Warren (1965), citado por Thomas (2019)",
+     "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 400,
+     "medida_red": "ensayo2_351a400",
+     "valor_red": 0.7666666666666666,
+     "comparacion": "especie por encima"
+    },
+    {
+     "id": "warren1965_rata_ardilla",
+     "especie": "rata y ardilla (las peores de la comparación)",
+     "valor": 0.6,
+     "tipo_valor": "media",
+     "cita": "Warren (1965), citado por Thomas (2019)",
+     "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 1800,
+     "medida_red": "ensayo2_351a400",
+     "valor_red": 0.7666666666666666,
+     "comparacion": "especie por debajo (la red con menos problemas)"
+    },
+    {
+     "id": "hodos1970_tupaya",
+     "especie": "tupaya (musaraña arborícola)",
+     "valor": 0.5,
+     "tipo_valor": "media",
+     "cita": "Hodos (1970), citado por Thomas (2019)",
+     "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 1000,
+     "medida_red": "ensayo2_351a400",
+     "valor_red": 0.7666666666666666,
+     "comparacion": "especie por debajo (la red con menos problemas)"
+    },
+    {
+     "id": "thomas2012_chimpance",
+     "especie": "chimpancé",
+     "valor_min": 0.9,
+     "valor_max": 1.0,
+     "tipo_valor": "rango",
+     "cita": "Thomas (2012), «Learning set formation and conceptualization», Encyclopedia of the Sciences of Learning (sin cita del original)",
+     "url": "https://www.psychology.uga.edu/sites/default/files/inline-files/LSFvCLPreprint.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 200,
+     "medida_red": "ensayo2_101a200",
+     "valor_red": 0.7233333333333333,
+     "comparacion": "especie por encima"
+    },
+    {
+     "id": "thomas2012_rata",
+     "especie": "rata (objetos visuales)",
+     "valor": 0.55,
+     "tipo_valor": "aproximado",
+     "cita": "Thomas (2012), ídem (sin cita del original)",
+     "url": "https://www.psychology.uga.edu/sites/default/files/inline-files/LSFvCLPreprint.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 1000,
+     "medida_red": "ensayo2_351a400",
+     "valor_red": 0.7666666666666666,
+     "comparacion": "especie por debajo (la red con menos problemas)"
+    },
+    {
+     "id": "bailey1998_ratas",
+     "especie": "rata (tres)",
+     "valor": 0.87,
+     "tipo_valor": "media",
+     "cita": "Bailey & Thomas (1998), citado por Thomas (2019)",
+     "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "nota": "81 % en los problemas 16 a 60; la modalidad de los estímulos no se pudo leer en la revisión, así que no se compara con la red",
+     "tramo": "problemas 16 a 30",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    }
+   ],
+   "referencias_maquinas": [],
+   "indice_normalizado": {
+    "contra": "hodos1970_nino",
+    "min": 0.4466666666666667,
+    "max": 0.4466666666666667,
+    "media": 0.4466666666666667,
+    "desvio": 0.07363574011458171,
+    "por_semilla": [
+     0.3600000000000001,
+     0.54,
+     0.43999999999999995
+    ],
+    "por_semilla_min": null,
+    "por_semilla_max": null,
+    "referencia": 1.0,
+    "tipo_valor": "media"
+   },
+   "detalle": {
+    "colisiones": {
+     "media": 0.1273148148148148,
+     "desvio": 0.008661243950865602,
+     "por_semilla": [
+      0.12962962962962962,
+      0.11574074074074074,
+      0.13657407407407407
+     ]
+    },
+    "ensayo2_101a200": {
+     "media": 0.7233333333333333,
+     "desvio": 0.03681787005729086,
+     "por_semilla": [
+      0.68,
+      0.77,
+      0.72
+     ]
+    },
+    "ensayo2_1a100": {
+     "media": 0.7000000000000001,
+     "desvio": 0.032659863237109024,
+     "por_semilla": [
+      0.74,
+      0.7,
+      0.66
+     ]
+    },
+    "ensayo2_233a344": {
+     "media": 0.7202380952380952,
+     "desvio": 0.04394292577450419,
+     "por_semilla": [
+      0.6696428571428571,
+      0.7142857142857143,
+      0.7767857142857143
+     ]
+    },
+    "ensayo2_351a400": {
+     "media": 0.7666666666666666,
+     "desvio": 0.024944382578492966,
+     "por_semilla": [
+      0.76,
+      0.74,
+      0.8
+     ]
+    },
+    "ensayo2_primeros8": {
+     "media": 0.5,
+     "desvio": 0.10206207261596575,
+     "por_semilla": [
+      0.5,
+      0.375,
+      0.625
+     ]
+    },
+    "ensayo2_sin_colision_101a200": {
+     "media": 0.7726111098204121,
+     "desvio": 0.04214991631060989,
+     "por_semilla": [
+      0.7209302325581395,
+      0.8241758241758241,
+      0.7727272727272727
+     ]
+    },
+    "simbolos_distintos": {
+     "media": 10.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      10.0,
+      10.0,
+      10.0
+     ]
+    }
+   },
+   "firmas": {},
+   "curva": [
+    {
+     "tramo": "problemas 1-8 (de 50 ensayos)",
+     "medida": "ensayo2_primeros8",
+     "red_media": 0.5,
+     "red_desvio": 0.10206207261596575,
+     "referencia": "harlow1949_primeros8",
+     "especie": "mono rhesus",
+     "valor": 0.52,
+     "tipo_valor": "media",
+     "comparacion": "a la par"
+    },
+    {
+     "tramo": "problemas 33-132 (1-100 de 6 ensayos)",
+     "medida": "ensayo2_1a100",
+     "red_media": 0.7000000000000001,
+     "red_desvio": 0.032659863237109024,
+     "referencia": "harlow1950_1a100",
+     "especie": "mono rhesus",
+     "valor": 0.82,
+     "tipo_valor": "media",
+     "comparacion": "especie por encima"
+    },
+    {
+     "tramo": "problemas 133-232 (101-200 de 6 ensayos)",
+     "medida": "ensayo2_101a200",
+     "red_media": 0.7233333333333333,
+     "red_desvio": 0.03681787005729086,
+     "referencia": "harlow1950_101a200",
+     "especie": "mono rhesus",
+     "valor": 0.87,
+     "tipo_valor": "media",
+     "comparacion": "especie por encima"
+    },
+    {
+     "tramo": "problemas 233-344 (los últimos 112 de Harlow)",
+     "medida": "ensayo2_233a344",
+     "red_media": 0.7202380952380952,
+     "red_desvio": 0.04394292577450419,
+     "referencia": "harlow1949_ultimos112",
+     "especie": "mono rhesus",
+     "valor": 0.9,
+     "tipo_valor": "cota_inferior",
+     "comparacion": "especie por encima"
+    },
+    {
+     "tramo": "problemas 383-432 (351-400 de 6 ensayos)",
+     "medida": "ensayo2_351a400",
+     "red_media": 0.7666666666666666,
+     "red_desvio": 0.024944382578492966,
+     "referencia": "warren1965_rhesus",
+     "especie": "mono rhesus (el mejor de la comparación)",
+     "valor": 0.85,
+     "tipo_valor": "media",
+     "comparacion": "especie por encima"
+    }
+   ],
+   "otras_referencias_humanas": [],
+   "configuracion": {
+    "elegida": "única documentada para esta prueba"
+   }
+  },
+  {
+   "prueba": "harlow",
+   "variante": "imagenes+R3",
+   "perfil": "R3",
+   "nombre": "Conjuntos de aprendizaje de Harlow: acierto en el ensayo 2 de problemas de discriminación con objetos nuevos",
+   "dimension": "pocos_ejemplos",
+   "condicion_entrada": "imagenes",
+   "equivalente": {
+    "valor": true,
+    "motivo": "la red ve los objetos como imágenes; su percepción los nombra con un vocabulario chico"
+   },
+   "metrica": "acierto en el ensayo 2, problemas de 6 ensayos 101 a 200 (en línea), con objetos vistos",
+   "protocolo": "el mismo calendario que con símbolos; cada objeto es un carácter de Omniglot nunca visto (una imagen); la red depth2 entrenada en MNIST lo nombra con uno de sus 10 dígitos y el Thinker (misma configuración) recibe ese nombre; si los dos objetos reciben el mismo nombre la elección se resuelve al azar",
+   "desviaciones": [
+    "la percepción tiene un vocabulario de 10 símbolos (los dígitos con que se entrenó): objetos distintos pueden recibir el mismo nombre y entonces no se distinguen",
+    "el mismo objeto se ve siempre con la misma imagen, como en el aparato de Wisconsin",
+    "el resultado llega como recompensa en el estado (`prev_io`)",
+    "sin los 112 problemas de reversión; problemas 201 a 400 como extensión",
+    "perfil R3: cada configuración candidata + prev_io, back, cogmap y modulators (sin task_sets)"
+   ],
+   "semillas": [
+    0,
+    1,
+    2
+   ],
+   "variabilidad": "la semilla cambia la percepción (orden de las imágenes de MNIST), los objetos de Omniglot, el Thinker y el entorno",
+   "azar": {
+    "valor": 0.5,
+    "derivacion": "dos objetos; antes de aprender a aprender, el ensayo 2 no supera al 1"
+   },
+   "commit": "8fb949e2dc73",
+   "fuente_resultado": "medicion@8fb949e2dc73",
+   "segundos": 29.550003051757812,
+   "estado": "medido",
+   "motivo": "",
+   "red": {
+    "media": 0.9366666666666666,
+    "desvio": 0.020548046676563226,
+    "por_semilla": [
+     0.91,
+     0.94,
+     0.96
+    ],
+    "semillas_identicas": false,
+    "mediana": 0.94,
+    "minimo": 0.91,
+    "maximo": 0.96,
+    "semillas_en_azar": 0
+   },
+   "referencia_humana": {
+    "id": "hodos1970_nino",
+    "especie": "niño (CI 136), un sujeto",
+    "valor": 1.0,
+    "tipo_valor": "media",
+    "cita": "Hodos (1970), citado por Thomas (2019), «Learning to Learn», Encyclopedia of Animal Cognition and Behavior",
+    "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+    "verificacion": "secundaria",
+    "releida": "2026-11-26",
+    "protocolo": "curva comparada entre 16 especies; no se pudo leer el protocolo original",
+    "nota": "un solo niño; no hay cifra de adultos verificada",
+    "tras_problemas": 100,
+    "medida_red": "ensayo2_101a200",
+    "valor_red": 0.9366666666666666,
+    "comparacion": "especie por encima",
+    "referencia_del_indice": true
+   },
+   "referencias_animales": [
+    {
+     "id": "harlow1949_primeros8",
+     "especie": "mono rhesus",
+     "valor": 0.52,
+     "tipo_valor": "media",
+     "cita": "Harlow (1949), Psychol. Rev. 56:51, resumido por Medin (1972), Psychol. Bull.",
+     "url": "https://groups.psych.northwestern.edu/medin/documents/Medin1972PsychBull.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tramo": "primeros 8 problemas",
+     "medida_red": "ensayo2_primeros8",
+     "valor_red": 0.7916666666666666,
+     "comparacion": "especie por debajo"
+    },
+    {
+     "id": "harlow1950_1a100",
+     "especie": "mono rhesus",
+     "valor": 0.82,
+     "tipo_valor": "media",
+     "cita": "Harlow (1950), J. Exp. Psychol. 40:26, resumen de la APA (versión indexada por scilit)",
+     "url": "https://scilit.com/publications/d5853446e00b40505db0bdeed003ca44",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "nota": "11 monos; mismo conjunto de datos que Harlow 1949",
+     "tramo": "problemas de 6 ensayos 1 a 100 (después de los 32 preliminares)",
+     "medida_red": "ensayo2_1a100",
+     "valor_red": 0.9366666666666666,
+     "comparacion": "especie por debajo"
+    },
+    {
+     "id": "harlow1950_101a200",
+     "especie": "mono rhesus",
+     "valor": 0.87,
+     "tipo_valor": "media",
+     "cita": "Harlow (1950), J. Exp. Psychol. 40:26, resumen de la APA (versión indexada por scilit)",
+     "url": "https://scilit.com/publications/d5853446e00b40505db0bdeed003ca44",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "tramo": "problemas de 6 ensayos 101 a 200",
+     "medida_red": "ensayo2_101a200",
+     "valor_red": 0.9366666666666666,
+     "comparacion": "especie por debajo"
+    },
+    {
+     "id": "harlow1949_ultimos112",
+     "especie": "mono rhesus",
+     "valor": 0.9,
+     "tipo_valor": "cota_inferior",
+     "cita": "Harlow (1949), resumido por Medin (1972)",
+     "url": "https://groups.psych.northwestern.edu/medin/documents/Medin1972PsychBull.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "nota": "Medin dice «más de 90 %»; no se pudo leer la cifra exacta del original",
+     "tramo": "últimos 112 problemas de 344",
+     "medida_red": "ensayo2_233a344",
+     "valor_red": 0.9166666666666666,
+     "comparacion": "no concluyente (la referencia es una cota)"
+    },
+    {
+     "id": "warren1965_rhesus",
+     "especie": "mono rhesus (el mejor de la comparación)",
+     "valor": 0.85,
+     "tipo_valor": "media",
+     "cita": "Warren (1965), citado por Thomas (2019)",
+     "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 400,
+     "medida_red": "ensayo2_351a400",
+     "valor_red": 0.9666666666666667,
+     "comparacion": "especie por debajo"
+    },
+    {
+     "id": "warren1965_rata_ardilla",
+     "especie": "rata y ardilla (las peores de la comparación)",
+     "valor": 0.6,
+     "tipo_valor": "media",
+     "cita": "Warren (1965), citado por Thomas (2019)",
+     "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 1800,
+     "medida_red": "ensayo2_351a400",
+     "valor_red": 0.9666666666666667,
+     "comparacion": "especie por debajo (la red con menos problemas)"
+    },
+    {
+     "id": "hodos1970_tupaya",
+     "especie": "tupaya (musaraña arborícola)",
+     "valor": 0.5,
+     "tipo_valor": "media",
+     "cita": "Hodos (1970), citado por Thomas (2019)",
+     "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 1000,
+     "medida_red": "ensayo2_351a400",
+     "valor_red": 0.9666666666666667,
+     "comparacion": "especie por debajo (la red con menos problemas)"
+    },
+    {
+     "id": "thomas2012_chimpance",
+     "especie": "chimpancé",
+     "valor_min": 0.9,
+     "valor_max": 1.0,
+     "tipo_valor": "rango",
+     "cita": "Thomas (2012), «Learning set formation and conceptualization», Encyclopedia of the Sciences of Learning (sin cita del original)",
+     "url": "https://www.psychology.uga.edu/sites/default/files/inline-files/LSFvCLPreprint.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 200,
+     "medida_red": "ensayo2_101a200",
+     "valor_red": 0.9366666666666666,
+     "comparacion": "a la par"
+    },
+    {
+     "id": "thomas2012_rata",
+     "especie": "rata (objetos visuales)",
+     "valor": 0.55,
+     "tipo_valor": "aproximado",
+     "cita": "Thomas (2012), ídem (sin cita del original)",
+     "url": "https://www.psychology.uga.edu/sites/default/files/inline-files/LSFvCLPreprint.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 1000,
+     "medida_red": "ensayo2_351a400",
+     "valor_red": 0.9666666666666667,
+     "comparacion": "especie por debajo (la red con menos problemas)"
+    },
+    {
+     "id": "bailey1998_ratas",
+     "especie": "rata (tres)",
+     "valor": 0.87,
+     "tipo_valor": "media",
+     "cita": "Bailey & Thomas (1998), citado por Thomas (2019)",
+     "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "nota": "81 % en los problemas 16 a 60; la modalidad de los estímulos no se pudo leer en la revisión, así que no se compara con la red",
+     "tramo": "problemas 16 a 30",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    }
+   ],
+   "referencias_maquinas": [],
+   "indice_normalizado": {
+    "contra": "hodos1970_nino",
+    "min": 0.8733333333333334,
+    "max": 0.8733333333333334,
+    "media": 0.8733333333333334,
+    "desvio": 0.04109609335312645,
+    "por_semilla": [
+     0.8200000000000001,
+     0.8799999999999999,
+     0.9199999999999999
+    ],
+    "por_semilla_min": null,
+    "por_semilla_max": null,
+    "referencia": 1.0,
+    "tipo_valor": "media"
+   },
+   "detalle": {
+    "colisiones": {
+     "media": 0.1273148148148148,
+     "desvio": 0.008661243950865602,
+     "por_semilla": [
+      0.12962962962962962,
+      0.11574074074074074,
+      0.13657407407407407
+     ]
+    },
+    "ensayo2_101a200": {
+     "media": 0.9366666666666666,
+     "desvio": 0.020548046676563226,
+     "por_semilla": [
+      0.91,
+      0.94,
+      0.96
+     ]
+    },
+    "ensayo2_1a100": {
+     "media": 0.9366666666666666,
+     "desvio": 0.024944382578492914,
+     "por_semilla": [
+      0.91,
+      0.97,
+      0.93
+     ]
+    },
+    "ensayo2_233a344": {
+     "media": 0.9166666666666666,
+     "desvio": 0.018346470246931455,
+     "por_semilla": [
+      0.9196428571428571,
+      0.8928571428571429,
+      0.9375
+     ]
+    },
+    "ensayo2_351a400": {
+     "media": 0.9666666666666667,
+     "desvio": 0.033993463423951875,
+     "por_semilla": [
+      0.98,
+      0.92,
+      1.0
+     ]
+    },
+    "ensayo2_primeros8": {
+     "media": 0.7916666666666666,
+     "desvio": 0.05892556509887896,
+     "por_semilla": [
+      0.75,
+      0.875,
+      0.75
+     ]
+    },
+    "ensayo2_sin_colision_101a200": {
+     "media": 0.9925491175491176,
+     "desvio": 0.005270788872991669,
+     "por_semilla": [
+      1.0,
+      0.989010989010989,
+      0.9886363636363636
+     ]
+    },
+    "simbolos_distintos": {
+     "media": 10.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      10.0,
+      10.0,
+      10.0
+     ]
+    }
+   },
+   "firmas": {},
+   "curva": [
+    {
+     "tramo": "problemas 1-8 (de 50 ensayos)",
+     "medida": "ensayo2_primeros8",
+     "red_media": 0.7916666666666666,
+     "red_desvio": 0.05892556509887896,
+     "referencia": "harlow1949_primeros8",
+     "especie": "mono rhesus",
+     "valor": 0.52,
+     "tipo_valor": "media",
+     "comparacion": "especie por debajo"
+    },
+    {
+     "tramo": "problemas 33-132 (1-100 de 6 ensayos)",
+     "medida": "ensayo2_1a100",
+     "red_media": 0.9366666666666666,
+     "red_desvio": 0.024944382578492914,
+     "referencia": "harlow1950_1a100",
+     "especie": "mono rhesus",
+     "valor": 0.82,
+     "tipo_valor": "media",
+     "comparacion": "especie por debajo"
+    },
+    {
+     "tramo": "problemas 133-232 (101-200 de 6 ensayos)",
+     "medida": "ensayo2_101a200",
+     "red_media": 0.9366666666666666,
+     "red_desvio": 0.020548046676563226,
+     "referencia": "harlow1950_101a200",
+     "especie": "mono rhesus",
+     "valor": 0.87,
+     "tipo_valor": "media",
+     "comparacion": "especie por debajo"
+    },
+    {
+     "tramo": "problemas 233-344 (los últimos 112 de Harlow)",
+     "medida": "ensayo2_233a344",
+     "red_media": 0.9166666666666666,
+     "red_desvio": 0.018346470246931455,
+     "referencia": "harlow1949_ultimos112",
+     "especie": "mono rhesus",
+     "valor": 0.9,
+     "tipo_valor": "cota_inferior",
+     "comparacion": "no concluyente (la referencia es una cota)"
+    },
+    {
+     "tramo": "problemas 383-432 (351-400 de 6 ensayos)",
+     "medida": "ensayo2_351a400",
+     "red_media": 0.9666666666666667,
+     "red_desvio": 0.033993463423951875,
+     "referencia": "warren1965_rhesus",
+     "especie": "mono rhesus (el mejor de la comparación)",
+     "valor": 0.85,
+     "tipo_valor": "media",
+     "comparacion": "especie por debajo"
+    }
+   ],
+   "otras_referencias_humanas": [],
+   "configuracion": {
+    "elegida": "documentada",
+    "puntajes": {},
+    "criterio": "única configuración de la prueba con este perfil",
+    "semillas": [],
+    "opciones": {
+     "documentada": {
+      "memory": true,
+      "speak": true,
+      "judge": true,
+      "max_steps": 10,
+      "gate": true,
+      "prev_io": true,
+      "back": true,
+      "cogmap": true,
+      "modulators": true
+     }
+    },
+    "controles": {}
+   }
+  },
+  {
+   "prueba": "harlow",
+   "variante": "imagenes+R3+ts",
+   "perfil": "R3+ts",
+   "nombre": "Conjuntos de aprendizaje de Harlow: acierto en el ensayo 2 de problemas de discriminación con objetos nuevos",
+   "dimension": "pocos_ejemplos",
+   "condicion_entrada": "imagenes",
+   "equivalente": {
+    "valor": true,
+    "motivo": "la red ve los objetos como imágenes; su percepción los nombra con un vocabulario chico"
+   },
+   "metrica": "acierto en el ensayo 2, problemas de 6 ensayos 101 a 200 (en línea), con objetos vistos",
+   "protocolo": "el mismo calendario que con símbolos; cada objeto es un carácter de Omniglot nunca visto (una imagen); la red depth2 entrenada en MNIST lo nombra con uno de sus 10 dígitos y el Thinker (misma configuración) recibe ese nombre; si los dos objetos reciben el mismo nombre la elección se resuelve al azar",
+   "desviaciones": [
+    "la percepción tiene un vocabulario de 10 símbolos (los dígitos con que se entrenó): objetos distintos pueden recibir el mismo nombre y entonces no se distinguen",
+    "el mismo objeto se ve siempre con la misma imagen, como en el aparato de Wisconsin",
+    "el resultado llega como recompensa en el estado (`prev_io`)",
+    "sin los 112 problemas de reversión; problemas 201 a 400 como extensión",
+    "perfil R3+ts: R3 + task_sets (marcado: con todo encendido rompe la multitarea, README de 8fb949e)"
+   ],
+   "semillas": [
+    0,
+    1,
+    2
+   ],
+   "variabilidad": "la semilla cambia la percepción (orden de las imágenes de MNIST), los objetos de Omniglot, el Thinker y el entorno",
+   "azar": {
+    "valor": 0.5,
+    "derivacion": "dos objetos; antes de aprender a aprender, el ensayo 2 no supera al 1"
+   },
+   "commit": "8fb949e2dc73",
+   "fuente_resultado": "medicion@8fb949e2dc73",
+   "segundos": 29.916523218154907,
+   "estado": "medido",
+   "motivo": "",
+   "red": {
+    "media": 0.9166666666666666,
+    "desvio": 0.024944382578492918,
+    "por_semilla": [
+     0.91,
+     0.95,
+     0.89
+    ],
+    "semillas_identicas": false,
+    "mediana": 0.91,
+    "minimo": 0.89,
+    "maximo": 0.95,
+    "semillas_en_azar": 0
+   },
+   "referencia_humana": {
+    "id": "hodos1970_nino",
+    "especie": "niño (CI 136), un sujeto",
+    "valor": 1.0,
+    "tipo_valor": "media",
+    "cita": "Hodos (1970), citado por Thomas (2019), «Learning to Learn», Encyclopedia of Animal Cognition and Behavior",
+    "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+    "verificacion": "secundaria",
+    "releida": "2026-11-26",
+    "protocolo": "curva comparada entre 16 especies; no se pudo leer el protocolo original",
+    "nota": "un solo niño; no hay cifra de adultos verificada",
+    "tras_problemas": 100,
+    "medida_red": "ensayo2_101a200",
+    "valor_red": 0.9166666666666666,
+    "comparacion": "especie por encima",
+    "referencia_del_indice": true
+   },
+   "referencias_animales": [
+    {
+     "id": "harlow1949_primeros8",
+     "especie": "mono rhesus",
+     "valor": 0.52,
+     "tipo_valor": "media",
+     "cita": "Harlow (1949), Psychol. Rev. 56:51, resumido por Medin (1972), Psychol. Bull.",
+     "url": "https://groups.psych.northwestern.edu/medin/documents/Medin1972PsychBull.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tramo": "primeros 8 problemas",
+     "medida_red": "ensayo2_primeros8",
+     "valor_red": 0.7083333333333334,
+     "comparacion": "especie por debajo"
+    },
+    {
+     "id": "harlow1950_1a100",
+     "especie": "mono rhesus",
+     "valor": 0.82,
+     "tipo_valor": "media",
+     "cita": "Harlow (1950), J. Exp. Psychol. 40:26, resumen de la APA (versión indexada por scilit)",
+     "url": "https://scilit.com/publications/d5853446e00b40505db0bdeed003ca44",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "nota": "11 monos; mismo conjunto de datos que Harlow 1949",
+     "tramo": "problemas de 6 ensayos 1 a 100 (después de los 32 preliminares)",
+     "medida_red": "ensayo2_1a100",
+     "valor_red": 0.9366666666666666,
+     "comparacion": "especie por debajo"
+    },
+    {
+     "id": "harlow1950_101a200",
+     "especie": "mono rhesus",
+     "valor": 0.87,
+     "tipo_valor": "media",
+     "cita": "Harlow (1950), J. Exp. Psychol. 40:26, resumen de la APA (versión indexada por scilit)",
+     "url": "https://scilit.com/publications/d5853446e00b40505db0bdeed003ca44",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "tramo": "problemas de 6 ensayos 101 a 200",
+     "medida_red": "ensayo2_101a200",
+     "valor_red": 0.9166666666666666,
+     "comparacion": "especie por debajo"
+    },
+    {
+     "id": "harlow1949_ultimos112",
+     "especie": "mono rhesus",
+     "valor": 0.9,
+     "tipo_valor": "cota_inferior",
+     "cita": "Harlow (1949), resumido por Medin (1972)",
+     "url": "https://groups.psych.northwestern.edu/medin/documents/Medin1972PsychBull.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "nota": "Medin dice «más de 90 %»; no se pudo leer la cifra exacta del original",
+     "tramo": "últimos 112 problemas de 344",
+     "medida_red": "ensayo2_233a344",
+     "valor_red": 0.9077380952380952,
+     "comparacion": "no concluyente (la referencia es una cota)"
+    },
+    {
+     "id": "warren1965_rhesus",
+     "especie": "mono rhesus (el mejor de la comparación)",
+     "valor": 0.85,
+     "tipo_valor": "media",
+     "cita": "Warren (1965), citado por Thomas (2019)",
+     "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 400,
+     "medida_red": "ensayo2_351a400",
+     "valor_red": 0.9,
+     "comparacion": "especie por debajo"
+    },
+    {
+     "id": "warren1965_rata_ardilla",
+     "especie": "rata y ardilla (las peores de la comparación)",
+     "valor": 0.6,
+     "tipo_valor": "media",
+     "cita": "Warren (1965), citado por Thomas (2019)",
+     "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 1800,
+     "medida_red": "ensayo2_351a400",
+     "valor_red": 0.9,
+     "comparacion": "especie por debajo (la red con menos problemas)"
+    },
+    {
+     "id": "hodos1970_tupaya",
+     "especie": "tupaya (musaraña arborícola)",
+     "valor": 0.5,
+     "tipo_valor": "media",
+     "cita": "Hodos (1970), citado por Thomas (2019)",
+     "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 1000,
+     "medida_red": "ensayo2_351a400",
+     "valor_red": 0.9,
+     "comparacion": "especie por debajo (la red con menos problemas)"
+    },
+    {
+     "id": "thomas2012_chimpance",
+     "especie": "chimpancé",
+     "valor_min": 0.9,
+     "valor_max": 1.0,
+     "tipo_valor": "rango",
+     "cita": "Thomas (2012), «Learning set formation and conceptualization», Encyclopedia of the Sciences of Learning (sin cita del original)",
+     "url": "https://www.psychology.uga.edu/sites/default/files/inline-files/LSFvCLPreprint.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 200,
+     "medida_red": "ensayo2_101a200",
+     "valor_red": 0.9166666666666666,
+     "comparacion": "a la par"
+    },
+    {
+     "id": "thomas2012_rata",
+     "especie": "rata (objetos visuales)",
+     "valor": 0.55,
+     "tipo_valor": "aproximado",
+     "cita": "Thomas (2012), ídem (sin cita del original)",
+     "url": "https://www.psychology.uga.edu/sites/default/files/inline-files/LSFvCLPreprint.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "tras_problemas": 1000,
+     "medida_red": "ensayo2_351a400",
+     "valor_red": 0.9,
+     "comparacion": "especie por debajo (la red con menos problemas)"
+    },
+    {
+     "id": "bailey1998_ratas",
+     "especie": "rata (tres)",
+     "valor": 0.87,
+     "tipo_valor": "media",
+     "cita": "Bailey & Thomas (1998), citado por Thomas (2019)",
+     "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "nota": "81 % en los problemas 16 a 60; la modalidad de los estímulos no se pudo leer en la revisión, así que no se compara con la red",
+     "tramo": "problemas 16 a 30",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    }
+   ],
+   "referencias_maquinas": [],
+   "indice_normalizado": {
+    "contra": "hodos1970_nino",
+    "min": 0.8333333333333334,
+    "max": 0.8333333333333334,
+    "media": 0.8333333333333334,
+    "desvio": 0.04988876515698583,
+    "por_semilla": [
+     0.8200000000000001,
+     0.8999999999999999,
+     0.78
+    ],
+    "por_semilla_min": null,
+    "por_semilla_max": null,
+    "referencia": 1.0,
+    "tipo_valor": "media"
+   },
+   "detalle": {
+    "colisiones": {
+     "media": 0.1273148148148148,
+     "desvio": 0.008661243950865602,
+     "por_semilla": [
+      0.12962962962962962,
+      0.11574074074074074,
+      0.13657407407407407
+     ]
+    },
+    "ensayo2_101a200": {
+     "media": 0.9166666666666666,
+     "desvio": 0.024944382578492918,
+     "por_semilla": [
+      0.91,
+      0.95,
+      0.89
+     ]
+    },
+    "ensayo2_1a100": {
+     "media": 0.9366666666666666,
+     "desvio": 0.00942809041582059,
+     "por_semilla": [
+      0.93,
+      0.95,
+      0.93
+     ]
+    },
+    "ensayo2_233a344": {
+     "media": 0.9077380952380952,
+     "desvio": 0.018346470246931503,
+     "por_semilla": [
+      0.9285714285714286,
+      0.8839285714285714,
+      0.9107142857142857
+     ]
+    },
+    "ensayo2_351a400": {
+     "media": 0.9,
+     "desvio": 0.016329931618554536,
+     "por_semilla": [
+      0.88,
+      0.9,
+      0.92
+     ]
+    },
+    "ensayo2_primeros8": {
+     "media": 0.7083333333333334,
+     "desvio": 0.05892556509887896,
+     "por_semilla": [
+      0.75,
+      0.75,
+      0.625
+     ]
+    },
+    "ensayo2_sin_colision_101a200": {
+     "media": 0.9887612387612389,
+     "desvio": 0.009280050746822317,
+     "por_semilla": [
+      1.0,
+      0.989010989010989,
+      0.9772727272727273
+     ]
+    },
+    "simbolos_distintos": {
+     "media": 10.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      10.0,
+      10.0,
+      10.0
+     ]
+    }
+   },
+   "firmas": {},
+   "curva": [
+    {
+     "tramo": "problemas 1-8 (de 50 ensayos)",
+     "medida": "ensayo2_primeros8",
+     "red_media": 0.7083333333333334,
+     "red_desvio": 0.05892556509887896,
+     "referencia": "harlow1949_primeros8",
+     "especie": "mono rhesus",
+     "valor": 0.52,
+     "tipo_valor": "media",
+     "comparacion": "especie por debajo"
+    },
+    {
+     "tramo": "problemas 33-132 (1-100 de 6 ensayos)",
+     "medida": "ensayo2_1a100",
+     "red_media": 0.9366666666666666,
+     "red_desvio": 0.00942809041582059,
+     "referencia": "harlow1950_1a100",
+     "especie": "mono rhesus",
+     "valor": 0.82,
+     "tipo_valor": "media",
+     "comparacion": "especie por debajo"
+    },
+    {
+     "tramo": "problemas 133-232 (101-200 de 6 ensayos)",
+     "medida": "ensayo2_101a200",
+     "red_media": 0.9166666666666666,
+     "red_desvio": 0.024944382578492918,
+     "referencia": "harlow1950_101a200",
+     "especie": "mono rhesus",
+     "valor": 0.87,
+     "tipo_valor": "media",
+     "comparacion": "especie por debajo"
+    },
+    {
+     "tramo": "problemas 233-344 (los últimos 112 de Harlow)",
+     "medida": "ensayo2_233a344",
+     "red_media": 0.9077380952380952,
+     "red_desvio": 0.018346470246931503,
+     "referencia": "harlow1949_ultimos112",
+     "especie": "mono rhesus",
+     "valor": 0.9,
+     "tipo_valor": "cota_inferior",
+     "comparacion": "no concluyente (la referencia es una cota)"
+    },
+    {
+     "tramo": "problemas 383-432 (351-400 de 6 ensayos)",
+     "medida": "ensayo2_351a400",
+     "red_media": 0.9,
+     "red_desvio": 0.016329931618554536,
+     "referencia": "warren1965_rhesus",
+     "especie": "mono rhesus (el mejor de la comparación)",
+     "valor": 0.85,
+     "tipo_valor": "media",
+     "comparacion": "especie por debajo"
+    }
+   ],
+   "otras_referencias_humanas": [],
+   "configuracion": {
+    "elegida": "documentada",
+    "puntajes": {},
+    "criterio": "única configuración de la prueba con este perfil",
+    "semillas": [],
+    "opciones": {
+     "documentada": {
+      "memory": true,
+      "speak": true,
+      "judge": true,
+      "max_steps": 10,
+      "gate": true,
+      "prev_io": true,
+      "back": true,
+      "cogmap": true,
+      "modulators": true,
+      "task_sets": true
+     }
+    },
+    "controles": {}
+   }
+  },
+  {
+   "prueba": "reversion_serial",
+   "variante": "simbolos",
+   "perfil": "defecto",
+   "nombre": "Reversión serial: la misma discriminación se invierte muchas veces",
+   "dimension": "flexibilidad",
+   "condicion_entrada": "simbolos",
+   "equivalente": {
+    "valor": false,
+    "motivo": "símbolos en lugar de estímulos percibidos"
+   },
+   "metrica": "errores hasta el criterio (9 de 10) en las últimas 3 reversiones; menos es mejor",
+   "protocolo": "dos símbolos fijos, discriminación hasta 9 aciertos en 10 ensayos (máximo 200 por fase) y 10 reversiones seguidas en una sesión continua, sin aviso; red sin experiencia previa",
+   "desviaciones": [
+    "condición de entrada: símbolos, no estímulos visuales u olfativos",
+    "criterio (9 de 10) y número de reversiones (10) elegidos por la batería: los de los artículos no se pudieron leer",
+    "sin sesiones diarias: una sesión continua"
+   ],
+   "semillas": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "variabilidad": "la semilla cambia el entorno (lados y objeto premiado al empezar) y el Thinker; con la configuración por defecto (sólo DECIR) el Thinker no usa la semilla: el ± es del entorno",
+   "azar": {
+    "valor": 70.41,
+    "derivacion": "errores esperados por fase de quien elige al azar con el mismo criterio y tope de 200 ensayos (cálculo exacto); en el ensayo 2 tras una reversión el azar es 0,5"
+   },
+   "commit": "8fb949e2dc73",
+   "fuente_resultado": "medicion@8fb949e2dc73",
+   "segundos": 0.7554721832275391,
+   "estado": "medido",
+   "motivo": "sin referencia humana verificada con la misma métrica: no hay índice normalizado",
+   "red": {
+    "media": 4.0,
+    "desvio": 0.0,
+    "por_semilla": [
+     4.0,
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "semillas_identicas": false,
+    "mediana": 4.0,
+    "minimo": 4.0,
+    "maximo": 4.0,
+    "semillas_en_azar": null
+   },
+   "referencia_humana": null,
+   "referencias_animales": [
+    {
+     "id": "bond2007_corvidos",
+     "especie": "tres córvidos (arrendajo piñonero, cascanueces de Clark, charas)",
+     "valor": null,
+     "tipo_valor": "cualitativo",
+     "cita": "Bond, Kamil & Balda (2007), J. Comp. Psychol. 121:372, resumen",
+     "url": "https://digitalcommons.unl.edu/bioscibehavior/20",
+     "verificacion": "primaria",
+     "cualitativo": "las tres especies mejoran con las reversiones sucesivas; el arrendajo piñonero comete menos errores después de cada reversión",
+     "comparacion": "cualitativa"
+    },
+    {
+     "id": "komischke2002_abejas",
+     "especie": "abeja",
+     "valor": null,
+     "tipo_valor": "cualitativo",
+     "cita": "Komischke, Giurfa, Lachnit & Malun (2002), Learn. Mem. 9:122, resumen",
+     "url": "https://scilit.com/publications/a1b379dd1cf90ca1202c296b3cf0f369",
+     "verificacion": "primaria (resumen)",
+     "releida": "2026-11-26",
+     "protocolo": "reversión sucesiva: pares de olores distintos y solapados (A+B-, B+C-, ...), no la misma pareja; condicionamiento del reflejo de extensión de la probóscide",
+     "cualitativo": "grupos con 3, 2, 1 o 0 reversiones previas pasan por una fase final con dos reversiones más; el resumen dice que la experiencia con reversiones parece mejorar el desempeño",
+     "comparacion": "cualitativa"
+    },
+    {
+     "id": "mota2010_abejas",
+     "especie": "abeja",
+     "valor": null,
+     "tipo_valor": "cualitativo",
+     "cita": "Mota & Giurfa (2010), Front. Behav. Neurosci. 4:48, resumen",
+     "url": "https://www.frontiersin.org/articles/10.3389/fnbeh.2010.00048",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "protocolo": "cuatro fases con el mismo par de olores (A+B-, A-B+, A+B-, A-B+), 5 ensayos premiados y 5 sin premio por fase, 111 abejas; reflejo de extensión de la probóscide",
+     "cualitativo": "con reversiones múltiples del mismo par de olores la discriminación y la reversión empeoran de fase en fase: no hay aprender a aprender",
+     "comparacion": "cualitativa"
+    },
+    {
+     "id": "harlow1950_reversion",
+     "especie": "mono rhesus",
+     "valor": null,
+     "tipo_valor": "cualitativo",
+     "cita": "Harlow (1950), resumen de la APA",
+     "url": "https://scilit.com/publications/d5853446e00b40505db0bdeed003ca44",
+     "verificacion": "primaria",
+     "cualitativo": "8 monos hicieron 112 problemas de discriminación con reversión; la cifra del ensayo 2 tras la reversión no se pudo leer",
+     "comparacion": "cualitativa"
+    }
+   ],
+   "referencias_maquinas": [],
+   "indice_normalizado": null,
+   "detalle": {
+    "ensayo2_tras_reversion": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "errores_discriminacion": {
+     "media": 1.2,
+     "desvio": 0.9797958971132713,
+     "por_semilla": [
+      2.0,
+      2.0,
+      0.0,
+      0.0,
+      2.0
+     ]
+    },
+    "errores_reversion1": {
+     "media": 2.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0
+     ]
+    },
+    "errores_ultimas3": {
+     "media": 4.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0
+     ]
+    },
+    "fases_al_criterio": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "mejora_con_reversiones": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "mejora_errores": {
+     "media": -2.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      -2.0,
+      -2.0,
+      -2.0,
+      -2.0,
+      -2.0
+     ]
+    },
+    "pendiente_errores": {
+     "media": 0.19393939393939383,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.19393939393939383,
+      0.19393939393939383,
+      0.19393939393939383,
+      0.19393939393939383,
+      0.19393939393939383
+     ]
+    },
+    "respuestas_invalidas": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "_series": {
+     "errores_por_fase": [
+      [
+       2,
+       2,
+       2,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4
+      ],
+      [
+       2,
+       2,
+       2,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4
+      ],
+      [
+       0,
+       2,
+       2,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4
+      ],
+      [
+       0,
+       2,
+       2,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4
+      ],
+      [
+       2,
+       2,
+       2,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4
+      ]
+     ]
+    }
+   },
+   "firmas": {
+    "mejora_con_reversiones": {
+     "descripcion": "menos errores en las últimas reversiones que en la primera (córvidos; las abejas con el mismo par empeoran)",
+     "semillas_con_firma": 0,
+     "semillas": 5
+    }
+   },
+   "curva": [],
+   "otras_referencias_humanas": [],
+   "configuracion": {
+    "elegida": "defecto",
+    "puntajes": {
+     "defecto": {
+      "media": 3.393939393939394,
+      "desvio": 0.08570991287109658,
+      "por_semilla": [
+       3.4545454545454546,
+       3.4545454545454546,
+       3.272727272727273
+      ]
+     },
+     "aprender_a_aprender": {
+      "media": 11.636363636363635,
+      "desvio": 0.6341954404986778,
+      "por_semilla": [
+       11.545454545454545,
+       12.454545454545455,
+       10.909090909090908
+      ]
+     }
+    },
+    "criterio": "errores por fase en semillas de validación (menos es mejor)",
+    "semillas": [
+     100,
+     101,
+     102
+    ],
+    "opciones": {
+     "defecto": {},
+     "aprender_a_aprender": {
+      "memory": true,
+      "speak": true,
+      "judge": true,
+      "max_steps": 10,
+      "gate": true,
+      "prev_io": true
+     }
+    },
+    "controles": {
+     "aprender_a_aprender": {
+      "media": 4.4,
+      "desvio": 1.717879830230017,
+      "por_semilla": [
+       7.666666666666667,
+       4.333333333333333,
+       4.0,
+       3.0,
+       3.0
+      ],
+      "semillas": [
+       0,
+       1,
+       2,
+       3,
+       4
+      ],
+      "detalle": {
+       "ensayo2_tras_reversion": {
+        "media": 0.6199999999999999,
+        "desvio": 0.17204650534085253
+       },
+       "errores_discriminacion": {
+        "media": 35.6,
+        "desvio": 27.514359887157106
+       },
+       "errores_reversion1": {
+        "media": 25.6,
+        "desvio": 28.104092228712883
+       },
+       "errores_ultimas3": {
+        "media": 4.4,
+        "desvio": 1.717879830230017
+       },
+       "fases_al_criterio": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "mejora_con_reversiones": {
+        "media": 0.8,
+        "desvio": 0.4000000000000001
+       },
+       "mejora_errores": {
+        "media": 21.2,
+        "desvio": 29.029946224162693
+       },
+       "pendiente_errores": {
+        "media": -1.52,
+        "desvio": 1.8706545359903095
+       },
+       "respuestas_invalidas": {
+        "media": 0.0934492687968422,
+        "desvio": 0.014731166359872726
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "prueba": "reversion_serial",
+   "variante": "simbolos+R3",
+   "perfil": "R3",
+   "nombre": "Reversión serial: la misma discriminación se invierte muchas veces",
+   "dimension": "flexibilidad",
+   "condicion_entrada": "simbolos",
+   "equivalente": {
+    "valor": false,
+    "motivo": "símbolos en lugar de estímulos percibidos"
+   },
+   "metrica": "errores hasta el criterio (9 de 10) en las últimas 3 reversiones; menos es mejor",
+   "protocolo": "dos símbolos fijos, discriminación hasta 9 aciertos en 10 ensayos (máximo 200 por fase) y 10 reversiones seguidas en una sesión continua, sin aviso; red sin experiencia previa",
+   "desviaciones": [
+    "condición de entrada: símbolos, no estímulos visuales u olfativos",
+    "criterio (9 de 10) y número de reversiones (10) elegidos por la batería: los de los artículos no se pudieron leer",
+    "sin sesiones diarias: una sesión continua",
+    "perfil R3: cada configuración candidata + prev_io, back, cogmap y modulators (sin task_sets)"
+   ],
+   "semillas": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "variabilidad": "la semilla cambia el entorno (lados y objeto premiado al empezar) y el Thinker; con la configuración por defecto (sólo DECIR) el Thinker no usa la semilla: el ± es del entorno",
+   "azar": {
+    "valor": 70.41,
+    "derivacion": "errores esperados por fase de quien elige al azar con el mismo criterio y tope de 200 ensayos (cálculo exacto); en el ensayo 2 tras una reversión el azar es 0,5"
+   },
+   "commit": "8fb949e2dc73",
+   "fuente_resultado": "medicion@8fb949e2dc73",
+   "segundos": 0.9656617641448975,
+   "estado": "medido",
+   "motivo": "sin referencia humana verificada con la misma métrica: no hay índice normalizado",
+   "red": {
+    "media": 4.0,
+    "desvio": 0.0,
+    "por_semilla": [
+     4.0,
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "semillas_identicas": false,
+    "mediana": 4.0,
+    "minimo": 4.0,
+    "maximo": 4.0,
+    "semillas_en_azar": null
+   },
+   "referencia_humana": null,
+   "referencias_animales": [
+    {
+     "id": "bond2007_corvidos",
+     "especie": "tres córvidos (arrendajo piñonero, cascanueces de Clark, charas)",
+     "valor": null,
+     "tipo_valor": "cualitativo",
+     "cita": "Bond, Kamil & Balda (2007), J. Comp. Psychol. 121:372, resumen",
+     "url": "https://digitalcommons.unl.edu/bioscibehavior/20",
+     "verificacion": "primaria",
+     "cualitativo": "las tres especies mejoran con las reversiones sucesivas; el arrendajo piñonero comete menos errores después de cada reversión",
+     "comparacion": "cualitativa"
+    },
+    {
+     "id": "komischke2002_abejas",
+     "especie": "abeja",
+     "valor": null,
+     "tipo_valor": "cualitativo",
+     "cita": "Komischke, Giurfa, Lachnit & Malun (2002), Learn. Mem. 9:122, resumen",
+     "url": "https://scilit.com/publications/a1b379dd1cf90ca1202c296b3cf0f369",
+     "verificacion": "primaria (resumen)",
+     "releida": "2026-11-26",
+     "protocolo": "reversión sucesiva: pares de olores distintos y solapados (A+B-, B+C-, ...), no la misma pareja; condicionamiento del reflejo de extensión de la probóscide",
+     "cualitativo": "grupos con 3, 2, 1 o 0 reversiones previas pasan por una fase final con dos reversiones más; el resumen dice que la experiencia con reversiones parece mejorar el desempeño",
+     "comparacion": "cualitativa"
+    },
+    {
+     "id": "mota2010_abejas",
+     "especie": "abeja",
+     "valor": null,
+     "tipo_valor": "cualitativo",
+     "cita": "Mota & Giurfa (2010), Front. Behav. Neurosci. 4:48, resumen",
+     "url": "https://www.frontiersin.org/articles/10.3389/fnbeh.2010.00048",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "protocolo": "cuatro fases con el mismo par de olores (A+B-, A-B+, A+B-, A-B+), 5 ensayos premiados y 5 sin premio por fase, 111 abejas; reflejo de extensión de la probóscide",
+     "cualitativo": "con reversiones múltiples del mismo par de olores la discriminación y la reversión empeoran de fase en fase: no hay aprender a aprender",
+     "comparacion": "cualitativa"
+    },
+    {
+     "id": "harlow1950_reversion",
+     "especie": "mono rhesus",
+     "valor": null,
+     "tipo_valor": "cualitativo",
+     "cita": "Harlow (1950), resumen de la APA",
+     "url": "https://scilit.com/publications/d5853446e00b40505db0bdeed003ca44",
+     "verificacion": "primaria",
+     "cualitativo": "8 monos hicieron 112 problemas de discriminación con reversión; la cifra del ensayo 2 tras la reversión no se pudo leer",
+     "comparacion": "cualitativa"
+    }
+   ],
+   "referencias_maquinas": [],
+   "indice_normalizado": null,
+   "detalle": {
+    "ensayo2_tras_reversion": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "errores_discriminacion": {
+     "media": 1.2,
+     "desvio": 0.9797958971132713,
+     "por_semilla": [
+      2.0,
+      2.0,
+      0.0,
+      0.0,
+      2.0
+     ]
+    },
+    "errores_reversion1": {
+     "media": 2.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0
+     ]
+    },
+    "errores_ultimas3": {
+     "media": 4.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0
+     ]
+    },
+    "fases_al_criterio": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "mejora_con_reversiones": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "mejora_errores": {
+     "media": -2.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      -2.0,
+      -2.0,
+      -2.0,
+      -2.0,
+      -2.0
+     ]
+    },
+    "pendiente_errores": {
+     "media": 0.19393939393939383,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.19393939393939383,
+      0.19393939393939383,
+      0.19393939393939383,
+      0.19393939393939383,
+      0.19393939393939383
+     ]
+    },
+    "respuestas_invalidas": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "_series": {
+     "errores_por_fase": [
+      [
+       2,
+       2,
+       2,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4
+      ],
+      [
+       2,
+       2,
+       2,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4
+      ],
+      [
+       0,
+       2,
+       2,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4
+      ],
+      [
+       0,
+       2,
+       2,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4
+      ],
+      [
+       2,
+       2,
+       2,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4
+      ]
+     ]
+    }
+   },
+   "firmas": {
+    "mejora_con_reversiones": {
+     "descripcion": "menos errores en las últimas reversiones que en la primera (córvidos; las abejas con el mismo par empeoran)",
+     "semillas_con_firma": 0,
+     "semillas": 5
+    }
+   },
+   "curva": [],
+   "otras_referencias_humanas": [],
+   "configuracion": {
+    "elegida": "defecto",
+    "puntajes": {
+     "defecto": {
+      "media": 3.393939393939394,
+      "desvio": 0.08570991287109658,
+      "por_semilla": [
+       3.4545454545454546,
+       3.4545454545454546,
+       3.272727272727273
+      ]
+     },
+     "aprender_a_aprender": {
+      "media": 5.484848484848484,
+      "desvio": 0.2999846950488385,
+      "por_semilla": [
+       5.909090909090909,
+       5.2727272727272725,
+       5.2727272727272725
+      ]
+     }
+    },
+    "criterio": "errores por fase en semillas de validación (menos es mejor)",
+    "semillas": [
+     100,
+     101,
+     102
+    ],
+    "opciones": {
+     "defecto": {
+      "prev_io": true,
+      "back": true,
+      "cogmap": true,
+      "modulators": true
+     },
+     "aprender_a_aprender": {
+      "memory": true,
+      "speak": true,
+      "judge": true,
+      "max_steps": 10,
+      "gate": true,
+      "prev_io": true,
+      "back": true,
+      "cogmap": true,
+      "modulators": true
+     }
+    },
+    "controles": {
+     "aprender_a_aprender": {
+      "media": 2.0,
+      "desvio": 0.4714045207910317,
+      "por_semilla": [
+       1.6666666666666667,
+       2.0,
+       2.3333333333333335,
+       2.6666666666666665,
+       1.3333333333333333
+      ],
+      "semillas": [
+       0,
+       1,
+       2,
+       3,
+       4
+      ],
+      "detalle": {
+       "ensayo2_tras_reversion": {
+        "media": 0.8,
+        "desvio": 0.14142135623730953
+       },
+       "errores_discriminacion": {
+        "media": 21.4,
+        "desvio": 15.47384890710776
+       },
+       "errores_reversion1": {
+        "media": 16.0,
+        "desvio": 13.461054936371072
+       },
+       "errores_ultimas3": {
+        "media": 2.0,
+        "desvio": 0.4714045207910317
+       },
+       "fases_al_criterio": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "mejora_con_reversiones": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "mejora_errores": {
+        "media": 14.0,
+        "desvio": 13.092830947591976
+       },
+       "pendiente_errores": {
+        "media": -0.9151515151515148,
+        "desvio": 0.6995525265294498
+       },
+       "respuestas_invalidas": {
+        "media": 0.0786016122427331,
+        "desvio": 0.00557714183070301
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "prueba": "reversion_serial",
+   "variante": "simbolos+R3+ts",
+   "perfil": "R3+ts",
+   "nombre": "Reversión serial: la misma discriminación se invierte muchas veces",
+   "dimension": "flexibilidad",
+   "condicion_entrada": "simbolos",
+   "equivalente": {
+    "valor": false,
+    "motivo": "símbolos en lugar de estímulos percibidos"
+   },
+   "metrica": "errores hasta el criterio (9 de 10) en las últimas 3 reversiones; menos es mejor",
+   "protocolo": "dos símbolos fijos, discriminación hasta 9 aciertos en 10 ensayos (máximo 200 por fase) y 10 reversiones seguidas en una sesión continua, sin aviso; red sin experiencia previa",
+   "desviaciones": [
+    "condición de entrada: símbolos, no estímulos visuales u olfativos",
+    "criterio (9 de 10) y número de reversiones (10) elegidos por la batería: los de los artículos no se pudieron leer",
+    "sin sesiones diarias: una sesión continua",
+    "perfil R3+ts: R3 + task_sets (marcado: con todo encendido rompe la multitarea, README de 8fb949e)"
+   ],
+   "semillas": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "variabilidad": "la semilla cambia el entorno (lados y objeto premiado al empezar) y el Thinker; con la configuración por defecto (sólo DECIR) el Thinker no usa la semilla: el ± es del entorno",
+   "azar": {
+    "valor": 70.41,
+    "derivacion": "errores esperados por fase de quien elige al azar con el mismo criterio y tope de 200 ensayos (cálculo exacto); en el ensayo 2 tras una reversión el azar es 0,5"
+   },
+   "commit": "8fb949e2dc73",
+   "fuente_resultado": "medicion@8fb949e2dc73",
+   "segundos": 1.1620466709136963,
+   "estado": "medido",
+   "motivo": "sin referencia humana verificada con la misma métrica: no hay índice normalizado",
+   "red": {
+    "media": 4.0,
+    "desvio": 0.0,
+    "por_semilla": [
+     4.0,
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "semillas_identicas": false,
+    "mediana": 4.0,
+    "minimo": 4.0,
+    "maximo": 4.0,
+    "semillas_en_azar": null
+   },
+   "referencia_humana": null,
+   "referencias_animales": [
+    {
+     "id": "bond2007_corvidos",
+     "especie": "tres córvidos (arrendajo piñonero, cascanueces de Clark, charas)",
+     "valor": null,
+     "tipo_valor": "cualitativo",
+     "cita": "Bond, Kamil & Balda (2007), J. Comp. Psychol. 121:372, resumen",
+     "url": "https://digitalcommons.unl.edu/bioscibehavior/20",
+     "verificacion": "primaria",
+     "cualitativo": "las tres especies mejoran con las reversiones sucesivas; el arrendajo piñonero comete menos errores después de cada reversión",
+     "comparacion": "cualitativa"
+    },
+    {
+     "id": "komischke2002_abejas",
+     "especie": "abeja",
+     "valor": null,
+     "tipo_valor": "cualitativo",
+     "cita": "Komischke, Giurfa, Lachnit & Malun (2002), Learn. Mem. 9:122, resumen",
+     "url": "https://scilit.com/publications/a1b379dd1cf90ca1202c296b3cf0f369",
+     "verificacion": "primaria (resumen)",
+     "releida": "2026-11-26",
+     "protocolo": "reversión sucesiva: pares de olores distintos y solapados (A+B-, B+C-, ...), no la misma pareja; condicionamiento del reflejo de extensión de la probóscide",
+     "cualitativo": "grupos con 3, 2, 1 o 0 reversiones previas pasan por una fase final con dos reversiones más; el resumen dice que la experiencia con reversiones parece mejorar el desempeño",
+     "comparacion": "cualitativa"
+    },
+    {
+     "id": "mota2010_abejas",
+     "especie": "abeja",
+     "valor": null,
+     "tipo_valor": "cualitativo",
+     "cita": "Mota & Giurfa (2010), Front. Behav. Neurosci. 4:48, resumen",
+     "url": "https://www.frontiersin.org/articles/10.3389/fnbeh.2010.00048",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "protocolo": "cuatro fases con el mismo par de olores (A+B-, A-B+, A+B-, A-B+), 5 ensayos premiados y 5 sin premio por fase, 111 abejas; reflejo de extensión de la probóscide",
+     "cualitativo": "con reversiones múltiples del mismo par de olores la discriminación y la reversión empeoran de fase en fase: no hay aprender a aprender",
+     "comparacion": "cualitativa"
+    },
+    {
+     "id": "harlow1950_reversion",
+     "especie": "mono rhesus",
+     "valor": null,
+     "tipo_valor": "cualitativo",
+     "cita": "Harlow (1950), resumen de la APA",
+     "url": "https://scilit.com/publications/d5853446e00b40505db0bdeed003ca44",
+     "verificacion": "primaria",
+     "cualitativo": "8 monos hicieron 112 problemas de discriminación con reversión; la cifra del ensayo 2 tras la reversión no se pudo leer",
+     "comparacion": "cualitativa"
+    }
+   ],
+   "referencias_maquinas": [],
+   "indice_normalizado": null,
+   "detalle": {
+    "ensayo2_tras_reversion": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "errores_discriminacion": {
+     "media": 1.2,
+     "desvio": 0.9797958971132713,
+     "por_semilla": [
+      2.0,
+      2.0,
+      0.0,
+      0.0,
+      2.0
+     ]
+    },
+    "errores_reversion1": {
+     "media": 2.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0
+     ]
+    },
+    "errores_ultimas3": {
+     "media": 4.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0
+     ]
+    },
+    "fases_al_criterio": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "mejora_con_reversiones": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "mejora_errores": {
+     "media": -2.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      -2.0,
+      -2.0,
+      -2.0,
+      -2.0,
+      -2.0
+     ]
+    },
+    "pendiente_errores": {
+     "media": 0.19393939393939383,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.19393939393939383,
+      0.19393939393939383,
+      0.19393939393939383,
+      0.19393939393939383,
+      0.19393939393939383
+     ]
+    },
+    "respuestas_invalidas": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "_series": {
+     "errores_por_fase": [
+      [
+       2,
+       2,
+       2,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4
+      ],
+      [
+       2,
+       2,
+       2,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4
+      ],
+      [
+       0,
+       2,
+       2,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4
+      ],
+      [
+       0,
+       2,
+       2,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4
+      ],
+      [
+       2,
+       2,
+       2,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4,
+       4
+      ]
+     ]
+    }
+   },
+   "firmas": {
+    "mejora_con_reversiones": {
+     "descripcion": "menos errores en las últimas reversiones que en la primera (córvidos; las abejas con el mismo par empeoran)",
+     "semillas_con_firma": 0,
+     "semillas": 5
+    }
+   },
+   "curva": [],
+   "otras_referencias_humanas": [],
+   "configuracion": {
+    "elegida": "defecto",
+    "puntajes": {
+     "defecto": {
+      "media": 3.393939393939394,
+      "desvio": 0.08570991287109658,
+      "por_semilla": [
+       3.4545454545454546,
+       3.4545454545454546,
+       3.272727272727273
+      ]
+     },
+     "aprender_a_aprender": {
+      "media": 6.636363636363636,
+      "desvio": 0.5195887333176438,
+      "por_semilla": [
+       6.181818181818182,
+       6.363636363636363,
+       7.363636363636363
+      ]
+     }
+    },
+    "criterio": "errores por fase en semillas de validación (menos es mejor)",
+    "semillas": [
+     100,
+     101,
+     102
+    ],
+    "opciones": {
+     "defecto": {
+      "prev_io": true,
+      "back": true,
+      "cogmap": true,
+      "modulators": true,
+      "task_sets": true
+     },
+     "aprender_a_aprender": {
+      "memory": true,
+      "speak": true,
+      "judge": true,
+      "max_steps": 10,
+      "gate": true,
+      "prev_io": true,
+      "back": true,
+      "cogmap": true,
+      "modulators": true,
+      "task_sets": true
+     }
+    },
+    "controles": {
+     "aprender_a_aprender": {
+      "media": 2.1333333333333333,
+      "desvio": 0.6182412330330469,
+      "por_semilla": [
+       3.3333333333333335,
+       1.6666666666666667,
+       2.0,
+       1.6666666666666667,
+       2.0
+      ],
+      "semillas": [
+       0,
+       1,
+       2,
+       3,
+       4
+      ],
+      "detalle": {
+       "ensayo2_tras_reversion": {
+        "media": 0.76,
+        "desvio": 0.10198039027185572
+       },
+       "errores_discriminacion": {
+        "media": 28.0,
+        "desvio": 23.004347415216976
+       },
+       "errores_reversion1": {
+        "media": 18.4,
+        "desvio": 14.430523206037957
+       },
+       "errores_ultimas3": {
+        "media": 2.1333333333333333,
+        "desvio": 0.6182412330330469
+       },
+       "fases_al_criterio": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "mejora_con_reversiones": {
+        "media": 0.8,
+        "desvio": 0.4
+       },
+       "mejora_errores": {
+        "media": 16.266666666666666,
+        "desvio": 14.708123227961101
+       },
+       "pendiente_errores": {
+        "media": -0.9563636363636355,
+        "desvio": 0.8518754764427448
+       },
+       "respuestas_invalidas": {
+        "media": 0.07957839750387478,
+        "desvio": 0.013601478497749682
+       }
+      }
+     }
+    }
+   }
+  },
   {
    "prueba": "reversion_volatil",
    "variante": "simbolos",
@@ -4836,6 +8685,1385 @@
    }
   },
   {
+   "prueba": "deteccion_de_cambio",
+   "variante": "simbolos",
+   "perfil": "defecto",
+   "nombre": "Memoria de trabajo visual: detección de cambio y capacidad K",
+   "dimension": "memoria_de_trabajo",
+   "condicion_entrada": "simbolos",
+   "equivalente": {
+    "valor": false,
+    "motivo": "otro procedimiento de prueba y memoria episódica exacta por diseño"
+   },
+   "metrica": "capacidad K (modelo de capacidad fija, prueba de un ítem)",
+   "protocolo": "3000 episodios de entrenamiento en línea con N al azar en (2, 4, 6, 8, 10); 10 lugares y 12 colores como símbolos; cada ítem llega como lugar y color seguidos; prueba de un ítem (cambia con probabilidad 1/2); 100 episodios congelados por tamaño",
+   "desviaciones": [
+    "condición de entrada: símbolos que llegan de a uno, no una pantalla con todos los cuadrados a la vez (la red no tiene que codificar en paralelo una escena breve)",
+    "prueba de un solo ítem (sí/no) con la fórmula de Cowan, no dos ítems y tocar el que cambió con la de Eng",
+    "la memoria rápida del Thinker es una tabla exacta por episodio: si el control aprende a usarla, la capacidad la limita el diseño (o el techo de la prueba, N = 10), no la red",
+    "la demora es un silencio: el Thinker no tiene escala de tiempo"
+   ],
+   "semillas": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "variabilidad": "la semilla cambia el Thinker (pesos iniciales y exploración: aprende o no la política) y los episodios de entrenamiento y de prueba",
+   "azar": {
+    "valor": 0.0,
+    "derivacion": "K = 0 cuando la exactitud es la de adivinar (50 %)"
+   },
+   "commit": "8fb949e2dc73",
+   "fuente_resultado": "medicion@8fb949e2dc73",
+   "segundos": 40.47041726112366,
+   "estado": "medido",
+   "motivo": "",
+   "red": {
+    "media": 5.71125,
+    "desvio": 4.346879448236401,
+    "por_semilla": [
+     1.79,
+     0.0,
+     10.0,
+     9.43,
+     10.0,
+     4.47,
+     10.0,
+     0.0
+    ],
+    "semillas_identicas": false,
+    "mediana": 6.949999999999999,
+    "minimo": 0.0,
+    "maximo": 10.0,
+    "semillas_en_azar": 2,
+    "semillas_en_techo": 3
+   },
+   "referencia_humana": {
+    "id": "elmore2011_humanos_colores",
+    "especie": "humano adulto",
+    "valor": 2.46,
+    "tipo_valor": "media",
+    "n": 6,
+    "cita": "Elmore, Ma, Magnotti, Leising, Passaro, Katz & Wright (2011), Curr. Biol. 21:975",
+    "url": "https://www.cns.nyu.edu/malab/static/files/publications/2011 Elmore Ma Wright.pdf",
+    "verificacion": "primaria",
+    "releida": "2026-11-26",
+    "nota": "colores; error estándar 0,35. Con figuras (clip art): 2,78 (error estándar 0,39). Personas: tamaños 2, 4, 6, 8 y 10; demora de 900 ms con colores y 1 000 ms con figuras",
+    "medida_red": "puntaje",
+    "valor_red": 5.71125,
+    "comparacion": "a la par",
+    "referencia_del_indice": true
+   },
+   "referencias_animales": [
+    {
+     "id": "elmore2011_rhesus_colores",
+     "especie": "mono rhesus",
+     "valor": 0.71,
+     "tipo_valor": "media",
+     "n": 2,
+     "cita": "Elmore et al. (2011), Curr. Biol. 21:975",
+     "url": "https://www.cns.nyu.edu/malab/static/files/publications/2011 Elmore Ma Wright.pdf",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "nota": "colores; error estándar 0,24. Con figuras: 1,02 (error estándar 0,19). Monos: tamaños 2, 4 y 6; la leyenda de la figura 1 da demoras de 50 ms",
+     "medida_red": "puntaje",
+     "valor_red": 5.71125,
+     "comparacion": "especie por debajo"
+    }
+   ],
+   "referencias_maquinas": [],
+   "indice_normalizado": {
+    "contra": "elmore2011_humanos_colores",
+    "min": 2.321646341463415,
+    "max": 2.321646341463415,
+    "media": 2.321646341463415,
+    "desvio": 1.7670241659497568,
+    "por_semilla": [
+     0.7276422764227642,
+     0.0,
+     4.065040650406504,
+     3.8333333333333335,
+     4.065040650406504,
+     1.8170731707317072,
+     4.065040650406504,
+     0.0
+    ],
+    "por_semilla_min": null,
+    "por_semilla_max": null,
+    "referencia": 2.46,
+    "tipo_valor": "media"
+   },
+   "detalle": {
+    "K": {
+     "media": 5.71125,
+     "desvio": 4.346879448236401,
+     "por_semilla": [
+      1.79,
+      0.0,
+      10.0,
+      9.43,
+      10.0,
+      4.47,
+      10.0,
+      0.0
+     ]
+    },
+    "K_N10": {
+     "media": 5.362918752406623,
+     "desvio": 4.622622565132253,
+     "por_semilla": [
+      0.0,
+      0.0,
+      10.0,
+      9.433962264150944,
+      10.0,
+      3.4693877551020407,
+      10.0,
+      0.0
+     ]
+    },
+    "K_N2": {
+     "media": 1.4394654088050314,
+     "desvio": 0.8381753095688419,
+     "por_semilla": [
+      1.6666666666666667,
+      0.0,
+      2.0,
+      1.849056603773585,
+      2.0,
+      2.0,
+      2.0,
+      0.0
+     ]
+    },
+    "K_N4": {
+     "media": 2.774641148325359,
+     "desvio": 1.6611243286981752,
+     "por_semilla": [
+      2.618181818181818,
+      0.0,
+      4.0,
+      3.5789473684210527,
+      4.0,
+      4.0,
+      4.0,
+      0.0
+     ]
+    },
+    "K_N6": {
+     "media": 3.6885375494071146,
+     "desvio": 2.523472956432462,
+     "por_semilla": [
+      1.6,
+      0.0,
+      6.0,
+      5.217391304347826,
+      6.0,
+      4.690909090909091,
+      6.0,
+      0.0
+     ]
+    },
+    "K_N8": {
+     "media": 4.7749234154549764,
+     "desvio": 3.3770513850324946,
+     "por_semilla": [
+      2.046511627906977,
+      0.0,
+      8.0,
+      7.418181818181818,
+      8.0,
+      4.73469387755102,
+      8.0,
+      0.0
+     ]
+    },
+    "exactitud_N10": {
+     "media": 0.7625,
+     "desvio": 0.23847169643376967,
+     "por_semilla": [
+      0.52,
+      0.47,
+      1.0,
+      0.97,
+      1.0,
+      0.68,
+      1.0,
+      0.46
+     ]
+    },
+    "exactitud_N2": {
+     "media": 0.8425,
+     "desvio": 0.237736724129866,
+     "por_semilla": [
+      0.91,
+      0.47,
+      1.0,
+      0.96,
+      1.0,
+      1.0,
+      1.0,
+      0.4
+     ]
+    },
+    "exactitud_N4": {
+     "media": 0.8475,
+     "desvio": 0.20141685629559408,
+     "por_semilla": [
+      0.81,
+      0.53,
+      1.0,
+      0.94,
+      1.0,
+      1.0,
+      1.0,
+      0.5
+     ]
+    },
+    "exactitud_N6": {
+     "media": 0.815,
+     "desvio": 0.20124611797498107,
+     "por_semilla": [
+      0.67,
+      0.53,
+      1.0,
+      0.94,
+      1.0,
+      0.88,
+      1.0,
+      0.5
+     ]
+    },
+    "exactitud_N8": {
+     "media": 0.81,
+     "desvio": 0.19931131427994747,
+     "por_semilla": [
+      0.68,
+      0.55,
+      1.0,
+      0.96,
+      1.0,
+      0.8,
+      1.0,
+      0.49
+     ]
+    },
+    "exactitud_entrenamiento_ultimos500": {
+     "media": 0.776,
+     "desvio": 0.1179109833730514,
+     "por_semilla": [
+      0.738,
+      0.632,
+      0.884,
+      0.816,
+      0.912,
+      0.746,
+      0.904,
+      0.576
+     ]
+    },
+    "techo_de_la_prueba": {
+     "media": 0.375,
+     "desvio": 0.4841229182759271,
+     "por_semilla": [
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      1.0,
+      0.0,
+      1.0,
+      0.0
+     ]
+    }
+   },
+   "firmas": {},
+   "curva": [],
+   "otras_referencias_humanas": [
+    {
+     "id": "cowan2001",
+     "especie": "humano adulto",
+     "valor": 4.0,
+     "tipo_valor": "aproximado",
+     "cita": "Cowan (2001), tal como lo cita el resumen de Elmore et al. (2011): capacidad fija de 4 más o menos 1 ítems",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/21596568/",
+     "verificacion": "secundaria",
+     "medida_red": "puntaje",
+     "valor_red": 5.71125,
+     "comparacion": "a la par"
+    }
+   ],
+   "configuracion": {
+    "elegida": "aprender_a_aprender",
+    "puntajes": {
+     "aprender_a_aprender": {
+      "media": 0.8786666666666667,
+      "desvio": 0.008055363982396388,
+      "por_semilla": [
+       0.89,
+       0.872,
+       0.874
+      ]
+     },
+     "compuerta": {
+      "media": 0.798,
+      "desvio": 0.10941054184431528,
+      "por_semilla": [
+       0.888,
+       0.862,
+       0.644
+      ]
+     }
+    },
+    "criterio": "exactitud en los últimos 500 episodios de entrenamiento (semillas de validación)",
+    "semillas": [
+     100,
+     101,
+     102
+    ],
+    "opciones": {
+     "aprender_a_aprender": {
+      "memory": true,
+      "speak": true,
+      "judge": true,
+      "max_steps": 10,
+      "gate": true,
+      "prev_io": true
+     },
+     "compuerta": {
+      "memory": true,
+      "speak": true,
+      "judge": true,
+      "max_steps": 10,
+      "gate": true
+     }
+    },
+    "controles": {
+     "compuerta": {
+      "media": 10.0,
+      "desvio": 0.0,
+      "por_semilla": [
+       10.0,
+       10.0,
+       10.0,
+       10.0,
+       10.0,
+       10.0,
+       10.0,
+       10.0
+      ],
+      "semillas": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7
+      ],
+      "detalle": {
+       "K": {
+        "media": 10.0,
+        "desvio": 0.0
+       },
+       "K_N10": {
+        "media": 10.0,
+        "desvio": 0.0
+       },
+       "K_N2": {
+        "media": 2.0,
+        "desvio": 0.0
+       },
+       "K_N4": {
+        "media": 4.0,
+        "desvio": 0.0
+       },
+       "K_N6": {
+        "media": 6.0,
+        "desvio": 0.0
+       },
+       "K_N8": {
+        "media": 8.0,
+        "desvio": 0.0
+       },
+       "exactitud_N10": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "exactitud_N2": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "exactitud_N4": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "exactitud_N6": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "exactitud_N8": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "exactitud_entrenamiento_ultimos500": {
+        "media": 0.867,
+        "desvio": 0.06048966853934647
+       },
+       "techo_de_la_prueba": {
+        "media": 1.0,
+        "desvio": 0.0
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "prueba": "deteccion_de_cambio",
+   "variante": "simbolos+R3",
+   "perfil": "R3",
+   "nombre": "Memoria de trabajo visual: detección de cambio y capacidad K",
+   "dimension": "memoria_de_trabajo",
+   "condicion_entrada": "simbolos",
+   "equivalente": {
+    "valor": false,
+    "motivo": "otro procedimiento de prueba y memoria episódica exacta por diseño"
+   },
+   "metrica": "capacidad K (modelo de capacidad fija, prueba de un ítem)",
+   "protocolo": "3000 episodios de entrenamiento en línea con N al azar en (2, 4, 6, 8, 10); 10 lugares y 12 colores como símbolos; cada ítem llega como lugar y color seguidos; prueba de un ítem (cambia con probabilidad 1/2); 100 episodios congelados por tamaño",
+   "desviaciones": [
+    "condición de entrada: símbolos que llegan de a uno, no una pantalla con todos los cuadrados a la vez (la red no tiene que codificar en paralelo una escena breve)",
+    "prueba de un solo ítem (sí/no) con la fórmula de Cowan, no dos ítems y tocar el que cambió con la de Eng",
+    "la memoria rápida del Thinker es una tabla exacta por episodio: si el control aprende a usarla, la capacidad la limita el diseño (o el techo de la prueba, N = 10), no la red",
+    "la demora es un silencio: el Thinker no tiene escala de tiempo",
+    "perfil R3: cada configuración candidata + prev_io, back, cogmap y modulators (sin task_sets)"
+   ],
+   "semillas": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "variabilidad": "la semilla cambia el Thinker (pesos iniciales y exploración: aprende o no la política) y los episodios de entrenamiento y de prueba",
+   "azar": {
+    "valor": 0.0,
+    "derivacion": "K = 0 cuando la exactitud es la de adivinar (50 %)"
+   },
+   "commit": "8fb949e2dc73",
+   "fuente_resultado": "medicion@8fb949e2dc73",
+   "segundos": 77.53802394866943,
+   "estado": "medido",
+   "motivo": "",
+   "red": {
+    "media": 8.5425,
+    "desvio": 3.2477559560410323,
+    "por_semilla": [
+     10.0,
+     10.0,
+     9.17,
+     10.0,
+     10.0,
+     0.0,
+     9.17,
+     10.0
+    ],
+    "semillas_identicas": false,
+    "mediana": 10.0,
+    "minimo": 0.0,
+    "maximo": 10.0,
+    "semillas_en_azar": 1,
+    "semillas_en_techo": 5
+   },
+   "referencia_humana": {
+    "id": "elmore2011_humanos_colores",
+    "especie": "humano adulto",
+    "valor": 2.46,
+    "tipo_valor": "media",
+    "n": 6,
+    "cita": "Elmore, Ma, Magnotti, Leising, Passaro, Katz & Wright (2011), Curr. Biol. 21:975",
+    "url": "https://www.cns.nyu.edu/malab/static/files/publications/2011 Elmore Ma Wright.pdf",
+    "verificacion": "primaria",
+    "releida": "2026-11-26",
+    "nota": "colores; error estándar 0,35. Con figuras (clip art): 2,78 (error estándar 0,39). Personas: tamaños 2, 4, 6, 8 y 10; demora de 900 ms con colores y 1 000 ms con figuras",
+    "medida_red": "puntaje",
+    "valor_red": 8.5425,
+    "comparacion": "especie por debajo",
+    "referencia_del_indice": true
+   },
+   "referencias_animales": [
+    {
+     "id": "elmore2011_rhesus_colores",
+     "especie": "mono rhesus",
+     "valor": 0.71,
+     "tipo_valor": "media",
+     "n": 2,
+     "cita": "Elmore et al. (2011), Curr. Biol. 21:975",
+     "url": "https://www.cns.nyu.edu/malab/static/files/publications/2011 Elmore Ma Wright.pdf",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "nota": "colores; error estándar 0,24. Con figuras: 1,02 (error estándar 0,19). Monos: tamaños 2, 4 y 6; la leyenda de la figura 1 da demoras de 50 ms",
+     "medida_red": "puntaje",
+     "valor_red": 8.5425,
+     "comparacion": "especie por debajo"
+    }
+   ],
+   "referencias_maquinas": [],
+   "indice_normalizado": {
+    "contra": "elmore2011_humanos_colores",
+    "min": 3.472560975609756,
+    "max": 3.472560975609756,
+    "media": 3.472560975609756,
+    "desvio": 1.3202259983906637,
+    "por_semilla": [
+     4.065040650406504,
+     4.065040650406504,
+     3.727642276422764,
+     4.065040650406504,
+     4.065040650406504,
+     0.0,
+     3.727642276422764,
+     4.065040650406504
+    ],
+    "por_semilla_min": null,
+    "por_semilla_max": null,
+    "referencia": 2.46,
+    "tipo_valor": "media"
+   },
+   "detalle": {
+    "K": {
+     "media": 8.5425,
+     "desvio": 3.2477559560410323,
+     "por_semilla": [
+      10.0,
+      10.0,
+      9.17,
+      10.0,
+      10.0,
+      0.0,
+      9.17,
+      10.0
+     ]
+    },
+    "K_N10": {
+     "media": 8.541666666666666,
+     "desvio": 3.247595264191645,
+     "por_semilla": [
+      10.0,
+      10.0,
+      9.166666666666666,
+      10.0,
+      10.0,
+      0.0,
+      9.166666666666666,
+      10.0
+     ]
+    },
+    "K_N2": {
+     "media": 1.493850267379679,
+     "desvio": 0.7155623245821869,
+     "por_semilla": [
+      2.0,
+      2.0,
+      1.1272727272727274,
+      2.0,
+      2.0,
+      0.0,
+      0.8235294117647058,
+      2.0
+     ]
+    },
+    "K_N4": {
+     "media": 3.29,
+     "desvio": 1.2933290377935538,
+     "por_semilla": [
+      4.0,
+      4.0,
+      3.12,
+      4.0,
+      4.0,
+      0.0,
+      3.2,
+      4.0
+     ]
+    },
+    "K_N6": {
+     "media": 5.066020025031289,
+     "desvio": 1.939923064111524,
+     "por_semilla": [
+      6.0,
+      6.0,
+      5.23404255319149,
+      6.0,
+      6.0,
+      0.0,
+      5.294117647058823,
+      6.0
+     ]
+    },
+    "K_N8": {
+     "media": 6.83221850613155,
+     "desvio": 2.598935937780107,
+     "por_semilla": [
+      8.0,
+      8.0,
+      7.478260869565218,
+      8.0,
+      8.0,
+      0.0,
+      7.17948717948718,
+      8.0
+     ]
+    },
+    "exactitud_N10": {
+     "media": 0.92875,
+     "desvio": 0.15917266568101446,
+     "por_semilla": [
+      1.0,
+      1.0,
+      0.96,
+      1.0,
+      1.0,
+      0.51,
+      0.96,
+      1.0
+     ]
+    },
+    "exactitud_N2": {
+     "media": 0.8674999999999999,
+     "desvio": 0.18626258346753383,
+     "por_semilla": [
+      1.0,
+      1.0,
+      0.76,
+      1.0,
+      1.0,
+      0.48,
+      0.7,
+      1.0
+     ]
+    },
+    "exactitud_N4": {
+     "media": 0.90625,
+     "desvio": 0.1744231564328544,
+     "por_semilla": [
+      1.0,
+      1.0,
+      0.89,
+      1.0,
+      1.0,
+      0.46,
+      0.9,
+      1.0
+     ]
+    },
+    "exactitud_N6": {
+     "media": 0.91625,
+     "desvio": 0.178040550156418,
+     "por_semilla": [
+      1.0,
+      1.0,
+      0.94,
+      1.0,
+      1.0,
+      0.45,
+      0.94,
+      1.0
+     ]
+    },
+    "exactitud_N8": {
+     "media": 0.9299999999999999,
+     "desvio": 0.15945218719101975,
+     "por_semilla": [
+      1.0,
+      1.0,
+      0.97,
+      1.0,
+      1.0,
+      0.51,
+      0.96,
+      1.0
+     ]
+    },
+    "exactitud_entrenamiento_ultimos500": {
+     "media": 0.903,
+     "desvio": 0.13381330277666717,
+     "por_semilla": [
+      1.0,
+      1.0,
+      0.77,
+      1.0,
+      1.0,
+      0.818,
+      0.636,
+      1.0
+     ]
+    },
+    "techo_de_la_prueba": {
+     "media": 0.625,
+     "desvio": 0.4841229182759271,
+     "por_semilla": [
+      1.0,
+      1.0,
+      0.0,
+      1.0,
+      1.0,
+      0.0,
+      0.0,
+      1.0
+     ]
+    }
+   },
+   "firmas": {},
+   "curva": [],
+   "otras_referencias_humanas": [
+    {
+     "id": "cowan2001",
+     "especie": "humano adulto",
+     "valor": 4.0,
+     "tipo_valor": "aproximado",
+     "cita": "Cowan (2001), tal como lo cita el resumen de Elmore et al. (2011): capacidad fija de 4 más o menos 1 ítems",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/21596568/",
+     "verificacion": "secundaria",
+     "medida_red": "puntaje",
+     "valor_red": 8.5425,
+     "comparacion": "especie por debajo"
+    }
+   ],
+   "configuracion": {
+    "elegida": "aprender_a_aprender",
+    "puntajes": {
+     "aprender_a_aprender": {
+      "media": 1.0,
+      "desvio": 0.0,
+      "por_semilla": [
+       1.0,
+       1.0,
+       1.0
+      ]
+     },
+     "compuerta": {
+      "media": 1.0,
+      "desvio": 0.0,
+      "por_semilla": [
+       1.0,
+       1.0,
+       1.0
+      ]
+     }
+    },
+    "criterio": "exactitud en los últimos 500 episodios de entrenamiento (semillas de validación)",
+    "semillas": [
+     100,
+     101,
+     102
+    ],
+    "opciones": {
+     "aprender_a_aprender": {
+      "memory": true,
+      "speak": true,
+      "judge": true,
+      "max_steps": 10,
+      "gate": true,
+      "prev_io": true,
+      "back": true,
+      "cogmap": true,
+      "modulators": true
+     },
+     "compuerta": {
+      "memory": true,
+      "speak": true,
+      "judge": true,
+      "max_steps": 10,
+      "gate": true,
+      "prev_io": true,
+      "back": true,
+      "cogmap": true,
+      "modulators": true
+     }
+    },
+    "controles": {
+     "compuerta": {
+      "media": 8.5425,
+      "desvio": 3.2477559560410323,
+      "por_semilla": [
+       10.0,
+       10.0,
+       9.17,
+       10.0,
+       10.0,
+       0.0,
+       9.17,
+       10.0
+      ],
+      "semillas": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7
+      ],
+      "detalle": {
+       "K": {
+        "media": 8.5425,
+        "desvio": 3.2477559560410323
+       },
+       "K_N10": {
+        "media": 8.541666666666666,
+        "desvio": 3.247595264191645
+       },
+       "K_N2": {
+        "media": 1.493850267379679,
+        "desvio": 0.7155623245821869
+       },
+       "K_N4": {
+        "media": 3.29,
+        "desvio": 1.2933290377935538
+       },
+       "K_N6": {
+        "media": 5.066020025031289,
+        "desvio": 1.939923064111524
+       },
+       "K_N8": {
+        "media": 6.83221850613155,
+        "desvio": 2.598935937780107
+       },
+       "exactitud_N10": {
+        "media": 0.92875,
+        "desvio": 0.15917266568101446
+       },
+       "exactitud_N2": {
+        "media": 0.8674999999999999,
+        "desvio": 0.18626258346753383
+       },
+       "exactitud_N4": {
+        "media": 0.90625,
+        "desvio": 0.1744231564328544
+       },
+       "exactitud_N6": {
+        "media": 0.91625,
+        "desvio": 0.178040550156418
+       },
+       "exactitud_N8": {
+        "media": 0.9299999999999999,
+        "desvio": 0.15945218719101975
+       },
+       "exactitud_entrenamiento_ultimos500": {
+        "media": 0.903,
+        "desvio": 0.13381330277666717
+       },
+       "techo_de_la_prueba": {
+        "media": 0.625,
+        "desvio": 0.4841229182759271
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "prueba": "deteccion_de_cambio",
+   "variante": "simbolos+R3+ts",
+   "perfil": "R3+ts",
+   "nombre": "Memoria de trabajo visual: detección de cambio y capacidad K",
+   "dimension": "memoria_de_trabajo",
+   "condicion_entrada": "simbolos",
+   "equivalente": {
+    "valor": false,
+    "motivo": "otro procedimiento de prueba y memoria episódica exacta por diseño"
+   },
+   "metrica": "capacidad K (modelo de capacidad fija, prueba de un ítem)",
+   "protocolo": "3000 episodios de entrenamiento en línea con N al azar en (2, 4, 6, 8, 10); 10 lugares y 12 colores como símbolos; cada ítem llega como lugar y color seguidos; prueba de un ítem (cambia con probabilidad 1/2); 100 episodios congelados por tamaño",
+   "desviaciones": [
+    "condición de entrada: símbolos que llegan de a uno, no una pantalla con todos los cuadrados a la vez (la red no tiene que codificar en paralelo una escena breve)",
+    "prueba de un solo ítem (sí/no) con la fórmula de Cowan, no dos ítems y tocar el que cambió con la de Eng",
+    "la memoria rápida del Thinker es una tabla exacta por episodio: si el control aprende a usarla, la capacidad la limita el diseño (o el techo de la prueba, N = 10), no la red",
+    "la demora es un silencio: el Thinker no tiene escala de tiempo",
+    "perfil R3+ts: R3 + task_sets (marcado: con todo encendido rompe la multitarea, README de 8fb949e)"
+   ],
+   "semillas": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "variabilidad": "la semilla cambia el Thinker (pesos iniciales y exploración: aprende o no la política) y los episodios de entrenamiento y de prueba",
+   "azar": {
+    "valor": 0.0,
+    "derivacion": "K = 0 cuando la exactitud es la de adivinar (50 %)"
+   },
+   "commit": "8fb949e2dc73",
+   "fuente_resultado": "medicion@8fb949e2dc73",
+   "segundos": 105.02026700973511,
+   "estado": "medido",
+   "motivo": "",
+   "red": {
+    "media": 9.66375,
+    "desvio": 0.8896338783454685,
+    "por_semilla": [
+     7.3100000000000005,
+     10.0,
+     10.0,
+     10.0,
+     10.0,
+     10.0,
+     10.0,
+     10.0
+    ],
+    "semillas_identicas": false,
+    "mediana": 10.0,
+    "minimo": 7.3100000000000005,
+    "maximo": 10.0,
+    "semillas_en_azar": 0,
+    "semillas_en_techo": 7
+   },
+   "referencia_humana": {
+    "id": "elmore2011_humanos_colores",
+    "especie": "humano adulto",
+    "valor": 2.46,
+    "tipo_valor": "media",
+    "n": 6,
+    "cita": "Elmore, Ma, Magnotti, Leising, Passaro, Katz & Wright (2011), Curr. Biol. 21:975",
+    "url": "https://www.cns.nyu.edu/malab/static/files/publications/2011 Elmore Ma Wright.pdf",
+    "verificacion": "primaria",
+    "releida": "2026-11-26",
+    "nota": "colores; error estándar 0,35. Con figuras (clip art): 2,78 (error estándar 0,39). Personas: tamaños 2, 4, 6, 8 y 10; demora de 900 ms con colores y 1 000 ms con figuras",
+    "medida_red": "puntaje",
+    "valor_red": 9.66375,
+    "comparacion": "especie por debajo",
+    "referencia_del_indice": true
+   },
+   "referencias_animales": [
+    {
+     "id": "elmore2011_rhesus_colores",
+     "especie": "mono rhesus",
+     "valor": 0.71,
+     "tipo_valor": "media",
+     "n": 2,
+     "cita": "Elmore et al. (2011), Curr. Biol. 21:975",
+     "url": "https://www.cns.nyu.edu/malab/static/files/publications/2011 Elmore Ma Wright.pdf",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "nota": "colores; error estándar 0,24. Con figuras: 1,02 (error estándar 0,19). Monos: tamaños 2, 4 y 6; la leyenda de la figura 1 da demoras de 50 ms",
+     "medida_red": "puntaje",
+     "valor_red": 9.66375,
+     "comparacion": "especie por debajo"
+    }
+   ],
+   "referencias_maquinas": [],
+   "indice_normalizado": {
+    "contra": "elmore2011_humanos_colores",
+    "min": 3.9283536585365857,
+    "max": 3.9283536585365857,
+    "media": 3.9283536585365857,
+    "desvio": 0.3616397879453125,
+    "por_semilla": [
+     2.9715447154471546,
+     4.065040650406504,
+     4.065040650406504,
+     4.065040650406504,
+     4.065040650406504,
+     4.065040650406504,
+     4.065040650406504,
+     4.065040650406504
+    ],
+    "por_semilla_min": null,
+    "por_semilla_max": null,
+    "referencia": 2.46,
+    "tipo_valor": "media"
+   },
+   "detalle": {
+    "K": {
+     "media": 9.66375,
+     "desvio": 0.8896338783454685,
+     "por_semilla": [
+      7.3100000000000005,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0
+     ]
+    },
+    "K_N10": {
+     "media": 9.83173076923077,
+     "desvio": 0.44519853791952263,
+     "por_semilla": [
+      8.653846153846153,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0
+     ]
+    },
+    "K_N2": {
+     "media": 1.8804347826086958,
+     "desvio": 0.31633983067076626,
+     "por_semilla": [
+      1.0434782608695652,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0,
+      2.0
+     ]
+    },
+    "K_N4": {
+     "media": 3.7666666666666666,
+     "desvio": 0.6173419725817378,
+     "por_semilla": [
+      2.1333333333333333,
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0
+     ]
+    },
+    "K_N6": {
+     "media": 5.85,
+     "desvio": 0.3968626966596884,
+     "por_semilla": [
+      4.800000000000001,
+      6.0,
+      6.0,
+      6.0,
+      6.0,
+      6.0,
+      6.0,
+      6.0
+     ]
+    },
+    "K_N8": {
+     "media": 7.807017543859649,
+     "desvio": 0.510583586345798,
+     "por_semilla": [
+      6.4561403508771935,
+      8.0,
+      8.0,
+      8.0,
+      8.0,
+      8.0,
+      8.0,
+      8.0
+     ]
+    },
+    "exactitud_N10": {
+     "media": 0.99125,
+     "desvio": 0.023150323971815153,
+     "por_semilla": [
+      0.93,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "exactitud_N2": {
+     "media": 0.9725,
+     "desvio": 0.07275816105427624,
+     "por_semilla": [
+      0.78,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "exactitud_N4": {
+     "media": 0.97375,
+     "desvio": 0.0694509719154455,
+     "por_semilla": [
+      0.79,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "exactitud_N6": {
+     "media": 0.9862500000000001,
+     "desvio": 0.03637908052713812,
+     "por_semilla": [
+      0.89,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "exactitud_N8": {
+     "media": 0.9862500000000001,
+     "desvio": 0.03637908052713812,
+     "por_semilla": [
+      0.89,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "exactitud_entrenamiento_ultimos500": {
+     "media": 0.9755,
+     "desvio": 0.05965525961723746,
+     "por_semilla": [
+      0.818,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      0.988,
+      1.0,
+      0.998
+     ]
+    },
+    "techo_de_la_prueba": {
+     "media": 0.875,
+     "desvio": 0.33071891388307384,
+     "por_semilla": [
+      0.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    }
+   },
+   "firmas": {},
+   "curva": [],
+   "otras_referencias_humanas": [
+    {
+     "id": "cowan2001",
+     "especie": "humano adulto",
+     "valor": 4.0,
+     "tipo_valor": "aproximado",
+     "cita": "Cowan (2001), tal como lo cita el resumen de Elmore et al. (2011): capacidad fija de 4 más o menos 1 ítems",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/21596568/",
+     "verificacion": "secundaria",
+     "medida_red": "puntaje",
+     "valor_red": 9.66375,
+     "comparacion": "especie por debajo"
+    }
+   ],
+   "configuracion": {
+    "elegida": "aprender_a_aprender",
+    "puntajes": {
+     "aprender_a_aprender": {
+      "media": 0.9773333333333335,
+      "desvio": 0.03065217048686037,
+      "por_semilla": [
+       0.934,
+       1.0,
+       0.998
+      ]
+     },
+     "compuerta": {
+      "media": 0.9773333333333335,
+      "desvio": 0.03065217048686037,
+      "por_semilla": [
+       0.934,
+       1.0,
+       0.998
+      ]
+     }
+    },
+    "criterio": "exactitud en los últimos 500 episodios de entrenamiento (semillas de validación)",
+    "semillas": [
+     100,
+     101,
+     102
+    ],
+    "opciones": {
+     "aprender_a_aprender": {
+      "memory": true,
+      "speak": true,
+      "judge": true,
+      "max_steps": 10,
+      "gate": true,
+      "prev_io": true,
+      "back": true,
+      "cogmap": true,
+      "modulators": true,
+      "task_sets": true
+     },
+     "compuerta": {
+      "memory": true,
+      "speak": true,
+      "judge": true,
+      "max_steps": 10,
+      "gate": true,
+      "prev_io": true,
+      "back": true,
+      "cogmap": true,
+      "modulators": true,
+      "task_sets": true
+     }
+    },
+    "controles": {
+     "compuerta": {
+      "media": 9.66375,
+      "desvio": 0.8896338783454685,
+      "por_semilla": [
+       7.3100000000000005,
+       10.0,
+       10.0,
+       10.0,
+       10.0,
+       10.0,
+       10.0,
+       10.0
+      ],
+      "semillas": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7
+      ],
+      "detalle": {
+       "K": {
+        "media": 9.66375,
+        "desvio": 0.8896338783454685
+       },
+       "K_N10": {
+        "media": 9.83173076923077,
+        "desvio": 0.44519853791952263
+       },
+       "K_N2": {
+        "media": 1.8804347826086958,
+        "desvio": 0.31633983067076626
+       },
+       "K_N4": {
+        "media": 3.7666666666666666,
+        "desvio": 0.6173419725817378
+       },
+       "K_N6": {
+        "media": 5.85,
+        "desvio": 0.3968626966596884
+       },
+       "K_N8": {
+        "media": 7.807017543859649,
+        "desvio": 0.510583586345798
+       },
+       "exactitud_N10": {
+        "media": 0.99125,
+        "desvio": 0.023150323971815153
+       },
+       "exactitud_N2": {
+        "media": 0.9725,
+        "desvio": 0.07275816105427624
+       },
+       "exactitud_N4": {
+        "media": 0.97375,
+        "desvio": 0.0694509719154455
+       },
+       "exactitud_N6": {
+        "media": 0.9862500000000001,
+        "desvio": 0.03637908052713812
+       },
+       "exactitud_N8": {
+        "media": 0.9862500000000001,
+        "desvio": 0.03637908052713812
+       },
+       "exactitud_entrenamiento_ultimos500": {
+        "media": 0.9755,
+        "desvio": 0.05965525961723746
+       },
+       "techo_de_la_prueba": {
+        "media": 0.875,
+        "desvio": 0.33071891388307384
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "prueba": "deteccion_de_cambio",
+   "variante": "dos_items",
+   "perfil": "defecto",
+   "nombre": "Memoria de trabajo visual: detección de cambio y capacidad K",
+   "dimension": "memoria_de_trabajo",
+   "condicion_entrada": "simbolos",
+   "equivalente": {
+    "valor": false,
+    "motivo": "no se pudo correr"
+   },
+   "metrica": "capacidad K con el procedimiento publicado (dos ítems, tocar el que cambió)",
+   "protocolo": "el de Elmore et al. (2011)",
+   "desviaciones": [],
+   "semillas": [
+    0
+   ],
+   "variabilidad": "",
+   "azar": {
+    "valor": 0.0,
+    "derivacion": "K = 0 cuando la exactitud es la de adivinar (50 %)"
+   },
+   "commit": "8fb949e2dc73",
+   "fuente_resultado": "medicion@8fb949e2dc73",
+   "segundos": 0.00010085105895996094,
+   "estado": "no aplicable hoy",
+   "motivo": "el procedimiento de Elmore et al. (vuelven dos ítems y hay que tocar el que cambió) no se puede presentar sin cambiar la arquitectura: el Thinker responde con un símbolo de su foco o con un juicio sobre su estado, y para señalar el lugar que cambió entre dos tendría que sostener uno y responder con el otro; la batería mide la versión de un solo ítem",
+   "red": null,
+   "referencia_humana": null,
+   "referencias_animales": [],
+   "referencias_maquinas": [],
+   "indice_normalizado": null,
+   "detalle": {},
+   "firmas": {},
+   "configuracion": {
+    "elegida": "única documentada para esta prueba"
+   }
+  },
+  {
    "prueba": "omniglot",
    "variante": "imagenes",
    "perfil": "defecto",
@@ -5726,6 +10954,1676 @@
    "otras_referencias_humanas": [],
    "configuracion": {
     "elegida": "única documentada para esta prueba"
+   }
+  },
+  {
+   "prueba": "igual_distinto",
+   "variante": "simbolos",
+   "perfil": "defecto",
+   "nombre": "Concepto igual/distinto con transferencia a estímulos nuevos",
+   "dimension": "conceptos_abstractos",
+   "condicion_entrada": "simbolos",
+   "equivalente": {
+    "valor": false,
+    "motivo": "la identidad de los símbolos viene dada"
+   },
+   "metrica": "exactitud de transferencia a símbolos nunca vistos con el conjunto de 256",
+   "protocolo": "Thinker; conjuntos de 8 a 256 símbolos que se duplican; entrenamiento hasta 80 % y transferencia",
+   "desviaciones": [
+    "criterio de 80 % en una sesión (máximo 30 sesiones) y 100 ensayos de transferencia sin premio sobre una copia congelada: elegidos por la batería (los de los artículos no se leyeron)",
+    "los animales responden tocando una figura o un rectángulo; la red elige entre dos salidas",
+    "condición de entrada: símbolos; la igualdad de dos símbolos la detecta la compuerta por diseño (detección de coincidencia), no la aprende la red"
+   ],
+   "semillas": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "variabilidad": "la semilla cambia los símbolos de cada conjunto, los ensayos y el Thinker (con la configuración por defecto, sólo el entorno)",
+   "azar": {
+    "valor": 0.5,
+    "derivacion": "dos respuestas, mitad de ensayos iguales"
+   },
+   "commit": "8fb949e2dc73",
+   "fuente_resultado": "medicion@8fb949e2dc73",
+   "segundos": 98.79312944412231,
+   "estado": "medido",
+   "motivo": "sin referencia humana verificada con la misma métrica: no hay índice normalizado",
+   "red": {
+    "media": 0.5,
+    "desvio": 0.0,
+    "por_semilla": [
+     0.5,
+     0.5,
+     0.5,
+     0.5,
+     0.5
+    ],
+    "semillas_identicas": false,
+    "mediana": 0.5,
+    "minimo": 0.5,
+    "maximo": 0.5,
+    "semillas_en_azar": 5
+   },
+   "referencia_humana": null,
+   "referencias_animales": [
+    {
+     "id": "giurfa2001_abejas",
+     "especie": "abeja",
+     "valor": 0.75,
+     "tipo_valor": "aproximado",
+     "cita": "Giurfa, Zhang, Jenett, Menzel & Srinivasan (2001), Nature 410:930 (resumen); el promedio poblacional en pruebas y transferencias, «alrededor de 75 %», y los 60 ensayos de entrenamiento se leyeron en Cope et al. (2018), PLoS Comput. Biol. 14:e1006435",
+     "url": "https://eprints.whiterose.ac.uk/id/eprint/137143/1/journal.pcbi.1006435.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "nota": "los porcentajes por experimento del original están en figuras y no se pudieron leer",
+     "cualitativo": "aprenden la regla y la transfieren a estímulos nuevos y a otra modalidad sensorial",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "katz2010_8figuras",
+     "especie": "mono rhesus, mono capuchino y paloma",
+     "valor": 0.5,
+     "tipo_valor": "cualitativo",
+     "cita": "Katz, Sturz & Wright (2010), Behav. Processes 83:172, que resume a Katz, Wright & Bachevalier (2002), Wright, Rivera, Katz & Bachevalier (2003) y Katz & Wright (2006)",
+     "url": "https://core.ac.uk/download/229167949.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "cualitativo": "con el conjunto inicial de 8 figuras ninguna de las tres especies transfiere a figuras nuevas",
+     "conjunto": 8,
+     "medida_red": "transferencia_8",
+     "valor_red": 0.5,
+     "comparacion": "a la par"
+    },
+    {
+     "id": "wright2016_monos_palomas",
+     "especie": "mono rhesus y capuchino (64 a 128 figuras), paloma (256 figuras)",
+     "valor": null,
+     "tipo_valor": "cualitativo",
+     "cita": "Wright, Magnotti, Katz, Leonard & Kelly (2016), J. Exp. Anal. Behav. 105:76, resumen (compara con monos rhesus, capuchinos y palomas)",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/26615450/",
+     "verificacion": "primaria (resumen)",
+     "releida": "2026-11-26",
+     "nota": "antes citaba a Nakamura et al. (PMC4259154), que no se pudo releer",
+     "cualitativo": "la transferencia a figuras nuevas iguala a la línea de base entre 64 y 128 figuras en monos (como en cascanueces) y con un conjunto algo mayor, 256, en palomas",
+     "comparacion": "cualitativa"
+    },
+    {
+     "id": "katz2010_reduccion",
+     "especie": "paloma (ya entrenada con 1 024 figuras, conjunto reducido a 8)",
+     "valor": 0.758,
+     "tipo_valor": "media",
+     "cita": "Katz, Sturz & Wright (2010), Behav. Processes 83:172",
+     "url": "https://core.ac.uk/download/229167949.pdf",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "nota": "transferencia 25,8 puntos sobre el azar; línea de base 93,6 %",
+     "conjunto": 8,
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "wright2016_cascanueces",
+     "especie": "cascanueces de Clark",
+     "valor": null,
+     "tipo_valor": "cualitativo",
+     "cita": "«Concept learning set-size functions for Clark's nutcrackers» (2016), J. Exp. Anal. Behav. 105:76, resumen",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/26615450/",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "cualitativo": "transferencia parcial ya con 8 figuras y plena con 128",
+     "comparacion": "cualitativa"
+    }
+   ],
+   "referencias_maquinas": [],
+   "indice_normalizado": null,
+   "detalle": {
+    "base_128": {
+     "media": 0.544,
+     "desvio": 0.025768197453450242,
+     "por_semilla": [
+      0.55,
+      0.5,
+      0.54,
+      0.55,
+      0.58
+     ]
+    },
+    "base_16": {
+     "media": 0.892,
+     "desvio": 0.0466476151587624,
+     "por_semilla": [
+      0.93,
+      0.93,
+      0.81,
+      0.92,
+      0.87
+     ]
+    },
+    "base_256": {
+     "media": 0.512,
+     "desvio": 0.02135415650406264,
+     "por_semilla": [
+      0.55,
+      0.49,
+      0.52,
+      0.5,
+      0.5
+     ]
+    },
+    "base_32": {
+     "media": 0.8099999999999999,
+     "desvio": 0.035213633723318,
+     "por_semilla": [
+      0.76,
+      0.79,
+      0.85,
+      0.85,
+      0.8
+     ]
+    },
+    "base_64": {
+     "media": 0.62,
+     "desvio": 0.014142135623730963,
+     "por_semilla": [
+      0.63,
+      0.64,
+      0.62,
+      0.61,
+      0.6
+     ]
+    },
+    "base_8": {
+     "media": 0.974,
+     "desvio": 0.02939387691339812,
+     "por_semilla": [
+      0.97,
+      0.98,
+      0.92,
+      1.0,
+      1.0
+     ]
+    },
+    "llego_128": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "llego_16": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "llego_256": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "llego_32": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "llego_64": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "llego_8": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "sesiones_128": {
+     "media": 30.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      30.0,
+      30.0,
+      30.0,
+      30.0,
+      30.0
+     ]
+    },
+    "sesiones_16": {
+     "media": 6.4,
+     "desvio": 0.7999999999999999,
+     "por_semilla": [
+      7.0,
+      7.0,
+      5.0,
+      6.0,
+      7.0
+     ]
+    },
+    "sesiones_256": {
+     "media": 30.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      30.0,
+      30.0,
+      30.0,
+      30.0,
+      30.0
+     ]
+    },
+    "sesiones_32": {
+     "media": 19.4,
+     "desvio": 0.4898979485566356,
+     "por_semilla": [
+      19.0,
+      19.0,
+      20.0,
+      19.0,
+      20.0
+     ]
+    },
+    "sesiones_64": {
+     "media": 30.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      30.0,
+      30.0,
+      30.0,
+      30.0,
+      30.0
+     ]
+    },
+    "sesiones_8": {
+     "media": 3.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      3.0,
+      3.0,
+      3.0,
+      3.0,
+      3.0
+     ]
+    },
+    "transferencia_128": {
+     "media": 0.5,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ]
+    },
+    "transferencia_16": {
+     "media": 0.5,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ]
+    },
+    "transferencia_256": {
+     "media": 0.5,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ]
+    },
+    "transferencia_32": {
+     "media": 0.5,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ]
+    },
+    "transferencia_64": {
+     "media": 0.5,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ]
+    },
+    "transferencia_8": {
+     "media": 0.5,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ]
+    }
+   },
+   "firmas": {},
+   "curva": [],
+   "otras_referencias_humanas": [],
+   "configuracion": {
+    "elegida": "defecto",
+    "puntajes": {
+     "defecto": {
+      "media": 1.0,
+      "desvio": 0.0,
+      "por_semilla": [
+       1.0,
+       1.0,
+       1.0
+      ]
+     },
+     "aprender_a_aprender": {
+      "media": 0.8866666666666667,
+      "desvio": 0.012472191289246483,
+      "por_semilla": [
+       0.9,
+       0.89,
+       0.87
+      ]
+     }
+    },
+    "criterio": "exactitud en la décima sesión con el conjunto de 8 (semillas de validación)",
+    "semillas": [
+     100,
+     101,
+     102
+    ],
+    "opciones": {
+     "defecto": {},
+     "aprender_a_aprender": {
+      "memory": true,
+      "speak": true,
+      "judge": true,
+      "max_steps": 10,
+      "gate": true,
+      "prev_io": true
+     }
+    },
+    "controles": {
+     "aprender_a_aprender": {
+      "media": 1.0,
+      "desvio": 0.0,
+      "por_semilla": [
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0
+      ],
+      "semillas": [
+       0,
+       1,
+       2,
+       3,
+       4
+      ],
+      "detalle": {
+       "base_128": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "base_16": {
+        "media": 0.99,
+        "desvio": 0.020000000000000018
+       },
+       "base_256": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "base_32": {
+        "media": 0.998,
+        "desvio": 0.0040000000000000036
+       },
+       "base_64": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "base_8": {
+        "media": 0.8879999999999999,
+        "desvio": 0.195386795869117
+       },
+       "llego_128": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "llego_16": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "llego_256": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "llego_32": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "llego_64": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "llego_8": {
+        "media": 0.8,
+        "desvio": 0.4000000000000001
+       },
+       "sesiones_128": {
+        "media": 3.8,
+        "desvio": 4.66476151587624
+       },
+       "sesiones_16": {
+        "media": 5.0,
+        "desvio": 7.042726744663604
+       },
+       "sesiones_256": {
+        "media": 1.8,
+        "desvio": 1.6
+       },
+       "sesiones_32": {
+        "media": 1.6,
+        "desvio": 1.2000000000000002
+       },
+       "sesiones_64": {
+        "media": 1.6,
+        "desvio": 0.8
+       },
+       "sesiones_8": {
+        "media": 9.6,
+        "desvio": 10.61319932913728
+       },
+       "transferencia_128": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "transferencia_16": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "transferencia_256": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "transferencia_32": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "transferencia_64": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "transferencia_8": {
+        "media": 0.9,
+        "desvio": 0.20000000000000004
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "prueba": "igual_distinto",
+   "variante": "simbolos+R3",
+   "perfil": "R3",
+   "nombre": "Concepto igual/distinto con transferencia a estímulos nuevos",
+   "dimension": "conceptos_abstractos",
+   "condicion_entrada": "simbolos",
+   "equivalente": {
+    "valor": false,
+    "motivo": "la identidad de los símbolos viene dada"
+   },
+   "metrica": "exactitud de transferencia a símbolos nunca vistos con el conjunto de 256",
+   "protocolo": "Thinker; conjuntos de 8 a 256 símbolos que se duplican; entrenamiento hasta 80 % y transferencia",
+   "desviaciones": [
+    "criterio de 80 % en una sesión (máximo 30 sesiones) y 100 ensayos de transferencia sin premio sobre una copia congelada: elegidos por la batería (los de los artículos no se leyeron)",
+    "los animales responden tocando una figura o un rectángulo; la red elige entre dos salidas",
+    "condición de entrada: símbolos; la igualdad de dos símbolos la detecta la compuerta por diseño (detección de coincidencia), no la aprende la red",
+    "perfil R3: cada configuración candidata + prev_io, back, cogmap y modulators (sin task_sets)"
+   ],
+   "semillas": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "variabilidad": "la semilla cambia los símbolos de cada conjunto, los ensayos y el Thinker (con la configuración por defecto, sólo el entorno)",
+   "azar": {
+    "valor": 0.5,
+    "derivacion": "dos respuestas, mitad de ensayos iguales"
+   },
+   "commit": "8fb949e2dc73",
+   "fuente_resultado": "medicion@8fb949e2dc73",
+   "segundos": 113.47033977508545,
+   "estado": "medido",
+   "motivo": "sin referencia humana verificada con la misma métrica: no hay índice normalizado",
+   "red": {
+    "media": 0.5,
+    "desvio": 0.0,
+    "por_semilla": [
+     0.5,
+     0.5,
+     0.5,
+     0.5,
+     0.5
+    ],
+    "semillas_identicas": false,
+    "mediana": 0.5,
+    "minimo": 0.5,
+    "maximo": 0.5,
+    "semillas_en_azar": 5
+   },
+   "referencia_humana": null,
+   "referencias_animales": [
+    {
+     "id": "giurfa2001_abejas",
+     "especie": "abeja",
+     "valor": 0.75,
+     "tipo_valor": "aproximado",
+     "cita": "Giurfa, Zhang, Jenett, Menzel & Srinivasan (2001), Nature 410:930 (resumen); el promedio poblacional en pruebas y transferencias, «alrededor de 75 %», y los 60 ensayos de entrenamiento se leyeron en Cope et al. (2018), PLoS Comput. Biol. 14:e1006435",
+     "url": "https://eprints.whiterose.ac.uk/id/eprint/137143/1/journal.pcbi.1006435.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "nota": "los porcentajes por experimento del original están en figuras y no se pudieron leer",
+     "cualitativo": "aprenden la regla y la transfieren a estímulos nuevos y a otra modalidad sensorial",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "katz2010_8figuras",
+     "especie": "mono rhesus, mono capuchino y paloma",
+     "valor": 0.5,
+     "tipo_valor": "cualitativo",
+     "cita": "Katz, Sturz & Wright (2010), Behav. Processes 83:172, que resume a Katz, Wright & Bachevalier (2002), Wright, Rivera, Katz & Bachevalier (2003) y Katz & Wright (2006)",
+     "url": "https://core.ac.uk/download/229167949.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "cualitativo": "con el conjunto inicial de 8 figuras ninguna de las tres especies transfiere a figuras nuevas",
+     "conjunto": 8,
+     "medida_red": "transferencia_8",
+     "valor_red": 0.5,
+     "comparacion": "a la par"
+    },
+    {
+     "id": "wright2016_monos_palomas",
+     "especie": "mono rhesus y capuchino (64 a 128 figuras), paloma (256 figuras)",
+     "valor": null,
+     "tipo_valor": "cualitativo",
+     "cita": "Wright, Magnotti, Katz, Leonard & Kelly (2016), J. Exp. Anal. Behav. 105:76, resumen (compara con monos rhesus, capuchinos y palomas)",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/26615450/",
+     "verificacion": "primaria (resumen)",
+     "releida": "2026-11-26",
+     "nota": "antes citaba a Nakamura et al. (PMC4259154), que no se pudo releer",
+     "cualitativo": "la transferencia a figuras nuevas iguala a la línea de base entre 64 y 128 figuras en monos (como en cascanueces) y con un conjunto algo mayor, 256, en palomas",
+     "comparacion": "cualitativa"
+    },
+    {
+     "id": "katz2010_reduccion",
+     "especie": "paloma (ya entrenada con 1 024 figuras, conjunto reducido a 8)",
+     "valor": 0.758,
+     "tipo_valor": "media",
+     "cita": "Katz, Sturz & Wright (2010), Behav. Processes 83:172",
+     "url": "https://core.ac.uk/download/229167949.pdf",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "nota": "transferencia 25,8 puntos sobre el azar; línea de base 93,6 %",
+     "conjunto": 8,
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "wright2016_cascanueces",
+     "especie": "cascanueces de Clark",
+     "valor": null,
+     "tipo_valor": "cualitativo",
+     "cita": "«Concept learning set-size functions for Clark's nutcrackers» (2016), J. Exp. Anal. Behav. 105:76, resumen",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/26615450/",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "cualitativo": "transferencia parcial ya con 8 figuras y plena con 128",
+     "comparacion": "cualitativa"
+    }
+   ],
+   "referencias_maquinas": [],
+   "indice_normalizado": null,
+   "detalle": {
+    "base_128": {
+     "media": 0.544,
+     "desvio": 0.025768197453450242,
+     "por_semilla": [
+      0.55,
+      0.5,
+      0.54,
+      0.55,
+      0.58
+     ]
+    },
+    "base_16": {
+     "media": 0.892,
+     "desvio": 0.0466476151587624,
+     "por_semilla": [
+      0.93,
+      0.93,
+      0.81,
+      0.92,
+      0.87
+     ]
+    },
+    "base_256": {
+     "media": 0.512,
+     "desvio": 0.02135415650406264,
+     "por_semilla": [
+      0.55,
+      0.49,
+      0.52,
+      0.5,
+      0.5
+     ]
+    },
+    "base_32": {
+     "media": 0.8099999999999999,
+     "desvio": 0.035213633723318,
+     "por_semilla": [
+      0.76,
+      0.79,
+      0.85,
+      0.85,
+      0.8
+     ]
+    },
+    "base_64": {
+     "media": 0.62,
+     "desvio": 0.014142135623730963,
+     "por_semilla": [
+      0.63,
+      0.64,
+      0.62,
+      0.61,
+      0.6
+     ]
+    },
+    "base_8": {
+     "media": 0.974,
+     "desvio": 0.02939387691339812,
+     "por_semilla": [
+      0.97,
+      0.98,
+      0.92,
+      1.0,
+      1.0
+     ]
+    },
+    "llego_128": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "llego_16": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "llego_256": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "llego_32": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "llego_64": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "llego_8": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "sesiones_128": {
+     "media": 30.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      30.0,
+      30.0,
+      30.0,
+      30.0,
+      30.0
+     ]
+    },
+    "sesiones_16": {
+     "media": 6.4,
+     "desvio": 0.7999999999999999,
+     "por_semilla": [
+      7.0,
+      7.0,
+      5.0,
+      6.0,
+      7.0
+     ]
+    },
+    "sesiones_256": {
+     "media": 30.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      30.0,
+      30.0,
+      30.0,
+      30.0,
+      30.0
+     ]
+    },
+    "sesiones_32": {
+     "media": 19.4,
+     "desvio": 0.4898979485566356,
+     "por_semilla": [
+      19.0,
+      19.0,
+      20.0,
+      19.0,
+      20.0
+     ]
+    },
+    "sesiones_64": {
+     "media": 30.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      30.0,
+      30.0,
+      30.0,
+      30.0,
+      30.0
+     ]
+    },
+    "sesiones_8": {
+     "media": 3.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      3.0,
+      3.0,
+      3.0,
+      3.0,
+      3.0
+     ]
+    },
+    "transferencia_128": {
+     "media": 0.5,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ]
+    },
+    "transferencia_16": {
+     "media": 0.5,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ]
+    },
+    "transferencia_256": {
+     "media": 0.5,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ]
+    },
+    "transferencia_32": {
+     "media": 0.5,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ]
+    },
+    "transferencia_64": {
+     "media": 0.5,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ]
+    },
+    "transferencia_8": {
+     "media": 0.5,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ]
+    }
+   },
+   "firmas": {},
+   "curva": [],
+   "otras_referencias_humanas": [],
+   "configuracion": {
+    "elegida": "defecto",
+    "puntajes": {
+     "defecto": {
+      "media": 1.0,
+      "desvio": 0.0,
+      "por_semilla": [
+       1.0,
+       1.0,
+       1.0
+      ]
+     },
+     "aprender_a_aprender": {
+      "media": 0.4533333333333333,
+      "desvio": 0.04784233364802443,
+      "por_semilla": [
+       0.52,
+       0.41,
+       0.43
+      ]
+     }
+    },
+    "criterio": "exactitud en la décima sesión con el conjunto de 8 (semillas de validación)",
+    "semillas": [
+     100,
+     101,
+     102
+    ],
+    "opciones": {
+     "defecto": {
+      "prev_io": true,
+      "back": true,
+      "cogmap": true,
+      "modulators": true
+     },
+     "aprender_a_aprender": {
+      "memory": true,
+      "speak": true,
+      "judge": true,
+      "max_steps": 10,
+      "gate": true,
+      "prev_io": true,
+      "back": true,
+      "cogmap": true,
+      "modulators": true
+     }
+    },
+    "controles": {
+     "aprender_a_aprender": {
+      "media": 1.0,
+      "desvio": 0.0,
+      "por_semilla": [
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0
+      ],
+      "semillas": [
+       0,
+       1,
+       2,
+       3,
+       4
+      ],
+      "detalle": {
+       "base_128": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "base_16": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "base_256": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "base_32": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "base_64": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "base_8": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "llego_128": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "llego_16": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "llego_256": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "llego_32": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "llego_64": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "llego_8": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "sesiones_128": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "sesiones_16": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "sesiones_256": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "sesiones_32": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "sesiones_64": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "sesiones_8": {
+        "media": 10.4,
+        "desvio": 9.221713506718803
+       },
+       "transferencia_128": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "transferencia_16": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "transferencia_256": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "transferencia_32": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "transferencia_64": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "transferencia_8": {
+        "media": 1.0,
+        "desvio": 0.0
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "prueba": "igual_distinto",
+   "variante": "simbolos+R3+ts",
+   "perfil": "R3+ts",
+   "nombre": "Concepto igual/distinto con transferencia a estímulos nuevos",
+   "dimension": "conceptos_abstractos",
+   "condicion_entrada": "simbolos",
+   "equivalente": {
+    "valor": false,
+    "motivo": "la identidad de los símbolos viene dada"
+   },
+   "metrica": "exactitud de transferencia a símbolos nunca vistos con el conjunto de 256",
+   "protocolo": "Thinker; conjuntos de 8 a 256 símbolos que se duplican; entrenamiento hasta 80 % y transferencia",
+   "desviaciones": [
+    "criterio de 80 % en una sesión (máximo 30 sesiones) y 100 ensayos de transferencia sin premio sobre una copia congelada: elegidos por la batería (los de los artículos no se leyeron)",
+    "los animales responden tocando una figura o un rectángulo; la red elige entre dos salidas",
+    "condición de entrada: símbolos; la igualdad de dos símbolos la detecta la compuerta por diseño (detección de coincidencia), no la aprende la red",
+    "perfil R3+ts: R3 + task_sets (marcado: con todo encendido rompe la multitarea, README de 8fb949e)"
+   ],
+   "semillas": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "variabilidad": "la semilla cambia los símbolos de cada conjunto, los ensayos y el Thinker (con la configuración por defecto, sólo el entorno)",
+   "azar": {
+    "valor": 0.5,
+    "derivacion": "dos respuestas, mitad de ensayos iguales"
+   },
+   "commit": "8fb949e2dc73",
+   "fuente_resultado": "medicion@8fb949e2dc73",
+   "segundos": 133.1397933959961,
+   "estado": "medido",
+   "motivo": "sin referencia humana verificada con la misma métrica: no hay índice normalizado",
+   "red": {
+    "media": 0.5,
+    "desvio": 0.0,
+    "por_semilla": [
+     0.5,
+     0.5,
+     0.5,
+     0.5,
+     0.5
+    ],
+    "semillas_identicas": false,
+    "mediana": 0.5,
+    "minimo": 0.5,
+    "maximo": 0.5,
+    "semillas_en_azar": 5
+   },
+   "referencia_humana": null,
+   "referencias_animales": [
+    {
+     "id": "giurfa2001_abejas",
+     "especie": "abeja",
+     "valor": 0.75,
+     "tipo_valor": "aproximado",
+     "cita": "Giurfa, Zhang, Jenett, Menzel & Srinivasan (2001), Nature 410:930 (resumen); el promedio poblacional en pruebas y transferencias, «alrededor de 75 %», y los 60 ensayos de entrenamiento se leyeron en Cope et al. (2018), PLoS Comput. Biol. 14:e1006435",
+     "url": "https://eprints.whiterose.ac.uk/id/eprint/137143/1/journal.pcbi.1006435.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "nota": "los porcentajes por experimento del original están en figuras y no se pudieron leer",
+     "cualitativo": "aprenden la regla y la transfieren a estímulos nuevos y a otra modalidad sensorial",
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "katz2010_8figuras",
+     "especie": "mono rhesus, mono capuchino y paloma",
+     "valor": 0.5,
+     "tipo_valor": "cualitativo",
+     "cita": "Katz, Sturz & Wright (2010), Behav. Processes 83:172, que resume a Katz, Wright & Bachevalier (2002), Wright, Rivera, Katz & Bachevalier (2003) y Katz & Wright (2006)",
+     "url": "https://core.ac.uk/download/229167949.pdf",
+     "verificacion": "secundaria",
+     "releida": "2026-11-26",
+     "cualitativo": "con el conjunto inicial de 8 figuras ninguna de las tres especies transfiere a figuras nuevas",
+     "conjunto": 8,
+     "medida_red": "transferencia_8",
+     "valor_red": 0.5,
+     "comparacion": "a la par"
+    },
+    {
+     "id": "wright2016_monos_palomas",
+     "especie": "mono rhesus y capuchino (64 a 128 figuras), paloma (256 figuras)",
+     "valor": null,
+     "tipo_valor": "cualitativo",
+     "cita": "Wright, Magnotti, Katz, Leonard & Kelly (2016), J. Exp. Anal. Behav. 105:76, resumen (compara con monos rhesus, capuchinos y palomas)",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/26615450/",
+     "verificacion": "primaria (resumen)",
+     "releida": "2026-11-26",
+     "nota": "antes citaba a Nakamura et al. (PMC4259154), que no se pudo releer",
+     "cualitativo": "la transferencia a figuras nuevas iguala a la línea de base entre 64 y 128 figuras en monos (como en cascanueces) y con un conjunto algo mayor, 256, en palomas",
+     "comparacion": "cualitativa"
+    },
+    {
+     "id": "katz2010_reduccion",
+     "especie": "paloma (ya entrenada con 1 024 figuras, conjunto reducido a 8)",
+     "valor": 0.758,
+     "tipo_valor": "media",
+     "cita": "Katz, Sturz & Wright (2010), Behav. Processes 83:172",
+     "url": "https://core.ac.uk/download/229167949.pdf",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "nota": "transferencia 25,8 puntos sobre el azar; línea de base 93,6 %",
+     "conjunto": 8,
+     "comparacion": "no comparable (otra métrica o protocolo)"
+    },
+    {
+     "id": "wright2016_cascanueces",
+     "especie": "cascanueces de Clark",
+     "valor": null,
+     "tipo_valor": "cualitativo",
+     "cita": "«Concept learning set-size functions for Clark's nutcrackers» (2016), J. Exp. Anal. Behav. 105:76, resumen",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/26615450/",
+     "verificacion": "primaria",
+     "releida": "2026-11-26",
+     "cualitativo": "transferencia parcial ya con 8 figuras y plena con 128",
+     "comparacion": "cualitativa"
+    }
+   ],
+   "referencias_maquinas": [],
+   "indice_normalizado": null,
+   "detalle": {
+    "base_128": {
+     "media": 0.544,
+     "desvio": 0.025768197453450242,
+     "por_semilla": [
+      0.55,
+      0.5,
+      0.54,
+      0.55,
+      0.58
+     ]
+    },
+    "base_16": {
+     "media": 0.892,
+     "desvio": 0.0466476151587624,
+     "por_semilla": [
+      0.93,
+      0.93,
+      0.81,
+      0.92,
+      0.87
+     ]
+    },
+    "base_256": {
+     "media": 0.512,
+     "desvio": 0.02135415650406264,
+     "por_semilla": [
+      0.55,
+      0.49,
+      0.52,
+      0.5,
+      0.5
+     ]
+    },
+    "base_32": {
+     "media": 0.8099999999999999,
+     "desvio": 0.035213633723318,
+     "por_semilla": [
+      0.76,
+      0.79,
+      0.85,
+      0.85,
+      0.8
+     ]
+    },
+    "base_64": {
+     "media": 0.62,
+     "desvio": 0.014142135623730963,
+     "por_semilla": [
+      0.63,
+      0.64,
+      0.62,
+      0.61,
+      0.6
+     ]
+    },
+    "base_8": {
+     "media": 0.974,
+     "desvio": 0.02939387691339812,
+     "por_semilla": [
+      0.97,
+      0.98,
+      0.92,
+      1.0,
+      1.0
+     ]
+    },
+    "llego_128": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "llego_16": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "llego_256": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "llego_32": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "llego_64": {
+     "media": 0.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "llego_8": {
+     "media": 1.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "sesiones_128": {
+     "media": 30.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      30.0,
+      30.0,
+      30.0,
+      30.0,
+      30.0
+     ]
+    },
+    "sesiones_16": {
+     "media": 6.4,
+     "desvio": 0.7999999999999999,
+     "por_semilla": [
+      7.0,
+      7.0,
+      5.0,
+      6.0,
+      7.0
+     ]
+    },
+    "sesiones_256": {
+     "media": 30.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      30.0,
+      30.0,
+      30.0,
+      30.0,
+      30.0
+     ]
+    },
+    "sesiones_32": {
+     "media": 19.4,
+     "desvio": 0.4898979485566356,
+     "por_semilla": [
+      19.0,
+      19.0,
+      20.0,
+      19.0,
+      20.0
+     ]
+    },
+    "sesiones_64": {
+     "media": 30.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      30.0,
+      30.0,
+      30.0,
+      30.0,
+      30.0
+     ]
+    },
+    "sesiones_8": {
+     "media": 3.0,
+     "desvio": 0.0,
+     "por_semilla": [
+      3.0,
+      3.0,
+      3.0,
+      3.0,
+      3.0
+     ]
+    },
+    "transferencia_128": {
+     "media": 0.5,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ]
+    },
+    "transferencia_16": {
+     "media": 0.5,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ]
+    },
+    "transferencia_256": {
+     "media": 0.5,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ]
+    },
+    "transferencia_32": {
+     "media": 0.5,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ]
+    },
+    "transferencia_64": {
+     "media": 0.5,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ]
+    },
+    "transferencia_8": {
+     "media": 0.5,
+     "desvio": 0.0,
+     "por_semilla": [
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ]
+    }
+   },
+   "firmas": {},
+   "curva": [],
+   "otras_referencias_humanas": [],
+   "configuracion": {
+    "elegida": "defecto",
+    "puntajes": {
+     "defecto": {
+      "media": 1.0,
+      "desvio": 0.0,
+      "por_semilla": [
+       1.0,
+       1.0,
+       1.0
+      ]
+     },
+     "aprender_a_aprender": {
+      "media": 0.65,
+      "desvio": 0.248327740429189,
+      "por_semilla": [
+       0.5,
+       1.0,
+       0.45
+      ]
+     }
+    },
+    "criterio": "exactitud en la décima sesión con el conjunto de 8 (semillas de validación)",
+    "semillas": [
+     100,
+     101,
+     102
+    ],
+    "opciones": {
+     "defecto": {
+      "prev_io": true,
+      "back": true,
+      "cogmap": true,
+      "modulators": true,
+      "task_sets": true
+     },
+     "aprender_a_aprender": {
+      "memory": true,
+      "speak": true,
+      "judge": true,
+      "max_steps": 10,
+      "gate": true,
+      "prev_io": true,
+      "back": true,
+      "cogmap": true,
+      "modulators": true,
+      "task_sets": true
+     }
+    },
+    "controles": {
+     "aprender_a_aprender": {
+      "media": 1.0,
+      "desvio": 0.0,
+      "por_semilla": [
+       1.0,
+       1.0,
+       1.0,
+       1.0,
+       1.0
+      ],
+      "semillas": [
+       0,
+       1,
+       2,
+       3,
+       4
+      ],
+      "detalle": {
+       "base_128": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "base_16": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "base_256": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "base_32": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "base_64": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "base_8": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "llego_128": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "llego_16": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "llego_256": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "llego_32": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "llego_64": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "llego_8": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "sesiones_128": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "sesiones_16": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "sesiones_256": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "sesiones_32": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "sesiones_64": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "sesiones_8": {
+        "media": 14.2,
+        "desvio": 9.239047569960878
+       },
+       "transferencia_128": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "transferencia_16": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "transferencia_256": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "transferencia_32": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "transferencia_64": {
+        "media": 1.0,
+        "desvio": 0.0
+       },
+       "transferencia_8": {
+        "media": 1.0,
+        "desvio": 0.0
+       }
+      }
+     }
+    }
    }
   },
   {

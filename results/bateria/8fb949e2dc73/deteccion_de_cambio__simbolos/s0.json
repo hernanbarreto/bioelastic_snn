@@ -1,0 +1,23 @@
+{
+ "puntaje": 1.79,
+ "medidas": {
+  "K": 1.79,
+  "exactitud_entrenamiento_ultimos500": 0.738,
+  "K_N2": 1.6666666666666667,
+  "exactitud_N2": 0.91,
+  "K_N4": 2.618181818181818,
+  "exactitud_N4": 0.81,
+  "K_N6": 1.6,
+  "exactitud_N6": 0.67,
+  "K_N8": 2.046511627906977,
+  "exactitud_N8": 0.68,
+  "K_N10": 0.0,
+  "exactitud_N10": 0.52,
+  "techo_de_la_prueba": false
+ },
+ "segundos": 5.933186054229736,
+ "semilla": 0,
+ "version": 1,
+ "escala": 1.0,
+ "config": "aprender_a_aprender"
+}
