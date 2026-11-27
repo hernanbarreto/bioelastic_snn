@@ -6,7 +6,7 @@ mismo núcleo procesa imagen, voz, texto o sensores (sólo cambia el encoder). S
 corre un **Thinker**: un lazo de razonamiento sobre símbolos con memoria rápida, registros y
 aprendizaje por refuerzo.
 
-NumPy (y SciPy para el encoder de imagen). **156 tests**, incluidos tests de regresión
+NumPy (y SciPy para el encoder de imagen). **212 tests**, incluidos tests de regresión
 bit a bit. Todo lo que figura abajo está medido con los scripts de `experiments/`, y los CSV de
 cada corrida están en `results/`.
 
@@ -14,7 +14,8 @@ cada corrida están en `results/`.
 > siendo **hipótesis**. El objetivo del proyecto es encontrar dónde falla: la sección
 > [Dónde falla](#dónde-falla) importa tanto como los resultados.
 > Hay rondas en curso que implementan mecanismos del aprendizaje humano
-> (ver [En curso](#en-curso-mecanismos-del-aprendizaje-humano)).
+> (ver [En curso](#en-curso-mecanismos-del-aprendizaje-humano)) y una
+> [hoja de ruta](#hoja-de-ruta-hacia-el-aprendizaje-humano) con criterios de abandono.
 
 ## Arquitectura
 
@@ -48,10 +49,13 @@ flowchart LR
 | Corteza prefrontal: memoria de trabajo | registros del Thinker, aprendidos en retrospectiva | hecho |
 | Ligadura rápida tipo cabeza de inducción | `FastMemory` (por eventos, conjuntiva) | hecho |
 | Láminas 6 y 1 (predicción descendente) | rama `agent/predictivo` | en curso |
-| Cingulado anterior (detección del propio error), ACh/NE | rama `integracion3` | en curso |
+| Cingulado anterior (detección del propio error), ACh/NE | `Cortex.signals()`, `metacog` (`metacog.py`), compuerta de fiabilidad (`posterior.py`) | opción; medido |
 | Consolidación en sueño, reconsolidación, esquemas | rama `agent/consolidacion` | en curso |
 | Aprender a aprender (prefrontal como meta-RL) | `prev_io` del Thinker, `MetaThinker` | hecho (ver resultados) |
-| Mapa cognitivo recorrible en ambos sentidos | `back` del Thinker | hecho, con costo |
+| Mapa cognitivo recorrible en ambos sentidos | `back` del Thinker | hecho (opción); ya no daña la transitiva |
+| Prefrontal: conjuntos de tareas y causa latente de cada regla | `task_sets` del Thinker (`tasksets.py`) | opción; falla con todo encendido |
+| Estructura del mapa separada de lo sensorial (entorrinal) | `cogmap` del Thinker (`cogmap.py`) | opción |
+| Dopamina, serotonina, acetilcolina y noradrenalina como meta-parámetros | `modulators` del Thinker (`modulators.py`) | opción |
 | Cerebelo (69 de los 86 mil millones de neuronas) | — | no modelado |
 
 ## Resultados medidos
@@ -125,6 +129,28 @@ queda en azar (0.50).
 Mapa relacional: con la acción RETROCEDER (`back`) la relación inversa pasa de 0 % a 100 %
 (pesos congelados, también con 8 elementos y cada relación vista una sola vez).
 
+### Reglas que no se pisan, mapa del episodio y neuromoduladores (Thinker, 3 semillas)
+
+Cada mecanismo es una opción apagada por defecto. Pesos congelados y problemas nuevos, salvo
+aviso; configuración elegida en validación y medida una vez con otras semillas.
+
+| Prueba | Sin el mecanismo | Con el mecanismo |
+|---|---|---|
+| Volver a una regla sin consigna después de 400 problemas de otra (`task_sets`, como en Collins & Frank 2013) | 0.08 ± 0.11 | 1.00 ± 0.00 |
+| Batería C0–C6 mezclada, 12 medidas (`back`: los predecesores se ven sólo al retroceder) | `back` anterior: peor medida 0.72 (orden de 8, distancia ≥ 4) | las 12 en 1.00 |
+| Harlow sin ver el resultado, peor instantánea por semilla desde el problema 50 (neuromoduladores) | 0.75 ± 0.05, 4 instantáneas bajo 0.95 | 1.00 ± 0.00, ninguna |
+| Cierre de un anillo con relaciones mezcladas con preguntas (`cogmap` + neuromoduladores) | 0.67 ± 0.47 | 1.00 ± 0.00 |
+| Dos regímenes, estable y volátil: elige el premiado | valores a mano 0.773 ± 0.005; los 7 ajustados por perturbación 0.50 ± 0.36 | 0.828 ± 0.010 (oráculo por régimen: 0.831 ± 0.010) |
+
+Qué explica cada mejora, según las ablaciones:
+- En los dos regímenes, toda la mejora viene de la memoria bayesiana: con ella sola y el control
+  con valores fijos da el mismo 0.828. Los neuromoduladores no suman ahí.
+- En Harlow, la mejora viene del horizonte de un ensayo que fija la serotonina: sin él, 0.49 ± 0.41.
+  La causa de las caídas era el error de predicción de fin de episodio.
+- En el anillo, los neuromoduladores bajan la relación inversa de 1.00 a 0.82.
+- Mientras aprende (en línea, bloques 750–799), el cierre queda en 0.55 ± 0.02 en el anillo y en
+  0.76 ± 0.03 en la línea con final.
+
 ### Percepción + razonamiento
 
 | Prueba | Resultado |
@@ -132,6 +158,27 @@ Mapa relacional: con la acción RETROCEDER (`back`) la relación inversa pasa de
 | Percepción entrenada aparte, Thinker aprende a sumar sobre lo percibido (3 dígitos) | 71.9 % exacta (76.1 % con crédito simbólico); con símbolos perfectos, 97.4 % |
 | L0: identidad aprendida sólo con el crédito del Thinker | pureza de la percepción 88–90 % |
 | **L3: suma completa aprendida desde cero, todo junto** | **1.5 % exacta (0–4 %), 24 % por columna (azar: 10 %)** |
+| **Suma con imágenes, regla conocida (MNIST-addition): crédito conjunto entre lo que ve y la suma; 27 500 pares, una pasada, test, 3 semillas** | **97.6 ± 0.2 % de sumas, 98.8 ± 0.1 % por dígito.** Error del dígito: AUROC 0.984, ECE 0.002. Publicado, con 30 000 pares y 25–100 épocas de backprop: DeepProbLog 97.2 ± 0.5, A-NeSI 97.7 ± 0.2, DeepStochLog 97.9 ± 0.1 |
+| Atajo de razonamiento con 3 000 pares (8 semillas, test) | sin la compuerta de fiabilidad caen 4 de 8 (dígito ≈ 0.01); con ella, 0 de 8: suma 93.8 ± 0.6 %, dígito 96.8 ± 0.3 %. DeepProbLog con 3 000 pares, otro protocolo: 92.2 ± 1.6 |
+| L3 por etapas: categorías sin etiquetas y después ligadura, regla desconocida (validación, 1 semilla) | las categorías llegan a una pureza de 0.79 (hace falta ≥ 0.965); después de ligar, símbolos 0.33 y 0.2 % exacta |
+
+### Saber cuándo se equivoca (`Cortex` con `metacog`, flujo continuo, 3 semillas)
+
+| Medida | Escala 0.05 | Escala 0.1 |
+|---|---|---|
+| AUROC del propio error, confianza calibrada | 0.855 ± 0.003 | 0.885 ± 0.001 |
+| ECE calibrada | 0.014 ± 0.001 | 0.012 ± 0.001 |
+| Apuesta por confianza (Kepecs 2008): AUROC acierto contra error | 0.845 ± 0.017 | 0.870 ± 0.018 |
+| Pendiente de la apuesta contra la facilidad: aciertos / errores | +0.26 / −0.17 | +0.23 / −0.11 |
+| Entre los errores, nuevo contra conocido: señal NE | 0.851 ± 0.018 | 0.890 ± 0.020 |
+
+- **Firma de Kepecs:** reproduce la que se midió en ratas. En los aciertos, la apuesta sube con la
+  facilidad; en los errores, baja.
+- **Error contra novedad:** la confianza no distingue un error en algo conocido de uno ante algo
+  nuevo (0.52). La señal NE sí los distingue.
+- **Hipercorrección:** no tiene efecto propio. Lo que acelera la corrección (de 102.5 a 82.7 pasos)
+  es aplicar más plasticidad en los errores. El control con la misma ganancia, sin ponderar por
+  confianza, da lo mismo (82.0).
 
 ### Rendimiento
 
@@ -143,6 +190,13 @@ El índice invertido exacto de la capa dispersa es idéntico bit a bit a la pasa
 - **Aprender a ver y a razonar a la vez desde cero (L3) no funciona.** Por separado anda: la
   percepción supervisada y el Thinker con símbolos perfectos. Juntos, con el resultado final como
   única señal, el crédito no se reparte entre las imágenes y la regla.
+  - **Con la regla conocida, el crédito conjunto sí funciona** (97.6 % en MNIST-addition).
+  - **Con la regla desconocida y sin ningún ejemplo nombrado, tampoco funciona por etapas.** Las
+    categorías sin etiquetas no son lo bastante puras (0.79 contra 0.965), y ligarlas a símbolos
+    no llega a la cota.
+  - **El mecanismo de ligadura se aplana:** con 3 prototipos por dígito da 0.60, 0.73 y 0.71 con
+    10 000, 40 000 y 160 000 columnas. Es un límite de diseño, no de datos.
+  - **Salir de un atajo ya consolidado es lento:** la identidad llega a 0.47 en 7 500 pares.
 - **La profundidad no escala sola.** En Fashion el tercer nivel no suma. En CIFAR-10 (exploratorio,
   5 000 muestras, 1 semilla, en validación) el segundo nivel rinde menos que el primero (45 % contra
   47 % de la sonda local; la CNN, 44–46 %). Hipótesis en prueba: a las capas altas no les llega ninguna señal
@@ -159,10 +213,18 @@ El índice invertido exacto de la capa dispersa es idéntico bit a bit a la pasa
   natural ni en dominios abiertos.
 - **Aprender a aprender tiene límites medidos.** Ajustar por recompensa los meta-parámetros de la
   memoria rápida no escala: con 7 a la vez rinde peor que los valores elegidos a mano (0.50 ± 0.36).
-  Entre familias de reglas opuestas no hay aceleración, y sin consigna la regla nueva tarda ~400
-  problemas y **sobrescribe la vieja** (queda en 0 %). El cierre de un anillo queda en 0 % cuando
-  las relaciones llegan mezcladas con preguntas: el control no distingue un mapa completo de uno
-  parcial. `back` baja la inferencia transitiva de 5 saltos a 0.72, por eso queda apagado.
+  Lo que mejora los dos regímenes es la memoria bayesiana, no ese ajuste. Entre familias de reglas
+  opuestas no hay aceleración. Sin las opciones nuevas, la regla nueva **sobrescribe la vieja**
+  y el anillo no cierra. Con ellas, la vieja vuelve a 1.00 y el anillo cierra con los pesos
+  congelados, pero mientras aprende el cierre queda en 0.55.
+- **Todo encendido a la vez todavía no funciona.** Por eso las opciones de arriba quedan apagadas
+  por defecto. Con todas encendidas (rama `agent/razonamiento3`, 3 semillas):
+  - En la multitarea en bloques en orden inverso, C1 cae de 1.00 a 0.52, C4 a 0.68, C2 a 0.78 y
+    C0 a 0.85: lo compuesto antes de aprender f no se repara cuando f llega.
+  - C1 con 256 símbolos queda en 0.805 y 0.835 (1–2 y 3–4 saltos). La v0.3 da 0.835 y 0.888.
+  - Con `task_sets`, fallan tres pruebas de multitarea con consignas. Volver a una tarea vieja
+    queda entre 0.0 y 0.75.
+  - Cada paso tarda 2.09 veces lo de la v0.3; el tope fijado es 2.
 - **Selección de hiperparámetros.** Parte de la exploración previa miró subconjuntos del test de
   MNIST y Fashion: esas cifras son algo optimistas. Los resultados de la v0.3 usan validación
   separada.
@@ -177,11 +239,11 @@ se prueban todos juntos.
 | Cómo aprende un humano | Fuente | Rama |
 |---|---|---|
 | Predicción de arriba hacia abajo; sube el error residual; plasticidad por error en cada nivel | Rao & Ballard 1999 | `agent/predictivo` |
-| Detección del propio error por conflicto entre respuestas | Yeung, Botvinick & Cohen 2004 | `integracion3` |
-| Los errores cometidos con mucha confianza se corrigen más | Butterfield & Metcalfe 2001, 2006 | `integracion3` |
-| Incertidumbre esperada (ACh) e inesperada (NE) modulan inferencia y plasticidad | Yu & Dayan 2005 | `integracion3` |
-| Aprender pares palabra-objeto acumulando evidencia de escenas ambiguas | Smith & Yu 2008 | `integracion3` |
-| Etapas: "uno", "dos", "tres" y después el principio cardinal | Carey; Le Corre; Elman 1993 contra Rohde & Plaut 1999 | `integracion3` |
+| Detección del propio error por conflicto entre respuestas | Yeung, Botvinick & Cohen 2004 | **medido**: el conflicto predice el error (AUROC 0.874) |
+| Los errores cometidos con mucha confianza se corrigen más | Butterfield & Metcalfe 2001, 2006 | **medido**: sin efecto propio |
+| Incertidumbre esperada (ACh) e inesperada (NE) modulan inferencia y plasticidad | Yu & Dayan 2005 | **medido**: NE separa error de novedad (0.89) |
+| Aprender pares palabra-objeto acumulando evidencia de escenas ambiguas | Smith & Yu 2008 | **medido**: con la regla conocida liga (97.6 %); sin ancla no |
+| Etapas: "uno", "dos", "tres" y después el principio cardinal | Carey; Le Corre; Elman 1993 contra Rohde & Plaut 1999 | **medido**: contar primero los números chicos rinde peor que el orden aleatorio (pureza 0.30 contra 0.43) |
 | Dos sistemas: memoria rápida y conocimiento lento intercalado | Kumaran, Hassabis & McClelland 2016 | `agent/consolidacion` |
 | Lo que encaja en un esquema se consolida en un ensayo | Tse et al. 2007 | `agent/consolidacion` |
 | Un recuerdo consolidado sólo se modifica si hay error de predicción | Sevenster, Beckers & Kindt 2013–2014 (y la replicación fallida de 2022) | `agent/consolidacion` |
@@ -189,6 +251,47 @@ se prueban todos juntos.
 | Sueño: repaso activo y renormalización sináptica global | Klinzing, Niethard & Born 2019 | `agent/consolidacion` |
 | La dopamina entrena a la prefrontal para que sea un aprendiz rápido propio | Wang et al. 2018 | **medido** (ver resultados) |
 | Mapas cognitivos: estructura relacional reutilizable | Behrens et al. 2018 | **medido** (ver resultados) |
+| Las reglas se agrupan en conjuntos de tareas reutilizables; una causa latente decide cuál rige | Collins & Frank 2013 | **medido** como opción; con todo encendido, abierto |
+| Los neuromoduladores fijan los meta-parámetros del aprendizaje | Doya 2002 | **medido** como opción; en los dos regímenes no suma |
+
+## Hoja de ruta hacia el aprendizaje humano
+
+Nadie tiene hoy un camino demostrado hasta la inteligencia humana con aprendizaje local y
+online: es un problema abierto. Esta hoja de ruta ordena el trabajo por dependencias, mide
+cada escalón contra un benchmark externo y fija de antemano qué resultado obligaría a cambiar
+el diseño.
+
+**Regla de diseño** (sale de lo medido). Antes de cambiar un peso, inferir qué causó el
+resultado —qué módulo, qué recuerdo, qué causa latente, error o novedad— y aplicar la
+plasticidad local en proporción a esa responsabilidad. Lo que funcionó la cumple: error local
+por área, crédito conjunto en la suma con imágenes, conjuntos de tareas, búsqueda
+contrafáctica que separa estrategia de conocimiento. Lo que falló la viola: crédito casilla
+por casilla, reconsolidación ante cualquier error, compuertas gobernadas por una confianza
+sin calibrar.
+
+| Escalón | Qué tiene que lograr | Medida externa | Estado |
+|---|---|---|---|
+| A. Saber cuándo se equivoca | confianza calibrada; separar error de novedad | apuesta por confianza (ratas, Kepecs 2008); ECE ≤ 0.05; AUROC ≥ 0.85 | cumplido en `Cortex` a escala 0.05 y 0.1: AUROC 0.885, ECE 0.012, firma de Kepecs; NE separa error de novedad (0.89). Falta escala 0.25 y llevarlo al Thinker |
+| B. Símbolos anclados en lo que ve | crédito conjunto entre percepción y razonamiento | MNIST-addition (DeepProbLog: 97.2 % con 30 000 pares); después con la regla desconocida | regla conocida: 97.6 ± 0.2 % en test (3 semillas, una pasada), a la par de lo publicado. Regla desconocida sin ancla: no funciona |
+| C. Abstracción por niveles | que cada nivel aporte; invariancia | CIFAR-10 contra Hebb local publicado (SoftHebb: 80.3 %, con otro protocolo); sonda por nivel; desplazamientos | abierto: el nivel 2 copia al 1 |
+| D. Memoria sin interferencia | actualizar o crear según la causa inferida | Split-MNIST y Split-Fashion incremental por clases; ER-ACE con los mismos bytes | en curso |
+| E. Razonamiento composicional | generalizar a combinaciones nuevas | SCAN, bAbI; datos de personas de Lake y Baroni 2023 | en curso: guion con los protocolos publicados (SCAN, MLC, bAbI); primera corrida en marcha |
+| F. Lenguaje | predecir y componer sobre secuencias | BabyLM (10 M de palabras, escala de un niño) a escala reducida | sin empezar; hoy rinde como n-gramas |
+| G. Razonar con neuronas | memoria de trabajo y ligadura en neuronas de spikes, no en estructuras programadas | las pruebas de E, sin pérdida | sin empezar |
+| H. Actuar y explorar | elegir qué mirar y qué preguntar; metas propias | pruebas de cognición animal (igual/distinto, inferencia transitiva, Harlow); BabyAI | sin empezar |
+
+**Hardware o arquitectura.** Una capacidad sólo se da por «limitada por el hardware» si su
+curva de escalado (exactitud contra neuronas y datos, en 3 escalas o más) sigue subiendo. Si
+se aplana, el límite es de diseño y hay que corregirlo.
+
+**Criterios de abandono.**
+- C: si con ancho creciente por nivel y aprendizaje de invariancia por continuidad temporal la
+  sonda del nivel 2 no supera a la del 1, la pila de áreas hacia adelante es el diseño
+  equivocado y se reemplaza.
+- F: si a escala reducida no supera a un modelo de n-gramas con los mismos datos, el mecanismo
+  de secuencias es el equivocado.
+- G: si al pasar la memoria de trabajo a neuronas se pierde el razonamiento ya logrado, el
+  Thinker es un programa con control aprendido y no una red.
 
 ## Escala: qué significa «capacidad humana»
 
@@ -216,7 +319,7 @@ sección de resultados, no esta tabla.
 
 ```bash
 pip install -e ".[dev]"
-pytest                                          # 156 tests
+pytest                                          # 212 tests
 python experiments/exp_vision.py mnist          # idem: fashion, cifar10
 python experiments/exp_fsdd.py                  # voz
 python experiments/exp_continual.py             # flujo continuo no estacionario
@@ -275,3 +378,16 @@ tiny-shakespeare ([karpathy/char-rnn](https://github.com/karpathy/char-rnn)).
 - Empezar simple: Elman 1993 — https://web.cs.swarthmore.edu/~meeden/cogs1/s07/elman_cognition1993.pdf · Rohde & Plaut 1999 — https://www.cnbc.cmu.edu/~plaut/papers/pdf/RohdePlaut99Cog.startingSmall.pdf
 - Prefrontal como meta-RL: Wang et al. 2018 — https://www.nature.com/articles/s41593-018-0147-8
 - Mapas cognitivos: Behrens et al. 2018 — https://www.pubmed.gov/30359611/
+- Suma con imágenes: Manhaeve et al., DeepProbLog — https://arxiv.org/pdf/1907.08194 · Dai et al. 2019, aprendizaje abductivo — https://proceedings.neurips.cc/paper/2019/hash/9c19a2aa1d84e04b0bd4bc888792bd1e-Abstract.html · atajos de razonamiento: Marconato et al. 2023 — https://arxiv.org/pdf/2302.01242
+- Causas latentes: Gershman, Monfils, Norman & Niv 2017 — https://elifesciences.org/articles/23763v2
+- Conjuntos de tareas: Collins & Frank 2013 — https://pmc.ncbi.nlm.nih.gov/articles/PMC3974273
+- Neuromoduladores y meta-aprendizaje: Doya 2002 — https://doi.org/10.1016/S0893-6080(02)00044-8
+- Mapa estructural: Whittington et al. 2020 — https://pmc.ncbi.nlm.nih.gov/articles/PMC7707106
+- Inhibición lateral anti-Hebbiana: Földiák 1990 — https://link.springer.com/doi/10.1007/BF02331346
+- Hebb local multicapa: Journé et al. 2023, SoftHebb — https://arxiv.org/abs/2209.11883v2
+- Invariancia con plasticidad predictiva: Halvagal & Zenke 2023 — https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10620089/
+- Escalado de algoritmos biológicos: Bartunov et al. 2018 — https://arxiv.org/abs/1807.04587
+- Composicionalidad con meta-aprendizaje: Lake & Baroni 2023 — https://pmc.ncbi.nlm.nih.gov/articles/PMC10620072
+- Lenguaje con datos de escala infantil: BabyLM — https://arxiv.org/html/2504.08165v1
+- Prueba de Turing encarnada: Zador et al. 2023 — https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10033876/
+- Confianza en ratas: Kepecs et al. 2008 — https://doi.org/10.1038/nature07200 · conceptos en abejas: Giurfa et al. 2001 — https://www.doi.org/10.1038/35073582
