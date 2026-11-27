@@ -1,0 +1,73 @@
+prueba,sistema,tramo,medida,media,desvio,semillas
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),"personas (respuestas publicadas, n=25)",episodio de prueba,"secuencia exacta, media de las 10 consultas",0.8074,0.0000,0
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),"personas (respuestas publicadas, n=25)",episodio de prueba,errores uno-a-uno (fracción de los errores),0.2439,0.0000,0
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),"personas (respuestas publicadas, n=25)",episodio de prueba,errores icónicos (de los errores con «after»),0.2333,0.0000,0
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),personas (publicado en el artículo),episodio de prueba,secuencia exacta,0.8070,0.0000,0
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),personas (publicado en el artículo),episodio de prueba,errores uno-a-uno (fracción de los errores),0.2440,0.0000,0
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),personas (publicado en el artículo),episodio de prueba,errores icónicos (de los errores con «after»),0.2330,0.0000,0
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),"MLC, muestreo (publicado)",episodio de prueba,secuencia exacta,0.8240,0.0000,0
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),"MLC, muestreo (publicado)",episodio de prueba,errores uno-a-uno (fracción de los errores),0.5630,0.0000,0
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),"MLC, muestreo (publicado)",episodio de prueba,errores icónicos (de los errores con «after»),0.1380,0.0000,0
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),"MLC, voraz (publicado)",episodio de prueba,secuencia exacta,1.0000,0.0000,0
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),"MLC, voraz (publicado)",episodio de prueba,errores uno-a-uno (fracción de los errores),nan,0.0000,0
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),"MLC, voraz (publicado)",episodio de prueba,errores icónicos (de los errores con «after»),nan,0.0000,0
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),0 episodios de meta-entrenamiento,"secuencia exacta, episodio de las personas",0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),0 episodios de meta-entrenamiento,"secuencia exacta, episodios nuevos de la familia de entrenamiento",0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),0 episodios de meta-entrenamiento,"secuencia exacta en línea, último quinto del meta-entrenamiento",0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),0 episodios de meta-entrenamiento,errores uno-a-uno (fracción de los errores),0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),0 episodios de meta-entrenamiento,errores icónicos (de los errores con «after»),0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"0 episodios, por consulta",3 after DAX,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"0 episodios, por consulta",DAX after 1,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"0 episodios, por consulta",DAX thrice,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"0 episodios, por consulta",1 surround DAX,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"0 episodios, por consulta",DAX surround 2,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"0 episodios, por consulta",2 after 3 surround DAX,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"0 episodios, por consulta",DAX thrice after 2,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"0 episodios, por consulta",3 after DAX thrice,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"0 episodios, por consulta",DAX surround DAX after DAX thrice,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"0 episodios, por consulta",DAX surround 3 after 1 thrice,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),30 episodios de meta-entrenamiento,"secuencia exacta, episodio de las personas",0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),30 episodios de meta-entrenamiento,"secuencia exacta, episodios nuevos de la familia de entrenamiento",0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),30 episodios de meta-entrenamiento,"secuencia exacta en línea, último quinto del meta-entrenamiento",0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),30 episodios de meta-entrenamiento,errores uno-a-uno (fracción de los errores),0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),30 episodios de meta-entrenamiento,errores icónicos (de los errores con «after»),0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"30 episodios, por consulta",3 after DAX,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"30 episodios, por consulta",DAX after 1,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"30 episodios, por consulta",DAX thrice,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"30 episodios, por consulta",1 surround DAX,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"30 episodios, por consulta",DAX surround 2,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"30 episodios, por consulta",2 after 3 surround DAX,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"30 episodios, por consulta",DAX thrice after 2,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"30 episodios, por consulta",3 after DAX thrice,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"30 episodios, por consulta",DAX surround DAX after DAX thrice,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"30 episodios, por consulta",DAX surround 3 after 1 thrice,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),100 episodios de meta-entrenamiento,"secuencia exacta, episodio de las personas",0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),100 episodios de meta-entrenamiento,"secuencia exacta, episodios nuevos de la familia de entrenamiento",0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),100 episodios de meta-entrenamiento,"secuencia exacta en línea, último quinto del meta-entrenamiento",0.0050,0.0071,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),100 episodios de meta-entrenamiento,errores uno-a-uno (fracción de los errores),0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),100 episodios de meta-entrenamiento,errores icónicos (de los errores con «after»),0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"100 episodios, por consulta",3 after DAX,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"100 episodios, por consulta",DAX after 1,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"100 episodios, por consulta",DAX thrice,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"100 episodios, por consulta",1 surround DAX,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"100 episodios, por consulta",DAX surround 2,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"100 episodios, por consulta",2 after 3 surround DAX,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"100 episodios, por consulta",DAX thrice after 2,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"100 episodios, por consulta",3 after DAX thrice,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"100 episodios, por consulta",DAX surround DAX after DAX thrice,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"100 episodios, por consulta",DAX surround 3 after 1 thrice,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),300 episodios de meta-entrenamiento,"secuencia exacta, episodio de las personas",0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),300 episodios de meta-entrenamiento,"secuencia exacta, episodios nuevos de la familia de entrenamiento",0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),300 episodios de meta-entrenamiento,"secuencia exacta en línea, último quinto del meta-entrenamiento",0.0033,0.0014,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),300 episodios de meta-entrenamiento,errores uno-a-uno (fracción de los errores),0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),300 episodios de meta-entrenamiento,errores icónicos (de los errores con «after»),0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"300 episodios, por consulta",3 after DAX,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"300 episodios, por consulta",DAX after 1,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"300 episodios, por consulta",DAX thrice,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"300 episodios, por consulta",1 surround DAX,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"300 episodios, por consulta",DAX surround 2,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"300 episodios, por consulta",2 after 3 surround DAX,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"300 episodios, por consulta",DAX thrice after 2,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"300 episodios, por consulta",3 after DAX thrice,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"300 episodios, por consulta",DAX surround DAX after DAX thrice,0.0000,0.0000,3
+F6b pocos ejemplos (tarea de Lake y Baroni 2023),Thinker (todo encendido + contexto temporal),"300 episodios, por consulta",DAX surround 3 after 1 thrice,0.0000,0.0000,3

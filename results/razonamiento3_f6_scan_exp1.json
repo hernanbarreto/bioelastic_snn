@@ -1,0 +1,242 @@
+{
+ "scan exp1 1% 1 pasadas semilla 0": {
+  "train": {
+   "exact": 0.0,
+   "token": 0.3318026013150963,
+   "first": 0.49760765550239233,
+   "length_ok": 0.0,
+   "no_fin": 1.0,
+   "by": {
+    "con and/after": [
+     0.0,
+     207
+    ],
+    "con left/right/around/opposite (sin conjunción ni repetición)": [
+     0.0,
+     2
+    ]
+   }
+  },
+  "test": {
+   "exact": 0.0,
+   "token": 0.2880901384082034,
+   "first": 0.427,
+   "length_ok": 0.0,
+   "no_fin": 1.0,
+   "by": {
+    "con and/after": [
+     0.0,
+     998
+    ],
+    "con twice/thrice (sin conjunción)": [
+     0.0,
+     1
+    ],
+    "con left/right/around/opposite (sin conjunción ni repetición)": [
+     0.0,
+     1
+    ]
+   }
+  },
+  "n_train": 209,
+  "n_test_total": 20701,
+  "n_test": 1000,
+  "passes": 1,
+  "ms_per_step": 17.791101850859143,
+  "say_neurons": 32,
+  "bag_ambiguity_test": 0.257,
+  "bag_ambiguity_all": 0.957819225251076
+ },
+ "scan exp1 2% 1 pasadas semilla 0": {
+  "train": {
+   "exact": 0.0,
+   "token": 0.3003290613797967,
+   "first": 0.42,
+   "length_ok": 0.0,
+   "no_fin": 1.0,
+   "by": {
+    "con and/after": [
+     0.0,
+     297
+    ],
+    "con left/right/around/opposite (sin conjunción ni repetición)": [
+     0.0,
+     2
+    ],
+    "con twice/thrice (sin conjunción)": [
+     0.0,
+     1
+    ]
+   }
+  },
+  "test": {
+   "exact": 0.0,
+   "token": 0.30754930426814325,
+   "first": 0.426,
+   "length_ok": 0.0,
+   "no_fin": 1.0,
+   "by": {
+    "con and/after": [
+     0.0,
+     991
+    ],
+    "con twice/thrice (sin conjunción)": [
+     0.0,
+     6
+    ],
+    "con left/right/around/opposite (sin conjunción ni repetición)": [
+     0.0,
+     3
+    ]
+   }
+  },
+  "n_train": 418,
+  "n_test_total": 20492,
+  "n_test": 1000,
+  "passes": 1,
+  "ms_per_step": 17.079712550382084,
+  "say_neurons": 71,
+  "bag_ambiguity_test": 0.251,
+  "bag_ambiguity_all": 0.957819225251076
+ },
+ "scan exp1 4% 1 pasadas semilla 0": {
+  "train": {
+   "exact": 0.0,
+   "token": 0.28945713587333816,
+   "first": 0.21333333333333335,
+   "length_ok": 0.0,
+   "no_fin": 1.0,
+   "by": {
+    "con and/after": [
+     0.0,
+     297
+    ],
+    "con left/right/around/opposite (sin conjunción ni repetición)": [
+     0.0,
+     1
+    ],
+    "con twice/thrice (sin conjunción)": [
+     0.0,
+     2
+    ]
+   }
+  },
+  "test": {
+   "exact": 0.0,
+   "token": 0.32260060743063845,
+   "first": 0.278,
+   "length_ok": 0.0,
+   "no_fin": 1.0,
+   "by": {
+    "con and/after": [
+     0.0,
+     995
+    ],
+    "con left/right/around/opposite (sin conjunción ni repetición)": [
+     0.0,
+     1
+    ],
+    "con twice/thrice (sin conjunción)": [
+     0.0,
+     4
+    ]
+   }
+  },
+  "n_train": 836,
+  "n_test_total": 20074,
+  "n_test": 1000,
+  "passes": 1,
+  "ms_per_step": 17.396498643360875,
+  "say_neurons": 108,
+  "bag_ambiguity_test": 0.235,
+  "bag_ambiguity_all": 0.957819225251076
+ },
+ "scan exp1 8% 1 pasadas semilla 0": {
+  "train": {
+   "exact": 0.0,
+   "token": 0.37231974887857233,
+   "first": 0.5666666666666667,
+   "length_ok": 0.0,
+   "no_fin": 0.9933333333333333,
+   "by": {
+    "con and/after": [
+     0.0,
+     298
+    ],
+    "con twice/thrice (sin conjunción)": [
+     0.0,
+     2
+    ]
+   }
+  },
+  "test": {
+   "exact": 0.0,
+   "token": 0.34562215894356757,
+   "first": 0.543,
+   "length_ok": 0.0,
+   "no_fin": 0.985,
+   "by": {
+    "con and/after": [
+     0.0,
+     994
+    ],
+    "con twice/thrice (sin conjunción)": [
+     0.0,
+     5
+    ],
+    "con left/right/around/opposite (sin conjunción ni repetición)": [
+     0.0,
+     1
+    ]
+   }
+  },
+  "n_train": 1672,
+  "n_test_total": 19238,
+  "n_test": 1000,
+  "passes": 1,
+  "ms_per_step": 13.67329401835052,
+  "say_neurons": 124,
+  "bag_ambiguity_test": 0.231,
+  "bag_ambiguity_all": 0.957819225251076
+ },
+ "scan exp1 1% 3 pasadas semilla 0": {
+  "train": {
+   "exact": 0.0,
+   "token": 0.291593957831311,
+   "first": 0.37320574162679426,
+   "length_ok": 0.0,
+   "no_fin": 1.0,
+   "by": {
+    "con and/after": [
+     0.0,
+     207
+    ],
+    "con left/right/around/opposite (sin conjunción ni repetición)": [
+     0.0,
+     2
+    ]
+   }
+  },
+  "test": {
+   "exact": 0.0,
+   "token": 0.24924213863421293,
+   "first": 0.331,
+   "length_ok": 0.0,
+   "no_fin": 1.0,
+   "by": {
+    "con and/after": [
+     0.0,
+     1000
+    ]
+   }
+  },
+  "n_train": 209,
+  "n_test_total": 20701,
+  "n_test": 1000,
+  "passes": 3,
+  "ms_per_step": 15.398355693751594,
+  "say_neurons": 68,
+  "bag_ambiguity_test": 0.237,
+  "bag_ambiguity_all": 0.957819225251076
+ }
+}

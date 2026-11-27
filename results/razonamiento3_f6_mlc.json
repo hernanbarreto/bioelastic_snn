@@ -1,0 +1,432 @@
+{
+ "mlc personas": {
+  "acc": {
+   "3 after DAX": 0.8636363636363636,
+   "DAX after 1": 0.8636363636363636,
+   "DAX thrice": 0.88,
+   "1 surround DAX": 0.875,
+   "DAX surround 2": 0.7916666666666666,
+   "2 after 3 surround DAX": 0.65,
+   "DAX thrice after 2": 0.85,
+   "3 after DAX thrice": 0.85,
+   "DAX surround DAX after DAX thrice": 0.75,
+   "DAX surround 3 after 1 thrice": 0.7
+  },
+  "mean": 0.8073939393939394,
+  "one2one": 0.24390243902439024,
+  "iconic": 0.23333333333333334,
+  "n_err": 41
+ },
+ "mlc 0": {
+  "human_task": [
+   {
+    "3 after DAX": 0.0,
+    "DAX after 1": 0.0,
+    "DAX thrice": 0.0,
+    "1 surround DAX": 0.0,
+    "DAX surround 2": 0.0,
+    "2 after 3 surround DAX": 0.0,
+    "DAX thrice after 2": 0.0,
+    "3 after DAX thrice": 0.0,
+    "DAX surround DAX after DAX thrice": 0.0,
+    "DAX surround 3 after 1 thrice": 0.0
+   },
+   {
+    "3 after DAX": 0.0,
+    "DAX after 1": 0.0,
+    "DAX thrice": 0.0,
+    "1 surround DAX": 0.0,
+    "DAX surround 2": 0.0,
+    "2 after 3 surround DAX": 0.0,
+    "DAX thrice after 2": 0.0,
+    "3 after DAX thrice": 0.0,
+    "DAX surround DAX after DAX thrice": 0.0,
+    "DAX surround 3 after 1 thrice": 0.0
+   },
+   {
+    "3 after DAX": 0.0,
+    "DAX after 1": 0.0,
+    "DAX thrice": 0.0,
+    "1 surround DAX": 0.0,
+    "DAX surround 2": 0.0,
+    "2 after 3 surround DAX": 0.0,
+    "DAX thrice after 2": 0.0,
+    "3 after DAX thrice": 0.0,
+    "DAX surround DAX after DAX thrice": 0.0,
+    "DAX surround 3 after 1 thrice": 0.0
+   }
+  ],
+  "held_out": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "online_last": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "one2one": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "iconic": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "outputs": [
+   {
+    "3 after DAX": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "DAX after 1": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "DAX thrice": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "1 surround DAX": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "DAX surround 2": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "2 after 3 surround DAX": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "DAX thrice after 2": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "3 after DAX thrice": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "DAX surround DAX after DAX thrice": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "DAX surround 3 after 1 thrice": "w0 w0 w0 w0 w0 w0 w0 w0"
+   },
+   {
+    "3 after DAX": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "DAX after 1": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "DAX thrice": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "1 surround DAX": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "DAX surround 2": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "2 after 3 surround DAX": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "DAX thrice after 2": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "3 after DAX thrice": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "DAX surround DAX after DAX thrice": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "DAX surround 3 after 1 thrice": "w0 w0 w0 w0 w0 w0 w0 w0"
+   },
+   {
+    "3 after DAX": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "DAX after 1": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "DAX thrice": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "1 surround DAX": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "DAX surround 2": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "2 after 3 surround DAX": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "DAX thrice after 2": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "3 after DAX thrice": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "DAX surround DAX after DAX thrice": "w0 w0 w0 w0 w0 w0 w0 w0",
+    "DAX surround 3 after 1 thrice": "w0 w0 w0 w0 w0 w0 w0 w0"
+   }
+  ],
+  "ms_per_episode": [
+   0.0007152557373046875,
+   0.00095367431640625,
+   0.0007152557373046875
+  ]
+ },
+ "mlc 30": {
+  "human_task": [
+   {
+    "3 after DAX": 0.0,
+    "DAX after 1": 0.0,
+    "DAX thrice": 0.0,
+    "1 surround DAX": 0.0,
+    "DAX surround 2": 0.0,
+    "2 after 3 surround DAX": 0.0,
+    "DAX thrice after 2": 0.0,
+    "3 after DAX thrice": 0.0,
+    "DAX surround DAX after DAX thrice": 0.0,
+    "DAX surround 3 after 1 thrice": 0.0
+   },
+   {
+    "3 after DAX": 0.0,
+    "DAX after 1": 0.0,
+    "DAX thrice": 0.0,
+    "1 surround DAX": 0.0,
+    "DAX surround 2": 0.0,
+    "2 after 3 surround DAX": 0.0,
+    "DAX thrice after 2": 0.0,
+    "3 after DAX thrice": 0.0,
+    "DAX surround DAX after DAX thrice": 0.0,
+    "DAX surround 3 after 1 thrice": 0.0
+   },
+   {
+    "3 after DAX": 0.0,
+    "DAX after 1": 0.0,
+    "DAX thrice": 0.0,
+    "1 surround DAX": 0.0,
+    "DAX surround 2": 0.0,
+    "2 after 3 surround DAX": 0.0,
+    "DAX thrice after 2": 0.0,
+    "3 after DAX thrice": 0.0,
+    "DAX surround DAX after DAX thrice": 0.0,
+    "DAX surround 3 after 1 thrice": 0.0
+   }
+  ],
+  "held_out": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "online_last": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "one2one": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "iconic": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "outputs": [
+   {
+    "3 after DAX": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX after 1": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX thrice": "out:2 out:2 out:2 out:2 out:2 out:2 out:2 out:2",
+    "1 surround DAX": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX surround 2": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "2 after 3 surround DAX": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX thrice after 2": "out:2 out:2 out:2 out:2 out:2 out:2 out:2 out:2",
+    "3 after DAX thrice": "out:2 out:2 out:2 out:2 out:2 out:2 out:2 out:2",
+    "DAX surround DAX after DAX thrice": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX surround 3 after 1 thrice": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3"
+   },
+   {
+    "3 after DAX": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX after 1": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX thrice": "out:2 out:2 out:2 out:2 out:2 out:2 out:2 out:2",
+    "1 surround DAX": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX surround 2": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "2 after 3 surround DAX": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX thrice after 2": "out:2 out:2 out:2 out:2 out:2 out:2 out:2 out:2",
+    "3 after DAX thrice": "out:2 out:2 out:2 out:2 out:2 out:2 out:2 out:2",
+    "DAX surround DAX after DAX thrice": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX surround 3 after 1 thrice": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3"
+   },
+   {
+    "3 after DAX": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX after 1": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX thrice": "out:2 out:2 out:2 out:2 out:2 out:2 out:2 out:2",
+    "1 surround DAX": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX surround 2": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "2 after 3 surround DAX": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX thrice after 2": "out:2 out:2 out:2 out:2 out:2 out:2 out:2 out:2",
+    "3 after DAX thrice": "out:2 out:2 out:2 out:2 out:2 out:2 out:2 out:2",
+    "DAX surround DAX after DAX thrice": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX surround 3 after 1 thrice": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3"
+   }
+  ],
+  "ms_per_episode": [
+   935.2259635925293,
+   859.150751431783,
+   1066.001836458842
+  ]
+ },
+ "mlc 100": {
+  "human_task": [
+   {
+    "3 after DAX": 0.0,
+    "DAX after 1": 0.0,
+    "DAX thrice": 0.0,
+    "1 surround DAX": 0.0,
+    "DAX surround 2": 0.0,
+    "2 after 3 surround DAX": 0.0,
+    "DAX thrice after 2": 0.0,
+    "3 after DAX thrice": 0.0,
+    "DAX surround DAX after DAX thrice": 0.0,
+    "DAX surround 3 after 1 thrice": 0.0
+   },
+   {
+    "3 after DAX": 0.0,
+    "DAX after 1": 0.0,
+    "DAX thrice": 0.0,
+    "1 surround DAX": 0.0,
+    "DAX surround 2": 0.0,
+    "2 after 3 surround DAX": 0.0,
+    "DAX thrice after 2": 0.0,
+    "3 after DAX thrice": 0.0,
+    "DAX surround DAX after DAX thrice": 0.0,
+    "DAX surround 3 after 1 thrice": 0.0
+   },
+   {
+    "3 after DAX": 0.0,
+    "DAX after 1": 0.0,
+    "DAX thrice": 0.0,
+    "1 surround DAX": 0.0,
+    "DAX surround 2": 0.0,
+    "2 after 3 surround DAX": 0.0,
+    "DAX thrice after 2": 0.0,
+    "3 after DAX thrice": 0.0,
+    "DAX surround DAX after DAX thrice": 0.0,
+    "DAX surround 3 after 1 thrice": 0.0
+   }
+  ],
+  "held_out": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "online_last": [
+   0.015000000000000003,
+   0.0,
+   0.0
+  ],
+  "one2one": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "iconic": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "outputs": [
+   {
+    "3 after DAX": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX after 1": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX thrice": "out:2 out:2 out:2 out:2 out:2 out:2 out:2 out:2",
+    "1 surround DAX": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX surround 2": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "2 after 3 surround DAX": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX thrice after 2": "out:2 out:2 out:2 out:2 out:2 out:2 out:2 out:2",
+    "3 after DAX thrice": "out:2 out:2 out:2 out:2 out:2 out:2 out:2 out:2",
+    "DAX surround DAX after DAX thrice": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX surround 3 after 1 thrice": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3"
+   },
+   {
+    "3 after DAX": "",
+    "DAX after 1": "",
+    "DAX thrice": "",
+    "1 surround DAX": "",
+    "DAX surround 2": "",
+    "2 after 3 surround DAX": "",
+    "DAX thrice after 2": "",
+    "3 after DAX thrice": "",
+    "DAX surround DAX after DAX thrice": "",
+    "DAX surround 3 after 1 thrice": ""
+   },
+   {
+    "3 after DAX": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX after 1": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX thrice": "out:2 out:2 out:2 out:2 out:2 out:2 out:2 out:2",
+    "1 surround DAX": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX surround 2": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "2 after 3 surround DAX": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX thrice after 2": "out:2 out:2 out:2 out:2 out:2 out:2 out:2 out:2",
+    "3 after DAX thrice": "out:2 out:2 out:2 out:2 out:2 out:2 out:2 out:2",
+    "DAX surround DAX after DAX thrice": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX surround 3 after 1 thrice": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3"
+   }
+  ],
+  "ms_per_episode": [
+   1149.5148754119873,
+   1340.5536890029907,
+   1270.9802889823914
+  ]
+ },
+ "mlc 300": {
+  "human_task": [
+   {
+    "3 after DAX": 0.0,
+    "DAX after 1": 0.0,
+    "DAX thrice": 0.0,
+    "1 surround DAX": 0.0,
+    "DAX surround 2": 0.0,
+    "2 after 3 surround DAX": 0.0,
+    "DAX thrice after 2": 0.0,
+    "3 after DAX thrice": 0.0,
+    "DAX surround DAX after DAX thrice": 0.0,
+    "DAX surround 3 after 1 thrice": 0.0
+   },
+   {
+    "3 after DAX": 0.0,
+    "DAX after 1": 0.0,
+    "DAX thrice": 0.0,
+    "1 surround DAX": 0.0,
+    "DAX surround 2": 0.0,
+    "2 after 3 surround DAX": 0.0,
+    "DAX thrice after 2": 0.0,
+    "3 after DAX thrice": 0.0,
+    "DAX surround DAX after DAX thrice": 0.0,
+    "DAX surround 3 after 1 thrice": 0.0
+   },
+   {
+    "3 after DAX": 0.0,
+    "DAX after 1": 0.0,
+    "DAX thrice": 0.0,
+    "1 surround DAX": 0.0,
+    "DAX surround 2": 0.0,
+    "2 after 3 surround DAX": 0.0,
+    "DAX thrice after 2": 0.0,
+    "3 after DAX thrice": 0.0,
+    "DAX surround DAX after DAX thrice": 0.0,
+    "DAX surround 3 after 1 thrice": 0.0
+   }
+  ],
+  "held_out": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "online_last": [
+   0.005000000000000001,
+   0.0033333333333333335,
+   0.0016666666666666668
+  ],
+  "one2one": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "iconic": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "outputs": [
+   {
+    "3 after DAX": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX after 1": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX thrice": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "1 surround DAX": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX surround 2": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "2 after 3 surround DAX": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX thrice after 2": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "3 after DAX thrice": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX surround DAX after DAX thrice": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX surround 3 after 1 thrice": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3"
+   },
+   {
+    "3 after DAX": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX after 1": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX thrice": "out:2 out:2 out:2 out:2 out:2 out:2 out:2 out:2",
+    "1 surround DAX": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX surround 2": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "2 after 3 surround DAX": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX thrice after 2": "out:2 out:2 out:2 out:2 out:2 out:2 out:2 out:2",
+    "3 after DAX thrice": "out:2 out:2 out:2 out:2 out:2 out:2 out:2 out:2",
+    "DAX surround DAX after DAX thrice": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX surround 3 after 1 thrice": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3"
+   },
+   {
+    "3 after DAX": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX after 1": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX thrice": "out:2 out:2 out:2 out:2 out:2 out:2 out:2 out:2",
+    "1 surround DAX": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX surround 2": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "2 after 3 surround DAX": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX thrice after 2": "out:2 out:2 out:2 out:2 out:2 out:2 out:2 out:2",
+    "3 after DAX thrice": "out:2 out:2 out:2 out:2 out:2 out:2 out:2 out:2",
+    "DAX surround DAX after DAX thrice": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3",
+    "DAX surround 3 after 1 thrice": "out:3 out:3 out:3 out:3 out:3 out:3 out:3 out:3"
+   }
+  ],
+  "ms_per_episode": [
+   851.1193625132242,
+   953.1367047627767,
+   1028.187137444814
+  ]
+ }
+}

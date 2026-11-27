@@ -1,0 +1,161 @@
+prueba,sistema,tramo,medida,media,desvio,semillas
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)","Thinker (valores por defecto + contexto temporal), semilla 0","test, congelado",1: single-supporting-fact,0.9820,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemNN (supervisión fuerte) (publicado),test,1: single-supporting-fact,1.0000,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",LSTM (publicado),test,1: single-supporting-fact,0.5000,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N BoW (publicado),test,1: single-supporting-fact,0.9940,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N PE LS RN (publicado),test,1: single-supporting-fact,1.0000,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (uniforme),test,1: single-supporting-fact,0.1667,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (mayoritaria),test,1: single-supporting-fact,0.1870,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",Thinker (todo encendido + contexto temporal),costo,1: single-supporting-fact | ms por pregunta,2.9683,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)","Thinker (valores por defecto + contexto temporal), semilla 0","test, congelado",2: two-supporting-facts,0.2330,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemNN (supervisión fuerte) (publicado),test,2: two-supporting-facts,1.0000,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",LSTM (publicado),test,2: two-supporting-facts,0.2000,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N BoW (publicado),test,2: two-supporting-facts,0.8240,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N PE LS RN (publicado),test,2: two-supporting-facts,0.9170,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (uniforme),test,2: two-supporting-facts,0.1667,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (mayoritaria),test,2: two-supporting-facts,0.1870,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",Thinker (todo encendido + contexto temporal),costo,2: two-supporting-facts | ms por pregunta,22.5193,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)","Thinker (valores por defecto + contexto temporal), semilla 0","test, congelado",3: three-supporting-facts,0.1690,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemNN (supervisión fuerte) (publicado),test,3: three-supporting-facts,1.0000,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",LSTM (publicado),test,3: three-supporting-facts,0.2000,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N BoW (publicado),test,3: three-supporting-facts,0.2900,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N PE LS RN (publicado),test,3: three-supporting-facts,0.5970,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (uniforme),test,3: three-supporting-facts,0.1667,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (mayoritaria),test,3: three-supporting-facts,0.2150,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",Thinker (todo encendido + contexto temporal),costo,3: three-supporting-facts | ms por pregunta,42.2991,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)","Thinker (valores por defecto + contexto temporal), semilla 0","test, congelado",4: two-arg-relations,0.4380,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemNN (supervisión fuerte) (publicado),test,4: two-arg-relations,1.0000,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",LSTM (publicado),test,4: two-arg-relations,0.6100,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N BoW (publicado),test,4: two-arg-relations,0.6800,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N PE LS RN (publicado),test,4: two-arg-relations,0.9720,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (uniforme),test,4: two-arg-relations,0.1667,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (mayoritaria),test,4: two-arg-relations,0.1770,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",Thinker (todo encendido + contexto temporal),costo,4: two-arg-relations | ms por pregunta,17.4796,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)","Thinker (valores por defecto + contexto temporal), semilla 0","test, congelado",5: three-arg-relations,0.4670,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemNN (supervisión fuerte) (publicado),test,5: three-arg-relations,0.9800,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",LSTM (publicado),test,5: three-arg-relations,0.7000,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N BoW (publicado),test,5: three-arg-relations,0.8170,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N PE LS RN (publicado),test,5: three-arg-relations,0.8690,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (uniforme),test,5: three-arg-relations,0.1429,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (mayoritaria),test,5: three-arg-relations,0.1890,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",Thinker (todo encendido + contexto temporal),costo,5: three-arg-relations | ms por pregunta,19.1397,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)","Thinker (valores por defecto + contexto temporal), semilla 0","test, congelado",6: yes-no-questions,0.4900,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemNN (supervisión fuerte) (publicado),test,6: yes-no-questions,1.0000,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",LSTM (publicado),test,6: yes-no-questions,0.4800,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N BoW (publicado),test,6: yes-no-questions,0.9130,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N PE LS RN (publicado),test,6: yes-no-questions,0.9240,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (uniforme),test,6: yes-no-questions,0.5000,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (mayoritaria),test,6: yes-no-questions,0.5030,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",Thinker (todo encendido + contexto temporal),costo,6: yes-no-questions | ms por pregunta,13.2158,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)","Thinker (valores por defecto + contexto temporal), semilla 0","test, congelado",7: counting,0.4880,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemNN (supervisión fuerte) (publicado),test,7: counting,0.8500,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",LSTM (publicado),test,7: counting,0.4900,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N BoW (publicado),test,7: counting,0.7650,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N PE LS RN (publicado),test,7: counting,0.8270,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (uniforme),test,7: counting,0.2500,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (mayoritaria),test,7: counting,0.4880,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",Thinker (todo encendido + contexto temporal),costo,7: counting | ms por pregunta,10.3568,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)","Thinker (valores por defecto + contexto temporal), semilla 0","test, congelado",8: lists-sets,0.5440,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemNN (supervisión fuerte) (publicado),test,8: lists-sets,0.9100,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",LSTM (publicado),test,8: lists-sets,0.4500,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N BoW (publicado),test,8: lists-sets,0.8860,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N PE LS RN (publicado),test,8: lists-sets,0.9000,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (uniforme),test,8: lists-sets,0.0769,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (mayoritaria),test,8: lists-sets,0.3360,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",Thinker (todo encendido + contexto temporal),costo,8: lists-sets | ms por pregunta,20.1743,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)","Thinker (valores por defecto + contexto temporal), semilla 0","test, congelado",9: simple-negation,0.5760,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemNN (supervisión fuerte) (publicado),test,9: simple-negation,1.0000,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",LSTM (publicado),test,9: simple-negation,0.6400,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N BoW (publicado),test,9: simple-negation,0.7890,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N PE LS RN (publicado),test,9: simple-negation,0.8680,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (uniforme),test,9: simple-negation,0.5000,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (mayoritaria),test,9: simple-negation,0.6380,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",Thinker (todo encendido + contexto temporal),costo,9: simple-negation | ms por pregunta,19.2163,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)","Thinker (valores por defecto + contexto temporal), semilla 0","test, congelado",10: indefinite-knowledge,0.4080,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemNN (supervisión fuerte) (publicado),test,10: indefinite-knowledge,0.9800,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",LSTM (publicado),test,10: indefinite-knowledge,0.4400,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N BoW (publicado),test,10: indefinite-knowledge,0.7720,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N PE LS RN (publicado),test,10: indefinite-knowledge,0.8490,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (uniforme),test,10: indefinite-knowledge,0.3333,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (mayoritaria),test,10: indefinite-knowledge,0.4370,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",Thinker (todo encendido + contexto temporal),costo,10: indefinite-knowledge | ms por pregunta,22.5368,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)","Thinker (valores por defecto + contexto temporal), semilla 0","test, congelado",11: basic-coreference,0.5320,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemNN (supervisión fuerte) (publicado),test,11: basic-coreference,1.0000,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",LSTM (publicado),test,11: basic-coreference,0.6200,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N BoW (publicado),test,11: basic-coreference,0.9590,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N PE LS RN (publicado),test,11: basic-coreference,0.9910,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (uniforme),test,11: basic-coreference,0.1667,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (mayoritaria),test,11: basic-coreference,0.1870,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",Thinker (todo encendido + contexto temporal),costo,11: basic-coreference | ms por pregunta,14.5792,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)","Thinker (valores por defecto + contexto temporal), semilla 0","test, congelado",12: conjunction,0.9900,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemNN (supervisión fuerte) (publicado),test,12: conjunction,1.0000,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",LSTM (publicado),test,12: conjunction,0.7400,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N BoW (publicado),test,12: conjunction,0.9970,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N PE LS RN (publicado),test,12: conjunction,0.9980,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (uniforme),test,12: conjunction,0.1667,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (mayoritaria),test,12: conjunction,0.1890,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",Thinker (todo encendido + contexto temporal),costo,12: conjunction | ms por pregunta,2.6919,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)","Thinker (valores por defecto + contexto temporal), semilla 0","test, congelado",13: compound-coreference,0.4090,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemNN (supervisión fuerte) (publicado),test,13: compound-coreference,1.0000,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",LSTM (publicado),test,13: compound-coreference,0.9400,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N BoW (publicado),test,13: compound-coreference,0.8950,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N PE LS RN (publicado),test,13: compound-coreference,0.9960,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (uniforme),test,13: compound-coreference,0.1667,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (mayoritaria),test,13: compound-coreference,0.1830,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",Thinker (todo encendido + contexto temporal),costo,13: compound-coreference | ms por pregunta,20.0709,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)","Thinker (valores por defecto + contexto temporal), semilla 0","test, congelado",14: time-reasoning,0.1730,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemNN (supervisión fuerte) (publicado),test,14: time-reasoning,0.9900,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",LSTM (publicado),test,14: time-reasoning,0.2700,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N BoW (publicado),test,14: time-reasoning,0.9870,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N PE LS RN (publicado),test,14: time-reasoning,0.9830,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (uniforme),test,14: time-reasoning,0.1667,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (mayoritaria),test,14: time-reasoning,0.1770,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",Thinker (todo encendido + contexto temporal),costo,14: time-reasoning | ms por pregunta,27.5051,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)","Thinker (valores por defecto + contexto temporal), semilla 0","test, congelado",15: basic-deduction,0.3300,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemNN (supervisión fuerte) (publicado),test,15: basic-deduction,1.0000,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",LSTM (publicado),test,15: basic-deduction,0.2100,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N BoW (publicado),test,15: basic-deduction,0.7570,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N PE LS RN (publicado),test,15: basic-deduction,1.0000,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (uniforme),test,15: basic-deduction,0.2500,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (mayoritaria),test,15: basic-deduction,0.3410,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",Thinker (todo encendido + contexto temporal),costo,15: basic-deduction | ms por pregunta,16.0215,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)","Thinker (valores por defecto + contexto temporal), semilla 0","test, congelado",16: basic-induction,0.3350,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemNN (supervisión fuerte) (publicado),test,16: basic-induction,1.0000,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",LSTM (publicado),test,16: basic-induction,0.2300,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N BoW (publicado),test,16: basic-induction,0.4800,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N PE LS RN (publicado),test,16: basic-induction,0.9870,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (uniforme),test,16: basic-induction,0.2500,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (mayoritaria),test,16: basic-induction,0.2570,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",Thinker (todo encendido + contexto temporal),costo,16: basic-induction | ms por pregunta,15.8259,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)","Thinker (valores por defecto + contexto temporal), semilla 0","test, congelado",17: positional-reasoning,0.5310,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemNN (supervisión fuerte) (publicado),test,17: positional-reasoning,0.6500,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",LSTM (publicado),test,17: positional-reasoning,0.5100,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N BoW (publicado),test,17: positional-reasoning,0.5460,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N PE LS RN (publicado),test,17: positional-reasoning,0.4900,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (uniforme),test,17: positional-reasoning,0.5000,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (mayoritaria),test,17: positional-reasoning,0.5200,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",Thinker (todo encendido + contexto temporal),costo,17: positional-reasoning | ms por pregunta,10.0344,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)","Thinker (valores por defecto + contexto temporal), semilla 0","test, congelado",18: size-reasoning,0.5330,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemNN (supervisión fuerte) (publicado),test,18: size-reasoning,0.9500,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",LSTM (publicado),test,18: size-reasoning,0.5200,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N BoW (publicado),test,18: size-reasoning,0.5190,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N PE LS RN (publicado),test,18: size-reasoning,0.8890,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (uniforme),test,18: size-reasoning,0.5000,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (mayoritaria),test,18: size-reasoning,0.5310,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",Thinker (todo encendido + contexto temporal),costo,18: size-reasoning | ms por pregunta,7.2094,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)","Thinker (valores por defecto + contexto temporal), semilla 0","test, congelado",19: path-finding,0.0810,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemNN (supervisión fuerte) (publicado),test,19: path-finding,0.3600,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",LSTM (publicado),test,19: path-finding,0.0800,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N BoW (publicado),test,19: path-finding,0.1030,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N PE LS RN (publicado),test,19: path-finding,0.1720,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (uniforme),test,19: path-finding,0.0833,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (mayoritaria),test,19: path-finding,0.0930,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",Thinker (todo encendido + contexto temporal),costo,19: path-finding | ms por pregunta,20.5643,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)","Thinker (valores por defecto + contexto temporal), semilla 0","test, congelado",20: agents-motivations,0.7230,0.0000,1
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemNN (supervisión fuerte) (publicado),test,20: agents-motivations,1.0000,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",LSTM (publicado),test,20: agents-motivations,0.9100,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N BoW (publicado),test,20: agents-motivations,0.9990,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",MemN2N PE LS RN (publicado),test,20: agents-motivations,1.0000,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (uniforme),test,20: agents-motivations,0.1429,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",azar (mayoritaria),test,20: agents-motivations,0.1800,0.0000,0
+"F6c bAbI (1 000 ejemplos por tarea, entrenamiento por tarea)",Thinker (todo encendido + contexto temporal),costo,20: agents-motivations | ms por pregunta,15.5151,0.0000,1
