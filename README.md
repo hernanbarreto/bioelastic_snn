@@ -158,7 +158,7 @@ Qué explica cada mejora, según las ablaciones:
 | Percepción entrenada aparte, Thinker aprende a sumar sobre lo percibido (3 dígitos) | 71.9 % exacta (76.1 % con crédito simbólico); con símbolos perfectos, 97.4 % |
 | L0: identidad aprendida sólo con el crédito del Thinker | pureza de la percepción 88–90 % |
 | **L3: suma completa aprendida desde cero, todo junto** | **1.5 % exacta (0–4 %), 24 % por columna (azar: 10 %)** |
-| **Suma con imágenes, regla conocida (MNIST-addition): crédito conjunto entre lo que ve y la suma; 27 500 pares, una pasada, test, 3 semillas** | **97.6 ± 0.2 % de sumas, 98.8 ± 0.1 % por dígito.** Error del dígito: AUROC 0.984, ECE 0.002. Publicado, con 30 000 pares y 25–100 épocas de backprop: DeepProbLog 97.2 ± 0.5, A-NeSI 97.7 ± 0.2, DeepStochLog 97.9 ± 0.1 |
+| **Suma con imágenes, regla conocida (MNIST-addition): crédito conjunto entre lo que ve y la suma; 27 500 pares, una pasada, test, 3 semillas** | **97.6 ± 0.2 % de sumas, 98.8 ± 0.1 % por dígito.** Error del dígito: AUROC 0.984, ECE 0.002. Publicado, con 30 000 pares y backprop: DeepProbLog 97.2 ± 0.5, A-NeSI 97.66, DeepStochLog 97.9 (citado en la tabla 1 de A-NeSI). Queda por encima de DeepProbLog, a la par de A-NeSI y por debajo de DeepStochLog |
 | Atajo de razonamiento con 3 000 pares (8 semillas, test) | sin la compuerta de fiabilidad caen 4 de 8 (dígito ≈ 0.01); con ella, 0 de 8: suma 93.8 ± 0.6 %, dígito 96.8 ± 0.3 %. DeepProbLog con 3 000 pares, otro protocolo: 92.2 ± 1.6 |
 | L3 por etapas: categorías sin etiquetas y después ligadura, regla desconocida (validación, 1 semilla) | las categorías llegan a una pureza de 0.79 (hace falta ≥ 0.965); después de ligar, símbolos 0.33 y 0.2 % exacta |
 
@@ -188,39 +188,49 @@ El índice invertido exacto de la capa dispersa es idéntico bit a bit a la pasa
 ## Comparación con referencias publicadas
 
 La batería (`experiments/battery/`, `python3 experiments/exp_battery.py correr`) mide cada
-prueba contra una cifra publicada y marca si la comparación es **equivalente**, es decir, con la
-misma entrada y el mismo protocolo que el estudio. El índice es (red − azar) / (referencia − azar):
-1 iguala la referencia y 0 es azar.
+prueba contra una referencia y marca si la comparación es **equivalente**: misma entrada y mismo
+protocolo que el estudio. El índice es (red − azar) / (referencia − azar): 1 iguala la referencia
+y 0 es azar. Las referencias son cifras publicadas, salvo donde dice «línea base local», que es
+otro modelo corrido acá con los mismos datos. «R3» son las opciones de razonamiento 3 encendidas:
+`prev_io`, `back`, `cogmap` y `modulators`.
 
-Hoy solo 3 de 10 dimensiones tienen una comparación equivalente. Por eso no hay un «porcentaje
-humano» global: un promedio no sería informativo.
+Hoy solo 3 de 10 dimensiones tienen una comparación equivalente con personas o animales. Por eso
+no hay un «porcentaje humano» global: un promedio no sería informativo.
 
 **Equivalentes** (3 semillas, salvo aviso):
 
-| Prueba | Red | Referencia publicada | Índice |
+| Prueba | Red | Referencia | Índice |
 |---|---|---|---|
-| MNIST | 98.9 % | personas 99.8 % (Keysers 2007) | 0.99 |
-| Fashion-MNIST | 89.5 % | personas 83.5 % (Zalando) | 1.08 |
-| CIFAR-10 | 48.3 % | personas 95.2 % (CIFAR-10H) | 0.45 |
-| Omniglot: un solo ejemplo, 20 opciones | 28.8 ± 0.9 % | personas 95.5 % (Lake, Salakhutdinov & Tenenbaum 2015) | 0.26 |
-| Saber cuándo se equivoca: AUROC de tipo 2 en una decisión visual | 0.748 ± 0.006 | personas 0.55–0.75 (Fleming et al. 2010) | dentro del rango humano |
-| Igual/distinto con figuras nuevas | 0.85 ± 0.03 (azar 0.5) | sin cifra verificada | — |
-| MNIST-addition, 27 500 pares, una pasada | 97.6 % | DeepProbLog 97.2, DeepStochLog 97.9 (con 25–100 épocas) | — |
-| Split-MNIST por clases, una pasada | 96.6 % | ER-ACE 95.0 con los mismos bytes | — |
-| Split-Fashion por clases, una pasada | 80.9 % | ER-ACE 84.3, ER 85.2 con los mismos bytes | — |
-| Texto no visto, 600 KB de habla dirigida a niños | 2.54 bits/byte (1 corrida: la red es determinista dado el corpus) | n-grama Kneser-Ney de orden 8 con los mismos datos: 1.43 | — |
+| MNIST, 2 niveles | 98.9 % | personas 99.8 % (Keysers 2007) | 0.99 |
+| Fashion-MNIST, 2 niveles | 89.5 % | personas 83.5 % (Zalando) | 1.08 |
+| CIFAR-10, 2 niveles; 5 000 imágenes de entrenamiento de 50 000 y las primeras 5 000 del test | 48.1 ± 0.4 % | personas 95.2 % (CIFAR-10H) | 0.45 |
+| Omniglot: un solo ejemplo, 20 opciones; imágenes de 28 × 28 en lugar de 105 × 105, lector de la batería sobre V1 | 28.8 ± 0.9 % | personas ≥ 95.5 % (Lake, Salakhutdinov & Tenenbaum 2015) | ≤ 0.26 |
+| Harlow con objetos vistos, misma cantidad de problemas que los monos | 0.72 ± 0.04; con R3, 0.94 ± 0.02 (el techo es ~0.94 por colisiones de la percepción) | monos rhesus: 0.52 en los primeros 8 problemas (Harlow 1949) y 0.82 en los problemas 33–132 (Harlow 1950). Con R3, la red da 0.79 y 0.94 en esos tramos | — |
+| Saber cuándo se equivoca: AUROC de tipo 2 en una decisión visual con dificultad igualada | 0.748 ± 0.007 | personas 0.55–0.75 (Fleming et al. 2010) | dentro del rango, en el borde superior |
+| Igual/distinto con figuras nuevas; «igual» es una copia idéntica, como con los animales | 0.85 ± 0.03 (azar 0.5); con la copia corrida 2 px, 0.68; con dos dibujos del mismo carácter, 0.62 | con 8 figuras, rhesus, capuchinos y palomas no transfieren (Katz, Sturz & Wright 2010) | — |
+| MNIST-addition: 27 500 pares, una pasada | 97.6 % | DeepProbLog 97.2 ± 0.5; A-NeSI 97.66; DeepStochLog 97.9 (citado en la tabla 1 de A-NeSI); todos con backprop | — |
+| Split-MNIST por clases, una pasada | 96.6 % | publicado, con otros presupuestos de memoria (van de Ven, Tuytelaars & Tolias 2022): entrenamiento conjunto 98.2, BI-R 94.4, iCaRL 92.5, ER 88.8, EWC 20.6. Línea base local con los mismos bytes: ER-ACE 95.0 | — |
+| Split-Fashion por clases, una pasada | 80.9 % | sin cifra publicada verificada. Línea base local con los mismos bytes: ER-ACE 84.3, ER 85.2 | — |
+| Texto no visto, 600 KB de habla dirigida a niños; 1 corrida, porque la red es determinista dado el corpus | 2.96 bits/byte (2.54 con la temperatura elegida en validación) | línea base local: n-grama Kneser-Ney de orden 8 con los mismos datos, 1.43 | — |
+
+En igual/distinto, la red transfiere la identidad de los píxeles, no un concepto robusto.
 
 **No equivalentes:** otra entrada u otro procedimiento. No se promedian con las de arriba.
 
-| Prueba | Red | Referencia publicada | Por qué no es equivalente |
+| Prueba | Red | Referencia | Por qué no es equivalente |
 |---|---|---|---|
-| Inferencia transitiva, serie de 5 (par BD) | 0.50 ± 0.50 | palomas 0.875 (von Fersen et al. 1991) | símbolos en lugar de objetos vistos |
+| Harlow con símbolos | 0.76 ± 0.05; con R3, 1.00 | — | símbolos en lugar de objetos vistos |
+| Inferencia transitiva, serie de 5 (par BD) | 0.50 ± 0.50 | palomas 0.875 (von Fersen et al. 1991) | ídem |
 | Inferencia transitiva, serie de 6 | 0.25 ± 0.22 | personas 0.743 (Siemann & Delius 1996) | ídem |
-| Más tasa de aprendizaje cuando el ambiente es volátil | 0.013 ± 0.079 (sin efecto) | personas: mayor en la fase volátil (Behrens et al. 2007) | ídem |
+| Inferencia transitiva, serie de 7, fase 3 (los 21 pares, con premio) | 0.961 ± 0.011 | sin cifra verificada (Jensen et al. 2017) | ídem |
+| Más tasa de aprendizaje cuando el ambiente es volátil | 0.013 ± 0.079: sin efecto | personas: mayor en la fase volátil (Behrens et al. 2007) | ídem |
+| Detección de cambio, capacidad K | 5.7 ± 4.3, bimodal; con R3, 8.5 ± 3.2 | personas 2.46; rhesus 0.71 | la memoria es exacta por diseño |
+| Reversión serial | 4.0 errores por reversión (azar 70.4), sin mejora entre reversiones | sin cifra verificada | símbolos |
+| Igual/distinto con símbolos | 0.50 | — | símbolos |
 | MLC: instrucciones con pocos ejemplos | 0.00 | personas 0.807 (Lake & Baroni 2023) | símbolos en lugar de palabras y colores |
-| SCAN, experimento 1: 1, 2, 4 y 8 % de los comandos | 0.00 en las cuatro | seq2seq 0.05, 0.54 y 0.93 con 1, 2 y 4 % (Lake & Baroni 2018) | 1 semilla; se compara con un sistema |
-| bAbI 1k, 20 tareas | error medio 52.8 % (pasa 2) | LSTM 51.3 %; MemN2N 13.9 % (Sukhbaatar et al. 2015) | 1 semilla |
-| BLiMP, con 600 KB | 0.482 | n-gramas con los mismos datos 0.505–0.511; personas 0.886 (Warstadt et al. 2020) | a esta escala ningún modelo supera al azar |
+| SCAN, experimento 1: 1, 2, 4 y 8 % de los comandos | 0.00 en las cuatro | mejor seq2seq: ~0.05, ~0.54 y ~0.93 con 1, 2 y 4 % (Lake & Baroni 2018) | 1 semilla; se compara con un sistema |
+| bAbI 1k, 20 tareas | error medio 52.8 % (pasa 2) | LSTM 51.3 % y MemN2N 13.9 % (Sukhbaatar et al. 2015); MemNN con hechos de apoyo, ~7 % (Weston et al. 2015) | 1 semilla; se compara con sistemas |
+| BLiMP con 600 KB | 0.482, por debajo del azar (p = 0.04) y del n-grama de bytes (p = 0.014); la causa principal es la longitud | línea base local con los mismos datos: n-gramas 0.505–0.511. Personas 0.886 (Warstadt et al. 2020) | a esta escala ningún modelo supera al azar |
 
 ## Dónde falla
 
@@ -235,7 +245,7 @@ humano» global: un promedio no sería informativo.
     10 000, 40 000 y 160 000 columnas. Es un límite de diseño, no de datos.
   - **Salir de un atajo ya consolidado es lento:** la identidad llega a 0.47 en 7 500 pares.
 - **La profundidad no escala sola.** En Fashion el tercer nivel no suma. En CIFAR-10 (exploratorio,
-  5 000 muestras, 1 semilla, en validación) el segundo nivel rinde menos que el primero (45 % contra
+  5 000 muestras, 1 semilla, en validación; es otra corrida que la de la tabla de comparación) el segundo nivel rinde menos que el primero (45 % contra
   47 % de la sonda local; la CNN, 44–46 %). Hipótesis en prueba: a las capas altas no les llega ninguna señal
   propia (no hay predicción descendente).
 - **Clases viejas parecidas.** Quedan 0.13 por debajo de ER-ACE en el escenario de prendas. Cuando
@@ -245,7 +255,8 @@ humano» global: un promedio no sería informativo.
 - **Desplazamientos.** La CNN de 2 capas tolera mejor un desplazamiento de 3 px (56.0 % contra
   51.1 % en Fashion).
 - **Texto.** Con los mismos 600 KB de habla dirigida a niños, predice peor que un n-grama de
-  Kneser-Ney: 2.54 contra 1.43 bits por byte, y 0.677 contra 0.707 de próximo byte. Ya usa
+  Kneser-Ney (línea base local): 2.96 bits por byte (2.54 con la temperatura elegida en validación)
+  contra 1.43, y 0.677 contra 0.707 de próximo byte. Ya usa
   29 241 de sus 30 000 neuronas. Si con más neuronas y más datos tampoco lo supera, se cumple el
   criterio de abandono F.
 - **Razonamiento composicional con benchmarks externos: cero.** SCAN, MLC y la mitad de bAbI
@@ -317,14 +328,14 @@ sin calibrar.
 
 | Escalón | Qué tiene que lograr | Medida externa | Estado |
 |---|---|---|---|
-| A. Saber cuándo se equivoca | confianza calibrada; separar error de novedad | apuesta por confianza (ratas, Kepecs 2008); ECE ≤ 0.05; AUROC ≥ 0.85 | cumplido en `Cortex` a escala 0.05 y 0.1: AUROC 0.885, ECE 0.012, firma de Kepecs; NE separa error de novedad (0.89). Falta escala 0.25 y llevarlo al Thinker |
+| A. Saber cuándo se equivoca | confianza calibrada; separar error de novedad | apuesta por confianza (ratas, Kepecs 2008); ECE ≤ 0.05; AUROC ≥ 0.85 | cumplido en el flujo continuo de `Cortex`, que no es equivalente: AUROC 0.855, 0.886 y 0.909 en tres escalas; ECE 0.010; firma de Kepecs; NE separa error de novedad (0.89). Con el protocolo equivalente de Fleming da 0.748, dentro del rango humano (0.55–0.75), donde el umbral de 0.85 no aplica. Falta llevarlo al Thinker |
 | B. Símbolos anclados en lo que ve | crédito conjunto entre percepción y razonamiento | MNIST-addition (DeepProbLog: 97.2 % con 30 000 pares); después con la regla desconocida | regla conocida: 97.6 ± 0.2 % en test (3 semillas, una pasada), a la par de lo publicado. Regla desconocida sin ancla: no funciona |
 | C. Abstracción por niveles | que cada nivel aporte; invariancia | CIFAR-10 contra Hebb local publicado (SoftHebb: 80.3 %, con otro protocolo); sonda por nivel; desplazamientos | abierto: el nivel 2 copia al 1 |
 | D. Memoria sin interferencia | actualizar o crear según la causa inferida | Split-MNIST y Split-Fashion incremental por clases; ER-ACE con los mismos bytes | en curso |
 | E. Razonamiento composicional | generalizar a combinaciones nuevas | SCAN, bAbI; datos de personas de Lake y Baroni 2023 | medido, falla: SCAN 0 %, MLC 0 %, bAbI 52.8 % de error. Rediseño de entrada, salida y memoria en curso (rama `agent/composicion`) |
-| F. Lenguaje | predecir y componer sobre secuencias | BabyLM (10 M de palabras, escala de un niño) a escala reducida | medido con 600 KB: peor que n-gramas con los mismos datos (2.54 contra 1.43 bits/byte); curva de escalado en curso |
+| F. Lenguaje | predecir y componer sobre secuencias | BabyLM (10 M de palabras, escala de un niño) a escala reducida | medido con 600 KB: peor que un n-grama con los mismos datos (2.96 bits/byte, o 2.54 con la temperatura de validación, contra 1.43); curva de escalado en curso |
 | G. Razonar con neuronas | memoria de trabajo y ligadura en neuronas de spikes, no en estructuras programadas | las pruebas de E, sin pérdida | sin empezar |
-| H. Actuar y explorar | elegir qué mirar y qué preguntar; metas propias | pruebas de cognición animal (igual/distinto, inferencia transitiva, Harlow); BabyAI | sin empezar |
+| H. Actuar y explorar | elegir qué mirar y qué preguntar; metas propias | pruebas de cognición animal (igual/distinto, inferencia transitiva, Harlow); BabyAI | las pruebas animales ya se miden en la batería (ver la comparación); el mecanismo de actuar y explorar, sin empezar |
 
 **Hardware o arquitectura.** Una capacidad sólo se da por «limitada por el hardware» si su
 curva de escalado (exactitud contra neuronas y datos, en 3 escalas o más) sigue subiendo. Si
