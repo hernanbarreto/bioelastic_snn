@@ -988,6 +988,60 @@ def overlap(net, test, pairs=((10, 16), (12, 14), (10, 12), (14, 16), (10, 13)),
     return out
 
 
+FIXES = "+top.replay_contrast=true" + MICRO + "+top.sleep_focus=weak"
+FINAL_CANDS = {"sin causas": "",
+               "causas": CAUSES,
+               "causas, corrimiento 0.06": CAUSES + "+head.cause_shift=0.06",
+               "causas + contraste + sueño priorizado": CAUSES + FIXES,
+               "causas, corrimiento 0.06 + contraste + sueño priorizado": CAUSES + "+head.cause_shift=0.06" + FIXES}
+
+
+def phase_f7a2(a, data):
+    """Selección final en validación (semillas 10 y 11) con el objetivo duro como
+    restricción. El primer barrido (consolidacion_f7_validacion_barrido1.json) eligió por
+    el promedio de cinco números y ese promedio cambiaba viejas de CD por velocidad en el
+    cambio de etiqueta; además no miraba chainF, donde clases parecidas que llegan de a
+    una se reetiquetaban entre sí (corregido con `cause_est`). Regla:
+      factible  CD todas >= sin causas - 0,01; CD viejas >= 0,80; chainF todas >= sin
+                causas - 0,01; vecinos del cambio de etiqueta >= sin causas - 0,01
+      se elige  el factible con mayor media de (cambio a los 200 pasos, cambio al final);
+                si ninguno es factible, el de menor violación total."""
+    D = split_data(data)["val"]
+    rows: list = []
+    table = {}
+    for name, mod in FINAL_CANDS.items():
+        sp = F7_BASE + mod
+        pair_rows(sp, VAL_SEEDS, D, tag="f7a2", split="val", rows=rows, chain=True)
+        mine = [r for r in rows if r["model"] == sp]
+        cd = [r for r in mine if r["bench"] == "interf" and r["scenario"] == "CD"]
+        ch = [r for r in mine if r["bench"] == "interf" and r["scenario"] == "chainF"]
+        sw = [r for r in mine if r["bench"] == "drift"]
+        f = lambda rs, k: float(np.mean([r[k] for r in rs]))
+        table[name] = dict(spec=sp, cd_all=f(cd, "all"), cd_old=f(cd, "old"), cd_new=f(cd, "new"),
+                           chain_all=f(ch, "all"), chain_old=f(ch, "old"), swap_mid=f(sw, "full_swapped_mid"),
+                           swap_end=f(sw, "full_swapped_end"), kept=f(sw, "full_kept_end"),
+                           relabel_cd=f(cd, "c_relabeled"), relabel_swap=f(sw, "c_relabeled"))
+        print(f"[f7a2] {name}: " + " ".join(f"{k}={v:.3f}" for k, v in table[name].items() if k != "spec"), flush=True)
+    base = table["sin causas"]
+    for name, t in table.items():
+        viol = (max(0.0, base["cd_all"] - 0.01 - t["cd_all"]) + max(0.0, 0.80 - t["cd_old"])
+                + max(0.0, base["chain_all"] - 0.01 - t["chain_all"]) + max(0.0, base["kept"] - 0.01 - t["kept"]))
+        t["violation"] = viol; t["feasible"] = viol == 0.0
+        t["objective"] = 0.5 * (t["swap_mid"] + t["swap_end"])
+    feas = [n for n, t in table.items() if t["feasible"]]
+    if feas:
+        best = max(feas, key=lambda n: table[n]["objective"])
+    else:
+        best = min(table, key=lambda n: (table[n]["violation"], -table[n]["objective"]))
+    keys = sorted({k for r in rows for k in r if isinstance(r[k], (int, float)) and k != "seed"})
+    out = dict(phase="f7a2", chosen=table[best]["spec"], chosen_name=best, feasible=feas, table=table,
+               rule=phase_f7a2.__doc__, first_sweep="consolidacion_f7_validacion_barrido1.json",
+               config=dict(val_seeds=VAL_SEEDS, val_per_class=VAL_N, candidates=FINAL_CANDS, base=F7_BASE),
+               summary=agg(rows, ("bench", "scenario", "model"), keys), rows=rows)
+    (RESULTS / "consolidacion_f7_validacion.json").write_text(json.dumps(out, indent=1, default=float))
+    print(f"[f7a2] factibles: {feas}; elegido: {best}: {table[best]['spec']}", flush=True)
+
+
 def chosen_spec() -> str:
     return json.loads((RESULTS / "consolidacion_f7_validacion.json").read_text())["chosen"]
 
@@ -1171,7 +1225,7 @@ def phase_f7c(a, data):
 
 SCEN_STEPS = {k: sum(p[1] for p in v) for k, v in SCENARIOS.items()}
 
-PHASES = {"f0": phase_f0, "f1": phase_f1, "f1b": phase_f1b, "f2": phase_f2, "f3": phase_f3, "f4": phase_f4, "f5": phase_f5, "f6": phase_f6, "f6s": phase_f6s, "f7a": phase_f7a, "f7b": phase_f7b, "f7x": phase_f7x, "f7k": phase_f7k, "f7s": phase_f7s, "f7c": phase_f7c}
+PHASES = {"f0": phase_f0, "f1": phase_f1, "f1b": phase_f1b, "f2": phase_f2, "f3": phase_f3, "f4": phase_f4, "f5": phase_f5, "f6": phase_f6, "f6s": phase_f6s, "f7a": phase_f7a, "f7a2": phase_f7a2, "f7b": phase_f7b, "f7x": phase_f7x, "f7k": phase_f7k, "f7s": phase_f7s, "f7c": phase_f7c}
 
 
 def main():

@@ -448,10 +448,13 @@ def _cause_stream(seed=0, streak=2):
         d = rng.choice(np.arange(lo, hi), 15, replace=False)
         x[d] = rng.uniform(0.5, 1.0, 15)
         return x
-    net = BioElasticNet(60, 3, episodic=True, causes=True, cause_streak=streak, cause_n=10,
+    net = BioElasticNet(60, 3, episodic=True, causes=True, cause_streak=streak, cause_n=10, cause_est=50,
                         layer=dict(theta=0.65), readout=dict(consolidation=5.0))
+    far = np.zeros(60, dtype=np.float32); far[45:60] = 1.0   # la etiqueta 1 ya existe, lejos
     for _ in range(300):
         net.step(sample(0, 30), 0)
+        if _ % 10 == 0:
+            net.step(far, 1)
     return net, sample
 
 
@@ -472,12 +475,23 @@ def test_same_key_with_a_new_label_updates_the_old_memory():
 def test_neighbouring_keys_with_a_new_label_create_a_new_cause_and_protect_the_old():
     net, sample = _cause_stream()
     n0 = net.layer.n
+    before = net.labels(True)[:n0].copy()
     for _ in range(150):                                   # claves vecinas (desplazadas) con etiqueta 1
         net.step(sample(4, 34), 1)
     assert net._pairs[(0, 1)][4] is False                  # la clave no es la esperada: causa nueva
     assert net.protected > 0 and net.relabeled == 0 and net.layer.n > n0
-    assert (net.labels(True)[:n0] == 0).all()              # los recuerdos viejos conservan su etiqueta
+    assert np.array_equal(net.labels(True)[:n0], before)   # los recuerdos viejos conservan su etiqueta
     assert np.mean([net.predict(sample(0, 30)) == 0 for _ in range(200)]) > 0.9
+
+
+def test_a_brand_new_label_never_rewrites_an_old_memory():
+    net, sample = _cause_stream()
+    net.cause_est = 1000                                   # la etiqueta 2 aparece ahora: no está establecida
+    n0 = net.layer.n
+    for _ in range(150):                                   # las mismas claves con una etiqueta nunca vista
+        net.step(sample(0, 30), 2)
+    assert net.relabeled == 0 and net.protected > 0        # etiqueta recién aparecida: algo nuevo
+    assert (net.labels(True)[:n0] != 2).all()
 
 
 def test_a_memory_whose_label_keeps_being_confirmed_is_not_a_candidate():

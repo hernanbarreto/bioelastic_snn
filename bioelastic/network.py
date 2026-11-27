@@ -55,7 +55,7 @@ class BioElasticNet:
                  separation: float = 0.0, separation_relax: float = 0.0, recon_lock: int = 0,
                  causes: bool = False, cause_n: float = 10.0, cause_shift: float = 0.04,
                  cause_tau: float = 2000.0, cause_rate: float = 1.0, cause_streak: int = 4,
-                 cause_rho: float = 0.7,
+                 cause_rho: float = 0.7, cause_est: int = 2000,
                  layer: dict | None = None, readout: dict | None = None, seed: int = 0):
         self._config = dict(n_inputs=int(n_inputs), n_outputs=int(n_outputs), context=int(context),
                             delay=float(delay), tau=float(tau), grow_on_error=bool(grow_on_error),
@@ -67,6 +67,7 @@ class BioElasticNet:
                             cause_shift=float(cause_shift), cause_tau=float(cause_tau),
                             cause_rate=float(cause_rate),
                             cause_streak=int(cause_streak), cause_rho=float(cause_rho),
+                            cause_est=int(cause_est),
                             layer=dict(layer or {}), readout=dict(readout or {}), seed=int(seed))
         self.N = int(n_inputs)
         self.tau = float(tau)
@@ -94,6 +95,8 @@ class BioElasticNet:
         self.causes = bool(causes); self.cause_n = float(cause_n); self.cause_shift = float(cause_shift)
         self.cause_tau = float(cause_tau); self.cause_rate = float(cause_rate)
         self.cause_streak = int(cause_streak); self.cause_rho = float(cause_rho)
+        self.cause_est = int(cause_est)
+        self._cfirst = np.full(int(n_outputs), -1, dtype=np.int64)   # primera confirmación de cada clase
         self._ci = np.zeros(int(n_outputs), dtype=np.float64)   # intervalo medio entre confirmaciones de cada clase
         self._ct = np.full(int(n_outputs), -1, dtype=np.int64)  # última confirmación
         if self.causes and not episodic:
@@ -422,10 +425,13 @@ class BioElasticNet:
 
         Con al menos `cause_n` conflictos: c + 2 e.e. < `cause_shift` (e.e. = sqrt(2 /
         KEY_DIMS) / n, el error típico de c si es la misma causa: reescribir un recuerdo por
-        error cuesta mucho más que demorarse) y rho >= `cause_rho` -> la misma causa con
-        otra etiqueta (el ritmo sólo se exige para entrar en ese estado: al reconsolidar,
-        los conflictos se van acabando solos): reconsolidar las ganadoras de a
-        (`_reconsolidate`); si no, causa nueva:
+        error cuesta mucho más que demorarse), rho >= `cause_rho` y la etiqueta b ya
+        establecida (se confirma desde hace al menos `cause_est` pasos: una etiqueta que
+        acaba de aparecer nombra algo nuevo; sin esto, clases parecidas que llegan de a una
+        y al mismo ritmo, como en chainF, son indistinguibles de un cambio de etiqueta)
+        -> la misma causa con otra etiqueta (ritmo y antigüedad sólo se exigen para entrar
+        en ese estado: al reconsolidar, los conflictos se van acabando solos):
+        reconsolidar las ganadoras de a (`_reconsolidate`); si no, causa nueva:
         neurogénesis, y lo de a queda protegido (sin cambio de lectura ni anti-STDP;
         `protect_classes` lo protege también en el sistema lento). Mientras la evidencia
         no alcanza, se trata como causa nueva (provisoria). Las ganadoras de causas activas
@@ -446,6 +452,8 @@ class BioElasticNet:
                 elif dt < 20.0 * self._ci[target]:            # (una vuelta tras una ausencia no cuenta)
                     self._ci[target] += 0.05 * (dt - self._ci[target])
             self._ct[target] = t
+            if self._cfirst[target] < 0:
+                self._cfirst[target] = t
             j = int(wn[agree[0]])                             # la más temprana ajusta su expectativa
             ep["nm"][j] += 1.0
             self._kq[j] += np.float32(max(1.0 / float(ep["nm"][j]), 0.02)) * (px - self._kq[j])
@@ -476,8 +484,9 @@ class BioElasticNet:
                 rho = 0.0
                 if len(times) == self.RATE_EVENTS and self._ci[a] > 0.0:
                     rho = self._ci[a] * (len(times) - 1) / max(float(times[-1] - times[0]), 1.0)
+                known = self._cfirst[target] >= 0 and t - self._cfirst[target] >= self.cause_est
                 same = bool(c + 2.0 * np.sqrt(2.0 / self.KEY_DIMS) / ne < self.cause_shift
-                            and (rho >= self.cause_rho or was is True))
+                            and ((rho >= self.cause_rho and known) or was is True))
             self._pairs[key] = (md, s2, nab, t, same, times)
             verdicts[a] = same
         for i, k in enumerate(conf):
