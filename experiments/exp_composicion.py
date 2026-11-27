@@ -15,6 +15,7 @@ Grupos
 """
 from __future__ import annotations
 
+import copy
 import json
 import sys
 import time
@@ -173,6 +174,121 @@ def group_diag(pcts=(1,), seed=0):
             return r
         st.run(f"diag scan {pct}% semilla {seed}", fn)
     st.finish()
+
+
+# ====================================================================== modo serial
+# El Thinker lee la oración palabra por palabra (`observe`) y después responde sin pregunta
+# (`answer(None)`): la pregunta de cada respuesta es un ancla sobre la oración leída, que persiste
+# entre respuestas del episodio (ver el docstring de `bioelastic.thinker`). El entorno ya no le
+# muestra la posición ordinal del símbolo que toca. Se entrena sin exploración: los errores los
+# explica la búsqueda retrospectiva.
+SERIAL = dict(memory=True, judge=True, copy=False, speak=False, back=True, prev_io=False, cogmap=False,
+              modulators=False, max_steps=10, budget=128,
+              serial=dict(glance=(-3, 0), ctl=(-4, 4), dwell=10, prior=3.0, xsit=0.3, gist=False, realign=True))
+SERIAL_KEYS = ("glance", "ctl", "dwell", "prior", "xsit", "gist", "realign", "ret", "cls", "trial_td", "reuse", "td_actor")
+
+
+def cfg(**over):
+    """Configuración serial con cambios: las claves de `serial` van dentro del dict."""
+    c = dict(SERIAL)
+    sc = dict(c["serial"])
+    for k in list(over):
+        if k in SERIAL_KEYS:
+            sc[k] = over.pop(k)
+    c.update(over)
+    c["serial"] = sc
+    return c
+
+
+def scan_vocab_serial():
+    words = ["jump", "walk", "run", "look", "turn", "left", "right", "opposite", "around", "twice", "thrice", "and", "after"]
+    acts = ["I_JUMP", "I_WALK", "I_RUN", "I_LOOK", "I_TURN_LEFT", "I_TURN_RIGHT"]
+    return {w: i for i, w in enumerate(words + acts + ["<fin>"])}
+
+
+def serial_item(net, cmd, acts, V, learn, free=False, max_len=X.SCAN_MAX, log=None):
+    """Un comando = un episodio: se lee palabra por palabra, con un silencio al final, y después
+    se produce la salida un símbolo por vez hasta FIN. Aprendiendo, con el objetivo de cada
+    símbolo; `free`: congelado y sin objetivo, corta en FIN o en `max_len` símbolos."""
+    EOS = V["<fin>"]
+    net.reset()
+    for w in cmd:
+        net.observe(V[w])
+    net.observe(None)
+    gold = [V[a] for a in acts] + [EOS]
+    outs = []
+    for t in range(max_len + 1 if free else len(gold)):
+        out = net.answer(None, explore=learn and not free)
+        if log is not None:
+            log.append(("-".join(NAMES[a][:3] for a in net._path), int(out), net._ptr.p, net._ptr.d - 1))
+        if free:
+            if out == EOS:
+                return outs == gold[:-1], outs
+            outs.append(out)
+        else:
+            net.feedback(target=gold[t])
+            outs.append(out)
+    return (outs == gold if not free else False), (outs if free else [o for o in outs if o != EOS])
+
+
+def scan_eval(net, items, V, by_template=True):
+    r = dict(exact=[], token=[], length_ok=[], no_fin=[], by={})
+    for cmd, acts in items:
+        ok, outs = serial_item(net, cmd, acts, V, False, free=True)
+        g = [V[a] for a in acts]
+        r["exact"].append(ok)
+        r["token"].append(np.mean([j < len(outs) and outs[j] == x for j, x in enumerate(g)]))
+        r["length_ok"].append(len(outs) == len(g))
+        r["no_fin"].append(len(outs) > X.SCAN_MAX)
+        if by_template:
+            r["by"].setdefault(X.scan_template(cmd), []).append(ok)
+            conj = "after" if "after" in cmd else ("and" if "and" in cmd else "sin conjunción")
+            r["by"].setdefault(f"conjunción: {conj}", []).append(ok)
+    return {k: (float(np.mean(v)) if k != "by" else {t: (float(np.mean(x)), len(x)) for t, x in v.items()}) for k, v in r.items()}
+
+
+def scan_serial_run(pct, seed, conf=None, passes=1, n_test=1000, n_seen=300, val=False, explore=False, curve_every=0):
+    """Experimento 1 de Lake y Baroni (2018) con el modo serial. `val`: se separa el 10 % del
+    train (al azar, con la semilla) como validación; se entrena con el resto y se mide en esa
+    validación (el test no se toca). Si no, se entrena con todo el train y se mide en una muestra
+    al azar de `n_test` comandos del test (desviación declarada: el artículo usa el test entero)."""
+    d = X.SCAN / "simple_split" / "size_variations"
+    train = X.scan_read(d / f"tasks_train_simple_p{pct}.txt")
+    rng = np.random.default_rng(seed)
+    V = scan_vocab_serial()
+    order = rng.permutation(len(train))
+    if val:
+        n_val = max(1, len(train) // 10)
+        held = [train[int(i)] for i in order[:n_val]]
+        train = [train[int(i)] for i in order[n_val:]]
+    else:
+        train = [train[int(i)] for i in order]
+    net = Thinker(len(V), seed=seed, **(conf or SERIAL))
+    t0 = time.time(); steps = 0; online = []; curve = []
+    for ps in range(passes):
+        for j in (rng.permutation(len(train)) if ps else range(len(train))):
+            cmd, acts = train[int(j)]
+            online.append(serial_item(net, cmd, acts, V, explore)[0]); steps += len(acts) + 1
+        if val and curve_every and (ps + 1) % curve_every == 0 and ps + 1 < passes:
+            fz = copy.deepcopy(net); fz.reset(); fz.plastic = False
+            curve.append((ps + 1, scan_eval(fz, held, V, False)["exact"], scan_eval(fz, train[:100], V, False)["exact"]))
+            print(f"  pasada {ps + 1}: validación {curve[-1][1]:.3f}, train (100) {curve[-1][2]:.3f}", flush=True)
+    secs = time.time() - t0
+    net.reset(); net.plastic = False
+    seen = [train[int(i)] for i in rng.permutation(len(train))[:n_seen]]
+    out = dict(seen=scan_eval(net, seen, V, False), n_train=len(train), passes=passes, train_seconds=secs,
+               ms_per_step=secs / max(steps, 1) * 1e3, online_last=float(np.mean(online[-max(len(online) // 5, 1):])),
+               stats=net.stats(), blame=net.blame.tolist(), curve=curve, explore=explore)
+    if val:
+        out["val"] = scan_eval(net, held, V)
+    else:
+        test = X.scan_read(d / f"tasks_test_simple_p{pct}.txt")
+        te = [test[int(i)] for i in np.random.default_rng(10_000 + seed).permutation(len(test))[:n_test]]
+        t1 = time.time()
+        out["test"] = scan_eval(net, te, V)
+        out["test_seconds"] = time.time() - t1
+        out["n_test"] = len(te)
+    return out
 
 
 GROUPS = {"diag": group_diag}

@@ -123,8 +123,27 @@ Aprendizaje, todo local:
     episodio). Con `back="sin_senal"` la acción existe pero el control no ve los
     predecesores (ablación).
 
+  * Modo serial (`serial`, escalón E: producir una secuencia a partir de una instrucción). Lo
+    leído con `observe` queda en orden serial; `answer(None)` responde sin pregunta: la pregunta
+    es un *ancla* sobre la última oración leída, que persiste entre respuestas del episodio.
+    SEGUIR y RETROCEDER mueven el ancla una posición y VOLVER la lleva al principio. DECIR dice el
+    significado de la palabra del ancla y las *miradas* («decir@-1», ...) el de una palabra a esa
+    distancia, sin mover el ancla. Lo de largo plazo ve una sola palabra (un léxico: el
+    significado de «jump» vale en cualquier oración); el control ve el orden: cada palabra
+    alrededor del ancla con su distancia, si esa palabra ya tiene un significado establecido (una
+    clase de palabra que sale del propio conocimiento), cuántas respuestas lleva el ancla en esa
+    posición y cuántas veces llegó a ella (las dos cuentas son el contador: repetir y cuándo
+    seguir). El juicio dice «terminé» (FIN) y no ve la posición. Aprendizaje, además de lo de
+    siempre: (1) crédito transituacional (Smith y Yu, 2008): un símbolo se le enseña a la palabra
+    de la oración con más contingencia con él entre episodios (ΔP), no a la que se miró; con
+    exclusividad mutua (Markman y Wachtel, 1988) como sesgo declarado, una palabra que ya
+    significa otra cosa no es candidata; un símbolo que ninguna palabra explica es del juicio;
+    (2) sesgo uno a uno e icónico (Lake y Baroni, 2023) como pesos iniciales del control; (3)
+    realineación: corregido un error de estrategia, el ancla sigue desde donde la habría dejado el
+    camino que explica el objetivo.
+
 El controlador ve el *estado* del proceso, no el contenido: decide cómo pensar, no qué
-pensar. No ve un reloj absoluto: sabe qué hizo recién (copia eferente) y qué le devuelve
+pensar. (En modo serial ve las palabras alrededor del ancla: el orden es estado del proceso.) No ve un reloj absoluto: sabe qué hizo recién (copia eferente) y qué le devuelve
 la memoria. Con varias consignas, cada señal llega conjugada con la consigna
 (selectividad mixta): por defecto *sólo* conjugada, para que una tarea no pise el control
 de otra.
@@ -142,10 +161,13 @@ from .network import BioElasticNet
 
 SAY, COPY, FOLLOW, SPEAK, EMIT, JUDGE, FOCUS, HOLD = range(8)
 BACK = 8                                   # sólo con `back` (no cambia nada sin la opción)
+RETURN = 9                                 # sólo con `serial` (volver al principio de la oración)
+_GLANCE = 10                               # con `serial`: DECIR sobre la palabra a otra distancia del ancla
 ACTION_NAMES = ("decir", "copiar", "seguir", "hablar", "emitir", "juzgar", "enfocar", "sostener")
-_ALL_NAMES = ACTION_NAMES + ("retroceder",)
+_ALL_NAMES = ACTION_NAMES + ("retroceder", "volver")
 _N_ACTIONS = len(ACTION_NAMES)
-_INTERNAL = (FOLLOW, SPEAK, BACK)
+_INTERNAL = (FOLLOW, SPEAK, BACK, RETURN)
+_MOVES = (FOLLOW, BACK, RETURN)
 _GATE = np.array([FOCUS, HOLD])
 _NONE = (np.empty(0, dtype=np.int64), np.empty(0, dtype=np.float32))
 
@@ -320,6 +342,36 @@ def _held(item, origin):
     return h
 
 
+class _Ptr(tuple):
+    """Foco del modo serial (`serial`): el ítem que está bajo el ancla en la oración leída
+    (vacío si el ancla pasó el final), con la oración (`s`, tupla de ítems), la posición (`p`),
+    cuántas respuestas ya dio el Thinker desde que el ancla llegó ahí (`d`), si ya volvió al
+    principio en esta producción (`ret`, copia eferente de VOLVER) y cuántas veces llegó el ancla
+    a cada posición (`vis`, una cuenta por posición, el final incluido) y cuántas veces se dijo
+    el significado de cada palabra en esta producción (`said`)."""
+    s = ()
+    p = 0
+    d = 0
+    ret = 0
+    vis = ()
+    said = ()
+
+
+def _ptr(s, p, d=0, ret=0, vis=None, said=None):
+    f = _Ptr(s[p] if 0 <= p < len(s) else ())
+    f.s = s; f.p = int(p); f.d = int(d); f.ret = int(ret)
+    if vis is None:                                        # recién llega: primera visita a `p`
+        vis = tuple(int(i == p) for i in range(len(s) + 1))
+    f.vis = vis
+    f.said = said if said is not None else (0,) * len(s)
+    return f
+
+
+def _said(f, q):
+    """La cuenta de lo dicho, con una vez más la palabra de la posición `q`."""
+    return f.said[:q] + (f.said[q] + 1,) + f.said[q + 1:] if 0 <= q < len(f.said) else f.said
+
+
 def _key(c) -> bytes:
     return np.sort(c[0]).tobytes()
 
@@ -342,7 +394,7 @@ class Thinker:
                  context: bool = False,
                  doubt: float = 0.0, explain: str = "refutadas", reg_credit: str = "simple",
                  reg_reset: str = "cero", prev_io: bool | str = True, back: bool | str = True,
-                 seed: int = 0, say: dict | None = None):
+                 serial: bool | dict = False, seed: int = 0, say: dict | None = None):
         N = self.N = int(n_symbols)
         self.R = int(registers)
         self.max_steps = int(max_steps)
@@ -432,10 +484,20 @@ class Thinker:
         self.back = back if back == "sin_senal" else bool(back)
         if memory and self.back:
             acts.append(BACK)
-        self._n_act = _N_ACTIONS + (1 if self.back else 0)
+        # modo serial (`serial`, ver `_serial_focus`): la pregunta de cada respuesta es un ancla
+        # sobre la oración leída, que persiste entre respuestas del episodio
+        self.serial = bool(serial) and memory
+        sc = dict(glance=(-3, 0), ctl=(-4, 4), dwell=24, ret=True, gist=True, prior=0.0, xsit=0.0)
+        sc.update(serial if isinstance(serial, dict) else {})
+        self._sc = sc
+        self._glances = [r for r in range(int(sc["glance"][0]), int(sc["glance"][1]) + 1) if r != 0] if self.serial else []
+        if self.serial:
+            acts += ([RETURN] if sc["ret"] else []) + [_GLANCE + k for k in range(len(self._glances))]
+        self._n_act = (_GLANCE + len(self._glances)) if self.serial else _N_ACTIONS + (1 if self.back else 0)
         self.actions = np.array(acts)
         # contenido (lo que ve la memoria de largo plazo): foco | registros. El recuerdo no
         # entra: para usarlo hay que copiarlo o llevarlo al foco (acciones del control).
+        # En modo serial, el foco es la palabra sobre la que se dice (el ancla o la mirada).
         self.o_reg = N
         self.D_content = N + 2 * self.R
         # estado (lo que ve el controlador)
@@ -470,6 +532,17 @@ class Thinker:
         # del foco (cuántos sucesores y predecesores: principio, medio o final de la estructura)
         # y la acción recién hecha (integración del camino) conjugada con esa vecindad
         self.o_pos = o; o += (36 + (self._n_act + 1) * 12) if self._cm_pos else 0
+        # modo serial (ver `_ser_state`): la oración alrededor del ancla, cada palabra con su
+        # distancia y conjugada con cuántas respuestas lleva el ancla ahí; esa cuenta sola; si ya
+        # volvió; principio / medio / final; y (`gist`) qué palabras tiene la oración, sin orden
+        self.o_ser = o
+        if self.serial:
+            self._sdmax = int(sc["dwell"])
+            self._cw = (int(sc["ctl"][0]), int(sc["ctl"][1]))
+            self._o_cls = o + (self._cw[1] - self._cw[0] + 1) * (N + 1) * (self._sdmax + 1)
+            self._o_ser2 = self._o_cls + (self._cw[1] - self._cw[0] + 1) * 2 * (self._sdmax + 1)
+            self._o_vis = self._o_ser2 + (self._sdmax + 1) + 2 + 3 + (N if sc["gist"] else 0)
+            o = self._o_vis + (N + 2) * 4
         self._mapc = 0
         if self.cogmap:
             from .cogmap import SizePrior
@@ -481,6 +554,10 @@ class Thinker:
         self.D_state = self.D_base * (1 + self.n_cues) if self.mixed else self.D_base
         self.say = BioElasticNet(self.D_content, N, seed=seed, **(say or {}))
         self.Wc = np.zeros((self._n_act, self.D_state))    # control (y compuerta)
+        if self.serial and sc.get("prior", 0.0):
+            self._serial_prior(float(sc["prior"]))
+        self._sol_focus = None
+        self._td_actor = not (self.serial and sc.get("td_actor", True) is False)   # (ablación del actor por TD)
         # juicio (estado -> respuesta): prototipos conjuntivos sobre el estado, para que un
         # estado ambiguo quede ambiguo y no herede confianza de los vecinos
         self.judge = BioElasticNet(self.D_state, N, seed=seed + 1) if judge else None
@@ -519,9 +596,125 @@ class Thinker:
                 self.fast = BayesMemory(N, **mem)
             self.modulators = Neuromodulators(self, **kw)
         self._ts_pred = None
+        if self.serial and sc.get("trial_td", False):
+            self._trial_td = True                          # TD con horizonte de una respuesta (ver `feedback`)
         if self.fast is not None:
             self.fast.context = bool(context)              # contexto temporal (ver `FastMemory`)
+        # crédito transituacional (`serial["xsit"]`): en cuántos episodios apareció cada palabra en la
+        # oración, cada símbolo en lo que hubo que producir, y los dos juntos
+        self._xs = dict(n=0, w=np.zeros(N), s=np.zeros(N), ws=np.zeros((N, N))) if self.serial else None
+        self._xs_ep: set = set()
+        self._sent: list = []                              # modo serial: la oración que se está leyendo
+        self._instr: tuple = ()                            # la última oración completa (la consigna)
+        self._ptr = None                                   # puntero persistente (un `_Ptr`) o None
         self.reset()
+
+    # ------------------------------------------------------------------ modo serial
+    def _glance_of(self, a: int) -> int:
+        """Distancia al ancla de la palabra sobre la que dice la acción `a` (DECIR: 0)."""
+        return 0 if a == SAY else self._glances[a - _GLANCE]
+
+    def _is_say(self, a: int) -> bool:
+        return a == SAY or (self.serial and a >= _GLANCE)
+
+    def _glance_content(self, f: _Ptr, r: int):
+        """Contenido de DECIR en modo serial: la palabra que está a distancia `r` del ancla, sola
+        (más los registros). Lo de largo plazo guarda significados por palabra; el orden y la
+        estructura los ve el control (ver `_ser_state`)."""
+        q = f.p + r
+        return self._content(f.s[q] if 0 <= q < len(f.s) else ())
+
+    def _serial_prior(self, w: float):
+        """Sesgo inicial declarado del control (`serial["prior"]`): correspondencia uno a uno y
+        concatenación icónica (Lake y Baroni, 2023, los sesgos de las personas al aprender
+        instrucciones). Cada palabra da una respuesta y la salida sigue el orden de la entrada:
+        sin respuestas en la posición, DECIR la palabra del ancla; con alguna, SEGUIR; pasado el
+        final, JUZGAR (que la oración terminó). Son pesos iniciales: lo que se aparte de eso se
+        aprende igual que el resto del control (y la contracción L1 los gasta si no sirven)."""
+        o = self._o_ser2
+        if SAY in self.actions:
+            self.Wc[SAY, o] += w                           # todavía no respondió con el ancla ahí
+        if FOLLOW in self.actions:
+            self.Wc[FOLLOW, o + 1:o + self._sdmax + 1] += w
+        if JUDGE in self.actions:
+            self.Wc[JUDGE, o + self._sdmax + 3 + 2] += 2.0 * w   # pasado el final
+
+    def _ser_state(self, f: _Ptr) -> list:
+        """Señales del modo serial para el control: cada palabra de la oración entre `ctl[0]` y
+        `ctl[1]` posiciones del ancla (y el borde de la oración), conjugada con su distancia y con
+        cuántas respuestas lleva el ancla en esa posición (`dwell`, la última acumula); con `cls`,
+        lo mismo para si esa palabra tiene un significado establecido en lo de largo plazo (una
+        clase de palabra que sale del propio conocimiento, compartida entre palabras: lo que se
+        aprende para «walk» vale para «jump» si las dos ya significan algo); la cuenta sola; si
+        ya volvió al principio; principio / medio / final; con `gist`, qué palabras tiene la
+        oración. El control ve el orden; lo de largo plazo, cada palabra por separado."""
+        N, D1 = self.N, self._sdmax + 1
+        d = min(f.d, self._sdmax)
+        s, p, n = f.s, f.p, len(f.s)
+        c0, c1 = self._cw
+        out = []
+        for r in range(c0, c1 + 1):
+            q = p + r
+            if 0 <= q < n:
+                out += [self.o_ser + ((r - c0) * (N + 1) + int(t)) * D1 + d for t in s[q]]
+                if self._sc.get("cls", True):          # ¿esa palabra tiene un significado establecido?
+                    known = int(self._sim("say", self._content(s[q]))[1])
+                    out.append(self._o_cls + ((r - c0) * 2 + known) * D1 + d)
+            elif (q == -1 or q == n) and abs(r) <= 1:      # el borde de la oración, sólo al lado del ancla
+                out.append(self.o_ser + ((r - c0) * (N + 1) + N) * D1 + d)
+                # (el borde visto de lejos es una cuenta de posiciones: con oraciones de hasta 4
+                # palabras el control aprendía «FIN cuando el principio está a 4» y fallaba con 5)
+        o = self._o_ser2
+        out += [o + d, o + D1 + int(bool(f.ret)), o + D1 + 2 + (0 if p == 0 else 2 if p >= n else 1)]
+        if self._sc["gist"]:
+            out += [o + D1 + 5 + int(t) for t in sorted({t for it in s for t in it})]
+        # cuántas veces llegó el ancla a esta posición (1, 2, 3, 4 o más), con la palabra y sola:
+        # volver a pasar por un lugar es distinto de la primera vez (repetir, o terminar al volver)
+        v = min(max(f.vis[p] if p < len(f.vis) else 1, 1), 4) - 1
+        w = int(f[0]) if len(f) else N
+        out += [self._o_vis + w * 4 + v, self._o_vis + (N + 1) * 4 + v]
+        return out
+
+    def _xs_count(self, sent, targets):
+        """Aprendizaje transituacional (Smith y Yu, 2008): cada episodio suma qué palabras tuvo la
+        oración y qué símbolos hubo que producir, sin saber qué palabra causó qué símbolo."""
+        X = self._xs
+        words = sorted({int(t) for it in sent for t in it})
+        syms = sorted(int(t) for t in targets)
+        X["n"] += 1
+        X["w"][words] += 1
+        X["s"][syms] += 1
+        X["ws"][np.ix_(words, syms)] += 1
+
+    def _xs_cause(self, target: int):
+        """La palabra de la oración que más probablemente causó `target`: la de mayor contingencia
+        ΔP = P(símbolo | palabra) - P(símbolo | sin la palabra), con suavizado de Laplace, si supera
+        `serial["xsit"]`. Exclusividad mutua (Markman y Wachtel, 1988), como sesgo declarado: una
+        palabra cuyo significado ya está establecido y es otro no es candidata."""
+        X = self._xs
+        if X["n"] < 1:
+            return None
+        best, top = None, float(self._sc["xsit"])
+        for w in sorted({int(t) for it in self._instr for t in it}):
+            nw, nws = X["w"][w], X["ws"][w, target]
+            if nw < 3 or X["n"] - nw < 3:                  # sin episodios con y sin la palabra no hay contraste
+                continue
+            dp = (nws + 1.0) / (nw + 2.0) - (X["s"][target] - nws + 1.0) / (X["n"] - nw + 2.0)
+            if dp <= top:
+                continue
+            out, sure = self._know(self._content((w,)))
+            if sure and out != target:
+                continue
+            best, top = w, dp
+        return best
+
+    def _serial_focus(self) -> _Ptr:
+        """El puntero al empezar una respuesta: donde quedó la respuesta anterior (con una
+        respuesta más en esa posición) o, con una oración nueva, su principio. La oración es la
+        última que se leyó (`_instr`, se arma en `observe`)."""
+        if self._ptr is None or self._ptr.s is not self._instr:
+            self._ptr = _ptr(self._instr, 0)
+        return self._ptr
 
     # ------------------------------------------------------------------ episodio
     def reset(self):
@@ -545,6 +738,10 @@ class Thinker:
             self.fast.reset()
         self._obs = []                                     # lo percibido sin responder: (símbolos, certeza, alternativas)
         self._prev = None                                  # (respuesta, ¿premiada?) del último ensayo (`prev_io`)
+        if self.serial and self.plastic and self._instr and self._xs_ep:
+            self._xs_count(self._instr, self._xs_ep)
+        self._xs_ep = set()
+        self._sent = []; self._instr = (); self._ptr = None   # modo serial
         self.say.reset_context()
         if self.judge is not None:
             self.judge.reset_context()
@@ -622,6 +819,8 @@ class Thinker:
         for b in range(self.R):
             if reg[b] >= 0:
                 idx.append(self.o_sreg + 2 * b + int(reg[b]))
+        if isinstance(focus, _Ptr):
+            idx += self._ser_state(focus)
         if self.clock:
             idx.append(self.o_clock + clock)
         if self.lookahead and best >= 0:
@@ -641,10 +840,23 @@ class Thinker:
 
     def _base(self, s):
         """El estado sin las señales de confianza: lo que ve el juicio."""
-        if not self.confidence:
+        if self.serial:
+            # el juicio del modo serial es «terminé»: ve sólo el sesgo y la consigna; cuándo
+            # juzgar lo decide el control (si viera la posición, aprendía a adivinar el primer
+            # símbolo de la salida por la posición, como el diseño anterior con la posición ordinal)
+            i = s[0] % self.D_base
+            idx = s[0][(i == 0) | ((i >= self.o_cue) & (i < self.o_cue + self.n_cues))]
+            return idx, np.full(len(idx), 1.0 / np.sqrt(len(idx)), dtype=np.float32)
+        hide = []
+        if self.confidence:
+            hide.append((self.o_conf, self.o_conf + 4))
+        if not hide:
             return s
         i = s[0] % self.D_base
-        idx = s[0][(i < self.o_conf) | (i >= self.o_conf + 4)]
+        keep = np.ones(len(i), dtype=bool)
+        for lo, hi in hide:
+            keep &= (i < lo) | (i >= hi)
+        idx = s[0][keep]
         return idx, np.full(len(idx), 1.0 / np.sqrt(len(idx)), dtype=np.float32)
 
     def _gate_state(self, cue, last, focus, hold, item=(), prev=None):
@@ -663,16 +875,30 @@ class Thinker:
             return tuple(focus) + tuple(t for t in item if t not in focus), hold
         return focus, _held(item, i)
 
-    def _allowed(self, clock, has_map: bool = True):
+    def _allowed(self, clock, has_map: bool = True, focus=None):
         """Acciones posibles. RETROCEDER sólo si el episodio tiene relaciones que recorrer: sin
         mapa no hay nada que consultar al revés y la acción sólo agregaba estados que la búsqueda
         usaba para «explicar» errores de tareas de conocimiento (multitarea en bloques en orden
-        inverso: C1 1.00 -> 0.865 con la acción siempre disponible)."""
+        inverso: C1 1.00 -> 0.865 con la acción siempre disponible). En modo serial, el puntero
+        no sigue pasado el final ni retrocede o vuelve desde el principio (no hay adónde ir)."""
         acts = self.actions
-        if self.back and not has_map:
-            acts = acts[acts != BACK]
+        if isinstance(focus, _Ptr):
+            n, p = len(focus.s), focus.p
+            if p >= n:                                     # pasado el final no hay qué seguir ni qué decir
+                acts = acts[(acts != FOLLOW) & (acts != SAY)]
+            if p <= 0:
+                acts = acts[(acts != BACK) & (acts != RETURN)]
+            if self._glances:                              # sólo miradas a palabras de la oración
+                acts = acts[[a < _GLANCE or 0 <= p + self._glances[a - _GLANCE] < n for a in acts]]
+        else:
+            if self.serial:
+                acts = acts[acts < _GLANCE]
+            if self.serial:                                # VOLVER sólo tiene sentido sobre la oración
+                acts = acts[acts != RETURN]
+            if self.back and not has_map:
+                acts = acts[acts != BACK]
         if clock >= self.max_steps:
-            return acts[(acts != FOLLOW) & (acts != SPEAK) & (acts != BACK)]
+            return acts[(acts != FOLLOW) & (acts != SPEAK) & (acts != BACK) & (acts != RETURN)]
         return acts
 
     def _recall_back(self, focus):
@@ -681,7 +907,9 @@ class Thinker:
     # ------------------------------------------------------------------ TD(lambda)
     def _update(self, delta: float):
         step = self.lr * self._ctl_gain * delta          # (ganancia: conjuntos de tareas y moduladores)
-        self.Wc += step * self.Ec; self.Wr += step * self.Er; self.wv += step * self.ev
+        if self._td_actor:
+            self.Wc += step * self.Ec
+        self.Wr += step * self.Er; self.wv += step * self.ev
         if self._decay_td and self.decay and delta:
             # Variante descartada en validación (`modulators`, decay="error"): la contracción L1
             # sólo con error de predicción y con la misma ganancia, sobre las sinapsis elegibles.
@@ -847,7 +1075,7 @@ class Thinker:
         """¿La respuesta final salió de algo que el modelo interno da por fiable? (La memoria
         episódica y el foco se dan por fiables: no son conocimiento que pueda estar mal.)"""
         a = self._path[-1] if self._path else -1
-        if a == SAY:
+        if self._is_say(a):
             return self.M.predict(("say", _key(self._cf)))[1]
         if a == JUDGE:
             return self.M.predict(("judge", _key(self._js)))[1]
@@ -1000,6 +1228,13 @@ class Thinker:
         if self.fast is not None:
             self.fast.bind(self._tok(tokens), certainty)
         self._obs.append((self._tok(tokens), float(certainty), alternatives))
+        if self.serial:                                    # orden serial de la oración (ver `_serial_focus`)
+            tok = self._tok(tokens)
+            if tok:
+                self._sent.append(tok)
+                self._instr = tuple(self._sent); self._ptr = None
+            else:
+                self._sent = []
 
     def answer(self, tokens, cue: int = 0, explore: bool = False, probe=None,
                certainty: float = 1.0, extra=()) -> int:
@@ -1015,7 +1250,8 @@ class Thinker:
             self._start = False
             if self.reg_reset == "escrito" and self.R:
                 self._write_start(explore)
-        items = [self._tok(tokens)]
+        # modo serial sin pregunta: la pregunta es el puntero sobre la oración leída
+        items = [self._serial_focus() if (self.serial and tokens is None) else self._tok(tokens)]
         if probe is not None and self.gate:
             items.append(self._tok(probe))
         if self.gate:
@@ -1047,11 +1283,13 @@ class Thinker:
             s_idx, s_val = self._state(cue, last, clock, focus, recall, hold, prev=prev, back=bk)
             if clock == 0:
                 self._fs = (s_idx, s_val)                     # la situación tal como se planteó
-            a = self._decide(s_idx, s_val, self._allowed(clock, has_map), explore)
+            a = self._decide(s_idx, s_val, self._allowed(clock, has_map, focus), explore)
             self.decisions[a] += 1
             self._path.append(a)
             c_idx, c_val = self._content(focus)
-            if a == FOLLOW:                                   # el recuerdo pasa al foco
+            if isinstance(focus, _Ptr) and a in _MOVES:       # el puntero se mueve sobre la oración
+                focus = self._successors(a, focus, recall, None)[0]
+            elif a == FOLLOW:                                 # el recuerdo pasa al foco
                 used.append(self.fast.certainty(focus))
                 b = self._best(recall)
                 focus = (b,) if b >= 0 else ()
@@ -1071,7 +1309,9 @@ class Thinker:
             recall = self._recall(focus)
             bk = self._recall_back(focus) if self.back else None
             clock += 1; last = a
-        if a == SAY:
+        if self._is_say(a):
+            if isinstance(focus, _Ptr):                    # modo serial: la palabra a esa distancia del ancla
+                c_idx, c_val = self._glance_content(focus, self._glance_of(a))
             self._consults.append(((c_idx, c_val), self._know((c_idx, c_val))[1]))
             out = int(self.say.forward((c_idx, c_val)))
             self._observe_self("say", (c_idx, c_val), out)
@@ -1096,6 +1336,9 @@ class Thinker:
         self._key = (s_idx.tobytes(), a)
         self._ls = (s_idx, s_val)                          # estado de la última decisión
         self._out = out
+        if isinstance(focus, _Ptr):                        # el ancla queda donde respondió
+            said = _said(focus, focus.p + self._glance_of(a)) if self._is_say(a) else focus.said
+            self._ptr = _ptr(focus.s, focus.p, focus.d + 1, focus.ret, focus.vis, said)
         return out
 
     def _episode(self):
@@ -1114,6 +1357,8 @@ class Thinker:
         `answer`), los símbolos que la percepción también consideraba (p. ej. su segunda
         opción, o todos). Con eso, un error puede quedar explicado como de percepción
         (ver `input_credit`)."""
+        if self.serial and target is not None:
+            self._xs_ep.add(int(target))                   # lo que hubo que producir en este episodio
         if self.prev_io and (target is not None or reward is not None):   # estado, no plasticidad
             ok = (reward > 0) if reward is not None else (self._out == int(target))
             self._prev = (int(self._out), bool(ok))
@@ -1143,10 +1388,18 @@ class Thinker:
                 r[0] += int(not wrong); r[1] += 1
             strategy_error = False
             if wrong and self.hindsight:
+                self._sol_focus = None
                 paths = self._cached[0] if self._cached is not None else self._search(target)
                 if paths is not None:                      # se podía con lo que ya sabe:
                     self._teach_control(paths)             # el error es de estrategia
                     strategy_error = True
+                    f = self._sol_focus
+                    if self._sc.get("realign", False) and isinstance(f, _Ptr) and self.search != "amplitud":
+                        # realineación (modo serial): corregido, el Thinker sigue desde donde lo habría
+                        # dejado el camino que explica el objetivo, no desde donde se equivocó
+                        a_ = paths[0][-1][2]
+                        said = _said(f, f.p + self._glance_of(a_)) if self._is_say(a_) else f.said
+                        self._ptr = _ptr(f.s, f.p, f.d + 1, f.ret, f.vis, said)
             elif not wrong and self.hindsight and self.model != "perfecto" and not self._reliable():
                 # acertó, pero con una respuesta que el modelo interno no da por fiable: el
                 # acierto no prueba la estrategia (pudo ser suerte). Si había un camino fiable
@@ -1164,6 +1417,8 @@ class Thinker:
                 # Se corrige al módulo que respondió, sobre lo que tenía delante al responder.
                 # Si respondió la memoria episódica, no hay conocimiento que corregir.
                 last = self._path[-1] if self._path else -1
+                if self._is_say(last):                      # (modo serial: una mirada es DECIR)
+                    last = SAY
                 refresh = False
                 n_think = sum(1 for a in self._path if a not in (FOCUS, HOLD))
                 if self.credit == "percepcion" and wrong and (n_think > 1 or last != SAY):
@@ -1181,10 +1436,22 @@ class Thinker:
                         else:
                             self._cf = self._consults[i][0]
                             last = SAY; refresh = True
+                # modo serial con crédito transituacional (`serial["xsit"]`, ver `_xs_cause`): un
+                # símbolo que alguna palabra de la oración explica es de lo de largo plazo sobre esa
+                # palabra (se corrige o se confirma el significado de esa palabra, no el de la que se
+                # miró); uno que ninguna palabra explica (FIN) es del juicio sobre el proceso
+                xs = self.serial and self._sc["xsit"] > 0.0
+                cause = self._xs_cause(target) if xs else None
                 if last == SAY:
                     if wrong and not reg_only:             # (si lo explica un registro, el conocimiento no se toca)
-                        conflict = self._correct("say", self._cf, target, cue, ep, refresh)
-                    else:
+                        if xs:
+                            # (si la palabra causa ya significa el objetivo, el error no fue de
+                            # conocimiento: el control no llegó a mirarla, y no se la culpa)
+                            if cause is not None and self._know(self._content((cause,)))[0] != target:
+                                conflict = self._correct("say", self._content((cause,)), target, cue, ep, True)
+                        else:
+                            conflict = self._correct("say", self._cf, target, cue, ep, refresh)
+                    elif not xs or (cause is not None and _key(self._content((cause,))) == _key(self._cf)):
                         self.say.teach(target)
                         self.kver += 1
                         self._confirm("say", self._cf, target, cue, ep)
@@ -1193,8 +1460,9 @@ class Thinker:
                 elif last == JUDGE:
                     if wrong:
                         self._m_outcome("judge", self._js, False)
-                        conflict = self._correct("judge", self._js, target, cue, ep, False)
-                    else:
+                        if not (xs and cause is not None):
+                            conflict = self._correct("judge", self._js, target, cue, ep, False)
+                    elif not (xs and cause is not None):
                         self.judge.teach(target)
                         self.kver += 1
                         self._confirm("judge", self._js, target, cue, ep)
@@ -1380,7 +1648,9 @@ class Thinker:
     # ------------------------------------------------------------------ simulación interna
     def _outcome(self, a, focus, recall, c, s, over=None):
         """Qué habría respondido la acción `a` y si sale de conocimiento establecido."""
-        if a == SAY:
+        if self._is_say(a):
+            if isinstance(focus, _Ptr):
+                c = self._glance_content(focus, self._glance_of(a))
             return self._sim("say", c, over)
         if a == COPY:
             return self._best(recall), True
@@ -1392,7 +1662,14 @@ class Thinker:
         """Focos posibles tras un paso interno (lista vacía si no lleva a nada establecido).
         HABLAR con conocimiento establecido pero inconsistente abre una rama por cada salida
         plausible (probabilidad >= `branch`, sólo con el modelo perfecto). `back`: lo que
-        precedió al foco (para RETROCEDER)."""
+        precedió al foco (para RETROCEDER). En modo serial, SEGUIR, RETROCEDER y VOLVER mueven el
+        puntero (una posición, o al principio) y la cuenta de respuestas en la posición vuelve a 0."""
+        if isinstance(focus, _Ptr) and a in _MOVES:
+            p = focus.p + 1 if a == FOLLOW else (focus.p - 1 if a == BACK else 0)
+            if not 0 <= p <= len(focus.s):
+                return []
+            vis = focus.vis[:p] + (focus.vis[p] + 1,) + focus.vis[p + 1:]
+            return [_ptr(focus.s, p, 0, 1 if a == RETURN else focus.ret, vis, focus.said)]
         if a == FOLLOW:
             b = self._best(recall)
             return [(b,)] if b >= 0 else []
@@ -1485,6 +1762,7 @@ class Thinker:
         while heap and n < self.budget:
             cost, _, kind, focus, hold, recall, last, clock, path = heapq.heappop(heap)
             if kind == "s":                                # se sacó una solución: es la más probable
+                self._sol_focus = focus                    # (dónde terminó: ver la realineación en `feedback`)
                 return [path]
             if kind == "r":                                # refutación: el desenlace más probable
                 sure, out = recall
@@ -1505,7 +1783,7 @@ class Thinker:
                 continue
             bk = rbk(focus)
             s = self._state(cue, last, clock, focus, recall, hold, reg, over, prev, bk, mapc)
-            allowed = self._allowed(clock, bool(events))
+            allowed = self._allowed(clock, bool(events), focus)
             q = (1.0 - self.epsilon) * self._policy(*s, allowed) + self.epsilon / len(allowed)
             c = self._content(focus, reg=reg)
             forced = self._forced(s, path)
@@ -1526,6 +1804,11 @@ class Thinker:
                         if self.reliability:
                             ok, n_try = self.rel.get((s[0].tobytes(), a), (0, 0))
                             cst -= self.reliability * float(np.log((ok + 1.0) / (n_try + 2.0)))
+                        if isinstance(focus, _Ptr) and self._is_say(a) and self._sc.get("reuse", 0.0):
+                            # correspondencia uno a uno como sesgo declarado de la explicación: decir
+                            # otra vez una palabra que ya se dijo en esta producción cuesta más
+                            q_ = focus.p + self._glance_of(a)
+                            cst += self._sc["reuse"] * min(focus.said[q_], 1)
                         heapq.heappush(heap, (cst, next(tie), "s", focus, hold, None, a, clock, step))
         return None
 
@@ -1564,7 +1847,7 @@ class Thinker:
                 self.expanded += 1
                 bk = rbk(focus)
                 s = self._state(cue, last, clock, focus, recall, hold, reg, over, prev, bk, mapc)
-                allowed = self._allowed(clock, has_map)
+                allowed = self._allowed(clock, has_map, focus)
                 c = self._content(focus, reg=reg)
                 forced = self._forced(s, path)
                 for a in allowed:
@@ -1691,7 +1974,7 @@ class Thinker:
             while True:
                 bk = rbk(focus)
                 s = self._state(cue, last, clock, focus, recall, hold, reg, None, prev, bk, mapc)
-                allowed = self._allowed(clock, bool(events))
+                allowed = self._allowed(clock, bool(events), focus)
                 p = self._policy(*s, allowed)
                 j = int(np.argmax(p)); conf = min(conf, float(p[j]))
                 a = int(allowed[j])
@@ -1774,4 +2057,8 @@ class Thinker:
                     judge_neurons=self.judge.layer.n if self.judge is not None else 0,
                     revised=self.revised.tolist(), abstained=int(self.abstained),
                     blamed_inputs=int(self.blamed_inputs),
-                    **{name: int(n) for name, n in zip(_ALL_NAMES, self.decisions)})
+                    **{name: int(n) for name, n in zip(self.action_names(), self.decisions)})
+
+    def action_names(self) -> tuple:
+        """Nombre de cada acción por su índice (con `serial`, las miradas: «decir@-1», ...)."""
+        return _ALL_NAMES[:min(len(_ALL_NAMES), self._n_act)] + tuple(f"decir@{r:+d}" for r in self._glances)
