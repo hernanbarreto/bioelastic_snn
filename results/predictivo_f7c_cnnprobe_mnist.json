@@ -1,0 +1,44 @@
+[
+ {
+  "name": "mnist",
+  "seed": 0,
+  "lr": 0.001,
+  "n_train": 10000,
+  "cnn_val": 0.977,
+  "probe_pixels": 0.8995,
+  "probe_layer1": 0.949,
+  "probe_layer2": 0.979,
+  "dims": [
+   4608,
+   1600
+  ]
+ },
+ {
+  "name": "mnist",
+  "seed": 1,
+  "lr": 0.003,
+  "n_train": 10000,
+  "cnn_val": 0.972,
+  "probe_pixels": 0.89,
+  "probe_layer1": 0.958,
+  "probe_layer2": 0.975,
+  "dims": [
+   4608,
+   1600
+  ]
+ },
+ {
+  "name": "mnist",
+  "seed": 2,
+  "lr": 0.003,
+  "n_train": 10000,
+  "cnn_val": 0.978,
+  "probe_pixels": 0.9045,
+  "probe_layer1": 0.964,
+  "probe_layer2": 0.9825,
+  "dims": [
+   4608,
+   1600
+  ]
+ }
+]
