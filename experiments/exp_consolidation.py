@@ -861,7 +861,7 @@ def phase_f6s(a, data):
     save("f6_split", dict(phase="f6s", config=cfg, summary=summary, rows=rows), rows, keys)
 
 
-CAP_BUDGETS = (1000, 2000, 4000, 8000, 0)          # 0 = sin tope (nunca desaloja)
+CAP_BUDGETS = (1000, 2000, 4000, 8000)             # f6cap0 agrega 0 = sin tope (confirmación opcional)
 
 
 def phase_f6cap(a, data):
@@ -874,7 +874,8 @@ def phase_f6cap(a, data):
     _PHASE["name"] = "f6s"
     D = split_data(data)["test"]
     rows: list = []
-    for n in CAP_BUDGETS:
+    budgets = CAP_BUDGETS + ((0,) if a.phase == "f6cap0" else ())
+    for n in budgets:
         spec = C2 if n == 2000 else f"{C2}+budget={n}"
         pts: list = []
         split_bench([spec], a.seeds, D, rows=pts, tag="f6cap", match=("erace", "er"), datasets=("fashion",))
@@ -889,8 +890,8 @@ def phase_f6cap(a, data):
         print(f"  {d['budget']:5d} {d['family']:6s} " + fmt(d, ["acc", "forgetting", "neurons", "seconds"]), flush=True)
     gap = {n: float(np.mean([r["acc"] for r in rows if r["budget"] == n and r["family"] == "c2"])
                     - max(np.mean([r["acc"] for r in rows if r["budget"] == n and r["family"] == f])
-                          for f in ("erace", "er"))) for n in CAP_BUDGETS}
-    cfg = dict(seeds=a.seeds, budgets=CAP_BUDGETS, tasks=SPLIT["fashion"],
+                          for f in ("erace", "er"))) for n in budgets}
+    cfg = dict(seeds=a.seeds, budgets=budgets, tasks=SPLIT["fashion"],
                protocol="como f6s: un solo pase online por tarea (sin las 500 por clase de validación), test "
                         "oficial completo, argmax entre las 10 clases; ER/ER-ACE: MLP 784-256-20, lotes de 10, "
                         "3 iteraciones, reservorio uint8 igualado en bytes al c2 de cada punto",
@@ -925,6 +926,181 @@ def phase_f6iid(a, data):
                         "mezcladas; test oficial completo, argmax entre las 10 clases",
                compare="consolidacion_f6_split.json (secuencia por tareas)")
     save("f6_iid", dict(phase="f6iid", config=cfg, summary=summary, rows=rows), rows, ["order", "family"] + keys)
+
+
+def _ridge_probe(Xtr, ytr, Xte, classes, seed: int, lams=(1e-3, 1e-2, 1e-1, 1.0, 10.0, 100.0)):
+    """Sonda lineal (ridge en forma dual, objetivos +-1 por clase) sobre filas dispersas;
+    lambda elegido con el 20 % del entrenamiento de la sonda. Devuelve las predicciones."""
+    import scipy.sparse as sps
+    Xtr = sps.csr_matrix(Xtr); Xte = sps.csr_matrix(Xte)
+    Y = np.where(ytr[:, None] == classes[None, :], 1.0, -1.0)
+    perm = np.random.default_rng([seed, 31]).permutation(len(ytr)); nv = len(ytr) // 5
+    va, tr = perm[:nv], perm[nv:]
+    K = (Xtr @ Xtr.T).toarray().astype(np.float64)
+    best = (-1.0, lams[0])
+    for lam in lams:
+        A = np.linalg.solve(K[np.ix_(tr, tr)] + lam * np.eye(len(tr)), Y[tr])
+        acc = float(np.mean(classes[np.argmax(K[np.ix_(va, tr)] @ A, axis=1)] == ytr[va]))
+        best = max(best, (acc, lam))
+    A = np.linalg.solve(K + best[1] * np.eye(len(ytr)), Y)
+    P = (Xte @ Xtr.T).toarray() @ A
+    return classes[np.argmax(P, axis=1)], best[1]
+
+
+def split_diag(ds: str, spec: str, seed: int, D, n_small: int = 100, n_tr: int = 300, n_te: int = 500) -> dict:
+    """¿Dónde está el olvido de c2 en Split-Fashion? Mismo flujo que split_run (mismo
+    generador: el modelo final es el mismo) y, al terminar cada tarea, una copia de los
+    rasgos de V1 y del almacén. Al final, sobre las mismas imágenes de test (n_te por
+    clase), exactitud de cada lectura (la proyección sobre V1 = sistema lento; la lectura
+    del almacén = sistema rápido; el todo) contra una sonda lineal entrenada aparte
+    (n_tr imágenes de entrenamiento por clase, las 10 clases balanceadas) sobre los
+    mismos rasgos congelados: los del final y los de justo después de aprender cada tarea.
+    Sonda final ~ sonda al aprender y lectura muy por debajo: sesgo de la lectura. Sonda
+    final por debajo de la sonda al aprender: deriva de los rasgos."""
+    import copy
+    pools, test = D
+    enc = encoder()
+    tasks = SPLIT[ds]; cls = np.array([c for t in tasks for c in t])
+    rng = np.random.default_rng([seed, 555])
+    small = {c: [enc(test[c][i].astype(np.float32) / 255) for i in rng.choice(len(test[c]), n_small, replace=False)]
+             for c in cls}
+    agent = build(spec)(seed)
+    agent.on_phase(0)
+    net = agent.net
+    am = lambda V: int(cls[int(np.argmax(np.asarray(V)[cls]))])
+
+    def three(s):
+        V = agent.scores(s)
+        Vs, Vq = _parts(net)
+        return am(V), am(Vs), am(Vq)
+
+    learn = {"full": {}, "slow": {}, "fast": {}}
+    snaps = []
+    t0 = time.time()
+    for k, t in enumerate(tasks):
+        items = [(c, i) for c in t for i in range(len(pools[c]))]
+        for o in rng.permutation(len(items)):
+            c, i = items[o]
+            agent.sup(enc(pools[c][i].astype(np.float32) / 255), int(c))
+        seen = [c for tt in tasks[:k + 1] for c in tt]
+        for c in seen:                                   # (las mismas llamadas que split_run)
+            r = np.array([three(s) for s in small[c]])
+            if c in t:
+                for j, name in enumerate(("full", "slow", "fast")):
+                    learn[name][int(c)] = float(np.mean(r[:, j] == c))
+        snaps.append((copy.deepcopy(net.areas[0]), copy.deepcopy(net.heads[0])))
+    secs = time.time() - t0
+    hits = [three(enc(x.astype(np.float32) / 255))[0] == c for c in cls for x in test[c]]
+    prng = np.random.default_rng([seed, 777])
+    tr = [(c, pools[c][i]) for c in cls for i in prng.choice(len(pools[c]), n_tr, replace=False)]
+    te = [(c, test[c][i]) for c in cls for i in prng.choice(len(test[c]), n_te, replace=False)]
+    ytr = np.array([c for c, _ in tr]); yte = np.array([c for c, _ in te])
+    Xtr_in = [enc(x.astype(np.float32) / 255) for _, x in tr]
+    Xte_in = [enc(x.astype(np.float32) / 255) for _, x in te]
+    out = dict(full=[], slow=[], fast=[])
+    for s in Xte_in:
+        f, sl, fa = three(s)
+        out["full"].append(f); out["slow"].append(sl); out["fast"].append(fa)
+    out = {k: np.array(v) for k, v in out.items()}
+    import scipy.sparse as sps
+
+    def v1_rows(area, X):
+        rows = []
+        for x in X:
+            code = area.encode(np.asarray(x, dtype=np.float32).reshape(net.input_shape))
+            idx, val = net._proj_input([code])
+            rows.append((idx, val))
+        area._cache = None
+        return rows
+
+    def head_rows(head, X):
+        rows, pred = [], []
+        for x in X:
+            v = head.layer.forward(*head._as_sparse(x))
+            h = head._votes(v)
+            rows.append((np.asarray(v.winners, dtype=np.int64), np.asarray(h, dtype=np.float32)))
+            pred.append(am(head.readout.potentials(v.winners, h)))
+        return rows, np.array(pred)
+
+    def mat(rows, dim):
+        ind = np.concatenate([r[0] for r in rows]); dat = np.concatenate([r[1] for r in rows])
+        ptr = np.concatenate([[0], np.cumsum([len(r[0]) for r in rows])])
+        return sps.csr_matrix((dat.astype(np.float64), ind, ptr), shape=(len(rows), dim))
+
+    probes = {}
+    pix = lambda X: [(np.flatnonzero(np.ravel(x)), np.ravel(x)[np.flatnonzero(np.ravel(x))] /
+                      max(float(np.linalg.norm(np.ravel(x))), 1e-9)) for x in X]
+    probes["pix"], lam_pix = _ridge_probe(mat(pix(Xtr_in), 784), ytr, mat(pix(Xte_in), 784), cls, seed)
+    lams = {"pix": lam_pix}
+    head_readout = {}
+    for k, (A, H) in enumerate(snaps):
+        dim = int(net.proj.W.shape[1])
+        p, lam = _ridge_probe(mat(v1_rows(A, Xtr_in), dim), ytr, mat(v1_rows(A, Xte_in), dim), cls, seed)
+        probes[f"v1_{k + 1}"] = p; lams[f"v1_{k + 1}"] = lam
+        hdim = int(H.layer.n) + 1
+        rtr, _ = head_rows(H, Xtr_in); rte, hp = head_rows(H, Xte_in)
+        p, lam = _ridge_probe(mat(rtr, hdim), ytr, mat(rte, hdim), cls, seed)
+        probes[f"head_{k + 1}"] = p; lams[f"head_{k + 1}"] = lam
+        head_readout[k + 1] = hp
+    acc = lambda pred, c_set: float(np.mean(pred[np.isin(yte, c_set)] == yte[np.isin(yte, c_set)]))
+    row = dict(bench="diag", scenario=ds, model=spec, seed=seed, acc=float(np.mean(hits)), seconds=secs,
+               neurons=agent.stats()["neurons"], evicted=int(agent.stats().get("evicted", 0)), lambdas=lams)
+    last = np.array(tasks[-1])
+    for k, t in enumerate(tasks):
+        tag = f"t{k + 1}"
+        for name in ("full", "slow", "fast"):
+            row[f"end_{name}_{tag}"] = acc(out[name], t)
+            row[f"learn_{name}_{tag}"] = float(np.mean([learn[name][c] for c in t]))
+            m = np.isin(yte, t) & (out[name] != yte)
+            later = np.array([c for tt in tasks[k + 1:] for c in tt])
+            row[f"errlater_{name}_{tag}"] = float(np.mean(np.isin(out[name][m], later))) if m.any() and len(later) else 0.0
+            row[f"errlast_{name}_{tag}"] = float(np.mean(np.isin(out[name][m], last))) if m.any() else 0.0
+        row[f"probe_pix_{tag}"] = acc(probes["pix"], t)
+        row[f"probe_v1_end_{tag}"] = acc(probes[f"v1_{len(tasks)}"], t)
+        row[f"probe_v1_learn_{tag}"] = acc(probes[f"v1_{k + 1}"], t)
+        row[f"probe_head_end_{tag}"] = acc(probes[f"head_{len(tasks)}"], t)
+        row[f"probe_head_learn_{tag}"] = acc(probes[f"head_{k + 1}"], t)
+        row[f"readout_head_end_{tag}"] = acc(head_readout[len(tasks)], t)
+    old = [f"t{k + 1}" for k in range(len(tasks) - 1)]
+    for key in [k[:-3] for k in list(row) if k.endswith("_t1")]:
+        row[f"{key}_old"] = float(np.mean([row[f"{key}_{t}"] for t in old]))
+    return row
+
+
+DIAG_KEYS = ["acc", "end_full_old", "end_slow_old", "end_fast_old", "learn_full_old", "learn_slow_old",
+             "learn_fast_old", "probe_v1_end_old", "probe_v1_learn_old", "probe_head_end_old",
+             "probe_head_learn_old", "readout_head_end_old", "probe_pix_old", "errlater_full_old",
+             "errlater_slow_old", "errlater_fast_old", "errlast_slow_old", "errlast_fast_old",
+             "end_full_t5", "end_slow_t5", "end_fast_t5", "neurons", "evicted", "seconds"]
+
+
+def phase_f6diag(a, data):
+    """Diagnóstico de la causa del olvido de c2 en Split-Fashion antes de tocar nada
+    (semillas de test 3-5; ver split_diag). Regla fijada antes de medir, sobre las tareas
+    viejas (1-4): si la sonda sobre los rasgos finales conserva lo viejo (cae menos de 0,03
+    respecto de la sonda justo después de aprenderlo) y la lectura queda muy por debajo de
+    la sonda, el olvido es sesgo de la lectura hacia lo reciente; si la sonda también cae
+    0,03 o más, es deriva de los rasgos. Se mira por separado el sistema lento (V1 +
+    proyección) y el rápido (almacén + su lectura)."""
+    D = split_data(data)["test"]
+    rows: list = []
+    for seed in a.seeds:
+        row = cached(dict(b="diag", ds="fashion", spec=C2, seed=seed, split="test"),
+                     lambda seed=seed: split_diag("fashion", C2, seed, D))
+        rows.append(row)
+        print(f"[f6diag] s{seed}: acc={row['acc']:.4f} " + " ".join(f"{k}={row[k]:.3f}" for k in DIAG_KEYS[1:18]),
+              flush=True)
+    keys = DIAG_KEYS + [k for k in rows[0] if k.startswith(("end_", "learn_", "probe_", "readout_", "err"))
+                        and not k.endswith("_old") and k not in DIAG_KEYS]
+    summary = agg(rows, ("bench", "scenario", "model"), keys)
+    for d in summary:
+        print("  " + fmt(d, DIAG_KEYS[:18]), flush=True)
+    cfg = dict(seeds=a.seeds, rule=phase_f6diag.__doc__, method=split_diag.__doc__,
+               probe="ridge dual con objetivos +-1, lambda en {1e-3..100} elegido con el 20 % del entrenamiento "
+                     "de la sonda; 300 imágenes de entrenamiento por clase (las 10), 500 de test por clase",
+               note="readout_head_end = la lectura del almacén sobre los mismos rasgos que su sonda (pase sin "
+                    "contexto); end_fast = el sistema rápido dentro del modelo")
+    save("f6_diagnostico", dict(phase="f6diag", config=cfg, summary=summary, rows=rows), rows, keys)
 
 
 # ====================================================================== F7
@@ -1359,7 +1535,7 @@ def phase_f7c(a, data):
 
 SCEN_STEPS = {k: sum(p[1] for p in v) for k, v in SCENARIOS.items()}
 
-PHASES = {"f0": phase_f0, "f1": phase_f1, "f1b": phase_f1b, "f2": phase_f2, "f3": phase_f3, "f4": phase_f4, "f5": phase_f5, "f6": phase_f6, "f6s": phase_f6s, "f6cap": phase_f6cap, "f6iid": phase_f6iid, "f7a": phase_f7a, "f7a2": phase_f7a2, "f7b": phase_f7b, "f7x": phase_f7x, "f7k": phase_f7k, "f7s": phase_f7s, "f7c": phase_f7c}
+PHASES = {"f0": phase_f0, "f1": phase_f1, "f1b": phase_f1b, "f2": phase_f2, "f3": phase_f3, "f4": phase_f4, "f5": phase_f5, "f6": phase_f6, "f6s": phase_f6s, "f6cap": phase_f6cap, "f6iid": phase_f6iid, "f6diag": phase_f6diag, "f6cap0": phase_f6cap, "f7a": phase_f7a, "f7a2": phase_f7a2, "f7b": phase_f7b, "f7x": phase_f7x, "f7k": phase_f7k, "f7s": phase_f7s, "f7c": phase_f7c}
 
 
 def main():
@@ -1369,7 +1545,7 @@ def main():
     ap.add_argument("--seeds", nargs="+", type=int, default=None)
     a = ap.parse_args()
     if a.seeds is None:                              # las pruebas de F7 usan semillas no contaminadas
-        a.seeds = list(F7_TEST_SEEDS) if a.phase in ("f6s", "f6cap", "f6iid", "f7b", "f7x", "f7k", "f7s", "f7c") else [0, 1, 2]
+        a.seeds = list(F7_TEST_SEEDS) if a.phase in ("f6s", "f6cap", "f6cap0", "f6iid", "f6diag", "f7b", "f7x", "f7k", "f7s", "f7c") else [0, 1, 2]
     _PHASE["name"] = a.phase
     PHASES[a.phase](a, load_data())
 
