@@ -1,0 +1,1 @@
+name,depth,cond,n_seeds,n_train,test_acc,val_acc,preq_acc,test_probe_by_level,val_probe_by_level,val_pe_by_level,noise_acc,occlude_acc,shift3_acc,ms_per_step,ms_per_image,macs_per_inference
