@@ -978,6 +978,16 @@ def split_diag(ds: str, spec: str, seed: int, D, n_small: int = 100, n_tr: int =
 
     learn = {"full": {}, "slow": {}, "fast": {}}
     snaps = []
+    born: list = []                                      # prototipos de cada tarea al terminarla
+
+    def store_ids(t):
+        """Identidad (instante de creación, etiqueta) de las neuronas del almacén cuya etiqueta
+        (la guardada en el episodio; si no hay, la preferida por la lectura) es de las clases t."""
+        H = net.heads[0]; L = H.layer; n = L.n
+        lab = H.ep["y"][:n].astype(np.int64) if H.ep is not None else H.readout.preferred(np.arange(n))
+        keep = np.isin(lab, t)
+        return set(zip(L.born[:n][keep].tolist(), lab[keep].tolist()))
+
     t0 = time.time()
     for k, t in enumerate(tasks):
         items = [(c, i) for c in t for i in range(len(pools[c]))]
@@ -992,6 +1002,7 @@ def split_diag(ds: str, spec: str, seed: int, D, n_small: int = 100, n_tr: int =
                     learn[name][int(c)] = float(np.mean(r[:, j] == c))
         if probes:
             snaps.append((copy.deepcopy(net.areas[0]), copy.deepcopy(net.heads[0])))
+        born.append(store_ids(t))
     secs = time.time() - t0
     hits = [three(enc(x.astype(np.float32) / 255))[0] == c for c in cls for x in test[c]]
     prng = np.random.default_rng([seed, 777])
@@ -1050,6 +1061,12 @@ def split_diag(ds: str, spec: str, seed: int, D, n_small: int = 100, n_tr: int =
     row = dict(bench="diag", scenario=ds, model=spec, seed=seed, acc=float(np.mean(hits)), seconds=secs,
                neurons=agent.stats()["neurons"], evicted=int(agent.stats().get("evicted", 0)), lambdas=lams)
     last = np.array(tasks[-1])
+    for k, t in enumerate(tasks):                        # supervivencia de los prototipos de cada tarea
+        now = store_ids(t)
+        row[f"proto_learn_t{k + 1}"] = float(len(born[k]))
+        row[f"proto_kept_t{k + 1}"] = float(len(born[k] & now))
+        row[f"proto_surv_t{k + 1}"] = float(len(born[k] & now) / max(len(born[k]), 1))
+        row[f"proto_end_t{k + 1}"] = float(len(now))
     for k, t in enumerate(tasks):
         tag = f"t{k + 1}"
         for name in ("full", "slow", "fast"):
@@ -1115,57 +1132,77 @@ def phase_f6diag(a, data):
 
 
 ACE = "+proj.ace=true"
+PROTECT = "+head.protect=true+readout.active_window=200"
+FIX_CANDS = {"competencia entre presentes en la proyección (ace)": ACE,
+             "almacén: proteger lo consolidado de clases ausentes (protect)": PROTECT}
 
 
 def phase_f6fix(a, data):
-    """Hipótesis que sale del diagnóstico (f6diag, en validación): los rasgos de V1 conservan
+    """Hipótesis que salen del diagnóstico (f6diag, en validación): los rasgos de V1 conservan
     lo viejo y la proyección lo pierde, con los errores yendo a clases más nuevas. La
     proyección de c2 ya no deprime a las clases ausentes (active_window=200), pero su error
     positivo usa la competencia contra todas las salidas: una clase ausente parecida baja
-    p(objetivo) y la fila nueva crece sobre los rasgos compartidos. Arreglo local (Readout
-    ace): para lo que llega, la competencia se resuelve sólo entre las clases presentes,
-    como la entropía cruzada enmascarada de ER-ACE; el repaso sigue con el error completo.
-    1) Validación (Split-Fashion, split de validación, semillas 10-12): c2 contra c2 + ace;
-       se adopta si sube la exactitud media (regla fijada antes de mirar).
-    2) Si se adopta, test una sola vez (semillas 3-5) en Split-Fashion y Split-MNIST, contra
-       c2 y ER / ER-ACE con los mismos bytes de f6s (ace no agrega estado)."""
+    p(objetivo) y la fila nueva crece sobre los rasgos compartidos.
+    Candidatos (locales):
+      ace      para lo que llega, la competencia de la proyección se resuelve sólo entre
+               las clases presentes (entropía cruzada enmascarada de ER-ACE); el repaso
+               sigue con el error completo.
+      protect  en el almacén, las ganadoras comprometidas con una clase ausente no cambian
+               ni su lectura ni sus pesos (proteger lo consolidado; pedido por si el almacén
+               pierde rasgos: ver la supervivencia de prototipos y su sonda en f6diag).
+    1) Validación (Split-Fashion, split de validación, semillas 10-12), regla fijada antes
+       de mirar: se adopta el candidato de mayor exactitud media si supera a c2; si los dos
+       la superan, se prueba también la suma y se queda el mejor de los tres.
+    2) Lo adoptado se prueba una sola vez en test (semillas 3-5) en Split-Fashion y
+       Split-MNIST, contra c2 y ER / ER-ACE de f6s (ninguno de los dos agrega estado)."""
     _PHASE["name"] = "f6diag"
     V = split_data(data)["val"]
     vrows: list = []
-    for spec in (C2, C2 + ACE):
+
+    def run(spec):
         for seed in DIAG_SEEDS:
-            key = dict(b="diag", ds="fashion", spec=spec, seed=seed, split="val")
-            if spec != C2:
-                key["probes"] = False
-            row = cached(key, lambda spec=spec, seed=seed: split_diag("fashion", spec, seed, V, probes=(spec == C2)))
+            key = dict(b="diag", ds="fashion", spec=spec, seed=seed, split="val", probes=False)
+            row = cached(key, lambda spec=spec, seed=seed: split_diag("fashion", spec, seed, V, probes=False))
             vrows.append(row)
             print(f"[f6fix] val {spec} s{seed}: acc={row['acc']:.4f} " + " ".join(
                 f"{k}={row[k]:.3f}" for k in ("end_full_old", "end_slow_old", "end_fast_old", "learn_slow_old",
-                                             "errlater_slow_old", "end_full_t5", "end_slow_t5")), flush=True)
-    m = lambda sp, k: float(np.mean([r[k] for r in vrows if r["model"] == sp]))
-    adopt = m(C2 + ACE, "acc") > m(C2, "acc")
+                                             "errlater_slow_old", "proto_surv_old", "end_full_t5")), flush=True)
+        return float(np.mean([r["acc"] for r in vrows if r["model"] == spec]))
+
+    score = {"c2": run(C2)}
+    for name, mod in FIX_CANDS.items():
+        score[name] = run(C2 + mod)
+    better = [n for n in FIX_CANDS if score[n] > score["c2"]]
+    mods = dict(FIX_CANDS)
+    if len(better) == 2:
+        mods["ace + protect"] = ACE + PROTECT
+        score["ace + protect"] = run(C2 + ACE + PROTECT)
+        better.append("ace + protect") if score["ace + protect"] > score["c2"] else None
+    adopted = max(better, key=lambda n: score[n]) if better else None
     vkeys = ["acc", "end_full_old", "end_slow_old", "end_fast_old", "learn_full_old", "learn_slow_old",
-             "learn_fast_old", "errlater_full_old", "errlater_slow_old", "errlast_slow_old", "end_full_t5",
-             "end_slow_t5", "end_fast_t5", "seconds"]
+             "learn_fast_old", "errlater_full_old", "errlater_slow_old", "errlast_slow_old", "proto_surv_old",
+             "proto_learn_old", "proto_kept_old", "proto_end_old", "end_full_t5", "end_slow_t5", "end_fast_t5",
+             "neurons", "evicted", "seconds"]
     vsum = agg(vrows, ("bench", "scenario", "model"), vkeys)
     for d in vsum:
-        print(f"  val {d['model']:24s} " + fmt(d, vkeys[:10]), flush=True)
-    out = dict(phase="f6fix", adopted=adopt, rule=phase_f6fix.__doc__, val_seeds=DIAG_SEEDS,
-               validation=dict(summary=vsum, rows=vrows))
-    rows: list = []
-    if adopt:
+        print(f"  val {d['model'][:60]:60s} " + fmt(d, vkeys[:11]), flush=True)
+    out = dict(phase="f6fix", adopted=adopted is not None, adopted_name=adopted,
+               adopted_mod=mods[adopted] if adopted else "", scores=score, candidates=mods,
+               rule=phase_f6fix.__doc__, val_seeds=DIAG_SEEDS, validation=dict(summary=vsum, rows=vrows))
+    if adopted:
         _PHASE["name"] = "f6s"
         T = split_data(data)["test"]
-        split_bench([C2 + ACE], a.seeds, T, rows=rows, tag="f6fix")
+        rows: list = []
+        split_bench([C2 + mods[adopted]], a.seeds, T, rows=rows, tag="f6fix")
         ref = json.loads((RESULTS / "consolidacion_f6_split.json").read_text())["rows"]
         rows += [dict(r, reference="f6s") for r in ref]
         keys = ["acc", "forgetting", "slow_acc", "fast_acc", "task1", "task2", "task3", "task4", "task5", "bytes",
                 "neurons", "evicted", "seconds"]
         out["test"] = dict(seeds=a.seeds, summary=agg(rows, ("bench", "scenario", "model"), keys), rows=rows)
         for d in out["test"]["summary"]:
-            print(f"  test {d['scenario']:8s} {d['model'][:40]:40s} " + fmt(d, ["acc", "forgetting"]), flush=True)
+            print(f"  test {d['scenario']:8s} {d['model'][:60]:60s} " + fmt(d, ["acc", "forgetting"]), flush=True)
     (RESULTS / "consolidacion_f6_arreglo.json").write_text(json.dumps(out, indent=1, default=float))
-    print(f"[f6fix] adoptado: {adopt} (validación c2 {m(C2, 'acc'):.4f}, c2+ace {m(C2 + ACE, 'acc'):.4f})", flush=True)
+    print(f"[f6fix] puntajes de validación: {score}; adoptado: {adopted}", flush=True)
 
 
 # ====================================================================== F7
@@ -1501,8 +1538,8 @@ def phase_f7k(a, data):
     """Flujo continuo reducido (escala 0,1).
     1) Validación (semillas 10 y 11): la plasticidad tardía bajaba con slow_error="own"
        (f1b: 0,932 de una red nueva). Candidatos: el elegido, el elegido con sueño en
-       micro-fases y renormalización, el elegido con el error conjunto y, si f6fix lo
-       adoptó, el elegido con la competencia entre presentes (ace). Criterio fijado
+       micro-fases y renormalización, el elegido con el error conjunto y, si f6fix
+       adoptó un arreglo, el elegido con ese arreglo. Criterio fijado
        antes de mirar: final - olvido + min(plasticidad, 1).
     2) Test (semillas nuevas 3-5): el ganador contra c2 y ER-ACE con los mismos bytes."""
     S = split_data(data)
@@ -1515,8 +1552,9 @@ def phase_f7k(a, data):
     if "top.slow_error=own" in base:
         cands["elegido con error conjunto"] = base.replace("+top.slow_error=own", "")
     fix = RESULTS / "consolidacion_f6_arreglo.json"
-    if fix.exists() and json.loads(fix.read_text()).get("adopted"):    # arreglo de la lectura (f6fix)
-        cands["elegido + competencia entre presentes (ace)"] = base + ACE
+    if fix.exists() and json.loads(fix.read_text()).get("adopted"):    # arreglo adoptado en f6fix
+        fx = json.loads(fix.read_text())
+        cands[f"elegido + {fx['adopted_name']}"] = base + fx["adopted_mod"]
     vrows: list = []
     scores = {}
     for name, sp in cands.items():
