@@ -1,0 +1,422 @@
+{
+  "esquema": 1,
+  "estado": "en curso",
+  "actualizado": "2026-11-26",
+  "convenciones": {
+    "indice_normalizado": "(red - azar) / (referencia - azar), sin recortar a [0, 1]; la referencia es la entrada marcada en `referencia_indice`",
+    "verificacion": {
+      "primaria": "cifra leída en el artículo original, su resumen oficial o su repositorio, o recalculada de sus datos publicados",
+      "secundaria": "cifra leída en una revisión o en otro artículo que cita al original (se nombra dónde)",
+      "sin_verificar": "no se pudo leer la cifra en línea: el valor queda vacío y no se usa"
+    },
+    "tipo_valor": {
+      "media": "valor central publicado",
+      "cota_inferior": "el original da un mínimo (p. ej. «más de 90 %»)",
+      "rango": "el original sólo da mínimo y máximo entre sujetos",
+      "aproximado": "el texto leído da un valor redondeado («alrededor de»)",
+      "cualitativo": "el original da un signo o una prueba estadística, sin valor central legible"
+    },
+    "regla": "ninguna cifra de este archivo viene de memoria; lo que no se pudo leer en línea figura en `pendiente` como «sin referencia verificada»",
+    "releida": "fecha en que el agente de medición volvió a leer la cifra en la fuente; las entradas sin ese campo conservan la lectura anterior y no se usan como `referencia_indice`",
+    "referencia_rango": "si la referencia es un rango entre sujetos, el índice se informa contra los dos extremos",
+    "referencia_cota": "si la referencia humana es una cota inferior, el índice calculado es una cota superior del índice real",
+    "comparacion_especies": "por prueba, cada referencia numérica con la misma métrica queda «por encima» o «por debajo» de la media de la red; «a la par» si la diferencia es menor que el desvío entre semillas; las cualitativas no se ordenan",
+    "indice_global": "promedio simple de los promedios por dimensión que tienen al menos un índice; es una convención, sin pesos, y se informa siempre junto al perfil",
+    "condicion_entrada": "simbolos (identidades perfectas), imagenes (píxeles), texto (bytes): se declara en cada resultado; con símbolos la comparación con animales que ven objetos reales no es equivalente"
+  },
+  "dimensiones": {
+    "pocos_ejemplos": "Aprender de pocos ejemplos",
+    "flexibilidad": "Flexibilidad (reversión)",
+    "conceptos_abstractos": "Conceptos abstractos (igual/distinto)",
+    "razonamiento_relacional": "Razonamiento relacional y composición",
+    "percepcion": "Percepción",
+    "memoria_de_trabajo": "Memoria de trabajo",
+    "metacognicion": "Metacognición",
+    "memoria_sin_interferencia": "Memoria sin interferencia (aprendizaje continuo)",
+    "lenguaje": "Lenguaje",
+    "integracion": "Percepción + razonamiento (sin referencia humana publicada)"
+  },
+  "pruebas": {
+    "omniglot": {
+      "nombre": "Omniglot: clasificar con un solo ejemplo, 20 opciones dentro del mismo alfabeto",
+      "dimension": "pocos_ejemplos",
+      "corre": "medicion",
+      "metrica": "exactitud (1 - tasa de error) sobre 400 ensayos",
+      "azar": {"valor": 0.05, "derivacion": "1 de 20 opciones"},
+      "protocolo_publicado": "20 corridas; en cada una, 20 caracteres nuevos de un mismo alfabeto de evaluación con un ejemplo cada uno y 20 imágenes de prueba: para cada imagen de prueba, elegir cuál de los 20 caracteres es. Antes se puede aprender del conjunto de fondo (30 alfabetos, 964 caracteres), que no comparte alfabetos ni caracteres con la evaluación. Imágenes binarias de 105 x 105.",
+      "datos": {"fuente": "https://github.com/brendenlake/omniglot", "commit": "057f034baf2ecb8530bc5710e5a23584d2a519cc", "archivos": ["python/images_background.zip", "python/images_evaluation.zip", "python/one-shot-classification/all_runs.zip"], "comprobado": "contados en los zip: 30 alfabetos y 964 caracteres de fondo (19 280 imágenes), 20 alfabetos y 659 caracteres de evaluación (13 180 imágenes), 20 corridas de 20 + 20 imágenes; 800 imágenes en all_runs.zip (20 corridas x 40)"},
+      "referencia_indice": "lake2015_humanos",
+      "humano": [
+        {"id": "lake2015_humanos", "especie": "humano adulto", "valor": 0.955, "tipo_valor": "cota_inferior", "cita": "Lake, Salakhutdinov & Tenenbaum (2015), Science 350:1332; cifra tal como la resumen los mismos autores en «The Omniglot challenge: a 3-year progress report» (2019), tabla 1", "url": "https://ar5iv.labs.arxiv.org/html/1902.03477", "verificacion": "primaria", "protocolo": "mismo protocolo de 20 opciones dentro del alfabeto", "nota": "error humano de 4,5 % como máximo: los autores lo dan como cota superior porque los participantes respondían rápido y sin incentivo por acertar. La exactitud humana real puede ser mayor, así que el índice de la red es una cota superior.", "releida": "2026-11-26"}
+      ],
+      "animales": [],
+      "maquinas": [
+        {"id": "bpl", "sistema": "BPL (inducción de programas bayesiana)", "valor": 0.967, "cita": "Lake et al. 2015, vía el informe de 2019, tabla 1", "url": "https://ar5iv.labs.arxiv.org/html/1902.03477", "verificacion": "primaria", "nota": "error 3,3 %; usa los trazos del conjunto de fondo", "releida": "2026-11-26"},
+        {"id": "convnet_simple", "sistema": "red convolucional simple", "valor": 0.865, "cita": "ídem", "url": "https://ar5iv.labs.arxiv.org/html/1902.03477", "verificacion": "primaria", "nota": "error 13,5 %", "releida": "2026-11-26"},
+        {"id": "prototipos", "sistema": "red de prototipos (Snell et al. 2017), protocolo original", "valor": 0.863, "cita": "ídem", "url": "https://ar5iv.labs.arxiv.org/html/1902.03477", "verificacion": "primaria", "nota": "error 13,7 %", "releida": "2026-11-26"},
+        {"id": "hausdorff", "sistema": "distancia de Hausdorff modificada sobre píxeles (línea base del repositorio)", "valor": 0.612, "cita": "demo_classification.py del repositorio de Omniglot", "url": "https://github.com/brendenlake/omniglot/blob/master/python/one-shot-classification/demo_classification.py", "verificacion": "primaria", "nota": "error 38,8 % según el comentario del script; se usa además para comprobar que la batería carga el protocolo igual que el original", "releida": "2026-11-26"}
+      ],
+      "pendiente": []
+    },
+    "harlow": {
+      "nombre": "Conjuntos de aprendizaje de Harlow: acierto en el ensayo 2 de problemas de discriminación con objetos nuevos",
+      "dimension": "pocos_ejemplos",
+      "corre": "medicion",
+      "metrica": "proporción de aciertos en el ensayo 2, por tramo de problemas",
+      "azar": {"valor": 0.5, "derivacion": "dos objetos; antes de aprender a aprender, el ensayo 2 no supera al 1"},
+      "protocolo_publicado": "Monos rhesus en el aparato de Wisconsin: en cada problema, dos objetos nunca vistos, uno premiado; la posición cambia entre ensayos. 344 problemas en total: 32 preliminares de 50 ensayos, 200 de 6 ensayos y 112 de discriminación con reversión (8 de los 11 monos hicieron los 344).",
+      "datos": {"fuente": "generado por la batería (objetos = símbolos nuevos o imágenes nunca vistas)"},
+      "referencia_indice": "hodos1970_nino",
+      "humano": [
+        {"id": "hodos1970_nino", "especie": "niño (CI 136), un sujeto", "valor": 1.0, "tipo_valor": "media", "tras_problemas": 100, "cita": "Hodos (1970), citado por Thomas (2019), «Learning to Learn», Encyclopedia of Animal Cognition and Behavior", "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf", "verificacion": "secundaria", "protocolo": "curva comparada entre 16 especies; no se pudo leer el protocolo original", "nota": "un solo niño; no hay cifra de adultos verificada", "releida": "2026-11-26"}
+      ],
+      "animales": [
+        {"id": "harlow1949_primeros8", "especie": "mono rhesus", "valor": 0.52, "tipo_valor": "media", "tramo": "primeros 8 problemas", "cita": "Harlow (1949), Psychol. Rev. 56:51, resumido por Medin (1972), Psychol. Bull.", "url": "https://groups.psych.northwestern.edu/medin/documents/Medin1972PsychBull.pdf", "verificacion": "secundaria", "releida": "2026-11-26"},
+        {"id": "harlow1950_1a100", "especie": "mono rhesus", "valor": 0.82, "tipo_valor": "media", "tramo": "problemas de 6 ensayos 1 a 100 (después de los 32 preliminares)", "cita": "Harlow (1950), J. Exp. Psychol. 40:26, resumen de la APA (versión indexada por scilit)", "url": "https://scilit.com/publications/d5853446e00b40505db0bdeed003ca44", "verificacion": "primaria", "nota": "11 monos; mismo conjunto de datos que Harlow 1949", "releida": "2026-11-26"},
+        {"id": "harlow1950_101a200", "especie": "mono rhesus", "valor": 0.87, "tipo_valor": "media", "tramo": "problemas de 6 ensayos 101 a 200", "cita": "Harlow (1950), J. Exp. Psychol. 40:26, resumen de la APA (versión indexada por scilit)", "url": "https://scilit.com/publications/d5853446e00b40505db0bdeed003ca44", "verificacion": "primaria", "releida": "2026-11-26"},
+        {"id": "harlow1949_ultimos112", "especie": "mono rhesus", "valor": 0.9, "tipo_valor": "cota_inferior", "tramo": "últimos 112 problemas de 344", "cita": "Harlow (1949), resumido por Medin (1972)", "url": "https://groups.psych.northwestern.edu/medin/documents/Medin1972PsychBull.pdf", "verificacion": "secundaria", "nota": "Medin dice «más de 90 %»; no se pudo leer la cifra exacta del original", "releida": "2026-11-26"},
+        {"id": "warren1965_rhesus", "especie": "mono rhesus (el mejor de la comparación)", "valor": 0.85, "tipo_valor": "media", "tras_problemas": 400, "cita": "Warren (1965), citado por Thomas (2019)", "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf", "verificacion": "secundaria", "releida": "2026-11-26"},
+        {"id": "warren1965_rata_ardilla", "especie": "rata y ardilla (las peores de la comparación)", "valor": 0.6, "tipo_valor": "media", "tras_problemas": 1800, "cita": "Warren (1965), citado por Thomas (2019)", "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf", "verificacion": "secundaria", "releida": "2026-11-26"},
+        {"id": "hodos1970_tupaya", "especie": "tupaya (musaraña arborícola)", "valor": 0.5, "tipo_valor": "media", "tras_problemas": 1000, "cita": "Hodos (1970), citado por Thomas (2019)", "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf", "verificacion": "secundaria", "releida": "2026-11-26"},
+        {"id": "thomas2012_chimpance", "especie": "chimpancé", "valor_min": 0.9, "valor_max": 1.0, "tipo_valor": "rango", "tras_problemas": 200, "cita": "Thomas (2012), «Learning set formation and conceptualization», Encyclopedia of the Sciences of Learning (sin cita del original)", "url": "https://www.psychology.uga.edu/sites/default/files/inline-files/LSFvCLPreprint.pdf", "verificacion": "secundaria", "releida": "2026-11-26"},
+        {"id": "thomas2012_rata", "especie": "rata (objetos visuales)", "valor": 0.55, "tipo_valor": "aproximado", "tras_problemas": 1000, "cita": "Thomas (2012), ídem (sin cita del original)", "url": "https://www.psychology.uga.edu/sites/default/files/inline-files/LSFvCLPreprint.pdf", "verificacion": "secundaria", "releida": "2026-11-26"},
+        {"id": "bailey1998_ratas", "especie": "rata (tres)", "valor": 0.87, "tipo_valor": "media", "tramo": "problemas 16 a 30", "cita": "Bailey & Thomas (1998), citado por Thomas (2019)", "url": "https://psychology.uga.edu/sites/default/files/inline-files/Learning%20ro%20learn%20Final%20Proof%203%20Feb%202019.pdf", "verificacion": "secundaria", "releida": "2026-11-26", "nota": "81 % en los problemas 16 a 60; la modalidad de los estímulos no se pudo leer en la revisión, así que no se compara con la red"}
+      ],
+      "maquinas": [],
+      "pendiente": ["cifra exacta del ensayo 2 en los últimos problemas de Harlow (1949): el original no está accesible en línea; sólo «más de 90 %» vía Medin (1972)", "curva de niños de Harlow (1949): sin referencia verificada", "número de ensayos antes de la reversión en los 112 problemas finales: sin referencia verificada"],
+      "metrica_principal": "acierto en el ensayo 2 de los problemas de 6 ensayos 101 a 200 (después de 32 preliminares de 50 ensayos), en línea: la red aprende mientras se mide, como los monos"
+    },
+    "reversion_serial": {
+      "nombre": "Reversión serial: la misma discriminación se invierte muchas veces",
+      "dimension": "flexibilidad",
+      "corre": "medicion",
+      "metrica": "errores por reversión, primera contra últimas; acierto en el ensayo 2 después de cada reversión",
+      "azar": {"valor": 0.5, "derivacion": "dos opciones"},
+      "protocolo_publicado": "Discriminación de dos estímulos hasta criterio; después se invierte cuál se premia, y así muchas veces con los mismos estímulos. Se mide si las reversiones sucesivas se resuelven con menos errores.",
+      "datos": {"fuente": "generado por la batería"},
+      "referencia_indice": null,
+      "humano": [],
+      "animales": [
+        {"id": "bond2007_corvidos", "especie": "tres córvidos (arrendajo piñonero, cascanueces de Clark, charas)", "valor": null, "tipo_valor": "cualitativo", "cualitativo": "las tres especies mejoran con las reversiones sucesivas; el arrendajo piñonero comete menos errores después de cada reversión", "cita": "Bond, Kamil & Balda (2007), J. Comp. Psychol. 121:372, resumen", "url": "https://digitalcommons.unl.edu/bioscibehavior/20", "verificacion": "primaria"},
+        {"id": "komischke2002_abejas", "especie": "abeja", "valor": null, "tipo_valor": "cualitativo", "cualitativo": "grupos con 3, 2, 1 o 0 reversiones previas pasan por una fase final con dos reversiones más; el resumen dice que la experiencia con reversiones parece mejorar el desempeño", "cita": "Komischke, Giurfa, Lachnit & Malun (2002), Learn. Mem. 9:122, resumen", "url": "https://scilit.com/publications/a1b379dd1cf90ca1202c296b3cf0f369", "verificacion": "primaria (resumen)", "protocolo": "reversión sucesiva: pares de olores distintos y solapados (A+B-, B+C-, ...), no la misma pareja; condicionamiento del reflejo de extensión de la probóscide", "releida": "2026-11-26"},
+        {"id": "mota2010_abejas", "especie": "abeja", "valor": null, "tipo_valor": "cualitativo", "cualitativo": "con reversiones múltiples del mismo par de olores la discriminación y la reversión empeoran de fase en fase: no hay aprender a aprender", "cita": "Mota & Giurfa (2010), Front. Behav. Neurosci. 4:48, resumen", "url": "https://www.frontiersin.org/articles/10.3389/fnbeh.2010.00048", "verificacion": "primaria", "protocolo": "cuatro fases con el mismo par de olores (A+B-, A-B+, A+B-, A-B+), 5 ensayos premiados y 5 sin premio por fase, 111 abejas; reflejo de extensión de la probóscide", "releida": "2026-11-26"},
+        {"id": "harlow1950_reversion", "especie": "mono rhesus", "valor": null, "tipo_valor": "cualitativo", "cualitativo": "8 monos hicieron 112 problemas de discriminación con reversión; la cifra del ensayo 2 tras la reversión no se pudo leer", "cita": "Harlow (1950), resumen de la APA", "url": "https://scilit.com/publications/d5853446e00b40505db0bdeed003ca44", "verificacion": "primaria"}
+      ],
+      "maquinas": [],
+      "pendiente": ["valor numérico de errores por reversión en cualquier especie: sin referencia verificada (los resúmenes leídos sólo dan el sentido del efecto)", "humanos en reversión serial determinista: sin referencia verificada"]
+    },
+    "reversion_volatil": {
+      "nombre": "Reversión probabilística con volatilidad (Behrens et al. 2007)",
+      "dimension": "flexibilidad",
+      "corre": "medicion",
+      "metrica": "tasa de aprendizaje ajustada (regla delta + elección sigmoide) en la fase estable y en la volátil; firma humana: mayor en la volátil",
+      "azar": {"valor": 0.0, "derivacion": "diferencia nula entre fases"},
+      "protocolo_publicado": "18 personas eligen entre dos opciones (azul o verde); una sola es correcta en cada ensayo. Fase estable: 120 ensayos con 75 % de azul. Fase volátil: 170 ensayos en los que la opción más probable (80 %) cambia cada 30 o 40 ensayos. La mitad de los sujetos hace las fases en el otro orden. La magnitud del premio de cada opción se sortea en cada ensayo (entre 0 y 100, complementarias). La tasa de aprendizaje se ajusta por fase con una regla delta y una elección sigmoide.",
+      "datos": {"fuente": "generado por la batería con el mismo calendario"},
+      "referencia_indice": null,
+      "humano": [
+        {"id": "behrens2007", "especie": "humano adulto", "valor": null, "tipo_valor": "cualitativo", "cualitativo": "la tasa de aprendizaje ajustada es mayor en la fase volátil que en la estable: t pareada (17) = 2,91, P < 0,005; las medias sólo están en la figura 2e", "n": 18, "cita": "Behrens, Woolrich, Walton & Rushworth (2007), Nat. Neurosci. 10:1214", "url": "https://home.cs.colorado.edu/~mozer/Teaching/syllabi/7782/readings/Behrensetal2007.pdf", "verificacion": "primaria", "protocolo": "el de arriba", "releida": "2026-11-26"}
+      ],
+      "animales": [],
+      "maquinas": [],
+      "pendiente": ["medias de la tasa de aprendizaje humana por fase (sólo en figura): sin referencia verificada", "datos de ratas o monos con el mismo calendario: sin referencia verificada"]
+    },
+    "igual_distinto": {
+      "nombre": "Concepto igual/distinto con transferencia a estímulos nuevos",
+      "dimension": "conceptos_abstractos",
+      "corre": "medicion",
+      "metrica": "exactitud con estímulos nunca vistos, en función del tamaño del conjunto de entrenamiento",
+      "azar": {"valor": 0.5, "derivacion": "dos respuestas, mitad de ensayos iguales"},
+      "protocolo_publicado": "Monos y palomas (Katz, Wright y colaboradores): dos figuras; si son la misma se toca la figura de abajo y si son distintas un rectángulo blanco. Sesiones de 100 ensayos, mitad iguales. Se entrena con un conjunto de 8 figuras, se prueba con figuras nuevas (10 ensayos de transferencia entre 90 de base, cada figura nueva una sola vez) y se duplica el conjunto (16, 32, ... 1 024). Abejas (Giurfa et al. 2001): laberinto en Y con igualación (o no igualación) demorada a la muestra, 60 ensayos de entrenamiento, y pruebas de transferencia con estímulos nuevos, incluso de otra modalidad.",
+      "datos": {"fuente": "generado por la batería; figuras = símbolos nuevos o imágenes de Omniglot nunca vistas"},
+      "referencia_indice": null,
+      "humano": [],
+      "animales": [
+        {"id": "giurfa2001_abejas", "especie": "abeja", "valor": 0.75, "tipo_valor": "aproximado", "cualitativo": "aprenden la regla y la transfieren a estímulos nuevos y a otra modalidad sensorial", "cita": "Giurfa, Zhang, Jenett, Menzel & Srinivasan (2001), Nature 410:930 (resumen); el promedio poblacional en pruebas y transferencias, «alrededor de 75 %», y los 60 ensayos de entrenamiento se leyeron en Cope et al. (2018), PLoS Comput. Biol. 14:e1006435", "url": "https://eprints.whiterose.ac.uk/id/eprint/137143/1/journal.pcbi.1006435.pdf", "url_original": "https://www.doi.org/10.1038/35073582", "verificacion": "secundaria", "nota": "los porcentajes por experimento del original están en figuras y no se pudieron leer", "releida": "2026-11-26"},
+        {"id": "katz2010_8figuras", "especie": "mono rhesus, mono capuchino y paloma", "valor": 0.5, "tipo_valor": "cualitativo", "conjunto": 8, "cualitativo": "con el conjunto inicial de 8 figuras ninguna de las tres especies transfiere a figuras nuevas", "cita": "Katz, Sturz & Wright (2010), Behav. Processes 83:172, que resume a Katz, Wright & Bachevalier (2002), Wright, Rivera, Katz & Bachevalier (2003) y Katz & Wright (2006)", "url": "https://core.ac.uk/download/229167949.pdf", "verificacion": "secundaria", "releida": "2026-11-26"},
+        {"id": "wright2016_monos_palomas", "especie": "mono rhesus y capuchino (64 a 128 figuras), paloma (256 figuras)", "valor": null, "tipo_valor": "cualitativo", "cualitativo": "la transferencia a figuras nuevas iguala a la línea de base entre 64 y 128 figuras en monos (como en cascanueces) y con un conjunto algo mayor, 256, en palomas", "cita": "Wright, Magnotti, Katz, Leonard & Kelly (2016), J. Exp. Anal. Behav. 105:76, resumen (compara con monos rhesus, capuchinos y palomas)", "url": "https://pubmed.ncbi.nlm.nih.gov/26615450/", "verificacion": "primaria (resumen)", "releida": "2026-11-26", "nota": "antes citaba a Nakamura et al. (PMC4259154), que no se pudo releer"},
+        {"id": "katz2010_reduccion", "especie": "paloma (ya entrenada con 1 024 figuras, conjunto reducido a 8)", "valor": 0.758, "tipo_valor": "media", "conjunto": 8, "cita": "Katz, Sturz & Wright (2010), Behav. Processes 83:172", "url": "https://core.ac.uk/download/229167949.pdf", "verificacion": "primaria", "nota": "transferencia 25,8 puntos sobre el azar; línea de base 93,6 %", "releida": "2026-11-26"},
+        {"id": "wright2016_cascanueces", "especie": "cascanueces de Clark", "valor": null, "tipo_valor": "cualitativo", "cualitativo": "transferencia parcial ya con 8 figuras y plena con 128", "cita": "«Concept learning set-size functions for Clark's nutcrackers» (2016), J. Exp. Anal. Behav. 105:76, resumen", "url": "https://pubmed.ncbi.nlm.nih.gov/26615450/", "verificacion": "primaria", "releida": "2026-11-26"}
+      ],
+      "maquinas": [],
+      "pendiente": ["porcentajes de transferencia por experimento de Giurfa et al. (2001): sin referencia verificada (figuras)", "porcentajes de base y transferencia por tamaño de conjunto en monos (Katz et al. 2002): sin referencia verificada (figuras)", "humanos con el mismo procedimiento: sin referencia verificada"]
+    },
+    "scan": {
+      "nombre": "SCAN: composición de instrucciones (divisiones simple, jump y longitud)",
+      "dimension": "razonamiento_relacional",
+      "corre": "razonamiento3",
+      "metrica": "exactitud de secuencia completa por división",
+      "azar": {"valor": 0.0, "derivacion": "salida exacta de una secuencia: el azar es despreciable"},
+      "protocolo_publicado": "Traducir una instrucción (por ejemplo «jump twice») a la secuencia de acciones. División simple: partición al azar. División jump: hay que componer «jump» con construcciones que en el entrenamiento sólo se vieron con otros verbos. Las redes publicadas se entrenan con 100 000 muestras del conjunto de entrenamiento.",
+      "datos": {"fuente": "https://github.com/brendenlake/SCAN", "commit": "c4b756cbc010d75c912f16c42c8f15dc6b7e6c8f", "nota": "el commit es el que usa razonamiento3"},
+      "referencia_indice": null,
+      "humano": [],
+      "animales": [],
+      "maquinas": [
+        {"id": "lstm_simple", "sistema": "LSTM seq2seq, división simple", "valor": 0.998, "cita": "tabla 2 de Dessì & Baroni (2019), arXiv:1905.08527", "url": "https://arxiv.org/pdf/1905.08527", "verificacion": "secundaria", "nota": "la tabla reúne resultados de trabajos anteriores con LSTM y GRU", "releida": "2026-11-26"},
+        {"id": "lstm_jump", "sistema": "LSTM seq2seq, división jump", "valor": 0.012, "cita": "ídem", "url": "https://arxiv.org/pdf/1905.08527", "verificacion": "secundaria", "releida": "2026-11-26"},
+        {"id": "cnn_jump", "sistema": "CNN seq2seq, división jump", "valor": 0.692, "cita": "Dessì & Baroni (2019), arXiv:1905.08527", "url": "https://arxiv.org/pdf/1905.08527", "verificacion": "primaria", "nota": "más o menos 8,2 entre corridas", "releida": "2026-11-26"}
+      ],
+      "pendiente": ["no hay datos de personas resolviendo SCAN mismo; los datos humanos son de la tarea de pocos ejemplos de Lake & Baroni (ver `instrucciones_pocos_ejemplos`)", "división de longitud: sin referencia verificada"]
+    },
+    "instrucciones_pocos_ejemplos": {
+      "nombre": "Instrucciones en un pseudolenguaje con pocos ejemplos (Lake & Baroni 2023)",
+      "dimension": "razonamiento_relacional",
+      "corre": "razonamiento3",
+      "metrica": "proporción de respuestas idénticas a la solución algebraica",
+      "azar": {"valor": 0.0, "derivacion": "salida exacta de una secuencia"},
+      "protocolo_publicado": "25 personas (Mechanical Turk) ven 14 instrucciones de estudio (pares entrada/salida: pseudopalabras a secuencias de círculos de colores), en un currículo de cuatro etapas, y producen la salida de 10 instrucciones de consulta.",
+      "datos": {"fuente": "https://github.com/brendenlake/MLC", "commit": "34837ccb06c855bb29558ad99bb1cef70debd559", "nota": "el commit es el que usa razonamiento3 (data_human/few_shot)"},
+      "referencia_indice": "lake2023_humanos",
+      "humano": [
+        {"id": "lake2023_humanos", "especie": "humano adulto", "valor": 0.807, "tipo_valor": "media", "n": 25, "cita": "Lake & Baroni (2023), Nature 623:115", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10620072", "verificacion": "primaria", "nota": "14 instrucciones de estudio y 10 de consulta; además generalizan bien a salidas más largas que las vistas en el 72,5 % de los casos", "releida": "2026-11-26"}
+      ],
+      "animales": [],
+      "maquinas": [
+        {"id": "mlc", "sistema": "MLC (transformer con meta-aprendizaje), corrida típica", "valor": 0.929, "cita": "Lake & Baroni (2023), información suplementaria", "url": "https://www.cs.princeton.edu/~bl8144/papers/LakeBaroniNatureSI.pdf", "verificacion": "primaria", "nota": "desvío 8,2 entre corridas; 95,3 % (desvío 0,4) en los episodios de validación", "releida": "2026-11-26"}
+      ],
+      "pendiente": []
+    },
+    "babi": {
+      "nombre": "bAbI: 20 tareas de preguntas y respuestas, 1 000 ejemplos de entrenamiento",
+      "dimension": "razonamiento_relacional",
+      "corre": "razonamiento3",
+      "metrica": "exactitud media de las 20 tareas",
+      "azar": {"valor": null, "derivacion": "depende de la tarea; sin azar analítico único"},
+      "protocolo_publicado": "1 000 preguntas de entrenamiento y 1 000 de prueba por tarea; una tarea se da por resuelta con 95 % o más.",
+      "datos": {"fuente": "https://github.com/facebook/bAbI-tasks", "espejo": "https://github.com/bgavran/DNC (commit 668a2f1, bAbI v1.2 en/, el que usa razonamiento3)"},
+      "referencia_indice": null,
+      "humano": [
+        {"id": "weston2015_humano", "especie": "humano", "valor": null, "tipo_valor": "cualitativo", "cualitativo": "los autores afirman que las tareas no tienen ruido y que una persona que lea el idioma puede llegar a 100 %; es una afirmación de diseño, no una medición", "cita": "Weston et al. (2015), arXiv:1502.05698", "url": "https://ar5iv.arxiv.org/html/1502.05698", "verificacion": "primaria", "releida": "2026-11-26"}
+      ],
+      "animales": [],
+      "maquinas": [
+        {"id": "memnn", "sistema": "MemNN con memoria adaptativa, n-gramas y no linealidad (con hechos de apoyo como supervisión)", "valor": 0.93, "cita": "Weston et al. (2015), tabla 3", "url": "https://ar5iv.arxiv.org/html/1502.05698", "verificacion": "primaria", "releida": "2026-11-26"},
+        {"id": "lstm", "sistema": "LSTM (sólo respuestas como supervisión)", "valor": 0.49, "cita": "ídem", "url": "https://ar5iv.arxiv.org/html/1502.05698", "verificacion": "primaria", "releida": "2026-11-26"},
+        {"id": "ngramas", "sistema": "clasificador de n-gramas", "valor": 0.34, "cita": "ídem", "url": "https://ar5iv.arxiv.org/html/1502.05698", "verificacion": "primaria", "releida": "2026-11-26"}
+      ],
+      "pendiente": ["exactitud humana medida en bAbI: sin referencia verificada (sólo la afirmación de diseño)"]
+    },
+    "mnist": {
+      "nombre": "MNIST: clasificación de dígitos manuscritos",
+      "dimension": "percepcion",
+      "corre": "ingesta (resultados de v0.3-dev y de predictivo)",
+      "metrica": "exactitud en el test de 10 000",
+      "azar": {"valor": 0.1, "derivacion": "10 clases balanceadas"},
+      "protocolo_publicado": "60 000 imágenes de entrenamiento y 10 000 de prueba.",
+      "datos": {"fuente": "https://github.com/fgnt/mnist"},
+      "referencia_indice": "keysers2007_humano",
+      "humano": [
+        {"id": "keysers2007_humano", "especie": "humano adulto", "valor": 0.998, "tipo_valor": "aproximado", "cita": "Keysers (2007), arXiv:0710.2231, que cita a Simard, LeCun & Denker (1993), NIPS 5:50-58 (su referencia 27)", "url": "https://www.arxiv.org/pdf/0710.2231", "verificacion": "secundaria", "nota": "error humano estimado en alrededor de 0,2 %, «aunque no se determinó para todo el test»; no se pudo leer la fuente original", "releida": "2026-11-26"}
+      ],
+      "animales": [],
+      "maquinas": [],
+      "pendiente": ["fuente original de la estimación de 0,2 %: sin referencia verificada"]
+    },
+    "fashion_mnist": {
+      "nombre": "Fashion-MNIST: clasificación de prendas",
+      "dimension": "percepcion",
+      "corre": "ingesta (resultados de v0.3-dev y de predictivo)",
+      "metrica": "exactitud en el test de 10 000",
+      "azar": {"valor": 0.1, "derivacion": "10 clases balanceadas"},
+      "protocolo_publicado": "60 000 imágenes de entrenamiento y 10 000 de prueba, 28 x 28 en gris.",
+      "datos": {"fuente": "https://github.com/zalandoresearch/fashion-mnist"},
+      "referencia_indice": "zalando_humano",
+      "humano": [
+        {"id": "zalando_humano", "especie": "humano adulto sin experiencia en moda", "valor": 0.835, "tipo_valor": "media", "cita": "tabla de benchmark del README de Fashion-MNIST (fila «Human Performance»)", "url": "https://github.com/zalandoresearch/fashion-mnist", "verificacion": "primaria", "protocolo": "evaluación colaborativa: 1 000 imágenes de test al azar, 3 etiquetas por imagen, voto mayoritario", "nota": "los mantenedores avisan que no comprobaron los resultados enviados a esa tabla; el humano ve la misma imagen de 28 x 28 que la red", "releida": "2026-11-26"}
+      ],
+      "animales": [],
+      "maquinas": [],
+      "pendiente": []
+    },
+    "cifar10": {
+      "nombre": "CIFAR-10: clasificación de imágenes naturales",
+      "dimension": "percepcion",
+      "corre": "ingesta (predictivo; en v0.3-dev sólo hay una corrida exploratoria)",
+      "metrica": "exactitud en el test de 10 000",
+      "azar": {"valor": 0.1, "derivacion": "10 clases balanceadas"},
+      "protocolo_publicado": "50 000 imágenes de entrenamiento y 10 000 de prueba, 32 x 32 en color.",
+      "datos": {"fuente": "https://github.com/jcpeterson/cifar-10h", "commit": "389f22d9d300ec71a4c44735d46f550c94b957ab", "archivos": ["data/cifar10h-counts.npy"]},
+      "referencia_indice": "cifar10h_humano",
+      "humano": [
+        {"id": "cifar10h_humano", "especie": "humano adulto", "valor": 0.9524, "tipo_valor": "media", "cita": "Peterson, Battleday, Griffiths & Russakovsky (2019), ICCV, conjunto CIFAR-10H", "url": "https://arxiv.org/pdf/1908.07086", "verificacion": "primaria", "protocolo": "511 400 clasificaciones de 2 571 participantes (Mechanical Turk) sobre las 10 000 imágenes del test; cada persona clasifica 200 imágenes (20 por categoría) tras una fase de entrenamiento, «tan rápido y preciso como pueda» pero sin límite de tiempo; cada 20 ensayos una imagen obvia de control (se excluyeron 14 personas con menos de 75 %); 51 juicios por imagen en promedio", "nota": "valor recalculado por la batería con cifar10h-counts.npy y las etiquetas del test: proporción de juicios individuales que coinciden con la etiqueta (511 000 juicios en el archivo). El voto mayoritario por imagen acierta 99,21 %.", "releida": "2026-11-26"}
+      ],
+      "animales": [],
+      "maquinas": [],
+      "pendiente": []
+    },
+    "deteccion_de_cambio": {
+      "nombre": "Memoria de trabajo visual: detección de cambio y capacidad K",
+      "dimension": "memoria_de_trabajo",
+      "corre": "medicion",
+      "metrica": "capacidad K estimada de la exactitud por tamaño de la muestra",
+      "azar": {"valor": 0.0, "derivacion": "K = 0 cuando la exactitud es la de adivinar (50 %)"},
+      "protocolo_publicado": "Se muestra un conjunto de 2 a 10 objetos (colores o figuras), hay una demora breve y vuelven dos de ellos, uno cambiado: hay que tocar el que cambió. Monos: tamaños 2, 4 y 6; personas: 2 a 10. Capacidad con el modelo de capacidad fija: exactitud = ((N - K)/N)^2 x 50 % + (1 - ((N - K)/N)^2) x 100 %.",
+      "datos": {"fuente": "generado por la batería"},
+      "referencia_indice": "elmore2011_humanos_colores",
+      "humano": [
+        {"id": "elmore2011_humanos_colores", "especie": "humano adulto", "valor": 2.46, "tipo_valor": "media", "n": 6, "cita": "Elmore, Ma, Magnotti, Leising, Passaro, Katz & Wright (2011), Curr. Biol. 21:975", "url": "https://www.cns.nyu.edu/malab/static/files/publications/2011 Elmore Ma Wright.pdf", "verificacion": "primaria", "nota": "colores; error estándar 0,35. Con figuras (clip art): 2,78 (error estándar 0,39). Personas: tamaños 2, 4, 6, 8 y 10; demora de 900 ms con colores y 1 000 ms con figuras", "releida": "2026-11-26"},
+        {"id": "cowan2001", "especie": "humano adulto", "valor": 4.0, "tipo_valor": "aproximado", "cita": "Cowan (2001), tal como lo cita el resumen de Elmore et al. (2011): capacidad fija de 4 más o menos 1 ítems", "url": "https://pubmed.ncbi.nlm.nih.gov/21596568/", "verificacion": "secundaria"}
+      ],
+      "animales": [
+        {"id": "elmore2011_rhesus_colores", "especie": "mono rhesus", "valor": 0.71, "tipo_valor": "media", "n": 2, "cita": "Elmore et al. (2011), Curr. Biol. 21:975", "url": "https://www.cns.nyu.edu/malab/static/files/publications/2011 Elmore Ma Wright.pdf", "verificacion": "primaria", "nota": "colores; error estándar 0,24. Con figuras: 1,02 (error estándar 0,19). Monos: tamaños 2, 4 y 6; la leyenda de la figura 1 da demoras de 50 ms", "releida": "2026-11-26"}
+      ],
+      "maquinas": [],
+      "pendiente": ["capacidad de palomas o de abejas con el mismo procedimiento: sin referencia verificada"]
+    },
+    "auroc_tipo2": {
+      "nombre": "Sensibilidad metacognitiva: área bajo la curva ROC de tipo 2 con dificultad igualada",
+      "dimension": "metacognicion",
+      "corre": "medicion (protocolo igualado); integracion3 mide además la detección del propio error en el flujo continuo",
+      "metrica": "AUROC de tipo 2 (la confianza separa aciertos de errores)",
+      "azar": {"valor": 0.5, "derivacion": "confianza sin relación con el acierto"},
+      "protocolo_publicado": "32 personas; decisión perceptiva de dos alternativas (en cuál de dos intervalos apareció el parche de mayor contraste); una escalera de 1 arriba y 2 abajo mantiene el acierto cerca de 71 %; 600 ensayos en 6 bloques (se analizan los bloques 2 a 6); confianza de 1 a 6 después de cada decisión.",
+      "datos": {"fuente": "generado por la batería sobre imágenes de MNIST con ruido"},
+      "referencia_indice": "fleming2010",
+      "humano": [
+        {"id": "fleming2010", "especie": "humano adulto", "valor": null, "valor_min": 0.55, "valor_max": 0.75, "tipo_valor": "rango", "n": 32, "cita": "Fleming, Weil, Nagy, Dolan & Rees (2010), Science 329:1541", "url": "https://pdodds.w3.uvm.edu/files/papers/others/2010/fleming2010a.pdf", "url_metodos": "https://pure.mpg.de/pubman/item/item_2614875_3/component/file_2621028/RD_Relating_Suppl_2010.pdf", "verificacion": "primaria", "nota": "el artículo da sólo el rango entre sujetos (0,55 a 0,75), no la media; el acierto quedó entre 70 y 74 %. El índice de la red se informa contra los dos extremos.", "releida": "2026-11-26"}
+      ],
+      "animales": [
+        {"id": "kepecs2008_ratas", "especie": "rata", "valor": null, "tipo_valor": "cualitativo", "cualitativo": "en una versión con recompensa demorada, la disposición de las ratas a esperar el premio aumenta con la confianza, como predice el modelo; tarea de categorizar mezclas de olores con dificultad variable", "cita": "Kepecs, Uchida, Zariwala & Mainen (2008), Nature 455:227", "url": "https://www.nature.com/articles/nature07200.pdf", "verificacion": "primaria (resumen)", "releida": "2026-11-26", "nota": "el texto completo es pago: no se leyeron cifras"},
+        {"id": "lak2014_ratas", "especie": "rata", "valor": null, "tipo_valor": "cualitativo", "n": 10, "cualitativo": "firmas de la confianza en el tiempo de espera: la relación entre dificultad y espera es opuesta en aciertos y errores, y la exactitud condicionada a la espera crece de forma monótona desde el azar hasta casi perfecta", "cita": "Lak, Costa, Romberg, Koulakov, Mainen & Kepecs (2014), Neuron 84:190", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4364549", "verificacion": "primaria", "releida": "2026-11-26", "protocolo": "mezclas binarias de dos odorantes (20:80, 40:60, 44:56, 50:50 y sus conjugadas); demora del premio exponencial; premio omitido en 10 a 15 % de los aciertos (ensayos de captura) para medir cuánto esperan", "nota": "las medias y las áreas bajo la curva sólo están en figuras"}
+      ],
+      "maquinas": [],
+      "pendiente": ["media poblacional del AUROC de tipo 2 humano: sin referencia verificada (Fleming et al. sólo dan el rango)", "valores numéricos de las firmas de confianza en ratas (Kepecs 2008, Lak 2014): sólo en figuras"]
+    },
+    "split_mnist": {
+      "nombre": "Split-MNIST incremental por clases",
+      "dimension": "memoria_sin_interferencia",
+      "corre": "consolidacion",
+      "metrica": "exactitud final sobre las 10 clases, sin saber de qué contexto viene cada imagen",
+      "azar": {"valor": 0.1, "derivacion": "10 clases balanceadas"},
+      "protocolo_publicado": "5 contextos de 2 dígitos que llegan en secuencia (asignación al azar por semilla); red de 2 capas ocultas de 400 unidades; 2 000 iteraciones por contexto con lotes de 128 (Adam, tasa 0,001); los métodos con memoria guardan 100 ejemplos por clase; 20 semillas.",
+      "datos": {"fuente": "https://github.com/fgnt/mnist"},
+      "referencia_indice": null,
+      "humano": [],
+      "animales": [],
+      "maquinas": [
+        {"id": "conjunto", "sistema": "entrenamiento conjunto (cota superior)", "valor": 0.9817, "cita": "van de Ven, Tuytelaars & Tolias (2022), Nat. Mach. Intell. 4:1185, tabla 2", "url": "https://www.nature.com/articles/s42256-022-00568-3.pdf", "verificacion": "primaria", "releida": "2026-11-26"},
+        {"id": "ninguno", "sistema": "sin método (cota inferior)", "valor": 0.1989, "cita": "ídem", "url": "https://www.nature.com/articles/s42256-022-00568-3.pdf", "verificacion": "primaria", "releida": "2026-11-26"},
+        {"id": "ewc", "sistema": "EWC", "valor": 0.2064, "cita": "ídem", "url": "https://www.nature.com/articles/s42256-022-00568-3.pdf", "verificacion": "primaria", "releida": "2026-11-26"},
+        {"id": "si", "sistema": "SI", "valor": 0.212, "cita": "ídem", "url": "https://www.nature.com/articles/s42256-022-00568-3.pdf", "verificacion": "primaria", "releida": "2026-11-26"},
+        {"id": "lwf", "sistema": "LwF", "valor": 0.2189, "cita": "ídem", "url": "https://www.nature.com/articles/s42256-022-00568-3.pdf", "verificacion": "primaria", "releida": "2026-11-26"},
+        {"id": "agem", "sistema": "A-GEM", "valor": 0.651, "cita": "ídem", "url": "https://www.nature.com/articles/s42256-022-00568-3.pdf", "verificacion": "primaria", "releida": "2026-11-26"},
+        {"id": "fromp", "sistema": "FROMP", "valor": 0.7738, "cita": "ídem", "url": "https://www.nature.com/articles/s42256-022-00568-3.pdf", "verificacion": "primaria", "releida": "2026-11-26"},
+        {"id": "er", "sistema": "repaso de experiencias (ER), 100 ejemplos por clase", "valor": 0.8879, "cita": "ídem", "url": "https://www.nature.com/articles/s42256-022-00568-3.pdf", "verificacion": "primaria", "releida": "2026-11-26"},
+        {"id": "dgr", "sistema": "repaso generativo (DGR)", "valor": 0.9035, "cita": "ídem", "url": "https://www.nature.com/articles/s42256-022-00568-3.pdf", "verificacion": "primaria", "releida": "2026-11-26"},
+        {"id": "icarl", "sistema": "iCaRL", "valor": 0.9249, "cita": "ídem", "url": "https://www.nature.com/articles/s42256-022-00568-3.pdf", "verificacion": "primaria", "releida": "2026-11-26"},
+        {"id": "clasificador_generativo", "sistema": "clasificador generativo", "valor": 0.9382, "cita": "ídem", "url": "https://www.nature.com/articles/s42256-022-00568-3.pdf", "verificacion": "primaria", "releida": "2026-11-26"},
+        {"id": "bir", "sistema": "repaso inspirado en el cerebro (BI-R)", "valor": 0.9441, "cita": "ídem", "url": "https://www.nature.com/articles/s42256-022-00568-3.pdf", "verificacion": "primaria", "releida": "2026-11-26"}
+      ],
+      "pendiente": ["no hay referencia humana ni animal publicada para esta prueba: el índice normalizado a humano no se puede calcular; se informa la posición entre los métodos publicados", "Split-Fashion incremental por clases: sin referencia verificada (no está en van de Ven et al. 2022)"]
+    },
+    "blimp": {
+      "nombre": "BLiMP: pares mínimos gramaticales tras entrenar con un corpus chico",
+      "dimension": "lenguaje",
+      "corre": "medicion",
+      "metrica": "proporción de pares en los que la oración aceptable recibe mayor probabilidad",
+      "azar": {"valor": 0.5, "derivacion": "elección entre dos oraciones"},
+      "protocolo_publicado": "67 paradigmas de 1 000 pares mínimos. Un modelo acierta un par si da más probabilidad a la oración aceptable. Personas: 20 validadores juzgan 5 pares de cada paradigma en elección forzada.",
+      "datos": {"fuente": "https://github.com/alexwarstadt/blimp", "commit": "3e56b06fcabca9b30822fc66435fca6b1aa40bb1", "archivos": ["data/*.jsonl", "raw_results/summary/human_validation_summary.csv", "raw_results/summary/models_summary.jsonl"], "corpus": {"fuente": "https://github.com/phueb/BabyBERTa", "commit": "050688b914afd998d44e5101dbecf9e2d0ff7acc", "archivo": "data/corpora/aochildes.txt", "nota": "habla dirigida a niños (AO-CHILDES, 21 MB). El corpus de BabyLM (10 M de palabras) no tiene espejo en GitHub: se distribuye por OSF y HuggingFace, fuera del alcance del sandbox."}},
+      "referencia_indice": "warstadt2020_humanos",
+      "humano": [
+        {"id": "warstadt2020_humanos", "especie": "humano adulto, hablante nativo", "valor": 0.886, "tipo_valor": "media", "cita": "Warstadt et al. (2020), TACL 8:377, tabla 3", "url": "https://alexwarstadt.github.io/assets/pdf/warstadt2020blimp.pdf", "verificacion": "primaria", "protocolo": "acuerdo individual con la etiqueta, unos 100 juicios por paradigma", "nota": "recalculado por la batería con human_validation_summary.csv: 0,8855 de media en los 67 paradigmas del conjunto final (el CSV trae 2 filas más, fuera del conjunto). El acuerdo agregado por voto mayoritario es 96,4 %.", "releida": "2026-11-26"}
+      ],
+      "animales": [],
+      "maquinas": [
+        {"id": "5gramas", "sistema": "5-gramas (Gigaword, 3 100 M de palabras)", "valor": 0.612, "cita": "Warstadt et al. (2020), tabla 3; recalculado con models_summary.jsonl", "url": "https://github.com/alexwarstadt/blimp", "verificacion": "primaria", "releida": "2026-11-26"},
+        {"id": "lstm", "sistema": "LSTM (83 M de palabras de Wikipedia)", "valor": 0.698, "cita": "ídem", "url": "https://github.com/alexwarstadt/blimp", "verificacion": "primaria", "releida": "2026-11-26"},
+        {"id": "txl", "sistema": "Transformer-XL (WikiText-103)", "valor": 0.696, "cita": "ídem", "url": "https://github.com/alexwarstadt/blimp", "verificacion": "primaria", "releida": "2026-11-26"},
+        {"id": "gpt2", "sistema": "GPT-2 grande", "valor": 0.83, "cita": "ídem", "url": "https://github.com/alexwarstadt/blimp", "verificacion": "primaria", "releida": "2026-11-26"},
+        {"id": "babylm_opt", "sistema": "OPT-125m entrenado con 10 M de palabras (BabyLM, pista strict-small)", "valor": 0.626, "cita": "README de babylm/evaluation-pipeline; media sin ponderar de las 12 categorías, calculada a partir de la tabla", "url": "https://github.com/babylm/evaluation-pipeline", "verificacion": "primaria", "nota": "BLiMP filtrado al vocabulario del corpus (palabras vistas al menos dos veces); media sin ponderar de las 12 categorías; la página dice «strict-small» sin dar el tamaño en palabras", "releida": "2026-11-26"},
+        {"id": "babylm_roberta", "sistema": "RoBERTa-base entrenado con 10 M de palabras (BabyLM, strict-small)", "valor": 0.695, "cita": "ídem", "url": "https://github.com/babylm/evaluation-pipeline", "verificacion": "primaria", "nota": "BLiMP filtrado al vocabulario del corpus (palabras vistas al menos dos veces); media sin ponderar de las 12 categorías; la página dice «strict-small» sin dar el tamaño en palabras", "releida": "2026-11-26"},
+        {"id": "babylm_t5", "sistema": "T5-base entrenado con 10 M de palabras (BabyLM, strict-small)", "valor": 0.588, "cita": "ídem", "url": "https://github.com/babylm/evaluation-pipeline", "verificacion": "primaria", "nota": "BLiMP filtrado al vocabulario del corpus (palabras vistas al menos dos veces); media sin ponderar de las 12 categorías; la página dice «strict-small» sin dar el tamaño en palabras", "releida": "2026-11-26"}
+      ],
+      "pendiente": []
+    },
+    "mnist_addition": {
+      "nombre": "MNIST-addition: sumar dos dígitos vistos como imágenes, con la suma como única señal",
+      "dimension": "integracion",
+      "corre": "integracion3",
+      "metrica": "exactitud de la suma en el test",
+      "azar": {"valor": 0.1, "derivacion": "responder siempre la suma más probable (9) acierta 10 de 100 pares con dígitos uniformes"},
+      "protocolo_publicado": "Pares de imágenes de MNIST; sólo se da la suma como etiqueta. Cada imagen se usa una vez: 30 000 pares de entrenamiento (60 000 / 2; la tabla 10 de DeepProbLog dice 29 500) y 5 000 de test (10 000 / 2). La percepción es la red convolucional de DeepProbLog (LeNet).",
+      "datos": {"fuente": "https://github.com/fgnt/mnist"},
+      "referencia_indice": null,
+      "humano": [],
+      "animales": [],
+      "maquinas": [
+        {"id": "deepproblog", "sistema": "DeepProbLog", "valor": 0.972, "desvio": 0.0045, "cita": "Manhaeve et al. (2021), Artif. Intell., arXiv:1907.08194, tabla 1 (T1)", "url": "https://arxiv.org/pdf/1907.08194", "verificacion": "primaria", "releida": "2026-11-26", "nota": "Adam para la red, lote 2, tasa 1e-3; la cantidad de corridas no se informa"},
+        {"id": "cnn_base", "sistema": "red convolucional sin lógica (la suma como 19 clases)", "valor": 0.9346, "desvio": 0.0049, "cita": "ídem, tabla 1", "url": "https://arxiv.org/pdf/1907.08194", "verificacion": "primaria", "releida": "2026-11-26"},
+        {"id": "deepstochlog", "sistema": "DeepStochLog", "valor": 0.979, "desvio": 0.001, "cita": "tabla 1 de van Krieken et al. (2023), A-NeSI, arXiv:2212.12393", "url": "https://arxiv.org/pdf/2212.12393", "verificacion": "secundaria", "releida": "2026-11-26"},
+        {"id": "anesi", "sistema": "A-NeSI (predict)", "valor": 0.9766, "desvio": 0.0021, "cita": "van Krieken et al. (2023), arXiv:2212.12393, tabla 1, N = 1", "url": "https://arxiv.org/pdf/2212.12393", "verificacion": "primaria", "releida": "2026-11-26", "nota": "10 corridas"},
+        {"id": "referencia_099", "sistema": "techo de un clasificador de dígitos de 99 % (0,99 al cuadrado)", "valor": 0.9801, "cita": "ídem, fila «Reference»", "url": "https://arxiv.org/pdf/2212.12393", "verificacion": "primaria", "releida": "2026-11-26"}
+      ],
+      "pendiente": ["no hay referencia humana publicada: el índice normalizado a humano no se calcula; se informa la posición entre los sistemas publicados"]
+    },
+    "inferencia_transitiva_5": {
+      "dimension": "razonamiento_relacional",
+      "corre": "medicion",
+      "azar": {"valor": 0.5, "derivacion": "elección entre dos"},
+      "datos": {"fuente": "generado por la batería (ítems = símbolos nuevos en cada lista)"},
+      "nombre": "Inferencia transitiva, serie de 5 (A+B-, B+C-, C+D-, D+E-; prueba BD sin refuerzo)",
+      "metrica": "proporción de elecciones de B en el par BD, nunca entrenado",
+      "protocolo_publicado": "Se entrenan por refuerzo los pares adyacentes A+B-, B+C-, C+D-, D+E- hasta un criterio de 80 % o más; después se intercalan presentaciones sin refuerzo del par BD (12 por paloma). B y D fueron premiados y no premiados por igual en el entrenamiento.",
+      "referencia_indice": null,
+      "humano": [],
+      "animales": [
+        {"id": "vonfersen1991_palomas", "especie": "paloma", "valor": 0.875, "tipo_valor": "media", "par": "BD, serie de 5", "n": 4, "cita": "von Fersen, Wynne, Delius & Staddon (1991), J. Exp. Psychol. Anim. Behav. Process. 17:334", "url": "https://kops.uni-konstanz.de/server/api/core/bitstreams/6fc63c82-72a2-4131-863e-84308a0f09ab/content", "verificacion": "primaria", "protocolo": "4 palomas que llegaron a 80 % o más en los pares de premisa tras 125 sesiones; 12 presentaciones sin refuerzo del par BD por paloma", "releida": "2026-11-26"},
+        {"id": "benard2004_abejas", "especie": "abeja", "valor": 0.5, "tipo_valor": "cualitativo", "par": "BD, serie de 5", "cualitativo": "en el par BD la primera elección favorece a D (prueba binomial, p = 0,01) y las elecciones acumuladas no difieren de 50 %; prefieren A sobre E: no hay inferencia transitiva, pesa el último par entrenado (D+E-)", "cita": "Benard & Giurfa (2004), Learn. Mem. 11:328, resumen", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC419736", "verificacion": "primaria", "releida": "2026-11-26"},
+        {"id": "tibbetts2019_avispas", "especie": "avispa papelera (Polistes dominula y P. metricus)", "valor": null, "tipo_valor": "cualitativo", "par": "BD, serie de 5", "cualitativo": "eligen B más que D: t(22) = 8,5 y t(16) = 4,12 contra 50 %, p <= 0,001; las medias sólo están en la figura 2", "cita": "Tibbetts, Agudelo, Pandit & Riojas (2019), Biol. Lett. 15:20190015", "url": "https://ameisenhaltung.de/attachment/6256-rsbl-2019-0015-pdf", "url_original": "http://dx.doi.org/10.1098/rsbl.2019.0015", "verificacion": "primaria"}
+      ],
+      "maquinas": [],
+      "pendiente": ["referencia humana con la serie de 5 y el mismo procedimiento: sin referencia verificada (ver la serie de 6)", "porcentaje de elección de B en avispas: sin referencia verificada (figura)"]
+    },
+    "inferencia_transitiva_6": {
+      "dimension": "razonamiento_relacional",
+      "corre": "medicion",
+      "azar": {"valor": 0.5, "derivacion": "elección entre dos"},
+      "datos": {"fuente": "generado por la batería (ítems = símbolos nuevos en cada lista)"},
+      "nombre": "Inferencia transitiva, serie de 6 (A+B- ... E+F-; prueba BD, BE, CE)",
+      "metrica": "proporción de elecciones correctas (B o C) en los pares no adyacentes nuevos BD, BE y CE; la principal es la media de los tres",
+      "protocolo_publicado": "Juego de computadora (puertas de un castillo dibujadas como polígonos al azar). Se entrenan los pares A+B-, B+C-, C+D-, D+E-, E+F- hasta menos de 30 % de errores en cada par; después se prueban BD, BE y CE.",
+      "referencia_indice": "siemann1996_humanos_media",
+      "humano": [
+        {"id": "siemann1996_humanos_media", "especie": "humano adulto (estudiantes)", "valor": 0.7433, "tipo_valor": "media", "n": 24, "par": "media de BD, BE y CE", "cita": "Siemann & Delius (1996), Psychol. Res. 59:81, experimento 1, tabla 2 (media de las tres cifras calculada por la batería)", "url": "https://kops.uni-konstanz.de/server/api/core/bitstreams/673cff90-72ad-41ab-bfcb-f9d7a3d80c08/content", "verificacion": "primaria", "releida": "2026-11-26", "protocolo": "el de arriba; 15 de 24 resolvieron (menos de 30 % de errores en las pruebas), 8 con conciencia explícita de la jerarquía y 7 sin ella"},
+        {"id": "siemann1996_humanos_BD", "especie": "humano adulto (estudiantes)", "valor": 0.8, "tipo_valor": "media", "n": 24, "par": "BD", "cita": "Siemann & Delius (1996), experimento 1, tabla 2", "url": "https://kops.uni-konstanz.de/server/api/core/bitstreams/673cff90-72ad-41ab-bfcb-f9d7a3d80c08/content", "verificacion": "primaria", "releida": "2026-11-26", "nota": "t(23) = 4,52, p < 0,001"},
+        {"id": "siemann1996_humanos_BE", "especie": "humano adulto (estudiantes)", "valor": 0.77, "tipo_valor": "media", "n": 24, "par": "BE", "cita": "ídem", "url": "https://kops.uni-konstanz.de/server/api/core/bitstreams/673cff90-72ad-41ab-bfcb-f9d7a3d80c08/content", "verificacion": "primaria", "releida": "2026-11-26"},
+        {"id": "siemann1996_humanos_CE", "especie": "humano adulto (estudiantes)", "valor": 0.66, "tipo_valor": "media", "n": 24, "par": "CE", "cita": "ídem", "url": "https://kops.uni-konstanz.de/server/api/core/bitstreams/673cff90-72ad-41ab-bfcb-f9d7a3d80c08/content", "verificacion": "primaria", "releida": "2026-11-26", "nota": "t(23) = 2,05, p = 0,06"}
+      ],
+      "animales": [],
+      "maquinas": [],
+      "pendiente": ["exactitudes por par de los experimentos 2 y 3 de Siemann y Delius: sólo en figuras"]
+    },
+    "inferencia_transitiva_7": {
+      "dimension": "razonamiento_relacional",
+      "corre": "medicion",
+      "azar": {"valor": 0.5, "derivacion": "elección entre dos"},
+      "datos": {"fuente": "generado por la batería (ítems = símbolos nuevos en cada lista)"},
+      "nombre": "Inferencia transitiva, serie de 7: efecto de distancia simbólica",
+      "metrica": "exactitud por distancia simbólica en los 21 pares (los no adyacentes nunca entrenados) y pendiente de la exactitud contra la distancia",
+      "protocolo_publicado": "Jensen et al. (2017): lista nueva de 7 ítems por sesión; fase 1 sólo el par FG (20 ensayos en personas, 40 en monos), fase 2 los adyacentes y todos los pares con F o G (150 / 300), fase 3 los 21 pares (210 / 420), con premio en cada respuesta correcta y sin ensayos de prueba sin refuerzo.",
+      "referencia_indice": null,
+      "humano": [
+        {"id": "jensen2017_humanos", "especie": "humano adulto", "valor": null, "tipo_valor": "cualitativo", "cualitativo": "33 estudiantes sin experiencia, una sesión con lista de 7: el efecto de distancia simbólica no se ve en la exactitud; el efecto del ítem terminal es marcado (sobre todo en AB)", "cita": "Jensen, Alkan, Muñoz, Ferrera & Terrace (2017), J. Comp. Psychol., «Transitive inference in humans and rhesus macaques after massed training of the last two list items»", "url": "https://psychology.columbia.edu/sites/default/files/content/2017-13232-001.pdf", "verificacion": "primaria", "nota": "las exactitudes por par y por distancia sólo están en figuras", "releida": "2026-11-26"}
+      ],
+      "animales": [
+        {"id": "jensen2017_rhesus", "especie": "mono rhesus", "valor": null, "tipo_valor": "cualitativo", "cualitativo": "3 monos, lista nueva de 7 en cada sesión: efecto de distancia simbólica en la exactitud (distancia 1 la más baja, 5 la más alta), descrito sin cifras en el texto", "cita": "Jensen et al. (2017), J. Comp. Psychol., ídem", "url": "https://psychology.columbia.edu/sites/default/files/content/2017-13232-001.pdf", "verificacion": "primaria", "nota": "las exactitudes sólo están en figuras", "releida": "2026-11-26"}
+      ],
+      "maquinas": [
+        {"id": "jensen2015_q", "sistema": "Q-learning (error de predicción de recompensa)", "valor": 0.5, "tipo_valor": "cualitativo", "cita": "Jensen, Muñoz, Alkan, Ferrera & Terrace (2015), PLoS Comput. Biol. 11:e1004523, resumen", "url": "https://doaj.org/article/8ac934abb3ae4b62bc89af239dcb9b0d", "verificacion": "primaria", "nota": "es el único de los comparados que no supera el azar en los pares críticos"}
+      ],
+      "pendiente": ["exactitud humana y de mono por par y por distancia (Jensen et al. 2015, 2017): sin referencia verificada (figuras)"]
+    }
+  },
+  "registro_verificacion": {
+    "fecha": "2026-11-26",
+    "quien": "agente de medición (continúa el catálogo del agente anterior, 18:45-19:08)",
+    "metodo": "cada cifra marcada con `releida` se volvió a leer en línea (WebFetch/WebSearch) o se recalculó de los datos publicados; se corrigió lo que no coincidía",
+    "correcciones": ["inferencia transitiva (Jensen et al. 2017): el procedimiento era el par FG solo, después los adyacentes más los pares con F o G y al final los 21 pares; no «primero los 6 adyacentes». El efecto de distancia en monos se describe cualitativamente sólo en exactitud (el tiempo de reacción no se pudo confirmar)", "Komischke et al. 2002: es reversión sucesiva con pares de olores distintos y solapados (no la misma pareja); el resumen dice que grupos con 3, 2, 1 o 0 reversiones previas pasaron por una fase final con dos reversiones más y que la experiencia «parece mejorar» el desempeño", "Nakamura et al. (PMC4259154) no se pudo releer (verificación de navegador de PMC); la cifra de 128 figuras en monos y 256 en palomas se reubica en Wright et al. 2016 (resumen en PubMed), que la dice textual", "Kepecs et al. 2008: sólo el resumen es accesible; se agrega Lak et al. 2014 (Neuron, PMC4364549), del mismo grupo, con el texto completo", "BabyLM: la página del pipeline no dice «10 M de palabras»; sólo «strict-small»", "BLiMP humano: el CSV tiene 69 filas; la media de 0,8855 sale de las 67 que son paradigmas del conjunto final (las 2 de más se excluyen)", "Harlow 1950: las cifras 82 % y 87 % están en el resumen de la APA tal como lo indexa scilit (visible en el listado de búsqueda; la página leída directamente mostró otra versión del resumen sin cifras)", "se agrega la referencia humana de inferencia transitiva de Siemann y Delius (1996), serie de 6 ítems"],
+    "no_se_pudo_releer": ["PMC182587 (Komischke 2002) y PMC4259154 (Nakamura 2009): verificación de navegador de PMC; se usaron resúmenes indexados", "texto completo de Kepecs et al. 2008 (pago)", "https://www.nature.com/articles/s41586-023-06668-3 (permiso no respondido); se leyó la versión de PMC10620072"]
+  }
+}
