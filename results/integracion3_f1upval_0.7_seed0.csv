@@ -1,0 +1,11 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+f1upval,theta=0.7,0,pureza sin etiquetas n=2500,0.7600,0.1000,cota por imagen de una ligadura perfecta
+f1upval,theta=0.7,0,neuronas ganadoras n=2500,152,10,289 creadas
+f1upval,theta=0.7,0,segundos n=2500,19.6000,,
+f1upval,theta=0.7,0,pureza sin etiquetas n=10000,0.7360,0.1000,cota por imagen de una ligadura perfecta
+f1upval,theta=0.7,0,neuronas ganadoras n=10000,202,10,567 creadas
+f1upval,theta=0.7,0,segundos n=10000,71.1000,,
+f1upval,theta=0.7,0,pureza sin etiquetas n=40000,0.6880,0.1000,cota por imagen de una ligadura perfecta
+f1upval,theta=0.7,0,neuronas ganadoras n=40000,318,10,799 creadas
+f1upval,theta=0.7,0,segundos n=40000,259.8000,,
+f1upval,total,0,segundos,260.2000,,

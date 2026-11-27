@@ -838,6 +838,10 @@ VARIANTES_F1U = {
     # de V1), etapa 2-3 como aprendida_eq (posterior conjunto + equipartición + muestreo)
     # con la estructura de la memoria congelada: se ligan los prototipos que ya hay
     "u_cabeza": dict(thinker="cadena", h=0.0, cadena=dict(regla="aprendida", modo="muestreo", equiparticion=1.0)),
+    # categorías más gruesas en la etapa 1 (umbral de reclutamiento más bajo en la memoria:
+    # menos prototipos, K efectivo menor, a costa de pureza)
+    "u_cabeza_gruesa": dict(thinker="cadena", h=0.0, config_kw=dict(heads=[dict(source="input", layer=dict(theta=0.55))]),
+                            cadena=dict(regla="aprendida", modo="muestreo", equiparticion=1.0)),
     # ídem sin memoria de ejemplares: rasgos de V1 sin etiquetas y lectura lineal (proyección)
     "u_proy": dict(thinker="cadena", h=0.0, config_kw=dict(heads=[], replay=0.0),
                    cadena=dict(regla="aprendida", modo="muestreo", equiparticion=1.0)),
@@ -890,6 +894,33 @@ def fase_f1u(seed, tam, out, variante, extra):
         entrenar(th, per, datos, rng, tam["ep"], cfg, st, None, curva, tam["cada"], Xc, yc)
         out("f1u", var, "etapas 2-3: segundos", round(time.time() - t0, 1), "", f"{tam['ep']} episodios")
         medir(out, "f1u", var, th, v, per, datos, rng, tam, st, extra, curva, seed, congelada=False)
+
+
+def fase_f1up(seed, tam, out, variante, extra):
+    """Etapa 1 sola: cómo cambia la pureza de las categorías sin etiquetas con la cantidad de
+    imágenes sin etiquetas (2 500, 10 000, 40 000; acumulativo, una pasada) y con el umbral de
+    reclutamiento de la memoria (theta 0.7: por defecto, muchos prototipos; 0.55: menos).
+    La pureza (rotular con la mitad de las imágenes de medición, medir con la otra) es la cota
+    de lo que una ligadura perfecta de prototipos a símbolos podría dar por imagen."""
+    from exp_vision import CONFIGS, encoder
+    from bioelastic import Cortex
+    datos, Xt, yt, Xc, yc = preparar(seed, tam)
+    E = encoder()
+    marcas = tam["marcas_nosup"]
+    for th in ((0.7, 0.55) if variante is None else (float(variante),)):
+        net = Cortex((28, 28, 1), 10, seed=seed,
+                     **dict(CONFIGS["depth2"], heads=[dict(source="input", layer=dict(theta=th))]))
+        idx = np.random.default_rng(5000 + seed).permutation(len(datos.y["train"]))[:max(marcas)]
+        t0 = time.time(); hecho = 0
+        for m in marcas:
+            for i in idx[hecho:m]:
+                net.observe(E(datos.X["train"][i]))
+            hecho = m
+            pz = pureza_no_supervisada(net, E, Xt[:1000], yt[:1000])
+            var = f"theta={th}"
+            out("f1up", var, f"pureza sin etiquetas n={m}", pz["pureza"], 0.1, "cota por imagen de una ligadura perfecta")
+            out("f1up", var, f"neuronas ganadoras n={m}", pz["neuronas"], 10, f"{net.heads[0].layer.n} creadas")
+            out("f1up", var, f"segundos n={m}", round(time.time() - t0, 1), "", "")
 
 
 def fase_f1(seed, tam, out, variante, extra, variantes=None, fase="f1"):
@@ -1114,9 +1145,10 @@ def fase_f0s(seed, tam, out, variante, extra):
     identidad, en +5 o en un código de desplazamientos que se compensan). Con
     `variante="conjunto"`, el modelo de co-adaptación `tabular_conjunto`; con "fin", el
     posterior que también usa el acarreo final."""
-    if variante == "protos":            # escalado: prototipos independientes por dígito x presupuesto
+    if variante and variante.startswith("protos"):   # escalado: prototipos por dígito x presupuesto
         base = tam["col_tabular"]
-        for K in (1, 3, 10):
+        Ks = (1, 3, 10) if variante == "protos" else (int(variante[len("protos"):]),)
+        for K in Ks:
             for mult, n_sub in ((1, 6), (4, 6), (16, 3)):
                 if mult == 16 and K == 1:
                     continue
@@ -1659,16 +1691,16 @@ def fase_f5(seed, tam, out, variante, extra):
 TAM = dict(
     completa=dict(n_pre=10000, n_test_pureza=2000, n_curva=500, ep=4000, cada=500, ep_eval=500,
                   homeostasis=0.02, congelada=True, ep_f3=4000, columnas=10000, cada_col=1250, col_tabular=10000,
-                  n_nosup=10000,
+                  n_nosup=10000, marcas_nosup=(2500, 10000, 40000),
                   f0=["rep", "a_oraculo", "a_ruido_0.65", "a_ruido_0.8", "a_ruido_0.9",
                       "b_refuerzo", "b_cred2", "c_barajadas", "rep_v02"]),
     rapida=dict(n_pre=300, n_test_pureza=100, n_curva=50, ep=30, cada=10, ep_eval=10,
                 homeostasis=0.02, congelada=True, ep_f3=800, columnas=80, cada_col=20, col_tabular=300,
-                n_nosup=100,
+                n_nosup=100, marcas_nosup=(50, 100, 200),
                 f0=["rep", "a_oraculo", "a_ruido_0.8", "b_refuerzo", "b_cred2", "c_barajadas"]),
 )
 _sistemas_cadena()
-FASES = dict(f0=fase_f0, f0s=fase_f0s, f1=fase_f1, f1c=fase_f1c, f1u=fase_f1u, f3c=fase_f3c, f2=fase_f2, f3=fase_f3, f4=fase_f4, f5=fase_f5)
+FASES = dict(f0=fase_f0, f0s=fase_f0s, f1=fase_f1, f1c=fase_f1c, f1u=fase_f1u, f1up=fase_f1up, f3c=fase_f3c, f2=fase_f2, f3=fase_f3, f4=fase_f4, f5=fase_f5)
 
 
 def completo(path) -> bool:
