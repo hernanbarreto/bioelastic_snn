@@ -812,6 +812,10 @@ VARIANTES_F1C = {   # h = 0: sin homeostasis de salida (elegido en validación c
                                     cadena=dict(regla="aprendida", modo="muestreo")),
     # regla conocida con la evidencia perceptiva pesada por su fiabilidad medida (contra los atajos)
     "conocida_fiab": dict(thinker="oraculo", h=0.0, cadena=dict(regla="conocida", modo="blando", fiabilidad=dict())),
+    # piso de gamma más alto: con dígitos módulo 10 la regla sola casi no da señal por imagen
+    # (I(a; d) = 0), así que con la compuerta cerrada la percepción no arranca
+    "conocida_fiab_piso": dict(thinker="oraculo", h=0.0, cadena=dict(regla="conocida", modo="blando",
+                                                                     fiabilidad=dict(lo=0.3, k=1.0))),
 }
 
 

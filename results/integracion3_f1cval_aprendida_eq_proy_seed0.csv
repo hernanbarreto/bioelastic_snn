@@ -1,0 +1,61 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+f1cval,aprendida_eq_proy,0,segundos entrenamiento,295.1000,,4000 episodios
+f1cval,aprendida_eq_proy,0,posterior: episodios,4000,,
+f1cval,aprendida_eq_proy,0,posterior: ensenadas,20124,,
+f1cval,aprendida_eq_proy,0,posterior: verosimilitud_media,0.5012,,
+f1cval,aprendida_eq_proy,0,curva columna ep=500,0.2201,,
+f1cval,aprendida_eq_proy,0,curva pureza ep=500,0.2320,,
+f1cval,aprendida_eq_proy,0,curva identidad ep=500,0.0960,,
+f1cval,aprendida_eq_proy,0,curva usados ep=500,10,,
+f1cval,aprendida_eq_proy,0,curva columna ep=1000,0.2127,,
+f1cval,aprendida_eq_proy,0,curva pureza ep=1000,0.2340,,
+f1cval,aprendida_eq_proy,0,curva identidad ep=1000,0.0880,,
+f1cval,aprendida_eq_proy,0,curva usados ep=1000,10,,
+f1cval,aprendida_eq_proy,0,curva columna ep=1500,0.2168,,
+f1cval,aprendida_eq_proy,0,curva pureza ep=1500,0.2380,,
+f1cval,aprendida_eq_proy,0,curva identidad ep=1500,0.0820,,
+f1cval,aprendida_eq_proy,0,curva usados ep=1500,10,,
+f1cval,aprendida_eq_proy,0,curva columna ep=2000,0.2035,,
+f1cval,aprendida_eq_proy,0,curva pureza ep=2000,0.1240,,
+f1cval,aprendida_eq_proy,0,curva identidad ep=2000,0.0860,,
+f1cval,aprendida_eq_proy,0,curva usados ep=2000,1,,
+f1cval,aprendida_eq_proy,0,curva columna ep=2500,0.2229,,
+f1cval,aprendida_eq_proy,0,curva pureza ep=2500,0.2540,,
+f1cval,aprendida_eq_proy,0,curva identidad ep=2500,0.0780,,
+f1cval,aprendida_eq_proy,0,curva usados ep=2500,10,,
+f1cval,aprendida_eq_proy,0,curva columna ep=3000,0.2281,,
+f1cval,aprendida_eq_proy,0,curva pureza ep=3000,0.2100,,
+f1cval,aprendida_eq_proy,0,curva identidad ep=3000,0.0700,,
+f1cval,aprendida_eq_proy,0,curva usados ep=3000,10,,
+f1cval,aprendida_eq_proy,0,curva columna ep=3500,0.2158,,
+f1cval,aprendida_eq_proy,0,curva pureza ep=3500,0.2600,,
+f1cval,aprendida_eq_proy,0,curva identidad ep=3500,0.0740,,
+f1cval,aprendida_eq_proy,0,curva usados ep=3500,10,,
+f1cval,aprendida_eq_proy,0,curva columna ep=4000,0.2192,,
+f1cval,aprendida_eq_proy,0,curva pureza ep=4000,0.2340,,
+f1cval,aprendida_eq_proy,0,curva identidad ep=4000,0.1240,,
+f1cval,aprendida_eq_proy,0,curva usados ep=4000,10,,
+f1cval,aprendida_eq_proy,0,pureza percepción (test),0.2185,0.1000,mejor biyección
+f1cval,aprendida_eq_proy,0,identidad percepción (test),0.1205,0.1000,símbolo == dígito
+f1cval,aprendida_eq_proy,0,símbolos usados,10,10,
+f1cval,aprendida_eq_proy,0,código es identidad (dígitos),1,10,dígitos cuyo símbolo en la mejor biyección es el propio dígito
+f1cval,aprendida_eq_proy,0,créditos a la percepción,20124,,
+f1cval,aprendida_eq_proy,0,precisión del crédito (código final),0.1005,0.1000,
+f1cval,aprendida_eq_proy,0,precisión del crédito (identidad),0.1015,0.1000,
+f1cval,aprendida_eq_proy,0,"precisión del crédito, 2.a mitad (código final)",0.1009,0.1000,
+f1cval,aprendida_eq_proy,0,exacta n=3 (test),0.0000,0.0005,azar
+f1cval,aprendida_eq_proy,0,columna n=3 (test),0.0920,0.1000,azar
+f1cval,aprendida_eq_proy,0,fin (acarreo) n=3 (test),0.5220,0.5005,mejor constante
+f1cval,aprendida_eq_proy,0,exacta n=1 (test),0.0620,0.0550,azar
+f1cval,aprendida_eq_proy,0,cota pureza^6 (Thinker perfecto),0.0001,,
+f1cval,aprendida_eq_proy,0,exacta n=3 | imágenes bien (código),nan,,
+f1cval,aprendida_eq_proy,0,fracción episodios con las 6 imágenes bien (código),0.0000,0.0001,pureza^6
+f1cval,aprendida_eq_proy,0,Thinker con código-oráculo: exacta n=3,0.0040,,símbolos = código final perfecto
+f1cval,aprendida_eq_proy,0,Thinker con código-oráculo: columna n=3,0.1027,0.1000,
+f1cval,aprendida_eq_proy,0,clases fundidas (símbolo mayoritario de >=2 dígitos),2,0,
+f1cval,aprendida_eq_proy,0,masa en s = d (identidad),0.1205,0.1000,fracción de imágenes
+f1cval,aprendida_eq_proy,0,masa en s = d +- 1 (vecinos),0.1680,0.2000,
+f1cval,aprendida_eq_proy,0,masa en s = d + 5,0.1065,0.1000,invisible para el dígito módulo 10
+f1cval,aprendida_eq_proy,0,converge a una permutación (pureza - identidad),0.0980,,alto: código consistente pero permutado
+f1cval,aprendida_eq_proy,0,segundos,339.7000,,
+f1cval,total,0,segundos,340.0000,,

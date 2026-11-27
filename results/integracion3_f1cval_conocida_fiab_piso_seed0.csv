@@ -1,0 +1,61 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+f1cval,conocida_fiab_piso,0,segundos entrenamiento,459.8000,,4000 episodios
+f1cval,conocida_fiab_piso,0,posterior: episodios,4000,,
+f1cval,conocida_fiab_piso,0,posterior: ensenadas,20124,,
+f1cval,conocida_fiab_piso,0,posterior: verosimilitud_media,0.6889,,
+f1cval,conocida_fiab_piso,0,posterior: gamma,0.3000,,
+f1cval,conocida_fiab_piso,0,curva columna ep=500,0.2259,,
+f1cval,conocida_fiab_piso,0,curva pureza ep=500,0.8300,,
+f1cval,conocida_fiab_piso,0,curva identidad ep=500,0.8300,,
+f1cval,conocida_fiab_piso,0,curva usados ep=500,10,,
+f1cval,conocida_fiab_piso,0,curva columna ep=1000,0.2241,,
+f1cval,conocida_fiab_piso,0,curva pureza ep=1000,0.7360,,
+f1cval,conocida_fiab_piso,0,curva identidad ep=1000,0.7360,,
+f1cval,conocida_fiab_piso,0,curva usados ep=1000,10,,
+f1cval,conocida_fiab_piso,0,curva columna ep=1500,0.2288,,
+f1cval,conocida_fiab_piso,0,curva pureza ep=1500,0.7540,,
+f1cval,conocida_fiab_piso,0,curva identidad ep=1500,0.7540,,
+f1cval,conocida_fiab_piso,0,curva usados ep=1500,10,,
+f1cval,conocida_fiab_piso,0,curva columna ep=2000,0.2408,,
+f1cval,conocida_fiab_piso,0,curva pureza ep=2000,0.7100,,
+f1cval,conocida_fiab_piso,0,curva identidad ep=2000,0.7100,,
+f1cval,conocida_fiab_piso,0,curva usados ep=2000,10,,
+f1cval,conocida_fiab_piso,0,curva columna ep=2500,0.2319,,
+f1cval,conocida_fiab_piso,0,curva pureza ep=2500,0.7460,,
+f1cval,conocida_fiab_piso,0,curva identidad ep=2500,0.7460,,
+f1cval,conocida_fiab_piso,0,curva usados ep=2500,10,,
+f1cval,conocida_fiab_piso,0,curva columna ep=3000,0.2253,,
+f1cval,conocida_fiab_piso,0,curva pureza ep=3000,0.8040,,
+f1cval,conocida_fiab_piso,0,curva identidad ep=3000,0.8040,,
+f1cval,conocida_fiab_piso,0,curva usados ep=3000,10,,
+f1cval,conocida_fiab_piso,0,curva columna ep=3500,0.2366,,
+f1cval,conocida_fiab_piso,0,curva pureza ep=3500,0.7840,,
+f1cval,conocida_fiab_piso,0,curva identidad ep=3500,0.7840,,
+f1cval,conocida_fiab_piso,0,curva usados ep=3500,10,,
+f1cval,conocida_fiab_piso,0,curva columna ep=4000,0.2461,,
+f1cval,conocida_fiab_piso,0,curva pureza ep=4000,0.7620,,
+f1cval,conocida_fiab_piso,0,curva identidad ep=4000,0.7620,,
+f1cval,conocida_fiab_piso,0,curva usados ep=4000,10,,
+f1cval,conocida_fiab_piso,0,pureza percepción (test),0.7600,0.1000,mejor biyección
+f1cval,conocida_fiab_piso,0,identidad percepción (test),0.7600,0.1000,símbolo == dígito
+f1cval,conocida_fiab_piso,0,símbolos usados,10,10,
+f1cval,conocida_fiab_piso,0,código es identidad (dígitos),10,10,dígitos cuyo símbolo en la mejor biyección es el propio dígito
+f1cval,conocida_fiab_piso,0,créditos a la percepción,20124,,
+f1cval,conocida_fiab_piso,0,precisión del crédito (código final),0.8227,0.1000,
+f1cval,conocida_fiab_piso,0,precisión del crédito (identidad),0.8227,0.1000,
+f1cval,conocida_fiab_piso,0,"precisión del crédito, 2.a mitad (código final)",0.8237,0.1000,
+f1cval,conocida_fiab_piso,0,abstenciones Thinker,0,,
+f1cval,conocida_fiab_piso,0,exacta n=3 (test),0.1960,0.0005,azar
+f1cval,conocida_fiab_piso,0,columna n=3 (test),0.5573,0.1000,azar
+f1cval,conocida_fiab_piso,0,fin (acarreo) n=3 (test),0.8800,0.5005,mejor constante
+f1cval,conocida_fiab_piso,0,exacta n=1 (test),0.5980,0.0550,azar
+f1cval,conocida_fiab_piso,0,cota pureza^6 (Thinker perfecto),0.1927,,
+f1cval,conocida_fiab_piso,0,exacta n=3 | imágenes bien (código),1.0000,,
+f1cval,conocida_fiab_piso,0,fracción episodios con las 6 imágenes bien (código),0.1960,0.1927,pureza^6
+f1cval,conocida_fiab_piso,0,clases fundidas (símbolo mayoritario de >=2 dígitos),1,0,
+f1cval,conocida_fiab_piso,0,masa en s = d (identidad),0.7600,0.1000,fracción de imágenes
+f1cval,conocida_fiab_piso,0,masa en s = d +- 1 (vecinos),0.1170,0.2000,
+f1cval,conocida_fiab_piso,0,masa en s = d + 5,0.0245,0.1000,invisible para el dígito módulo 10
+f1cval,conocida_fiab_piso,0,converge a una permutación (pureza - identidad),0.0000,,alto: código consistente pero permutado
+f1cval,conocida_fiab_piso,0,segundos,519.9000,,
+f1cval,total,0,segundos,520.3000,,

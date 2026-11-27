@@ -1,0 +1,61 @@
+prueba,variante,semilla,metrica,valor,referencia,nota
+f1c,conocida_fiab,0,segundos entrenamiento,416.3000,,4000 episodios
+f1c,conocida_fiab,0,posterior: episodios,4000,,
+f1c,conocida_fiab,0,posterior: ensenadas,20124,,
+f1c,conocida_fiab,0,posterior: verosimilitud_media,0.6658,,
+f1c,conocida_fiab,0,posterior: gamma,0.0200,,
+f1c,conocida_fiab,0,curva columna ep=500,0.2167,,
+f1c,conocida_fiab,0,curva pureza ep=500,0.5300,,
+f1c,conocida_fiab,0,curva identidad ep=500,0.5100,,
+f1c,conocida_fiab,0,curva usados ep=500,10,,
+f1c,conocida_fiab,0,curva columna ep=1000,0.2344,,
+f1c,conocida_fiab,0,curva pureza ep=1000,0.4840,,
+f1c,conocida_fiab,0,curva identidad ep=1000,0.4740,,
+f1c,conocida_fiab,0,curva usados ep=1000,10,,
+f1c,conocida_fiab,0,curva columna ep=1500,0.2134,,
+f1c,conocida_fiab,0,curva pureza ep=1500,0.5000,,
+f1c,conocida_fiab,0,curva identidad ep=1500,0.5000,,
+f1c,conocida_fiab,0,curva usados ep=1500,10,,
+f1c,conocida_fiab,0,curva columna ep=2000,0.2193,,
+f1c,conocida_fiab,0,curva pureza ep=2000,0.4500,,
+f1c,conocida_fiab,0,curva identidad ep=2000,0.4380,,
+f1c,conocida_fiab,0,curva usados ep=2000,10,,
+f1c,conocida_fiab,0,curva columna ep=2500,0.2257,,
+f1c,conocida_fiab,0,curva pureza ep=2500,0.5680,,
+f1c,conocida_fiab,0,curva identidad ep=2500,0.5680,,
+f1c,conocida_fiab,0,curva usados ep=2500,10,,
+f1c,conocida_fiab,0,curva columna ep=3000,0.2242,,
+f1c,conocida_fiab,0,curva pureza ep=3000,0.5160,,
+f1c,conocida_fiab,0,curva identidad ep=3000,0.5160,,
+f1c,conocida_fiab,0,curva usados ep=3000,10,,
+f1c,conocida_fiab,0,curva columna ep=3500,0.2320,,
+f1c,conocida_fiab,0,curva pureza ep=3500,0.4740,,
+f1c,conocida_fiab,0,curva identidad ep=3500,0.4740,,
+f1c,conocida_fiab,0,curva usados ep=3500,10,,
+f1c,conocida_fiab,0,curva columna ep=4000,0.2124,,
+f1c,conocida_fiab,0,curva pureza ep=4000,0.4100,,
+f1c,conocida_fiab,0,curva identidad ep=4000,0.4100,,
+f1c,conocida_fiab,0,curva usados ep=4000,10,,
+f1c,conocida_fiab,0,pureza percepción (test),0.4110,0.1000,mejor biyección
+f1c,conocida_fiab,0,identidad percepción (test),0.4110,0.1000,símbolo == dígito
+f1c,conocida_fiab,0,símbolos usados,10,10,
+f1c,conocida_fiab,0,código es identidad (dígitos),10,10,dígitos cuyo símbolo en la mejor biyección es el propio dígito
+f1c,conocida_fiab,0,créditos a la percepción,20124,,
+f1c,conocida_fiab,0,precisión del crédito (código final),0.4612,0.1000,
+f1c,conocida_fiab,0,precisión del crédito (identidad),0.4612,0.1000,
+f1c,conocida_fiab,0,"precisión del crédito, 2.a mitad (código final)",0.4458,0.1000,
+f1c,conocida_fiab,0,abstenciones Thinker,0,,
+f1c,conocida_fiab,0,exacta n=3 (test),0.0060,0.0005,azar
+f1c,conocida_fiab,0,columna n=3 (test),0.2347,0.1000,azar
+f1c,conocida_fiab,0,fin (acarreo) n=3 (test),0.8060,0.5005,mejor constante
+f1c,conocida_fiab,0,exacta n=1 (test),0.2380,0.0550,azar
+f1c,conocida_fiab,0,cota pureza^6 (Thinker perfecto),0.0048,,
+f1c,conocida_fiab,0,exacta n=3 | imágenes bien (código),1.0000,,
+f1c,conocida_fiab,0,fracción episodios con las 6 imágenes bien (código),0.0040,0.0048,pureza^6
+f1c,conocida_fiab,0,clases fundidas (símbolo mayoritario de >=2 dígitos),2,0,
+f1c,conocida_fiab,0,masa en s = d (identidad),0.4110,0.1000,fracción de imágenes
+f1c,conocida_fiab,0,masa en s = d +- 1 (vecinos),0.3460,0.2000,
+f1c,conocida_fiab,0,masa en s = d + 5,0.0425,0.1000,invisible para el dígito módulo 10
+f1c,conocida_fiab,0,converge a una permutación (pureza - identidad),0.0000,,alto: código consistente pero permutado
+f1c,conocida_fiab,0,segundos,466.5000,,
+f1c,total,0,segundos,466.9000,,
