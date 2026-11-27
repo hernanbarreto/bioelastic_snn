@@ -1,0 +1,2 @@
+name,depth,cond,n_seeds,n_train,test_acc,val_acc,preq_acc,test_probe_by_level,val_probe_by_level,val_pe_by_level,noise_acc,occlude_acc,shift3_acc,ms_per_step,ms_per_image,macs_per_inference
+fashion,3,grad,1,8000,,0.8710±0.0000,0.8481±0.0000, |  | ,0.7630±0.0000 | 0.8580±0.0000 | 0.8540±0.0000,,,,,28.4245±0.0000,19.1019±0.0000,63653632.0000±0.0000

@@ -1,0 +1,50 @@
+[
+ {
+  "name": "fashion",
+  "seed": 0,
+  "n_train": 55000,
+  "n_ridge": 5000,
+  "n_val": 2000,
+  "cnn_lr": 0.001,
+  "cnn_val": 0.884,
+  "probe_pix": 0.838,
+  "ridge_pix": 0.797,
+  "probe_cnn1": 0.886,
+  "ridge_cnn1": 0.867,
+  "probe_cnn2": 0.893,
+  "ridge_cnn2": 0.8765,
+  "secs": 416.12290358543396
+ },
+ {
+  "name": "fashion",
+  "seed": 1,
+  "n_train": 55000,
+  "n_ridge": 5000,
+  "n_val": 2000,
+  "cnn_lr": 0.001,
+  "cnn_val": 0.8785,
+  "probe_pix": 0.8345,
+  "ridge_pix": 0.801,
+  "probe_cnn1": 0.8765,
+  "ridge_cnn1": 0.8795,
+  "probe_cnn2": 0.884,
+  "ridge_cnn2": 0.879,
+  "secs": 431.29678082466125
+ },
+ {
+  "name": "fashion",
+  "seed": 2,
+  "n_train": 55000,
+  "n_ridge": 5000,
+  "n_val": 2000,
+  "cnn_lr": 0.001,
+  "cnn_val": 0.876,
+  "probe_pix": 0.809,
+  "ridge_pix": 0.7905,
+  "probe_cnn1": 0.8655,
+  "ridge_cnn1": 0.866,
+  "probe_cnn2": 0.883,
+  "ridge_cnn2": 0.874,
+  "secs": 414.3037519454956
+ }
+]

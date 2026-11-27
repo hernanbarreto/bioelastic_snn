@@ -1,0 +1,44 @@
+[
+ {
+  "name": "cifar10",
+  "seed": 0,
+  "lr": 0.003,
+  "n_train": 5000,
+  "cnn_val": 0.439,
+  "probe_pixels": 0.3535,
+  "probe_layer1": 0.441,
+  "probe_layer2": 0.44,
+  "dims": [
+   6272,
+   2304
+  ]
+ },
+ {
+  "name": "cifar10",
+  "seed": 1,
+  "lr": 0.001,
+  "n_train": 5000,
+  "cnn_val": 0.4525,
+  "probe_pixels": 0.3525,
+  "probe_layer1": 0.4345,
+  "probe_layer2": 0.4275,
+  "dims": [
+   6272,
+   2304
+  ]
+ },
+ {
+  "name": "cifar10",
+  "seed": 2,
+  "lr": 0.001,
+  "n_train": 5000,
+  "cnn_val": 0.4105,
+  "probe_pixels": 0.337,
+  "probe_layer1": 0.427,
+  "probe_layer2": 0.4465,
+  "dims": [
+   6272,
+   2304
+  ]
+ }
+]

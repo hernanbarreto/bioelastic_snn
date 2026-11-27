@@ -1,0 +1,74 @@
+[
+ {
+  "name": "mnist",
+  "model": "cnn1",
+  "seed": 0,
+  "lr": 0.003,
+  "n_train": 10000,
+  "val_acc": 0.972,
+  "test_acc": 0.9604,
+  "train_secs": 2.856261730194092,
+  "noise_acc": 0.94,
+  "occlude_acc": 0.853
+ },
+ {
+  "name": "mnist",
+  "model": "cnn2",
+  "seed": 0,
+  "lr": 0.001,
+  "n_train": 10000,
+  "val_acc": 0.977,
+  "test_acc": 0.969,
+  "train_secs": 6.082655429840088,
+  "noise_acc": 0.963,
+  "occlude_acc": 0.832
+ },
+ {
+  "name": "mnist",
+  "model": "cnn1",
+  "seed": 1,
+  "lr": 0.003,
+  "n_train": 10000,
+  "val_acc": 0.964,
+  "test_acc": 0.9522,
+  "train_secs": 2.8486990928649902,
+  "noise_acc": 0.935,
+  "occlude_acc": 0.816
+ },
+ {
+  "name": "mnist",
+  "model": "cnn2",
+  "seed": 1,
+  "lr": 0.003,
+  "n_train": 10000,
+  "val_acc": 0.972,
+  "test_acc": 0.961,
+  "train_secs": 6.113530874252319,
+  "noise_acc": 0.956,
+  "occlude_acc": 0.83
+ },
+ {
+  "name": "mnist",
+  "model": "cnn1",
+  "seed": 2,
+  "lr": 0.003,
+  "n_train": 10000,
+  "val_acc": 0.9695,
+  "test_acc": 0.9604,
+  "train_secs": 3.128676176071167,
+  "noise_acc": 0.923,
+  "occlude_acc": 0.852
+ },
+ {
+  "name": "mnist",
+  "model": "cnn2",
+  "seed": 2,
+  "lr": 0.003,
+  "n_train": 10000,
+  "val_acc": 0.978,
+  "test_acc": 0.958,
+  "train_secs": 6.8167948722839355,
+  "noise_acc": 0.949,
+  "occlude_acc": 0.783
+ }
+]
