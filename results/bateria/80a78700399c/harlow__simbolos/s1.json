@@ -5,6 +5,7 @@
   "ensayo2_preliminares": 0.59375,
   "ensayo2_1a100": 0.79,
   "ensayo2_101a200": 0.82,
+  "ensayo2_233a344": 0.7410714285714286,
   "ensayo2_351a400": 0.68,
   "ensayo1_101a200": 0.43,
   "congelado_tras200": 0.76,
@@ -28,13 +29,13 @@
    0.68
   ]
  },
- "segundos": 3.036940574645996,
+ "segundos": 2.719487190246582,
  "problemas": {
   "preliminares": 32,
   "seis": 400
  },
  "semilla": 1,
- "version": 1,
+ "version": 2,
  "escala": 1.0,
  "config": null
 }

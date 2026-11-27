@@ -1,0 +1,11 @@
+conjunto,dimension,nombre,indice_min,indice_max,pruebas,dimensiones_con_indice,dimensiones_total,advertencia
+equivalentes,"(promedio entre dimensiones, convención)",,0.722,2.045,,3,10,
+equivalentes,pocos_ejemplos,Aprender de pocos ejemplos,0.335,0.341,"harlow (imagenes); omniglot (imagenes, pixeles)",,,
+equivalentes,metacognicion,Metacognición,0.991,4.954,auroc_tipo2 (imagenes),,,
+equivalentes,percepcion,Percepción,0.840,0.840,"mnist (depth2, depth3); fashion_mnist (depth2, depth3); cifar10 (depth2_5000, depth3_5000)",,,
+todas,"(promedio entre dimensiones, convención)",,0.695,1.489,,5,10,"mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"
+todas,pocos_ejemplos,Aprender de pocos ejemplos,0.352,0.357,"harlow (simbolos, imagenes); omniglot (imagenes, pixeles)",,,"mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"
+todas,razonamiento_relacional,Razonamiento relacional y composición,-1.028,-1.028,inferencia_transitiva_6 (simbolos),,,"mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"
+todas,memoria_de_trabajo,Memoria de trabajo,2.322,2.322,deteccion_de_cambio (simbolos),,,"mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"
+todas,metacognicion,Metacognición,0.991,4.954,auroc_tipo2 (imagenes),,,"mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"
+todas,percepcion,Percepción,0.840,0.840,"mnist (depth2, depth3); fashion_mnist (depth2, depth3); cifar10 (depth2_5000, depth3_5000)",,,"mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento de prueba o memoria exacta por diseño): no leer como «porcentaje humano»"

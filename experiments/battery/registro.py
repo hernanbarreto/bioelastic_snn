@@ -92,10 +92,47 @@ def correr(p, almacen, escala: float = 1.0, semillas=None, limite: float | None 
     return crudos, sel, completa
 
 
-def fila(p, crudos, sel, catalogo, commit) -> dict:
+def controles(p, almacen, escala: float, sel: dict | None, semillas=None, limite=None, log=print) -> dict:
+    """Las otras configuraciones documentadas, corridas en las mismas semillas de prueba
+    como control (no cambian la elegida ni el puntaje principal): muestran cuánto depende
+    el resultado de la configuración."""
+    out = {}
+    if not sel or not sel.get("elegida"):
+        return out
+    for nombre, cfg in p.configs.items():
+        if nombre == sel["elegida"]:
+            continue
+        clave = f"_control__{p.clave}__{nombre}"
+        vals = []
+        for s in (semillas if semillas is not None else p.semillas):
+            c = almacen.cargar(clave, s, p.version, escala)
+            if c is None:
+                if limite is not None and time.time() > limite:
+                    continue
+                t0 = time.time()
+                try:
+                    r = p.correr(s, escala, cfg)
+                    c = dict(r, semilla=s, version=p.version, escala=escala, config=nombre)
+                except NoAplicable as e:
+                    c = dict(semilla=s, version=p.version, escala=escala, config=nombre, no_aplicable=str(e),
+                             segundos=time.time() - t0)
+                almacen.guardar(clave, s, c)
+                log(f"  control {p.clave} {nombre} s{s}: puntaje={c.get('puntaje')}")
+            vals.append(c)
+        m, sd = esquema.media_desvio([c.get("puntaje") for c in vals])
+        det = {}
+        for k in sorted({k for c in vals for k, v in c.get("medidas", {}).items() if isinstance(v, (int, float, bool))}):
+            mk, sk = esquema.media_desvio([c.get("medidas", {}).get(k) for c in vals])
+            det[k] = dict(media=mk, desvio=sk)
+        out[nombre] = dict(media=m, desvio=sd, por_semilla=[c.get("puntaje") for c in vals],
+                           semillas=[c["semilla"] for c in vals], detalle=det)
+    return out
+
+
+def fila(p, crudos, sel, catalogo, commit, ctrl: dict | None = None) -> dict:
     f = esquema.fila_resultado(p, crudos, catalogo, commit)
     if sel is not None:
-        f["configuracion"] = sel
+        f["configuracion"] = dict(sel, controles=ctrl or {})
     elif crudos:
         f["configuracion"] = dict(elegida="única documentada para esta prueba")
     return f

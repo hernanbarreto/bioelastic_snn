@@ -31,6 +31,7 @@ class Prueba:
     comparar: dict = field(default_factory=dict)      # id de referencia -> medida de la red con su métrica
     experiencia: dict = field(default_factory=dict)   # medida -> problemas que tuvo la red al medirla
     firmas: dict = field(default_factory=dict)        # medida booleana -> descripción de la firma
+    curva: list = field(default_factory=list)         # [(tramo, medida de la red, id de referencia)]
     # Si la prueba admite más de una configuración documentada de la red, se elige una en
     # validación: `validar(config, semilla, escala)` mide sólo la fase de entrenamiento con
     # semillas de validación (nunca las de prueba ni la medida de prueba); gana el mayor

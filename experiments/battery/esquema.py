@@ -22,7 +22,7 @@ import numpy as np
 
 CATALOGO = Path(__file__).with_name("catalogo.json")
 
-ESTADOS = ("medido", "ingerido", "no aplicable hoy", "sin referencia verificada", "error")
+ESTADOS = ("medido", "ingerido", "pendiente", "no aplicable hoy", "sin referencia verificada", "error")
 CONDICIONES = ("simbolos", "imagenes", "texto")
 CAMPOS = ("prueba", "variante", "nombre", "dimension", "condicion_entrada", "equivalente",
           "metrica", "protocolo", "desviaciones", "estado", "motivo", "semillas", "red", "azar",
@@ -164,6 +164,13 @@ def fila_resultado(prueba, crudos: list[dict], catalogo: dict, commit: str) -> d
     puntajes = [c.get("puntaje") for c in crudos]
     m, s = media_desvio(puntajes)
     red = dict(media=m, desvio=s, por_semilla=puntajes)
+    vals = [float(x) for x in puntajes if x is not None]
+    if vals:                                      # la distribución entre semillas, no sólo media y desvío
+        red.update(mediana=float(np.median(vals)), minimo=min(vals), maximo=max(vals))
+        if azar_v is not None:
+            red["semillas_en_azar"] = int(sum(v <= azar_v + 1e-9 for v in vals)) if prueba.mayor_es_mejor else None
+        if prueba.techo is not None:
+            red["semillas_en_techo"] = int(sum(v >= prueba.techo - 1e-9 for v in vals))
     # detalle: cada medida, media y desvío entre semillas
     claves = sorted({k for c in crudos for k, v in c.get("medidas", {}).items()
                      if isinstance(v, (int, float, bool)) or v is None})
@@ -215,6 +222,14 @@ def fila_resultado(prueba, crudos: list[dict], catalogo: dict, commit: str) -> d
             pub["referencia_del_indice"] = True
         {"humano": humanos, "animales": animales, "maquinas": maquinas}[r["grupo"]].append(pub)
     ref_h = next((h for h in humanos if h.get("referencia_del_indice")), humanos[0] if humanos else None)
+    curva = []
+    for tramo, medida, rid in prueba.curva:
+        d = detalle.get(medida) or {}
+        r = buscar(ent, rid) if rid else None
+        curva.append(dict(tramo=tramo, medida=medida, red_media=d.get("media"), red_desvio=d.get("desvio"),
+                          referencia=rid, especie=(r or {}).get("especie"),
+                          valor=(r or {}).get("valor"), tipo_valor=(r or {}).get("tipo_valor"),
+                          comparacion=comparar(d.get("media"), d.get("desvio"), r, prueba.mayor_es_mejor) if r else None))
     estado = "medido"
     motivo = ""
     if ix is None:
@@ -223,7 +238,7 @@ def fila_resultado(prueba, crudos: list[dict], catalogo: dict, commit: str) -> d
                   if ref_id is None else f"la referencia {ref_id} no permite calcular el índice")
     return _completar(dict(base, estado=estado, motivo=motivo, red=red, referencia_humana=ref_h,
                            referencias_animales=animales, referencias_maquinas=maquinas,
-                           indice_normalizado=ix, detalle=detalle, firmas=firmas,
+                           indice_normalizado=ix, detalle=detalle, firmas=firmas, curva=curva,
                            otras_referencias_humanas=[h for h in humanos if h is not ref_h]))
 
 
@@ -282,8 +297,8 @@ def perfil(filas: list[dict], catalogo: dict) -> dict:
                         dimensiones=len(out), de=len(catalogo["dimensiones"]),
                         convencion=catalogo["convenciones"].get("indice_global"))
         return dict(por_dimension=out, global_=glob)
-    return dict(todas=armar(lambda f: True),
-                equivalentes=armar(lambda f: (f.get("equivalente") or {}).get("valor")),
+    return dict(equivalentes=armar(lambda f: (f.get("equivalente") or {}).get("valor")),
+                todas=dict(armar(lambda f: True), advertencia=ADVERTENCIA_TODAS),
                 sin_indice=sorted({f"{f['prueba']}/{f['variante']}" for f in filas
                                    if not f.get("indice_normalizado")}))
 
@@ -302,13 +317,14 @@ def _ms(d, nd=3):
 def _ix(ix):
     if not ix:
         return ""
-    if abs(ix["max"] - ix["min"]) < 1e-9:
+    if abs(ix["max"] - ix["min"]) < 0.005:
         return f"{ix['min']:.2f}" + (f" ± {ix['desvio']:.2f}" if ix.get("desvio") is not None else "")
     return f"{ix['min']:.2f} a {ix['max']:.2f}"
 
 
-COLUMNAS_CSV = ("prueba", "variante", "dimension", "condicion_entrada", "equivalente", "estado",
-                "red_media", "red_desvio", "n_semillas", "azar", "referencia_humana",
+COLUMNAS_CSV = ("prueba", "variante", "dimension", "condicion_entrada", "equivalente", "motivo_equivalencia", "estado",
+                "red_media", "red_desvio", "red_mediana", "red_min", "red_max", "semillas_en_azar", "semillas_en_techo",
+                "n_semillas", "azar", "referencia_humana",
                 "referencia_valor", "referencia_fuente", "indice_min", "indice_max",
                 "especies_por_encima", "especies_por_debajo", "a_la_par", "fuente_resultado", "motivo")
 
@@ -327,7 +343,12 @@ def fila_csv(f: dict) -> dict:
     return dict(prueba=f["prueba"], variante=f["variante"], dimension=f["dimension"],
                 condicion_entrada=f["condicion_entrada"],
                 equivalente="sí" if (f.get("equivalente") or {}).get("valor") else "no",
+                motivo_equivalencia=(f.get("equivalente") or {}).get("motivo", ""),
                 estado=f["estado"], red_media=_num(red.get("media"), 4), red_desvio=_num(red.get("desvio"), 4),
+                red_mediana=_num(red.get("mediana"), 4), red_min=_num(red.get("minimo"), 4),
+                red_max=_num(red.get("maximo"), 4),
+                semillas_en_azar="" if red.get("semillas_en_azar") is None else red["semillas_en_azar"],
+                semillas_en_techo="" if red.get("semillas_en_techo") is None else red["semillas_en_techo"],
                 n_semillas=len(f.get("semillas") or []), azar=_num((f.get("azar") or {}).get("valor"), 4),
                 referencia_humana=rh.get("id", ""), referencia_valor=rv,
                 referencia_fuente=rh.get("cita", ""), indice_min=_num(ix.get("min"), 3),
@@ -355,6 +376,33 @@ def _jsonable(x):
     raise TypeError(type(x))
 
 
+ADVERTENCIA_TODAS = ("mezcla comparaciones no equivalentes (símbolos frente a objetos vistos, otro procedimiento "
+                     "de prueba o memoria exacta por diseño): no leer como «porcentaje humano»")
+COLUMNAS_PERFIL = ("conjunto", "dimension", "nombre", "indice_min", "indice_max", "pruebas", "dimensiones_con_indice",
+                   "dimensiones_total", "advertencia")
+
+
+def escribir_perfil_csv(pf: dict, path: Path):
+    """El perfil por dimensión y el promedio entre dimensiones: primero el de las comparaciones
+    equivalentes y después el de todas, con su advertencia."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w", newline="", encoding="utf-8") as fh:
+        w = csv.DictWriter(fh, fieldnames=COLUMNAS_PERFIL)
+        w.writeheader()
+        for conj in ("equivalentes", "todas"):
+            adv = "" if conj == "equivalentes" else ADVERTENCIA_TODAS
+            g = pf[conj]["global_"]
+            if g:
+                w.writerow(dict(conjunto=conj, dimension="(promedio entre dimensiones, convención)", nombre="",
+                                indice_min=_num(g["min"]), indice_max=_num(g["max"]), pruebas="",
+                                dimensiones_con_indice=g["dimensiones"], dimensiones_total=g["de"], advertencia=adv))
+            for d, v in pf[conj]["por_dimension"].items():
+                w.writerow(dict(conjunto=conj, dimension=d, nombre=v["nombre"], indice_min=_num(v["min"]),
+                                indice_max=_num(v["max"]),
+                                pruebas="; ".join(f"{x['prueba']} ({', '.join(x['variantes'])})" for x in v["pruebas"]),
+                                dimensiones_con_indice="", dimensiones_total="", advertencia=adv))
+
+
 def escribir_json(obj, path: Path):
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w", encoding="utf-8") as fh:
@@ -364,13 +412,24 @@ def escribir_json(obj, path: Path):
 
 def tabla(filas: list[dict]) -> str:
     """Tabla compacta para la consola."""
-    cab = ("prueba/variante", "entrada", "red (media ± desvío)", "azar", "ref. humana", "índice", "estado")
+    cab = ("prueba/variante", "entrada", "equiv.", "red (media ± desvío)", "semillas [min, mediana, max]", "azar",
+           "ref. humana", "índice", "estado")
     rows = []
     for f in filas:
         rh = f.get("referencia_humana") or {}
         rv = rh.get("valor") if rh.get("valor") is not None else (
             f"{rh.get('valor_min')}-{rh.get('valor_max')}" if rh.get("valor_min") is not None else "-")
-        rows.append((f"{f['prueba']}/{f['variante']}", f["condicion_entrada"], _ms(f.get("red")),
+        red = f.get("red") or {}
+        dist = ""
+        if red.get("mediana") is not None:
+            n = len(f.get("semillas") or [])
+            dist = f"[{red['minimo']:.2f}, {red['mediana']:.2f}, {red['maximo']:.2f}]"
+            if red.get("semillas_en_azar"):
+                dist += f" ≤azar {red['semillas_en_azar']}/{n}"
+            if red.get("semillas_en_techo"):
+                dist += f" techo {red['semillas_en_techo']}/{n}"
+        rows.append((f"{f['prueba']}/{f['variante']}", f["condicion_entrada"],
+                     "sí" if (f.get("equivalente") or {}).get("valor") else "NO", _ms(red), dist,
                      _num((f.get("azar") or {}).get("valor"), 2), str(rv), _ix(f.get("indice_normalizado")) or "-",
                      f["estado"]))
     w = [max(len(str(x)) for x in col) for col in zip(cab, *rows)] if rows else [len(c) for c in cab]

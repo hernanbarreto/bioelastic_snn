@@ -82,6 +82,75 @@ def problema(th, rng, objs, T: int, explore: bool = True) -> list:
     return hits
 
 
+def problema_percibido(th, rng, objs, simbolo, T: int, explore: bool = True) -> tuple[list, bool]:
+    """Un problema con objetos vistos: `simbolo[o]` es lo que la percepción dice de cada
+    objeto. Si los dos objetos reciben el mismo símbolo, la red no los distingue: su
+    respuesta se resuelve al azar entre los dos (moneda del entorno) y la recompensa es la de
+    ese objeto. Devuelve (aciertos, ¿colisión?)."""
+    bueno = objs[int(rng.integers(2))]
+    s = {o: simbolo[o] for o in objs}
+    colision = s[objs[0]] == s[objs[1]]
+    th.reset()
+    hits = []
+    for _ in range(T):
+        a, b = (objs[i] for i in rng.permutation(2))
+        out = elegir(th, s[a], s[b], explore)
+        if colision:
+            elegido = (a, b)[int(rng.integers(2))] if out == s[a] else None
+        else:
+            elegido = a if out == s[a] else (b if out == s[b] else None)
+        ok = elegido == bueno
+        hits.append(bool(ok))
+        th.feedback(target=s[bueno], reward=1.0 if ok else -1.0)
+    return hits, bool(colision)
+
+
+def correr_imagenes(semilla: int, escala: float = 1.0, config: dict | None = None) -> dict:
+    """Harlow con objetos vistos: caracteres de Omniglot que la percepción entrenada en MNIST
+    (depth2) nombra con su vocabulario de 10 dígitos; el Thinker recibe ese nombre."""
+    from . import omniglot, percepcion
+    t0 = time.time()
+    p_pre = max(8, int(round(P_PRELIM * escala)))
+    p_seis = max(20, int(round(P_SEIS * escala)))
+    n = percepcion.N_MNIST if escala >= 1.0 else max(1000, int(percepcion.N_MNIST * escala))
+    net, _ = percepcion.cortex_mnist(semilla, n, log=percepcion.log_stderr)
+    net = percepcion.congelar(net)
+    E = percepcion.encoder()
+    X, y, _ = omniglot.cargar_fondo()
+    primero = np.r_[0, np.flatnonzero(np.diff(y)) + 1]
+    figs = np.concatenate([X[primero], omniglot.cargar_evaluacion_primeras()])
+    rng = np.random.default_rng(semilla)
+    orden = [int(i) for i in rng.permutation(len(figs))]
+    n_obj = 2 * (p_pre + p_seis)
+    if n_obj > len(orden):
+        raise NoAplicable("no alcanzan los caracteres de Omniglot para objetos nunca vistos")
+    objs = orden[:n_obj]
+    simbolo = {o: int(net.forward(E(figs[o]))) for o in objs}
+    th = thinker(10, semilla, config)
+    it = iter(range(0, n_obj, 2))
+    pre, col_pre = [], []
+    for _ in range(p_pre):
+        j = next(it); h, c = problema_percibido(th, rng, objs[j:j + 2], simbolo, T_PRELIM)
+        pre.append(h); col_pre.append(c)
+    seis, col = [], []
+    for _ in range(p_seis):
+        j = next(it); h, c = problema_percibido(th, rng, objs[j:j + 2], simbolo, T_SEIS)
+        seis.append(h); col.append(c)
+    pre = np.array(pre, dtype=float); seis = np.array(seis, dtype=float); col = np.array(col)
+    e2 = seis[:, 1]
+    mitad = p_seis // 2
+    q = max(1, p_seis // 8)
+    med = dict(ensayo2_primeros8=float(pre[:8, 1].mean()), ensayo2_1a100=float(e2[:mitad // 2].mean()),
+               ensayo2_101a200=float(e2[mitad // 2:mitad].mean()),
+               ensayo2_233a344=float(e2[mitad:mitad + (112 * p_seis) // P_SEIS].mean()),
+               ensayo2_351a400=float(e2[-q:].mean()),
+               colisiones=float(np.mean(np.r_[col_pre, col])),
+               ensayo2_sin_colision_101a200=float(e2[mitad // 2:mitad][~col[mitad // 2:mitad]].mean())
+               if (~col[mitad // 2:mitad]).any() else None,
+               simbolos_distintos=float(len(set(simbolo.values()))))
+    return dict(puntaje=med["ensayo2_101a200"], medidas=med, segundos=time.time() - t0)
+
+
 def congelado(th, rng, sup, n: int) -> float:
     fz = copy.deepcopy(th)
     fz.reset(); fz.plastic = False
@@ -112,6 +181,7 @@ def correr(semilla: int, escala: float = 1.0, config: dict | None = None) -> dic
                ensayo2_preliminares=float(pre[:, 1].mean()),
                ensayo2_1a100=float(e2[:mitad // 2].mean()),
                ensayo2_101a200=float(e2[mitad // 2:mitad].mean()),
+               ensayo2_233a344=float(e2[mitad:mitad + (112 * p_seis) // P_SEIS].mean()),
                ensayo2_351a400=float(e2[-q:].mean()),
                ensayo1_101a200=float(seis[mitad // 2:mitad, 0].mean()),
                congelado_tras200=cong[mitad], congelado_tras400=cong[p_seis],
@@ -120,6 +190,21 @@ def correr(semilla: int, escala: float = 1.0, config: dict | None = None) -> dic
     return dict(puntaje=med["ensayo2_101a200"], medidas=med, segundos=time.time() - t0,
                 problemas=dict(preliminares=p_pre, seis=p_seis))
 
+
+_COMPARAR = {"harlow1949_primeros8": "ensayo2_primeros8", "harlow1950_1a100": "ensayo2_1a100",
+             "harlow1950_101a200": "ensayo2_101a200", "hodos1970_nino": "ensayo2_101a200",
+             "harlow1949_ultimos112": "ensayo2_233a344",
+             "warren1965_rhesus": "ensayo2_351a400", "warren1965_rata_ardilla": "ensayo2_351a400",
+             "hodos1970_tupaya": "ensayo2_351a400", "thomas2012_chimpance": "ensayo2_101a200",
+             "thomas2012_rata": "ensayo2_351a400"}
+_EXPERIENCIA = {"ensayo2_101a200": 232, "ensayo2_351a400": 432, "ensayo2_1a100": 132, "ensayo2_primeros8": 8,
+                "ensayo2_233a344": 344}
+# Curva de Harlow con el mismo número de problemas: (tramo, medida de la red, referencia de los monos)
+CURVA = [("problemas 1-8 (de 50 ensayos)", "ensayo2_primeros8", "harlow1949_primeros8"),
+         ("problemas 33-132 (1-100 de 6 ensayos)", "ensayo2_1a100", "harlow1950_1a100"),
+         ("problemas 133-232 (101-200 de 6 ensayos)", "ensayo2_101a200", "harlow1950_101a200"),
+         ("problemas 233-344 (los últimos 112 de Harlow)", "ensayo2_233a344", "harlow1949_ultimos112"),
+         ("problemas 383-432 (351-400 de 6 ensayos)", "ensayo2_351a400", "warren1965_rhesus")]
 
 PRUEBAS = [
     Prueba(
@@ -132,19 +217,33 @@ PRUEBAS = [
             "condición de entrada: símbolos con identidad perfecta, no objetos reales vistos en el aparato de Wisconsin; "
             "la red no tiene que reconocer el objeto ni separarlo de la posición",
             "el resultado llega como recompensa en el estado (`prev_io`), no como percepción del premio bajo el objeto",
-            "sin los 112 problemas de discriminación con reversión de Harlow (su procedimiento no se pudo verificar)",
+            "sin los 112 problemas de discriminación con reversión de Harlow (su procedimiento no se pudo verificar): los "
+            "problemas 233 a 344 de la red son de 6 ensayos, comparados con el ensayo 2 de los últimos 112 de Harlow",
             "los problemas 201 a 400 son una extensión de la batería para comparar con Warren (1965)",
             "los monos tuvieron entrenamiento previo con el aparato; la red empieza sin nada",
         ],
-        correr=correr, version=1, semillas=(0, 1, 2, 3, 4),
+        correr=correr, version=2, semillas=(0, 1, 2, 3, 4),
         equivalente=False,
         motivo_equivalencia="con símbolos la red no tiene que percibir ni reconocer los objetos",
-        comparar={"harlow1949_primeros8": "ensayo2_primeros8", "harlow1950_1a100": "ensayo2_1a100",
-                  "harlow1950_101a200": "ensayo2_101a200", "hodos1970_nino": "ensayo2_101a200",
-                  "warren1965_rhesus": "ensayo2_351a400", "warren1965_rata_ardilla": "ensayo2_351a400",
-                  "hodos1970_tupaya": "ensayo2_351a400", "thomas2012_chimpance": "ensayo2_101a200",
-                  "thomas2012_rata": "ensayo2_351a400"},
-        experiencia={"ensayo2_101a200": 232, "ensayo2_351a400": 432, "ensayo2_1a100": 132,
-                     "ensayo2_primeros8": 8},
+        comparar=_COMPARAR, experiencia=_EXPERIENCIA, curva=CURVA,
+    ),
+    Prueba(
+        id="harlow", variante="imagenes", condicion="imagenes",
+        metrica="acierto en el ensayo 2, problemas de 6 ensayos 101 a 200 (en línea), con objetos vistos",
+        protocolo=("el mismo calendario que con símbolos; cada objeto es un carácter de Omniglot nunca visto (una "
+                   "imagen); la red depth2 entrenada en MNIST lo nombra con uno de sus 10 dígitos y el Thinker (misma "
+                   "configuración) recibe ese nombre; si los dos objetos reciben el mismo nombre la elección se "
+                   "resuelve al azar"),
+        desviaciones=[
+            "la percepción tiene un vocabulario de 10 símbolos (los dígitos con que se entrenó): objetos distintos "
+            "pueden recibir el mismo nombre y entonces no se distinguen",
+            "el mismo objeto se ve siempre con la misma imagen, como en el aparato de Wisconsin",
+            "el resultado llega como recompensa en el estado (`prev_io`)",
+            "sin los 112 problemas de reversión; problemas 201 a 400 como extensión",
+        ],
+        correr=correr_imagenes, version=2, semillas=(0, 1, 2),
+        equivalente=True,
+        motivo_equivalencia="la red ve los objetos como imágenes; su percepción los nombra con un vocabulario chico",
+        comparar=_COMPARAR, experiencia=_EXPERIENCIA, curva=CURVA,
     ),
 ]

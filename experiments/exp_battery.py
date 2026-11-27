@@ -60,9 +60,11 @@ def informe(info: dict, pruebas, almacen, catalogo, resultados: Path, escala: fl
         if not crudos:
             continue
         sel = registro.seleccionar(p, almacen, escala, log=lambda *a: None) if p.configs else None
+        ctrl = None
         if sel and sel.get("elegida"):
             crudos = [c for c in crudos if c.get("config") == sel["elegida"]]
-        filas.append(registro.fila(p, crudos, sel, catalogo, info["commit"]))
+            ctrl = registro.controles(p, almacen, escala, sel, limite=0.0, log=lambda *a: None)
+        filas.append(registro.fila(p, crudos, sel, catalogo, info["commit"], ctrl))
     filas += ingesta.filas(catalogo)
     for f in filas:
         err = esquema.validar_fila(f)
@@ -79,17 +81,20 @@ def informe(info: dict, pruebas, almacen, catalogo, resultados: Path, escala: fl
     nombre = f"bateria_{info['commit']}"
     esquema.escribir_json(out, resultados / f"{nombre}.json")
     esquema.escribir_csv(filas, resultados / f"{nombre}.csv")
+    esquema.escribir_perfil_csv(perfil, resultados / f"{nombre}_perfil.csv")
     log(esquema.tabla(filas))
     log("")
-    for tipo in ("todas", "equivalentes"):
+    for tipo in ("equivalentes", "todas"):
         g = perfil[tipo]["global_"]
-        log(f"perfil ({tipo}):")
+        log(f"perfil ({'sólo comparaciones equivalentes' if tipo == 'equivalentes' else 'todas las condiciones'}):")
+        if tipo == "todas":
+            log(f"  ADVERTENCIA: {esquema.ADVERTENCIA_TODAS}")
         for d, v in perfil[tipo]["por_dimension"].items():
-            log(f"  {d:28s} {v['min']:.2f}" + ("" if abs(v['max'] - v['min']) < 1e-9 else f" a {v['max']:.2f}")
+            log(f"  {d:28s} {v['min']:.2f}" + ("" if abs(v['max'] - v['min']) < 0.005 else f" a {v['max']:.2f}")
                 + f"  ({', '.join(x['prueba'] for x in v['pruebas'])})")
         if g:
             log(f"  promedio entre dimensiones (convención): {g['min']:.2f}"
-                + ("" if abs(g['max'] - g['min']) < 1e-9 else f" a {g['max']:.2f}")
+                + ("" if abs(g['max'] - g['min']) < 0.005 else f" a {g['max']:.2f}")
                 + f", {g['dimensiones']} de {g['de']} dimensiones")
     log(f"\n-> {resultados / (nombre + '.json')}")
     return out
@@ -115,8 +120,10 @@ def main(argv=None):
         pendientes = []
         for p in pruebas:
             print(f"{p.clave}", flush=True)
-            _, _, completa = registro.correr(p, almacen, a.escala, semillas, limite,
-                                             log=lambda m: print(m, flush=True))
+            _, sel, completa = registro.correr(p, almacen, a.escala, semillas, limite,
+                                               log=lambda m: print(m, flush=True))
+            if sel and sel.get("elegida"):
+                registro.controles(p, almacen, a.escala, sel, semillas, limite, log=lambda m: print(m, flush=True))
             if not completa:
                 pendientes.append(p.clave)
         if pendientes:
