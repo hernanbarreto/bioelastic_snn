@@ -200,6 +200,9 @@ class MetaThinker(Thinker):
     def __init__(self, n_symbols: int, *, meta=(), signals=("exito", "sorpresa", "td", "novedad"),
                  graded: bool = False, fixed: dict | None = None, beta: float = 0.05,
                  meta_sigma: float = 1.0, meta_lr: float = 1.0, **kw):
+        # los meta-parámetros los fija este controlador: sin los neuromoduladores del Thinker
+        # (que por defecto regulan los mismos) salvo que se pidan
+        kw.setdefault("modulators", False)
         super().__init__(n_symbols, **kw)
         fixed = dict(fixed or {})
         graded = graded or bool({"rate", "forget"} & (set(meta) | set(fixed)))

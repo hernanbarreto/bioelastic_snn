@@ -170,12 +170,15 @@ class Neuromodulators:
     """Los canales que fijan los 7 meta-parámetros del `Thinker` en cada ensayo.
 
     `eps`, `temp`: (mínimo, máximo) de exploración y de temperatura del softmax (el máximo,
-    por defecto, el del Thinker); `n0`: experiencia con la que el ruido estimado de un estado
+    por defecto, el del Thinker). El mínimo de exploración no es 0: con la regla ya fiable y
+    sin ninguna acción al azar, el control se queda con la primera solución que encontró
+    (seguir una cadena de 1-2 saltos como «seguir y copiar», que no vale para 3) en vez de la
+    general («seguir mientras haya recuerdo»): 6/6 semillas generalizan con piso 0.02 y 0/6 sin; `n0`: experiencia con la que el ruido estimado de un estado
     ya cuenta la mitad; `keep`: retención de las cuentas por estado (olvido para seguir
     cambios); `forget_max`: olvido máximo de la memoria; `beta`: tasa de NE; `beta5`: tasa de
     5-HT (lenta); `confident`: confianza mínima de una predicción para medir la fiabilidad."""
 
-    def __init__(self, net, eps=(0.0, None), temp=(0.1, None), n0: float = 5.0, keep: float = 0.98,
+    def __init__(self, net, eps=(0.02, None), temp=(0.1, None), n0: float = 5.0, keep: float = 0.98,
                  forget_max: float = 0.02, beta: float = 0.05, beta5: float = 0.01,
                  confident: float = 0.6, capture_noise: float = 0.15, sure_gain: float = 0.5,
                  control: bool = True, horizon: str = "ensayo", explained: float = 0.8,
@@ -199,7 +202,6 @@ class Neuromodulators:
         self.n0 = float(n0)
         self.keep = float(keep)
         self.forget_max = float(forget_max)
-        self.decay0 = float(net.decay)
         self.sure0 = float(net.say_sure)
         self.capture0 = int(net.capture)
         self.beta = float(beta)
@@ -308,7 +310,8 @@ class Neuromodulators:
         # ("ne": el control establecido se olvida cuando deja de rendir lo que rendía, no por
         # el nivel de recompensa: con desenlaces ruidosos pero estables 5-HT queda baja para
         # siempre y la contracción seguía comiéndose los márgenes de lo ya aprendido)
-        p["decay"] = self.decay0 * (ne_c if self.decay_mode == "ne" else short)
+        decay_mod = ne_c if self.decay_mode == "ne" else short     # (multiplica el `decay` del Thinker)
+        p["decay"] = net.decay * decay_mod
         # ACh (ruido de los desenlaces en la memoria) -> capture y sure
         p["capture"] = self.capture0 + int(ach_m > self.capture_noise)
         p["sure"] = float(np.clip(self.sure0 + self.sure_gain * max(ach_m - 0.1, 0.0), 0.5, 0.95))
@@ -325,7 +328,7 @@ class Neuromodulators:
         net._ctl_gain *= gain
         net._beh_eps = p["epsilon"]
         net._beh_temp = p["temperature"]
-        net.decay = p["decay"]
+        net._decay_mod = decay_mod
         net.capture = p["capture"]
         net.say_sure = p["sure"]; net.M.sure = p["sure"]
         return p

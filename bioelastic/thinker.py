@@ -323,9 +323,9 @@ class Thinker:
                  replacing: bool = True,
                  decay: float = 1e-2, mixed: bool | str = "solo", clock: bool = False,
                  lookahead: bool = False, search: str = "guiada", credit: str = "estricto",
-                 task_sets: bool | dict = False, cogmap: bool | str = False, modulators: bool | dict = False,
+                 task_sets: bool | dict = True, cogmap: bool | str = True, modulators: bool | dict = True,
                  doubt: float = 0.0, explain: str = "refutadas", reg_credit: str = "simple",
-                 reg_reset: str = "cero", prev_io: bool | str = False, back: bool | str = False,
+                 reg_reset: str = "cero", prev_io: bool | str = True, back: bool | str = True,
                  seed: int = 0, say: dict | None = None):
         N = self.N = int(n_symbols)
         self.R = int(registers)
@@ -480,6 +480,7 @@ class Thinker:
         self._beh_eps = None                               # exploración de la conducta (None: epsilon)
         self._trial_td = False                             # TD con horizonte de un ensayo (ver `feedback`)
         self._decay_td = False                             # la contracción L1 ocurre con el error de predicción (ver `_update`)
+        self._decay_mod = 1.0                              # factor de la contracción que fija 5-HT (`modulators`); `decay` queda como base
         # conjuntos de tareas (`task_sets`, ver `bioelastic.tasksets`): el control que rige
         # se infiere de la estadística de los desenlaces
         self.task_sets = None
@@ -656,7 +657,7 @@ class Thinker:
             # instantáneas contra 6 con la contracción en cada decisión; sin contracción, 0), pero
             # con desenlaces ruidosos la contracción en cada decisión es el filtro que borra lo
             # que el azar reforzó: sin ella el control congelado en S/V elige mal (0.55-0.75).
-            k = self.decay * self._ctl_gain * min(abs(delta), 1.0)
+            k = self.decay * self._decay_mod * self._ctl_gain * min(abs(delta), 1.0)
             live = np.flatnonzero(np.abs(self.Ec).max(axis=0) > 1e-3)
             if len(live):
                 W = self.Wc[:, live]
@@ -675,7 +676,7 @@ class Thinker:
         if self.plastic:
             if self.decay and not self._decay_td:         # L1 local: sólo sinapsis con presináptica activa
                 W = self.Wc[:, s_idx]
-                self.Wc[:, s_idx] = np.sign(W) * np.maximum(np.abs(W) - self.decay, 0.0)
+                self.Wc[:, s_idx] = np.sign(W) * np.maximum(np.abs(W) - self.decay * self._decay_mod, 0.0)
             V = float(self.wv[s_idx] @ s_val)
             if self._V is not None:
                 self._update(self._r + self.gamma * V - self._V)
@@ -1279,6 +1280,27 @@ class Thinker:
         q.append([ep, target, self._version(), self.replayed])   # episodio, objetivo, versión, última vez
 
     def _replay(self):
+        """Repetición con conjuntos de tareas: el conocimiento es común a todos, así que lo que
+        aprende uno puede explicar lo que otro dejó pendiente. Además de lo pendiente del
+        conjunto que rige, en cada llamada se repite lo de otro conjunto (por turno) y se
+        corrige *su* control, no el que rige. (Sin esto, f(f(x)) entrenada antes que f en otra
+        consigna no se corregía nunca: su pendiente quedaba en un conjunto que ya no regía.)"""
+        self._replay_set(self.replay)
+        T = self.task_sets
+        if T is None or len(T.sets) < 2:
+            return
+        others = [k for k in range(len(T.sets)) if k != T.active and T.sets[k].pending]
+        if not others:
+            return
+        self._replay_turn = getattr(self, "_replay_turn", 0) + 1
+        k = others[self._replay_turn % len(others)]
+        self._ts_bind(k)
+        try:
+            self._replay_set(1)
+        finally:
+            self._ts_bind(T.active)
+
+    def _replay_set(self, limit: int):
         """Repetición prioritaria (Dyna; ganancia según Mattar y Daw): vuelve a buscar, con
         el conocimiento de ahora, errores pasados que no se pudieron explicar, sólo si el
         conocimiento o el modelo cambiaron desde la última vez (si no, no hay nada que
@@ -1293,11 +1315,11 @@ class Thinker:
         if not todo:
             return
         todo.sort(key=lambda x: (x[0], x[1]))               # el que hace más que no se repite, primero
-        for _, _, q, e in todo[:self.replay]:
+        for _, _, q, e in todo[:limit]:
             ep, target = e[0], e[1]
             self.replayed += 1
             e[3] = self.replayed
-            paths = self._search(target, start=ep)
+            paths = self._search(target, start=ep, bind=False)
             if paths is None:
                 e[2] = ver
                 continue
@@ -1348,7 +1370,7 @@ class Thinker:
         p = net.readout.probs(net.readout.potentials(v.winners, net._votes(v)))
         return [(int(o),) for o in np.flatnonzero(p >= self.branch)]
 
-    def _search(self, target: int, start=None, over=None, refute: bool = False):
+    def _search(self, target: int, start=None, over=None, refute: bool = False, bind: bool = True):
         """Busca, con el conocimiento actual (según el modelo interno) y sin efectos, una
         secuencia de pasos (compuerta incluida) que habría llevado al objetivo. Devuelve
         una lista de caminos [(estado, permitidas, acción)], o None si no encuentra ninguno.
@@ -1367,7 +1389,25 @@ class Thinker:
         conocimiento no dice qué daría).
 
         Sólo cuenta conocimiento establecido: un acierto por casualidad no prueba que el
-        error fue de estrategia."""
+        error fue de estrategia.
+
+        Con conjuntos de tareas, la búsqueda sobre un episodio guardado (`start`) usa el
+        control del conjunto que rige la consigna de ese episodio, no el que rige ahora: la
+        guía de la búsqueda (y lo que cuesta cada camino) es la política de quien respondió.
+        `bind=False`: con el control que está ligado (la repetición elige el conjunto)."""
+        T = self.task_sets
+        if bind and start is not None and T is not None and T.sets:
+            k = T.cue_k.get(start[1])
+            if k is not None and k < len(T.sets) and T.sets[k].Wc is not self.Wc:
+                saved = (self.Wc, self.wv, self.rel, self._pending)
+                self._ts_bind(k)
+                try:
+                    return self._search_in(target, start, over, refute)
+                finally:
+                    self.Wc, self.wv, self.rel, self._pending = saved
+        return self._search_in(target, start, over, refute)
+
+    def _search_in(self, target: int, start, over, refute: bool):
         items, cue, reg, given, events = self._episode() if start is None else start
         prev = getattr(items, "prev", None)
         if self.fast is not None:

@@ -109,7 +109,8 @@ def test_task_sets_off_is_the_previous_thinker():
     outs = []
     for ts in (False, None):
         rng = np.random.default_rng(3)
-        kw = {} if ts is None else dict(task_sets=ts)
+        old = dict(back=False, cogmap=False, modulators=False, task_sets=False)   # la v0.3 con prev_io
+        kw = old if ts is None else dict(old, task_sets=ts)
         net = Thinker(40, memory=True, speak=True, judge=True, gate=True, prev_io=True, seed=1, **kw)
         objs = rng.permutation(40)
         res = [_harlow(net, rng, [int(objs[2 * (i % 20)]), int(objs[2 * (i % 20) + 1])], "W") for i in range(60)]
@@ -146,7 +147,7 @@ def test_expected_size_makes_a_short_chain_partial():
 
 
 def test_cogmap_state_layout_and_size_learning_only_with_plasticity():
-    a = Thinker(20, memory=True, judge=True, speak=True, back=True, seed=0)
+    a = Thinker(20, memory=True, judge=True, speak=True, back=True, cogmap=False, seed=0)
     b = Thinker(20, memory=True, judge=True, speak=True, back=True, cogmap=True, seed=0)
     c = Thinker(20, memory=True, judge=True, speak=True, back=True, cogmap="sin_posicion", seed=0)
     assert b.D_state == a.D_state + 3 + 36 + 12 * (b._n_act + 1) and c.D_state == a.D_state + 3
@@ -168,7 +169,9 @@ def test_judge_candidate_learns_a_target_tied_to_a_structural_position():
     para ese estado con marca y captura: FIN (siempre el mismo al final de la cadena) se
     consolida y el modelo interno lo da por fiable; un objetivo que cambia cada vez, no."""
     from bioelastic.thinker import COPY, _key
-    net = Thinker(30, memory=True, judge=True, speak=True, back=True, cogmap=True, seed=0)
+    # (prueba de unidad del crédito al juicio: sin lo que también actúa en `feedback`)
+    net = Thinker(30, memory=True, judge=True, speak=True, back=True, cogmap=True, seed=0,
+                  prev_io=False, task_sets=False, modulators=False)
     FIN = 29
 
     def episode(target):

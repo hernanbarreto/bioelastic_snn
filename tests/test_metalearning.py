@@ -54,11 +54,13 @@ def _bind_episode(net, rng, learn):
 
 def test_meta_thinker_without_meta_parameters_is_the_thinker():
     """Sin meta-parámetros ni memoria graduada, MetaThinker es el Thinker bit a bit (las
-    señales se miden pero no se usan)."""
+    señales se miden pero no se usan). Los meta-parámetros del MetaThinker los fija su
+    controlador: por defecto va sin los neuromoduladores del Thinker, así que se compara con
+    el Thinker sin ellos."""
     outs = []
     for cls in (Thinker, MetaThinker):
         rng = np.random.default_rng(0)
-        net = cls(16, memory=True, seed=0)
+        net = cls(16, memory=True, seed=0, modulators=False)
         outs.append(([_bind_episode(net, rng, True) for _ in range(300)], net.Wc.copy(), net.wv.copy()))
     assert outs[0][0] == outs[1][0]
     assert np.array_equal(outs[0][1], outs[1][1]) and np.array_equal(outs[0][2], outs[1][2])
@@ -97,8 +99,9 @@ def test_meta_thinker_samples_while_learning_and_uses_the_mean_when_frozen():
 
 def test_frozen_control_needs_zero_decay():
     """La contracción L1 del control no depende de lr: con lr=0 el control igual se borra.
-    (Por eso «congelar el control» en los experimentos es lr=0 y decay=0.)"""
-    net = Thinker(16, memory=True, seed=0)
+    (Por eso «congelar el control» en los experimentos es lr=0 y decay=0.) Sin conjuntos de
+    tareas: con ellos, aprendiendo, puede pasar a regir otro conjunto (otra matriz)."""
+    net = Thinker(16, memory=True, seed=0, task_sets=False)
     rng = np.random.default_rng(0)
     for _ in range(300):
         _bind_episode(net, rng, True)
@@ -187,12 +190,13 @@ def test_recall_back_returns_what_preceded():
 
 
 def test_back_option_off_keeps_the_state_layout():
-    a = Thinker(20, memory=True, judge=True, speak=True, seed=0)
-    b = Thinker(20, memory=True, judge=True, speak=True, seed=0, back=False, prev_io=False)
+    old = dict(prev_io=False, back=False, task_sets=False, cogmap=False, modulators=False)   # la v0.3
+    a = Thinker(20, memory=True, judge=True, speak=True, seed=0, **old)
+    b = Thinker(20, memory=True, judge=True, speak=True, seed=0, **dict(old, back=False))
     assert a.Wc.shape == b.Wc.shape == (8, a.D_state) and a.D_state == b.D_state
-    c = Thinker(20, memory=True, judge=True, speak=True, seed=0, back="automatico")
+    c = Thinker(20, memory=True, judge=True, speak=True, seed=0, **dict(old, back="automatico"))
     assert c.Wc.shape[0] == 9 and c.D_state == a.D_state + 1 + 3
-    d = Thinker(20, memory=True, judge=True, speak=True, seed=0, back=True)   # + ¿predecesor sostenido?, ¿falló?
+    d = Thinker(20, memory=True, judge=True, speak=True, seed=0, **dict(old, back=True))   # + ¿sostenido?, ¿falló?
     assert d.Wc.shape[0] == 9 and d.D_state == a.D_state + 1 + 6
 
 
