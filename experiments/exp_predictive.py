@@ -435,6 +435,64 @@ def run_one(name: str, depth: int, seed: int, n_train: int, n_val: int, n_test: 
     return res
 
 
+# ---------------------------------------------------------------- techo: sondas en una CNN
+def cnn_probe(name: str, seeds, n_train: int, n_val: int, tag: str):
+    """Control de techo: ¿la segunda capa de una CNN entrenada con backprop (una pasada, mismo
+    presupuesto) le gana a la primera con la misma sonda lineal de 3 factores en una pasada?
+    Si ni el backprop logra que la capa 2 supere a la 1 en este régimen, «sonda de V2 > V1»
+    no es alcanzable sólo con cambiar las reglas locales."""
+    from cnn_backprop import ARCH, CNN
+    E = encoder(name)
+    side, _, channels = sheet_shape(name)
+    S = lambda X: np.stack([E(x) for x in X]).astype(np.float32)
+    out = []
+    for seed in seeds:
+        (Xtr, ytr), (Xva, yva), _ = split(name, seed)
+        Str, Sva = S(Xtr[:n_train]), S(Xva[:n_val])
+        best = None
+        for lr in (3e-4, 1e-3, 3e-3):                      # tasa elegida en validación
+            net = CNN(ARCH["cnn2"], side=side, channels=channels, lr=lr, seed=seed)
+            for i in range(0, len(Str), 10):
+                net.train_batch(Str[i:i + 10], ytr[i:i + 10].astype(np.int64))
+            acc = float(np.mean(net.predict(Sva) == yva[:n_val]))
+            if best is None or acc > best[0]:
+                best = (acc, lr, net)
+        acc, lr, net = best
+
+        def layers(X):
+            feats = []
+            for k, W, b in net.convs:                         # mismas operaciones que CNN.forward
+                from numpy.lib.stride_tricks import sliding_window_view
+                B = len(X)
+                cols = sliding_window_view(X, (k, k), axis=(1, 2))
+                oh, ow = cols.shape[1], cols.shape[2]
+                cols = cols.transpose(0, 1, 2, 4, 5, 3).reshape(B * oh * ow, -1)
+                A = np.maximum((cols @ W + b).reshape(B, oh, ow, -1), 0.0)
+                ph, pw = oh // 2, ow // 2
+                X = A[:, :ph * 2, :pw * 2].reshape(B, ph, 2, pw, 2, -1).max(axis=(2, 4))
+                feats.append(X.reshape(B, -1))
+            return feats
+        dims = None; probes = None
+        for i in range(0, len(Str), 100):                     # una pasada, test-then-train
+            F = layers(Str[i:i + 100])
+            if probes is None:
+                dims = [f.shape[1] for f in F]; probes = Probes([Str[0].size] + dims)
+            for j in range(len(F[0])):
+                probes.predict([Str[i + j]] + [f[j] for f in F]); probes.learn(int(ytr[i + j]))
+        hits = np.zeros(len(dims) + 1)
+        for i in range(0, len(Sva), 100):
+            F = layers(Sva[i:i + 100])
+            for j in range(len(F[0])):
+                hits += np.array(probes.predict([Sva[i + j]] + [f[j] for f in F])) == int(yva[i + j])
+        row = dict(name=name, seed=seed, lr=lr, n_train=n_train, cnn_val=acc,
+                   probe_pixels=hits[0] / len(Sva), probe_layer1=hits[1] / len(Sva),
+                   probe_layer2=hits[2] / len(Sva), dims=dims)
+        print(row, flush=True)
+        out.append(row)
+    (RESULTS / f"predictivo_{tag}_cnnprobe_{name}.json").write_text(json.dumps(out, indent=1, default=float))
+    return out
+
+
 # ---------------------------------------------------------------- estímulo inesperado
 def _auroc(neg, pos) -> float:
     """Probabilidad de que un positivo (novedoso) tenga más error que un negativo."""
@@ -807,7 +865,7 @@ def cnn(name: str, seeds, n_train: int, n_val: int, n_test: int, n_perturb: int,
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd", choices=["run", "summarize", "cnn", "surprise", "summarize_surprise",
-                                    "shift", "summarize_shift"])
+                                    "shift", "summarize_shift", "cnnprobe"])
     ap.add_argument("name", nargs="?", default="mnist")
     ap.add_argument("--depths", default="1,2,3")
     ap.add_argument("--seeds", default="0,1,2")
@@ -841,6 +899,9 @@ def main():
     seeds = [int(s) for s in args.seeds.split(",")]
     if args.cmd == "cnn":
         cnn(args.name, seeds, n_train, args.val, args.test, args.perturb, args.tag)
+        return
+    if args.cmd == "cnnprobe":
+        cnn_probe(args.name, seeds, n_train, args.val, args.tag)
         return
     pred = json.loads(args.pred) if args.pred else None
     fb = json.loads(args.fb) if args.fb else None
