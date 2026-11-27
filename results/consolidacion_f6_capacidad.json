@@ -1,0 +1,1356 @@
+{
+ "phase": "f6cap",
+ "config": {
+  "seeds": [
+   3,
+   4,
+   5
+  ],
+  "budgets": [
+   1000,
+   2000,
+   4000,
+   8000
+  ],
+  "tasks": [
+   [
+    10,
+    11
+   ],
+   [
+    12,
+    13
+   ],
+   [
+    14,
+    15
+   ],
+   [
+    16,
+    17
+   ],
+   [
+    18,
+    19
+   ]
+  ],
+  "protocol": "como f6s: un solo pase online por tarea (sin las 500 por clase de validaci\u00f3n), test oficial completo, argmax entre las 10 clases; ER/ER-ACE: MLP 784-256-20, lotes de 10, 3 iteraciones, reservorio uint8 igualado en bytes al c2 de cada punto",
+  "rule": "Curva de capacidad en Split-Fashion-MNIST (semillas de test 3-5). En f6s c2 pierde\ncontra el repaso y su almac\u00e9n llega al tope de 2000 neuronas en las tres semillas: \u00bfes\nsaturaci\u00f3n (recursos) o arquitectura? Presupuesto del almac\u00e9n 1000, 2000, 4000 y 8000\nneuronas; ER y ER-ACE con los bytes equivalentes en cada punto. Comparte el registro de\nf6s (el punto de 2000 es c2 tal cual). Regla: si c2 sigue perdiendo cuando ya no\nsatura, la p\u00e9rdida es de arquitectura.",
+  "gap_c2_minus_best_replay": {
+   "1000": -0.04630000000000001,
+   "2000": -0.04280000000000006,
+   "4000": -0.04536666666666678,
+   "8000": -0.05279999999999996
+  },
+  "note": "saturated = 1 si el almac\u00e9n termin\u00f3 con tantas neuronas como su presupuesto; evicted = neuronas desalojadas (no se registr\u00f3 en las filas de 2000, medidas en f6s)"
+ },
+ "summary": [
+  {
+   "scenario": "fashion",
+   "budget": 1000,
+   "family": "c2",
+   "seeds": 3,
+   "acc": [
+    0.8045666666666667,
+    0.010583162728283706
+   ],
+   "forgetting": [
+    0.19416666666666668,
+    0.024505526587554356
+   ],
+   "task1": [
+    0.7633333333333333,
+    0.021096998206695985
+   ],
+   "task2": [
+    0.7825000000000001,
+    0.028394541729001348
+   ],
+   "task3": [
+    0.707,
+    0.030500000000000027
+   ],
+   "task4": [
+    0.7993333333333332,
+    0.024260736454883917
+   ],
+   "task5": [
+    0.9706666666666667,
+    0.003883726732576987
+   ],
+   "bytes": [
+    5886720.0,
+    0.0
+   ],
+   "neurons": [
+    1000.0,
+    0.0
+   ],
+   "evicted": [
+    16877.0,
+    708.0388407425118
+   ],
+   "saturated": [
+    1.0,
+    0.0
+   ],
+   "seconds": [
+    869.6204138596853,
+    46.431730623362455
+   ]
+  },
+  {
+   "scenario": "fashion",
+   "budget": 1000,
+   "family": "erace",
+   "seeds": 3,
+   "acc": [
+    0.8440333333333333,
+    0.003701801363300467
+   ],
+   "forgetting": [
+    0.07833333333333334,
+    0.009213893494790005
+   ],
+   "task1": [
+    0.9143333333333334,
+    0.010750968948580129
+   ],
+   "task2": [
+    0.7771666666666667,
+    0.04677695301463464
+   ],
+   "task3": [
+    0.8649999999999999,
+    0.009848857801796115
+   ],
+   "task4": [
+    0.7373333333333334,
+    0.01969983079453559
+   ],
+   "task5": [
+    0.9263333333333333,
+    0.01590859306580355
+   ],
+   "bytes": [
+    5886240.0,
+    0.0
+   ],
+   "neurons": [
+    256.0,
+    0.0
+   ],
+   "saturated": [
+    0.0,
+    0.0
+   ],
+   "seconds": [
+    50.159106731414795,
+    4.708675740554844
+   ]
+  },
+  {
+   "scenario": "fashion",
+   "budget": 1000,
+   "family": "er",
+   "seeds": 3,
+   "acc": [
+    0.8508666666666667,
+    0.005828664798505223
+   ],
+   "forgetting": [
+    0.13375,
+    0.00976281209488332
+   ],
+   "task1": [
+    0.9063333333333334,
+    0.00860716755578361
+   ],
+   "task2": [
+    0.7746666666666667,
+    0.024337899115029104
+   ],
+   "task3": [
+    0.8603333333333333,
+    0.03357950763982898
+   ],
+   "task4": [
+    0.7586666666666666,
+    0.01991440014997519
+   ],
+   "task5": [
+    0.9543333333333334,
+    0.013344786747390695
+   ],
+   "bytes": [
+    5886240.0,
+    0.0
+   ],
+   "neurons": [
+    256.0,
+    0.0
+   ],
+   "saturated": [
+    0.0,
+    0.0
+   ],
+   "seconds": [
+    43.42980273564657,
+    0.8546768588968147
+   ]
+  },
+  {
+   "scenario": "fashion",
+   "budget": 2000,
+   "family": "c2",
+   "seeds": 3,
+   "acc": [
+    0.8087,
+    0.009753460924205351
+   ],
+   "forgetting": [
+    0.1870833333333333,
+    0.011880481191152693
+   ],
+   "task1": [
+    0.719,
+    0.05226614583073829
+   ],
+   "task2": [
+    0.7776666666666667,
+    0.016327379867368024
+   ],
+   "task3": [
+    0.7433333333333333,
+    0.028356363189473596
+   ],
+   "task4": [
+    0.8396666666666667,
+    0.013344786747390643
+   ],
+   "task5": [
+    0.9638333333333334,
+    0.002929732638541129
+   ],
+   "bytes": [
+    8798720.0,
+    0.0
+   ],
+   "neurons": [
+    2000.0,
+    0.0
+   ],
+   "saturated": [
+    1.0,
+    0.0
+   ],
+   "seconds": [
+    702.4834000269572,
+    80.15452676393679
+   ]
+  },
+  {
+   "scenario": "fashion",
+   "budget": 2000,
+   "family": "erace",
+   "seeds": 3,
+   "acc": [
+    0.8427000000000001,
+    0.010376415566080642
+   ],
+   "forgetting": [
+    0.09166666666666669,
+    0.008779711460710635
+   ],
+   "task1": [
+    0.8996666666666666,
+    0.0282060868135467
+   ],
+   "task2": [
+    0.7876666666666665,
+    0.030001388856740165
+   ],
+   "task3": [
+    0.863,
+    0.038509739027939444
+   ],
+   "task4": [
+    0.7151666666666666,
+    0.07161761887505987
+   ],
+   "task5": [
+    0.948,
+    0.010440306508910495
+   ],
+   "bytes": [
+    8798370.0,
+    0.0
+   ],
+   "neurons": [
+    256.0,
+    0.0
+   ],
+   "saturated": [
+    0.0,
+    0.0
+   ],
+   "seconds": [
+    22.919620037078857,
+    10.399093231109802
+   ]
+  },
+  {
+   "scenario": "fashion",
+   "budget": 2000,
+   "family": "er",
+   "seeds": 3,
+   "acc": [
+    0.8515,
+    0.006032412452742282
+   ],
+   "forgetting": [
+    0.13708333333333333,
+    0.00813300887330965
+   ],
+   "task1": [
+    0.8916666666666667,
+    0.020738450601077502
+   ],
+   "task2": [
+    0.805,
+    0.02424871130596424
+   ],
+   "task3": [
+    0.847,
+    0.018000000000000016
+   ],
+   "task4": [
+    0.7401666666666666,
+    0.031425838625776296
+   ],
+   "task5": [
+    0.9736666666666666,
+    0.006788470618138747
+   ],
+   "bytes": [
+    8798370.0,
+    0.0
+   ],
+   "neurons": [
+    256.0,
+    0.0
+   ],
+   "saturated": [
+    0.0,
+    0.0
+   ],
+   "seconds": [
+    35.37613654136658,
+    1.3031180021274082
+   ]
+  },
+  {
+   "scenario": "fashion",
+   "budget": 4000,
+   "family": "c2",
+   "seeds": 3,
+   "acc": [
+    0.8045333333333332,
+    0.012781757834246942
+   ],
+   "forgetting": [
+    0.17833333333333334,
+    0.019856254262406427
+   ],
+   "task1": [
+    0.6898333333333334,
+    0.06250266660978017
+   ],
+   "task2": [
+    0.7736666666666667,
+    0.013326039671760471
+   ],
+   "task3": [
+    0.7443333333333334,
+    0.036001157388802545
+   ],
+   "task4": [
+    0.8483333333333333,
+    0.024214320831552023
+   ],
+   "task5": [
+    0.9664999999999999,
+    0.006538348415311004
+   ],
+   "bytes": [
+    14532448.0,
+    156355.6905008577
+   ],
+   "neurons": [
+    3969.0,
+    53.693575034635195
+   ],
+   "evicted": [
+    9905.333333333334,
+    371.25373174330963
+   ],
+   "saturated": [
+    0.6666666666666666,
+    0.5773502691896258
+   ],
+   "seconds": [
+    1138.369301478068,
+    123.21802092018669
+   ]
+  },
+  {
+   "scenario": "fashion",
+   "budget": 4000,
+   "family": "erace",
+   "seeds": 3,
+   "acc": [
+    0.8421,
+    0.003923009049186594
+   ],
+   "forgetting": [
+    0.08583333333333332,
+    0.0361060359681499
+   ],
+   "task1": [
+    0.8391666666666667,
+    0.02507156423786385
+   ],
+   "task2": [
+    0.8125,
+    0.016933694221876083
+   ],
+   "task3": [
+    0.8836666666666666,
+    0.018332575741922687
+   ],
+   "task4": [
+    0.7515000000000001,
+    0.04657520799738851
+   ],
+   "task5": [
+    0.9236666666666666,
+    0.061891706498797806
+   ],
+   "bytes": [
+    14532240.0,
+    0.0
+   ],
+   "neurons": [
+    256.0,
+    0.0
+   ],
+   "saturated": [
+    0.0,
+    0.0
+   ],
+   "seconds": [
+    43.198264837265015,
+    1.64876820072094
+   ]
+  },
+  {
+   "scenario": "fashion",
+   "budget": 4000,
+   "family": "er",
+   "seeds": 3,
+   "acc": [
+    0.8499,
+    0.0022516660498395143
+   ],
+   "forgetting": [
+    0.14333333333333334,
+    0.026259918760981212
+   ],
+   "task1": [
+    0.8383333333333333,
+    0.027574142476844712
+   ],
+   "task2": [
+    0.8171666666666666,
+    0.010004165798972566
+   ],
+   "task3": [
+    0.8546666666666667,
+    0.013823289526496007
+   ],
+   "task4": [
+    0.771,
+    0.024561148181630257
+   ],
+   "task5": [
+    0.9683333333333333,
+    0.017580766005306284
+   ],
+   "bytes": [
+    14532240.0,
+    0.0
+   ],
+   "neurons": [
+    256.0,
+    0.0
+   ],
+   "saturated": [
+    0.0,
+    0.0
+   ],
+   "seconds": [
+    44.623033920923866,
+    1.0273233221403397
+   ]
+  },
+  {
+   "scenario": "fashion",
+   "budget": 8000,
+   "family": "c2",
+   "seeds": 3,
+   "acc": [
+    0.7988333333333334,
+    0.007696969100453344
+   ],
+   "forgetting": [
+    0.19041666666666668,
+    0.015528870961320192
+   ],
+   "task1": [
+    0.6614999999999999,
+    0.03282148686455259
+   ],
+   "task2": [
+    0.7336666666666667,
+    0.010263202878893778
+   ],
+   "task3": [
+    0.7736666666666666,
+    0.009169696468985987
+   ],
+   "task4": [
+    0.8696666666666667,
+    0.003883726732576987
+   ],
+   "task5": [
+    0.9556666666666667,
+    0.006751543033509731
+   ],
+   "bytes": [
+    25250549.333333332,
+    270460.8998087031
+   ],
+   "neurons": [
+    7649.666666666667,
+    92.8780562529887
+   ],
+   "evicted": [
+    3319.6666666666665,
+    1071.2638952813322
+   ],
+   "saturated": [
+    0.0,
+    0.0
+   ],
+   "seconds": [
+    1061.8329448699951,
+    112.26387769460472
+   ]
+  },
+  {
+   "scenario": "fashion",
+   "budget": 8000,
+   "family": "erace",
+   "seeds": 3,
+   "acc": [
+    0.8436333333333333,
+    0.00020816659994659034
+   ],
+   "forgetting": [
+    0.08625000000000001,
+    0.015958931668504622
+   ],
+   "task1": [
+    0.9048333333333334,
+    0.036641279089755174
+   ],
+   "task2": [
+    0.8113333333333334,
+    0.06321655901212381
+   ],
+   "task3": [
+    0.8104999999999999,
+    0.06538539592294293
+   ],
+   "task4": [
+    0.7645,
+    0.02248888614404902
+   ],
+   "task5": [
+    0.927,
+    0.02296192500641007
+   ],
+   "bytes": [
+    25250136.0,
+    0.0
+   ],
+   "neurons": [
+    256.0,
+    0.0
+   ],
+   "saturated": [
+    0.0,
+    0.0
+   ],
+   "seconds": [
+    46.92811648050944,
+    1.4281628927703045
+   ]
+  },
+  {
+   "scenario": "fashion",
+   "budget": 8000,
+   "family": "er",
+   "seeds": 3,
+   "acc": [
+    0.8516333333333334,
+    0.00910292993125473
+   ],
+   "forgetting": [
+    0.13166666666666663,
+    0.0014433756729740658
+   ],
+   "task1": [
+    0.9003333333333333,
+    0.036226141573915044
+   ],
+   "task2": [
+    0.8035,
+    0.0845443670506794
+   ],
+   "task3": [
+    0.8146666666666667,
+    0.05051319959508938
+   ],
+   "task4": [
+    0.7755000000000001,
+    0.03199999999999997
+   ],
+   "task5": [
+    0.9641666666666667,
+    0.0070059498523278845
+   ],
+   "bytes": [
+    25250136.0,
+    0.0
+   ],
+   "neurons": [
+    256.0,
+    0.0
+   ],
+   "saturated": [
+    0.0,
+    0.0
+   ],
+   "seconds": [
+    44.556283473968506,
+    2.106374624902706
+   ]
+  }
+ ],
+ "rows": [
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "c2+budget=1000",
+   "seed": 3,
+   "acc": 0.8036,
+   "forgetting": 0.21999999999999997,
+   "seconds": 816.3114869594574,
+   "bytes": 5886720,
+   "neurons": 1000,
+   "evicted": 17647,
+   "task1": 0.7465,
+   "task2": 0.815,
+   "task3": 0.6765,
+   "task4": 0.8105,
+   "task5": 0.9695,
+   "budget": 1000,
+   "family": "c2",
+   "saturated": 1.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "c2+budget=1000",
+   "seed": 4,
+   "acc": 0.7945,
+   "forgetting": 0.19125000000000006,
+   "seconds": 891.3226714134216,
+   "bytes": 5886720,
+   "neurons": 1000,
+   "evicted": 16254,
+   "task1": 0.7565,
+   "task2": 0.7625,
+   "task3": 0.707,
+   "task4": 0.7715,
+   "task5": 0.975,
+   "budget": 1000,
+   "family": "c2",
+   "saturated": 1.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "c2+budget=1000",
+   "seed": 5,
+   "acc": 0.8156,
+   "forgetting": 0.17124999999999996,
+   "seconds": 901.2270832061768,
+   "bytes": 5886720,
+   "neurons": 1000,
+   "evicted": 16730,
+   "task1": 0.787,
+   "task2": 0.77,
+   "task3": 0.7375,
+   "task4": 0.816,
+   "task5": 0.9675,
+   "budget": 1000,
+   "family": "c2",
+   "saturated": 1.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "erace+bytes=5886720+iters=3",
+   "seed": 3,
+   "acc": 0.8404,
+   "forgetting": 0.07125000000000001,
+   "seconds": 55.526572942733765,
+   "bytes": 5886240,
+   "neurons": 256,
+   "task1": 0.9145,
+   "task2": 0.724,
+   "task3": 0.868,
+   "task4": 0.759,
+   "task5": 0.9365,
+   "budget": 1000,
+   "family": "erace",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "erace+bytes=5886720+iters=3",
+   "seed": 4,
+   "acc": 0.8439,
+   "forgetting": 0.07499999999999998,
+   "seconds": 48.22661066055298,
+   "bytes": 5886240,
+   "neurons": 256,
+   "task1": 0.925,
+   "task2": 0.812,
+   "task3": 0.854,
+   "task4": 0.7205,
+   "task5": 0.908,
+   "budget": 1000,
+   "family": "erace",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "erace+bytes=5886720+iters=3",
+   "seed": 5,
+   "acc": 0.8478,
+   "forgetting": 0.08875000000000002,
+   "seconds": 46.72413659095764,
+   "bytes": 5886240,
+   "neurons": 256,
+   "task1": 0.9035,
+   "task2": 0.7955,
+   "task3": 0.873,
+   "task4": 0.7325,
+   "task5": 0.9345,
+   "budget": 1000,
+   "family": "erace",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "er+bytes=5886720+iters=3",
+   "seed": 3,
+   "acc": 0.849,
+   "forgetting": 0.13875,
+   "seconds": 43.73572754859924,
+   "bytes": 5886240,
+   "neurons": 256,
+   "task1": 0.8995,
+   "task2": 0.753,
+   "task3": 0.8435,
+   "task4": 0.7805,
+   "task5": 0.9685,
+   "budget": 1000,
+   "family": "er",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "er+bytes=5886720+iters=3",
+   "seed": 4,
+   "acc": 0.8462,
+   "forgetting": 0.13999999999999999,
+   "seconds": 42.464264154434204,
+   "bytes": 5886240,
+   "neurons": 256,
+   "task1": 0.916,
+   "task2": 0.77,
+   "task3": 0.8385,
+   "task4": 0.754,
+   "task5": 0.9525,
+   "budget": 1000,
+   "family": "er",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "er+bytes=5886720+iters=3",
+   "seed": 5,
+   "acc": 0.8574,
+   "forgetting": 0.1225,
+   "seconds": 44.08941650390625,
+   "bytes": 5886240,
+   "neurons": 256,
+   "task1": 0.9035,
+   "task2": 0.801,
+   "task3": 0.899,
+   "task4": 0.7415,
+   "task5": 0.942,
+   "budget": 1000,
+   "family": "er",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "c2",
+   "seed": 3,
+   "acc": 0.809,
+   "forgetting": 0.19874999999999995,
+   "seconds": 609.9875881671906,
+   "bytes": 8798720,
+   "neurons": 2000,
+   "task1": 0.7175,
+   "task2": 0.793,
+   "task3": 0.7165,
+   "task4": 0.852,
+   "task5": 0.966,
+   "budget": 2000,
+   "family": "c2",
+   "saturated": 1.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "c2",
+   "seed": 4,
+   "acc": 0.7988,
+   "forgetting": 0.18749999999999997,
+   "seconds": 751.5846815109253,
+   "bytes": 8798720,
+   "neurons": 2000,
+   "task1": 0.6675,
+   "task2": 0.7795,
+   "task3": 0.7405,
+   "task4": 0.8415,
+   "task5": 0.965,
+   "budget": 2000,
+   "family": "c2",
+   "saturated": 1.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "c2",
+   "seed": 5,
+   "acc": 0.8183,
+   "forgetting": 0.175,
+   "seconds": 745.8779304027557,
+   "bytes": 8798720,
+   "neurons": 2000,
+   "task1": 0.772,
+   "task2": 0.7605,
+   "task3": 0.773,
+   "task4": 0.8255,
+   "task5": 0.9605,
+   "budget": 2000,
+   "family": "c2",
+   "saturated": 1.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "erace+bytes=8798720+iters=3",
+   "seed": 3,
+   "acc": 0.8386,
+   "forgetting": 0.0925,
+   "seconds": 15.319009065628052,
+   "bytes": 8798370,
+   "neurons": 256,
+   "task1": 0.869,
+   "task2": 0.7665,
+   "task3": 0.825,
+   "task4": 0.7795,
+   "task5": 0.953,
+   "budget": 2000,
+   "family": "erace",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "erace+bytes=8798720+iters=3",
+   "seed": 4,
+   "acc": 0.8545,
+   "forgetting": 0.10000000000000006,
+   "seconds": 18.66920042037964,
+   "bytes": 8798370,
+   "neurons": 256,
+   "task1": 0.9055,
+   "task2": 0.822,
+   "task3": 0.862,
+   "task4": 0.728,
+   "task5": 0.955,
+   "budget": 2000,
+   "family": "erace",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "erace+bytes=8798720+iters=3",
+   "seed": 5,
+   "acc": 0.835,
+   "forgetting": 0.08250000000000002,
+   "seconds": 34.77065062522888,
+   "bytes": 8798370,
+   "neurons": 256,
+   "task1": 0.9245,
+   "task2": 0.7745,
+   "task3": 0.902,
+   "task4": 0.638,
+   "task5": 0.936,
+   "budget": 2000,
+   "family": "erace",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "er+bytes=8798720+iters=3",
+   "seed": 3,
+   "acc": 0.8448,
+   "forgetting": 0.145,
+   "seconds": 34.22425055503845,
+   "bytes": 8798370,
+   "neurons": 256,
+   "task1": 0.8685,
+   "task2": 0.777,
+   "task3": 0.829,
+   "task4": 0.7695,
+   "task5": 0.98,
+   "budget": 2000,
+   "family": "er",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "er+bytes=8798720+iters=3",
+   "seed": 4,
+   "acc": 0.8565,
+   "forgetting": 0.13750000000000004,
+   "seconds": 36.79052186012268,
+   "bytes": 8798370,
+   "neurons": 256,
+   "task1": 0.898,
+   "task2": 0.819,
+   "task3": 0.847,
+   "task4": 0.744,
+   "task5": 0.9745,
+   "budget": 2000,
+   "family": "er",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "er+bytes=8798720+iters=3",
+   "seed": 5,
+   "acc": 0.8532,
+   "forgetting": 0.12874999999999998,
+   "seconds": 35.1136372089386,
+   "bytes": 8798370,
+   "neurons": 256,
+   "task1": 0.9085,
+   "task2": 0.819,
+   "task3": 0.865,
+   "task4": 0.707,
+   "task5": 0.9665,
+   "budget": 2000,
+   "family": "er",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "c2+budget=4000",
+   "seed": 3,
+   "acc": 0.791,
+   "forgetting": 0.20125,
+   "seconds": 1270.8860356807709,
+   "bytes": 14622720,
+   "neurons": 4000,
+   "evicted": 10328,
+   "task1": 0.6225,
+   "task2": 0.779,
+   "task3": 0.7035,
+   "task4": 0.876,
+   "task5": 0.974,
+   "budget": 4000,
+   "family": "c2",
+   "saturated": 1.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "c2+budget=4000",
+   "seed": 4,
+   "acc": 0.8062,
+   "forgetting": 0.1675,
+   "seconds": 1116.9681193828583,
+   "bytes": 14351904,
+   "neurons": 3907,
+   "evicted": 9756,
+   "task1": 0.701,
+   "task2": 0.7585,
+   "task3": 0.7715,
+   "task4": 0.838,
+   "task5": 0.962,
+   "budget": 4000,
+   "family": "c2",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "c2+budget=4000",
+   "seed": 5,
+   "acc": 0.8164,
+   "forgetting": 0.16625,
+   "seconds": 1027.253749370575,
+   "bytes": 14622720,
+   "neurons": 4000,
+   "evicted": 9632,
+   "task1": 0.746,
+   "task2": 0.7835,
+   "task3": 0.758,
+   "task4": 0.831,
+   "task5": 0.9635,
+   "budget": 4000,
+   "family": "c2",
+   "saturated": 1.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "erace+bytes=14532448+iters=3",
+   "seed": 3,
+   "acc": 0.8439,
+   "forgetting": 0.06374999999999997,
+   "seconds": 41.38458299636841,
+   "bytes": 14532240,
+   "neurons": 256,
+   "task1": 0.827,
+   "task2": 0.8315,
+   "task3": 0.894,
+   "task4": 0.72,
+   "task5": 0.947,
+   "budget": 4000,
+   "family": "erace",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "erace+bytes=14532448+iters=3",
+   "seed": 4,
+   "acc": 0.8376,
+   "forgetting": 0.06624999999999998,
+   "seconds": 44.60645914077759,
+   "bytes": 14532240,
+   "neurons": 256,
+   "task1": 0.868,
+   "task2": 0.799,
+   "task3": 0.8625,
+   "task4": 0.805,
+   "task5": 0.8535,
+   "budget": 4000,
+   "family": "erace",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "erace+bytes=14532448+iters=3",
+   "seed": 5,
+   "acc": 0.8448,
+   "forgetting": 0.1275,
+   "seconds": 43.60375237464905,
+   "bytes": 14532240,
+   "neurons": 256,
+   "task1": 0.8225,
+   "task2": 0.807,
+   "task3": 0.8945,
+   "task4": 0.7295,
+   "task5": 0.9705,
+   "budget": 4000,
+   "family": "erace",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "er+bytes=14532448+iters=3",
+   "seed": 3,
+   "acc": 0.8476,
+   "forgetting": 0.14250000000000002,
+   "seconds": 45.52507710456848,
+   "bytes": 14532240,
+   "neurons": 256,
+   "task1": 0.836,
+   "task2": 0.827,
+   "task3": 0.8485,
+   "task4": 0.7445,
+   "task5": 0.982,
+   "budget": 4000,
+   "family": "er",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "er+bytes=14532448+iters=3",
+   "seed": 4,
+   "acc": 0.8521,
+   "forgetting": 0.1175,
+   "seconds": 44.83919429779053,
+   "bytes": 14532240,
+   "neurons": 256,
+   "task1": 0.867,
+   "task2": 0.807,
+   "task3": 0.845,
+   "task4": 0.793,
+   "task5": 0.9485,
+   "budget": 4000,
+   "family": "er",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "er+bytes=14532448+iters=3",
+   "seed": 5,
+   "acc": 0.85,
+   "forgetting": 0.16999999999999998,
+   "seconds": 43.5048303604126,
+   "bytes": 14532240,
+   "neurons": 256,
+   "task1": 0.812,
+   "task2": 0.8175,
+   "task3": 0.8705,
+   "task4": 0.7755,
+   "task5": 0.9745,
+   "budget": 4000,
+   "family": "er",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "c2+budget=8000",
+   "seed": 3,
+   "acc": 0.7966,
+   "forgetting": 0.19874999999999998,
+   "seconds": 1160.9997248649597,
+   "bytes": 25036032,
+   "neurons": 7576,
+   "evicted": 4549,
+   "task1": 0.6475,
+   "task2": 0.745,
+   "task3": 0.7665,
+   "task4": 0.8685,
+   "task5": 0.9555,
+   "budget": 8000,
+   "family": "c2",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "c2+budget=8000",
+   "seed": 4,
+   "acc": 0.7925,
+   "forgetting": 0.2,
+   "seconds": 1084.5519790649414,
+   "bytes": 25161248,
+   "neurons": 7619,
+   "evicted": 2824,
+   "task1": 0.638,
+   "task2": 0.725,
+   "task3": 0.7705,
+   "task4": 0.8665,
+   "task5": 0.9625,
+   "budget": 8000,
+   "family": "c2",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "c2+budget=8000",
+   "seed": 5,
+   "acc": 0.8074,
+   "forgetting": 0.1725,
+   "seconds": 939.9471306800842,
+   "bytes": 25554368,
+   "neurons": 7754,
+   "evicted": 2586,
+   "task1": 0.699,
+   "task2": 0.731,
+   "task3": 0.784,
+   "task4": 0.874,
+   "task5": 0.949,
+   "budget": 8000,
+   "family": "c2",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "erace+bytes=25250549+iters=3",
+   "seed": 3,
+   "acc": 0.8434,
+   "forgetting": 0.06875,
+   "seconds": 46.621522426605225,
+   "bytes": 25250136,
+   "neurons": 256,
+   "task1": 0.8655,
+   "task2": 0.739,
+   "task3": 0.886,
+   "task4": 0.773,
+   "task5": 0.9535,
+   "budget": 8000,
+   "family": "erace",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "erace+bytes=25250549+iters=3",
+   "seed": 4,
+   "acc": 0.8438,
+   "forgetting": 0.09000000000000002,
+   "seconds": 48.4846773147583,
+   "bytes": 25250136,
+   "neurons": 256,
+   "task1": 0.938,
+   "task2": 0.856,
+   "task3": 0.773,
+   "task4": 0.739,
+   "task5": 0.913,
+   "budget": 8000,
+   "family": "erace",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "erace+bytes=25250549+iters=3",
+   "seed": 5,
+   "acc": 0.8437,
+   "forgetting": 0.09999999999999998,
+   "seconds": 45.678149700164795,
+   "bytes": 25250136,
+   "neurons": 256,
+   "task1": 0.911,
+   "task2": 0.839,
+   "task3": 0.7725,
+   "task4": 0.7815,
+   "task5": 0.9145,
+   "budget": 8000,
+   "family": "erace",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "er+bytes=25250549+iters=3",
+   "seed": 3,
+   "acc": 0.8424,
+   "forgetting": 0.13249999999999998,
+   "seconds": 43.47232151031494,
+   "bytes": 25250136,
+   "neurons": 256,
+   "task1": 0.862,
+   "task2": 0.706,
+   "task3": 0.8645,
+   "task4": 0.8075,
+   "task5": 0.972,
+   "budget": 8000,
+   "family": "er",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "er+bytes=25250549+iters=3",
+   "seed": 4,
+   "acc": 0.8519,
+   "forgetting": 0.12999999999999998,
+   "seconds": 46.98389005661011,
+   "bytes": 25250136,
+   "neurons": 256,
+   "task1": 0.934,
+   "task2": 0.8565,
+   "task3": 0.7635,
+   "task4": 0.7435,
+   "task5": 0.962,
+   "budget": 8000,
+   "family": "er",
+   "saturated": 0.0
+  },
+  {
+   "bench": "split",
+   "scenario": "fashion",
+   "model": "er+bytes=25250549+iters=3",
+   "seed": 5,
+   "acc": 0.8606,
+   "forgetting": 0.13249999999999998,
+   "seconds": 43.21263885498047,
+   "bytes": 25250136,
+   "neurons": 256,
+   "task1": 0.905,
+   "task2": 0.848,
+   "task3": 0.816,
+   "task4": 0.7755,
+   "task5": 0.9585,
+   "budget": 8000,
+   "family": "er",
+   "saturated": 0.0
+  }
+ ]
+}
