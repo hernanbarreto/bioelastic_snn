@@ -1037,7 +1037,7 @@ def phase_f7a2(a, data):
         ch = [r for r in mine if r["bench"] == "interf" and r["scenario"] == "chainF"]
         sw = [r for r in mine if r["bench"] == "drift" and r["scenario"] == "swap10_12"]
         rn = [r for r in mine if r["bench"] == "drift" and r["scenario"] == "rename10_18"]
-        f = lambda rs, k: float(np.mean([r[k] for r in rs]))
+        f = lambda rs, k: float(np.mean([r.get(k, 0.0) for r in rs]))
         t = dict(spec=sp, cd_all=f(cd, "all"), cd_old=f(cd, "old"), cd_new=f(cd, "new"),
                  chain_all=f(ch, "all"), chain_old=f(ch, "old"), swap_mid=f(sw, "full_swapped_mid"),
                  swap_end=f(sw, "full_swapped_end"), kept=f(sw, "full_kept_end"),
