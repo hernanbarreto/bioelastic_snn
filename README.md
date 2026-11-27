@@ -6,7 +6,7 @@ mismo núcleo procesa imagen, voz, texto o sensores (sólo cambia el encoder). S
 corre un **Thinker**: un lazo de razonamiento sobre símbolos con memoria rápida, registros y
 aprendizaje por refuerzo.
 
-NumPy (y SciPy para el encoder de imagen). **176 tests**, incluidos tests de regresión
+NumPy (y SciPy para el encoder de imagen). **212 tests**, incluidos tests de regresión
 bit a bit. Todo lo que figura abajo está medido con los scripts de `experiments/`, y los CSV de
 cada corrida están en `results/`.
 
@@ -49,7 +49,7 @@ flowchart LR
 | Corteza prefrontal: memoria de trabajo | registros del Thinker, aprendidos en retrospectiva | hecho |
 | Ligadura rápida tipo cabeza de inducción | `FastMemory` (por eventos, conjuntiva) | hecho |
 | Láminas 6 y 1 (predicción descendente) | rama `agent/predictivo` | en curso |
-| Cingulado anterior (detección del propio error), ACh/NE | rama `integracion3` | en curso |
+| Cingulado anterior (detección del propio error), ACh/NE | `Cortex.signals()`, `metacog` (`metacog.py`), compuerta de fiabilidad (`posterior.py`) | opción; medido |
 | Consolidación en sueño, reconsolidación, esquemas | rama `agent/consolidacion` | en curso |
 | Aprender a aprender (prefrontal como meta-RL) | `prev_io` del Thinker, `MetaThinker` | hecho (ver resultados) |
 | Mapa cognitivo recorrible en ambos sentidos | `back` del Thinker | hecho (opción); ya no daña la transitiva |
@@ -158,6 +158,27 @@ Qué explica cada mejora, según las ablaciones:
 | Percepción entrenada aparte, Thinker aprende a sumar sobre lo percibido (3 dígitos) | 71.9 % exacta (76.1 % con crédito simbólico); con símbolos perfectos, 97.4 % |
 | L0: identidad aprendida sólo con el crédito del Thinker | pureza de la percepción 88–90 % |
 | **L3: suma completa aprendida desde cero, todo junto** | **1.5 % exacta (0–4 %), 24 % por columna (azar: 10 %)** |
+| **Suma con imágenes, regla conocida (MNIST-addition): crédito conjunto entre lo que ve y la suma; 27 500 pares, una pasada, test, 3 semillas** | **97.6 ± 0.2 % de sumas, 98.8 ± 0.1 % por dígito.** Error del dígito: AUROC 0.984, ECE 0.002. Publicado, con 30 000 pares y 25–100 épocas de backprop: DeepProbLog 97.2 ± 0.5, A-NeSI 97.7 ± 0.2, DeepStochLog 97.9 ± 0.1 |
+| Atajo de razonamiento con 3 000 pares (8 semillas, test) | sin la compuerta de fiabilidad caen 4 de 8 (dígito ≈ 0.01); con ella, 0 de 8: suma 93.8 ± 0.6 %, dígito 96.8 ± 0.3 %. DeepProbLog con 3 000 pares, otro protocolo: 92.2 ± 1.6 |
+| L3 por etapas: categorías sin etiquetas y después ligadura, regla desconocida (validación, 1 semilla) | las categorías llegan a una pureza de 0.79 (hace falta ≥ 0.965); después de ligar, símbolos 0.33 y 0.2 % exacta |
+
+### Saber cuándo se equivoca (`Cortex` con `metacog`, flujo continuo, 3 semillas)
+
+| Medida | Escala 0.05 | Escala 0.1 |
+|---|---|---|
+| AUROC del propio error, confianza calibrada | 0.855 ± 0.003 | 0.885 ± 0.001 |
+| ECE calibrada | 0.014 ± 0.001 | 0.012 ± 0.001 |
+| Apuesta por confianza (Kepecs 2008): AUROC acierto contra error | 0.845 ± 0.017 | 0.870 ± 0.018 |
+| Pendiente de la apuesta contra la facilidad: aciertos / errores | +0.26 / −0.17 | +0.23 / −0.11 |
+| Entre los errores, nuevo contra conocido: señal NE | 0.851 ± 0.018 | 0.890 ± 0.020 |
+
+- **Firma de Kepecs:** reproduce la que se midió en ratas. En los aciertos, la apuesta sube con la
+  facilidad; en los errores, baja.
+- **Error contra novedad:** la confianza no distingue un error en algo conocido de uno ante algo
+  nuevo (0.52). La señal NE sí los distingue.
+- **Hipercorrección:** no tiene efecto propio. Lo que acelera la corrección (de 102.5 a 82.7 pasos)
+  es aplicar más plasticidad en los errores. El control con la misma ganancia, sin ponderar por
+  confianza, da lo mismo (82.0).
 
 ### Rendimiento
 
@@ -169,6 +190,13 @@ El índice invertido exacto de la capa dispersa es idéntico bit a bit a la pasa
 - **Aprender a ver y a razonar a la vez desde cero (L3) no funciona.** Por separado anda: la
   percepción supervisada y el Thinker con símbolos perfectos. Juntos, con el resultado final como
   única señal, el crédito no se reparte entre las imágenes y la regla.
+  - **Con la regla conocida, el crédito conjunto sí funciona** (97.6 % en MNIST-addition).
+  - **Con la regla desconocida y sin ningún ejemplo nombrado, tampoco funciona por etapas.** Las
+    categorías sin etiquetas no son lo bastante puras (0.79 contra 0.965), y ligarlas a símbolos
+    no llega a la cota.
+  - **El mecanismo de ligadura se aplana:** con 3 prototipos por dígito da 0.60, 0.73 y 0.71 con
+    10 000, 40 000 y 160 000 columnas. Es un límite de diseño, no de datos.
+  - **Salir de un atajo ya consolidado es lento:** la identidad llega a 0.47 en 7 500 pares.
 - **La profundidad no escala sola.** En Fashion el tercer nivel no suma. En CIFAR-10 (exploratorio,
   5 000 muestras, 1 semilla, en validación) el segundo nivel rinde menos que el primero (45 % contra
   47 % de la sonda local; la CNN, 44–46 %). Hipótesis en prueba: a las capas altas no les llega ninguna señal
@@ -211,11 +239,11 @@ se prueban todos juntos.
 | Cómo aprende un humano | Fuente | Rama |
 |---|---|---|
 | Predicción de arriba hacia abajo; sube el error residual; plasticidad por error en cada nivel | Rao & Ballard 1999 | `agent/predictivo` |
-| Detección del propio error por conflicto entre respuestas | Yeung, Botvinick & Cohen 2004 | `integracion3` |
-| Los errores cometidos con mucha confianza se corrigen más | Butterfield & Metcalfe 2001, 2006 | `integracion3` |
-| Incertidumbre esperada (ACh) e inesperada (NE) modulan inferencia y plasticidad | Yu & Dayan 2005 | `integracion3` |
-| Aprender pares palabra-objeto acumulando evidencia de escenas ambiguas | Smith & Yu 2008 | `integracion3` |
-| Etapas: "uno", "dos", "tres" y después el principio cardinal | Carey; Le Corre; Elman 1993 contra Rohde & Plaut 1999 | `integracion3` |
+| Detección del propio error por conflicto entre respuestas | Yeung, Botvinick & Cohen 2004 | **medido**: el conflicto predice el error (AUROC 0.874) |
+| Los errores cometidos con mucha confianza se corrigen más | Butterfield & Metcalfe 2001, 2006 | **medido**: sin efecto propio |
+| Incertidumbre esperada (ACh) e inesperada (NE) modulan inferencia y plasticidad | Yu & Dayan 2005 | **medido**: NE separa error de novedad (0.89) |
+| Aprender pares palabra-objeto acumulando evidencia de escenas ambiguas | Smith & Yu 2008 | **medido**: con la regla conocida liga (97.6 %); sin ancla no |
+| Etapas: "uno", "dos", "tres" y después el principio cardinal | Carey; Le Corre; Elman 1993 contra Rohde & Plaut 1999 | **medido**: contar primero los números chicos rinde peor que el orden aleatorio (pureza 0.30 contra 0.43) |
 | Dos sistemas: memoria rápida y conocimiento lento intercalado | Kumaran, Hassabis & McClelland 2016 | `agent/consolidacion` |
 | Lo que encaja en un esquema se consolida en un ensayo | Tse et al. 2007 | `agent/consolidacion` |
 | Un recuerdo consolidado sólo se modifica si hay error de predicción | Sevenster, Beckers & Kindt 2013–2014 (y la replicación fallida de 2022) | `agent/consolidacion` |
@@ -243,8 +271,8 @@ sin calibrar.
 
 | Escalón | Qué tiene que lograr | Medida externa | Estado |
 |---|---|---|---|
-| A. Saber cuándo se equivoca | confianza calibrada; separar error de novedad | apuesta por confianza (ratas, Kepecs 2008); ECE ≤ 0.05; AUROC ≥ 0.85 | en curso, sin resultado |
-| B. Símbolos anclados en lo que ve | crédito conjunto entre percepción y razonamiento | MNIST-addition (DeepProbLog: 97.2 % con 30 000 pares); después con la regla desconocida | preliminar: 97.6 % de sumas y 98.8 % por dígito en validación (1 semilla, 10 000 pares) |
+| A. Saber cuándo se equivoca | confianza calibrada; separar error de novedad | apuesta por confianza (ratas, Kepecs 2008); ECE ≤ 0.05; AUROC ≥ 0.85 | cumplido en `Cortex` a escala 0.05 y 0.1: AUROC 0.885, ECE 0.012, firma de Kepecs; NE separa error de novedad (0.89). Falta escala 0.25 y llevarlo al Thinker |
+| B. Símbolos anclados en lo que ve | crédito conjunto entre percepción y razonamiento | MNIST-addition (DeepProbLog: 97.2 % con 30 000 pares); después con la regla desconocida | regla conocida: 97.6 ± 0.2 % en test (3 semillas, una pasada), a la par de lo publicado. Regla desconocida sin ancla: no funciona |
 | C. Abstracción por niveles | que cada nivel aporte; invariancia | CIFAR-10 contra Hebb local publicado (SoftHebb: 80.3 %, con otro protocolo); sonda por nivel; desplazamientos | abierto: el nivel 2 copia al 1 |
 | D. Memoria sin interferencia | actualizar o crear según la causa inferida | Split-MNIST y Split-Fashion incremental por clases; ER-ACE con los mismos bytes | en curso |
 | E. Razonamiento composicional | generalizar a combinaciones nuevas | SCAN, bAbI; datos de personas de Lake y Baroni 2023 | en curso: guion con los protocolos publicados (SCAN, MLC, bAbI); primera corrida en marcha |
@@ -291,7 +319,7 @@ sección de resultados, no esta tabla.
 
 ```bash
 pip install -e ".[dev]"
-pytest                                          # 176 tests
+pytest                                          # 212 tests
 python experiments/exp_vision.py mnist          # idem: fashion, cifar10
 python experiments/exp_fsdd.py                  # voz
 python experiments/exp_continual.py             # flujo continuo no estacionario
