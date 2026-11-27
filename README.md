@@ -6,7 +6,7 @@ mismo núcleo procesa imagen, voz, texto o sensores (sólo cambia el encoder). S
 corre un **Thinker**: un lazo de razonamiento sobre símbolos con memoria rápida, registros y
 aprendizaje por refuerzo.
 
-NumPy (y SciPy para el encoder de imagen). **156 tests**, incluidos tests de regresión
+NumPy (y SciPy para el encoder de imagen). **176 tests**, incluidos tests de regresión
 bit a bit. Todo lo que figura abajo está medido con los scripts de `experiments/`, y los CSV de
 cada corrida están en `results/`.
 
@@ -52,7 +52,10 @@ flowchart LR
 | Cingulado anterior (detección del propio error), ACh/NE | rama `integracion3` | en curso |
 | Consolidación en sueño, reconsolidación, esquemas | rama `agent/consolidacion` | en curso |
 | Aprender a aprender (prefrontal como meta-RL) | `prev_io` del Thinker, `MetaThinker` | hecho (ver resultados) |
-| Mapa cognitivo recorrible en ambos sentidos | `back` del Thinker | hecho, con costo |
+| Mapa cognitivo recorrible en ambos sentidos | `back` del Thinker | hecho (opción); ya no daña la transitiva |
+| Prefrontal: conjuntos de tareas y causa latente de cada regla | `task_sets` del Thinker (`tasksets.py`) | opción; falla con todo encendido |
+| Estructura del mapa separada de lo sensorial (entorrinal) | `cogmap` del Thinker (`cogmap.py`) | opción |
+| Dopamina, serotonina, acetilcolina y noradrenalina como meta-parámetros | `modulators` del Thinker (`modulators.py`) | opción |
 | Cerebelo (69 de los 86 mil millones de neuronas) | — | no modelado |
 
 ## Resultados medidos
@@ -126,6 +129,28 @@ queda en azar (0.50).
 Mapa relacional: con la acción RETROCEDER (`back`) la relación inversa pasa de 0 % a 100 %
 (pesos congelados, también con 8 elementos y cada relación vista una sola vez).
 
+### Reglas que no se pisan, mapa del episodio y neuromoduladores (Thinker, 3 semillas)
+
+Cada mecanismo es una opción apagada por defecto. Pesos congelados y problemas nuevos, salvo
+aviso; configuración elegida en validación y medida una vez con otras semillas.
+
+| Prueba | Sin el mecanismo | Con el mecanismo |
+|---|---|---|
+| Volver a una regla sin consigna después de 400 problemas de otra (`task_sets`, como en Collins & Frank 2013) | 0.08 ± 0.11 | 1.00 ± 0.00 |
+| Batería C0–C6 mezclada, 12 medidas (`back`: los predecesores se ven sólo al retroceder) | `back` anterior: peor medida 0.72 (orden de 8, distancia ≥ 4) | las 12 en 1.00 |
+| Harlow sin ver el resultado, peor instantánea por semilla desde el problema 50 (neuromoduladores) | 0.75 ± 0.05, 4 instantáneas bajo 0.95 | 1.00 ± 0.00, ninguna |
+| Cierre de un anillo con relaciones mezcladas con preguntas (`cogmap` + neuromoduladores) | 0.67 ± 0.47 | 1.00 ± 0.00 |
+| Dos regímenes, estable y volátil: elige el premiado | valores a mano 0.773 ± 0.005; los 7 ajustados por perturbación 0.50 ± 0.36 | 0.828 ± 0.010 (oráculo por régimen: 0.831 ± 0.010) |
+
+Qué explica cada mejora, según las ablaciones:
+- En los dos regímenes, toda la mejora viene de la memoria bayesiana: con ella sola y el control
+  con valores fijos da el mismo 0.828. Los neuromoduladores no suman ahí.
+- En Harlow, la mejora viene del horizonte de un ensayo que fija la serotonina: sin él, 0.49 ± 0.41.
+  La causa de las caídas era el error de predicción de fin de episodio.
+- En el anillo, los neuromoduladores bajan la relación inversa de 1.00 a 0.82.
+- Mientras aprende (en línea, bloques 750–799), el cierre queda en 0.55 ± 0.02 en el anillo y en
+  0.76 ± 0.03 en la línea con final.
+
 ### Percepción + razonamiento
 
 | Prueba | Resultado |
@@ -160,10 +185,18 @@ El índice invertido exacto de la capa dispersa es idéntico bit a bit a la pasa
   natural ni en dominios abiertos.
 - **Aprender a aprender tiene límites medidos.** Ajustar por recompensa los meta-parámetros de la
   memoria rápida no escala: con 7 a la vez rinde peor que los valores elegidos a mano (0.50 ± 0.36).
-  Entre familias de reglas opuestas no hay aceleración, y sin consigna la regla nueva tarda ~400
-  problemas y **sobrescribe la vieja** (queda en 0 %). El cierre de un anillo queda en 0 % cuando
-  las relaciones llegan mezcladas con preguntas: el control no distingue un mapa completo de uno
-  parcial. `back` baja la inferencia transitiva de 5 saltos a 0.72, por eso queda apagado.
+  Lo que mejora los dos regímenes es la memoria bayesiana, no ese ajuste. Entre familias de reglas
+  opuestas no hay aceleración. Sin las opciones nuevas, la regla nueva **sobrescribe la vieja**
+  y el anillo no cierra. Con ellas, la vieja vuelve a 1.00 y el anillo cierra con los pesos
+  congelados, pero mientras aprende el cierre queda en 0.55.
+- **Todo encendido a la vez todavía no funciona.** Por eso las opciones de arriba quedan apagadas
+  por defecto. Con todas encendidas (rama `agent/razonamiento3`, 3 semillas):
+  - En la multitarea en bloques en orden inverso, C1 cae de 1.00 a 0.52, C4 a 0.68, C2 a 0.78 y
+    C0 a 0.85: lo compuesto antes de aprender f no se repara cuando f llega.
+  - C1 con 256 símbolos queda en 0.805 y 0.835 (1–2 y 3–4 saltos). La v0.3 da 0.835 y 0.888.
+  - Con `task_sets`, fallan tres pruebas de multitarea con consignas. Volver a una tarea vieja
+    queda entre 0.0 y 0.75.
+  - Cada paso tarda 2.09 veces lo de la v0.3; el tope fijado es 2.
 - **Selección de hiperparámetros.** Parte de la exploración previa miró subconjuntos del test de
   MNIST y Fashion: esas cifras son algo optimistas. Los resultados de la v0.3 usan validación
   separada.
@@ -190,6 +223,8 @@ se prueban todos juntos.
 | Sueño: repaso activo y renormalización sináptica global | Klinzing, Niethard & Born 2019 | `agent/consolidacion` |
 | La dopamina entrena a la prefrontal para que sea un aprendiz rápido propio | Wang et al. 2018 | **medido** (ver resultados) |
 | Mapas cognitivos: estructura relacional reutilizable | Behrens et al. 2018 | **medido** (ver resultados) |
+| Las reglas se agrupan en conjuntos de tareas reutilizables; una causa latente decide cuál rige | Collins & Frank 2013 | **medido** como opción; con todo encendido, abierto |
+| Los neuromoduladores fijan los meta-parámetros del aprendizaje | Doya 2002 | **medido** como opción; en los dos regímenes no suma |
 
 ## Hoja de ruta hacia el aprendizaje humano
 
@@ -212,7 +247,7 @@ sin calibrar.
 | B. Símbolos anclados en lo que ve | crédito conjunto entre percepción y razonamiento | MNIST-addition (DeepProbLog: 97.2 % con 30 000 pares); después con la regla desconocida | preliminar: 97.6 % de sumas y 98.8 % por dígito en validación (1 semilla, 10 000 pares) |
 | C. Abstracción por niveles | que cada nivel aporte; invariancia | CIFAR-10 contra Hebb local publicado (SoftHebb: 80.3 %, con otro protocolo); sonda por nivel; desplazamientos | abierto: el nivel 2 copia al 1 |
 | D. Memoria sin interferencia | actualizar o crear según la causa inferida | Split-MNIST y Split-Fashion incremental por clases; ER-ACE con los mismos bytes | en curso |
-| E. Razonamiento composicional | generalizar a combinaciones nuevas | SCAN, bAbI; datos de personas de Lake y Baroni 2023 | asignado |
+| E. Razonamiento composicional | generalizar a combinaciones nuevas | SCAN, bAbI; datos de personas de Lake y Baroni 2023 | en curso: guion con los protocolos publicados (SCAN, MLC, bAbI); primera corrida en marcha |
 | F. Lenguaje | predecir y componer sobre secuencias | BabyLM (10 M de palabras, escala de un niño) a escala reducida | sin empezar; hoy rinde como n-gramas |
 | G. Razonar con neuronas | memoria de trabajo y ligadura en neuronas de spikes, no en estructuras programadas | las pruebas de E, sin pérdida | sin empezar |
 | H. Actuar y explorar | elegir qué mirar y qué preguntar; metas propias | pruebas de cognición animal (igual/distinto, inferencia transitiva, Harlow); BabyAI | sin empezar |
@@ -256,7 +291,7 @@ sección de resultados, no esta tabla.
 
 ```bash
 pip install -e ".[dev]"
-pytest                                          # 156 tests
+pytest                                          # 176 tests
 python experiments/exp_vision.py mnist          # idem: fashion, cifar10
 python experiments/exp_fsdd.py                  # voz
 python experiments/exp_continual.py             # flujo continuo no estacionario
