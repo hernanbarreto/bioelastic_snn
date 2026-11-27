@@ -1124,8 +1124,8 @@ def phase_f7b(a, data):
     er = f"erace+bytes={nb}+iters=3"
     pair_rows(er, a.seeds, D, tag="f7b", split="test", rows=rows, chain=True, rename=True)
     abl = ablations(spec)
-    for name, sp in abl.items():
-        pair_rows(sp, a.seeds, D, tag="f7b", split="test", rows=rows, chain=True)
+    for name, sp in abl.items():                     # (chainF sólo para el elegido y las referencias)
+        pair_rows(sp, a.seeds, D, tag="f7b", split="test", rows=rows)
     ov = []
     for sp in (spec, C2):                            # diagnóstico de representación (semilla 0)
         def go(sp=sp):
