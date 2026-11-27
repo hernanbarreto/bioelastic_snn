@@ -362,3 +362,10 @@ def test_pureza_no_supervisada_rotula_con_una_mitad_y_mide_con_la_otra():
     assert m["neuronas"] >= 10 and m["pureza"] > 0.8          # barras separables: categorías puras
     m0 = e3.pureza_no_supervisada(Cortex((28, 28, 1), 10, seed=0, heads=[], areas=[]), E, X, y)
     assert np.isnan(m0["pureza"])
+
+
+def test_errores_de_razonamiento_se_separan_de_los_de_percepcion():
+    # episodio de 2 columnas: 7+5 (se percibe 7+6) y 1+2; acarreo de lo percibido = 1
+    f = [dict(col=0, s_a=7, s_b=6, out=3), dict(col=1, s_a=1, s_b=2, out=4),     # bien sobre lo percibido
+         dict(col=0, s_a=2, s_b=2, out=5)]                                        # razonó mal: 2+2 = 4
+    assert e3.razonamiento_ok(f).tolist() == [True, True, False]

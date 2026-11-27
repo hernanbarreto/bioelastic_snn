@@ -1330,6 +1330,20 @@ def senales_columna(reg: list):
     return sig, ok, feats, filas
 
 
+def razonamiento_ok(filas) -> np.ndarray:
+    """¿La respuesta es la suma correcta de lo PERCIBIDO (con el acarreo que sale de lo
+    percibido)? Separa los errores de razonamiento (el Thinker computó mal con lo que
+    recibió) de los de percepción (computó bien sobre símbolos equivocados). `filas` son las
+    de `senales_columna`, en orden y con todas las columnas de dígitos de cada episodio."""
+    ok = []; c = 0
+    for r in filas:
+        if r["col"] == 0:
+            c = 0
+        s = int(r["s_a"]) + int(r["s_b"]) + c
+        ok.append(int(r["out"]) == s % 10); c = s // 10
+    return np.array(ok, dtype=bool)
+
+
 def calibrar(feats_tr, ok_tr, lr=0.05):
     """Calibrador del sistema (regresión logística online, en orden: prequential)."""
     from bioelastic.metacog import Calibrator
@@ -1408,32 +1422,53 @@ def fase_f2t(seed, tam, out, variante, extra):
     feedback (Thinker.answer_confidence: probabilidad de la respuesta en la lectura del
     conocimiento y si es conocimiento establecido; conflicto predictivo con la percepción) y
     se mide la AUROC de su propio error y la ECE, crudas y con un calibrador online entrenado
-    en el flujo de entrenamiento (prequential) y congelado en test."""
+    en el flujo de entrenamiento (prequential) y congelado en test. Los errores se separan
+    en errores de razonamiento (la respuesta no es la suma de lo percibido, con el acarreo
+    de lo percibido) y de percepción (suma bien hecha sobre símbolos equivocados): de los
+    primeros el Thinker puede saber por sí mismo; de los segundos, sólo si la percepción se
+    lo dice. Test con n = 3 (como en L3) y con n = 6 (más largo que lo entrenado, 1 a 4)."""
     from bioelastic.metacog import auroc, ece
     datos = ei.Digitos(tam["n_pre"])
+    sen = ("1-p Thinker", "no establecido (Thinker)", "conflicto percepción-Thinker")
     for nombre, per_f in (("oraculo", lambda: OraculoP()), ("ruido 0.8", lambda: RuidosaP(0.8, 50 + seed)),
                           ("ruido 0.65", lambda: RuidosaP(0.65, 50 + seed))):
         rng = np.random.default_rng(8000 + seed)
         th = thinker_l3(seed); per = per_f()
         reg: list = []
         entrenar(th, per, datos, rng, tam["ep"], {}, {}, registro=reg)
-        sig, ok, feats, _ = senales_columna(reg)
+        sig, ok, feats, filas = senales_columna(reg)
         cal, pre = calibrar(feats, ok)
-        rt = registrar_eval(th, per, datos, rng, 3, tam["ep_eval"])
-        sig_t, ok_t, feats_t, _ = senales_columna(rt)
-        p_cal = np.array([cal.predict(f) for f in feats_t])
-        pt = 1 - sig_t["1-p Thinker"]
-        out("f2t", nombre, "acierto columna (test)", float(ok_t.mean()), 0.1, "")
-        out("f2t", nombre, "AUROC error test: 1-p Thinker", auroc(1 - pt, ~ok_t), 0.85, "criterio >= 0.85")
-        out("f2t", nombre, "AUROC error test: no establecido", auroc(sig_t["no establecido (Thinker)"], ~ok_t), 0.5, "")
-        out("f2t", nombre, "AUROC error test: conflicto percepción-Thinker",
-            auroc(sig_t["conflicto percepción-Thinker"], ~ok_t), 0.5, "")
-        out("f2t", nombre, "AUROC error test: 1-confianza calibrada (sistema)", auroc(1 - p_cal, ~ok_t), 0.85, "")
-        out("f2t", nombre, "ECE test: p Thinker cruda", ece(pt, ok_t)[0], 0.05, "criterio <= 0.05")
-        out("f2t", nombre, "ECE test: calibrada (sistema)", ece(p_cal, ok_t)[0], 0.05, "")
         mitad = np.arange(len(ok)) >= len(ok) // 2
         out("f2t", nombre, "AUROC error prequential (2.a mitad): 1-p Thinker",
             auroc(sig["1-p Thinker"][mitad], ~ok[mitad]), 0.5, "")
+        okr = razonamiento_ok(filas)
+        out("f2t", nombre, "errores de razonamiento prequential (n)", int((~okr).sum()), "", "en todo el flujo")
+        out("f2t", nombre, "AUROC error de razonamiento prequential: 1-p Thinker",
+            auroc(sig["1-p Thinker"], ~okr), 0.5, "todo el flujo")
+        out("f2t", nombre, "ECE razonamiento prequential: p Thinker cruda", ece(1 - sig["1-p Thinker"], okr)[0], 0.05, "")
+        for nom_t, n_t in (("test", 3), ("test n=6", 6)):
+            rt = registrar_eval(th, per, datos, rng, n_t, tam["ep_eval"])
+            sig_t, ok_t, feats_t, filas_t = senales_columna(rt)
+            okr_t = razonamiento_ok(filas_t)
+            p_cal = np.array([cal.predict(f) for f in feats_t])
+            pt = 1 - sig_t["1-p Thinker"]
+            out("f2t", nombre, f"acierto columna ({nom_t})", float(ok_t.mean()), 0.1, "")
+            out("f2t", nombre, f"acierto de razonamiento ({nom_t})", float(okr_t.mean()), "",
+                "respuesta = suma de lo percibido")
+            out("f2t", nombre, f"errores ({nom_t}, n)", int((~ok_t).sum()), "", "")
+            out("f2t", nombre, f"errores de razonamiento ({nom_t}, n)", int((~okr_t).sum()), "", "")
+            for k in sen:
+                out("f2t", nombre, f"AUROC error {nom_t}: {k}", auroc(sig_t[k], ~ok_t), 0.5,
+                    "criterio >= 0.85" if k == "1-p Thinker" else "azar")
+                out("f2t", nombre, f"AUROC error de razonamiento {nom_t}: {k}", auroc(sig_t[k], ~okr_t), 0.5,
+                    "criterio >= 0.85" if k == "1-p Thinker" else "azar")
+            out("f2t", nombre, f"AUROC error {nom_t}: 1-confianza calibrada (sistema)", auroc(1 - p_cal, ~ok_t), 0.5, "")
+            out("f2t", nombre, f"ECE {nom_t}: p Thinker cruda", ece(pt, ok_t)[0], 0.05, "criterio <= 0.05")
+            out("f2t", nombre, f"ECE razonamiento {nom_t}: p Thinker cruda", ece(pt, okr_t)[0], 0.05,
+                "contra el acierto de razonamiento")
+            out("f2t", nombre, f"ECE {nom_t}: calibrada (sistema)", ece(p_cal, ok_t)[0], 0.05, "")
+            extra[f"f2t_{nombre}_{nom_t}"] = dict(confiabilidad_p_thinker_razonamiento=ece(pt, okr_t)[1],
+                                                  confiabilidad_calibrada=ece(p_cal, ok_t)[1])
 
 
 # ====================================================================== F3
